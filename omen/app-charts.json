@@ -1,5 +1,5 @@
 {
- "updated": "2026-07-25T11:18:31Z",
+ "updated": "2026-07-25T13:52:08Z",
  "source": "google-play-scraper",
  "store": "android",
  "depth": 200,
@@ -8,8 +8,24 @@
   {
    "label": "MiniMax",
    "store": "android",
+   "country": "us",
+   "rank": 172,
+   "appId": "com.weaver.app.prod",
+   "title": "Talkie: Creative AI Community"
+  },
+  {
+   "label": "Kimi",
+   "store": "android",
+   "country": "gb",
+   "rank": 194,
+   "appId": "com.moonshot.kimichat",
+   "title": "Kimi"
+  },
+  {
+   "label": "MiniMax",
+   "store": "android",
    "country": "br",
-   "rank": 134,
+   "rank": 143,
    "appId": "ai.hailuo.video",
    "title": "Hailuo AI: Image&Video Maker"
   },
@@ -17,7 +33,7 @@
    "label": "Kimi",
    "store": "android",
    "country": "ca",
-   "rank": 118,
+   "rank": 110,
    "appId": "com.moonshot.kimichat",
    "title": "Kimi"
   },
@@ -25,7 +41,7 @@
    "label": "Kimi",
    "store": "android",
    "country": "au",
-   "rank": 107,
+   "rank": 94,
    "appId": "com.moonshot.kimichat",
    "title": "Kimi"
   },
@@ -33,7 +49,7 @@
    "label": "Kimi",
    "store": "android",
    "country": "kr",
-   "rank": 198,
+   "rank": 183,
    "appId": "com.moonshot.kimichat",
    "title": "Kimi"
   }
