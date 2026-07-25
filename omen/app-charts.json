@@ -1,5 +1,5 @@
 {
- "updated": "2026-07-25T13:52:08Z",
+ "updated": "2026-07-25T23:00:55Z",
  "source": "google-play-scraper",
  "store": "android",
  "depth": 200,
@@ -9,47 +9,47 @@
    "label": "MiniMax",
    "store": "android",
    "country": "us",
-   "rank": 172,
+   "rank": 147,
    "appId": "com.weaver.app.prod",
    "title": "Talkie: Creative AI Community"
   },
   {
+   "label": "MiniMax",
+   "store": "android",
+   "country": "br",
+   "rank": 128,
+   "appId": "ai.hailuo.video",
+   "title": "Hailuo AI: Image&Video Maker"
+  },
+  {
+   "label": "Qwen",
+   "store": "android",
+   "country": "br",
+   "rank": 187,
+   "appId": "com.tongyi.intl",
+   "title": "Qwen - Alibaba AI Assistant"
+  },
+  {
    "label": "Kimi",
    "store": "android",
-   "country": "gb",
-   "rank": 194,
+   "country": "ca",
+   "rank": 136,
    "appId": "com.moonshot.kimichat",
    "title": "Kimi"
   },
   {
    "label": "MiniMax",
    "store": "android",
-   "country": "br",
-   "rank": 143,
-   "appId": "ai.hailuo.video",
-   "title": "Hailuo AI: Image&Video Maker"
-  },
-  {
-   "label": "Kimi",
-   "store": "android",
    "country": "ca",
-   "rank": 110,
-   "appId": "com.moonshot.kimichat",
-   "title": "Kimi"
+   "rank": 185,
+   "appId": "com.weaver.app.prod",
+   "title": "Talkie: Creative AI Community"
   },
   {
    "label": "Kimi",
    "store": "android",
    "country": "au",
-   "rank": 94,
-   "appId": "com.moonshot.kimichat",
-   "title": "Kimi"
-  },
-  {
-   "label": "Kimi",
-   "store": "android",
-   "country": "kr",
-   "rank": 183,
+   "rank": 112,
    "appId": "com.moonshot.kimichat",
    "title": "Kimi"
   }
