@@ -1,5 +1,5 @@
 {
- "updated": "2026-07-25T03:27:10Z",
+ "updated": "2026-07-25T06:25:31Z",
  "snapshot_date": "2026-07-25",
  "artificial_analysis": {
   "cn_best": "GLM-5.2",
@@ -38,13 +38,13 @@
   "best": [
    {
     "label": "Kimi",
-    "rank": 109,
+    "rank": 106,
     "store": "android",
     "country": "au"
    },
    {
     "label": "MiniMax",
-    "rank": 127,
+    "rank": 132,
     "store": "android",
     "country": "br"
    }
@@ -61,20 +61,20 @@
    "au",
    "kr"
   ],
-  "detail": "no Chinese AI app in any iOS or Play top-100 (nearest: Kimi #109 (AU Play)); basket-mean Western top-100 presence 0/100 across 10 markets",
+  "detail": "no Chinese AI app in any iOS or Play top-100 (nearest: Kimi #106 (AU Play)); basket-mean Western top-100 presence 0/100 across 10 markets",
   "note": "iOS Apple RSS top-100 + Android Play top-200 across 10 markets; presence = basket-mean of best top-100 chart rank (DeepSeek/Qwen/Doubao/Kimi/MiniMax), #1=100 #100=1; ranks past top-100 score 0."
  },
  "lmarena": {
   "best_model": "kimi-k3",
-  "best_org": "Moonshot",
+  "best_org": "moonshot",
   "best_rank": 10,
   "best_score": 1486,
   "us_leader": "claude-fable-5",
   "us_leader_score": 1507,
   "top10": 1,
   "top20": 2,
-  "asof": "2026-07-25",
-  "source": "arena-scrape"
+  "asof": "2026-07-21",
+  "source": "lmarena-dataset"
  },
  "github_stars_per_day": -282776.7,
  "hf": {
@@ -143,10 +143,10 @@
  },
  "openrouter_week": {
   "week": "2026-07-20",
-  "cn_share": 0.5596,
-  "us_share": 0.3026,
-  "spi": 1.849,
-  "total_tokens": 44288787515407
+  "cn_share": 0.5598,
+  "us_share": 0.3024,
+  "spi": 1.851,
+  "total_tokens": 45026432325442
  },
  "vercel_gateway": {
   "asof": "2026-07-25",
@@ -489,8 +489,8 @@
   "license": "AI Gateway Leaderboard Data (c) Vercel, CC BY 4.0"
  },
  "ollama": {
-  "cn": 272495400,
-  "us": 444743861,
+  "cn": 272498499,
+  "us": 444749774,
   "cn_top": [
    {
     "name": "deepseek-r1",
@@ -532,9 +532,7 @@
    }
   ],
   "n_models": 233,
-  "asof": "2026-07-25",
-  "cn_per_day": 717634,
-  "us_per_day": 387048
+  "asof": "2026-07-25"
  },
  "kalshi": {
   "asof": "2026-07-25",
@@ -559,13 +557,13 @@
    },
    {
     "label": "Best AI at end of 2026: Qwen",
-    "p": 0.011,
+    "p": 0.01,
     "ticker": "KXLLM1-26DEC31-ALI",
     "series": "kxllm1"
    },
    {
     "label": "Best AI at end of 2026: Claude",
-    "p": 0.65,
+    "p": 0.654,
     "ticker": "KXLLM1-26DEC31-A",
     "series": "kxllm1"
    }
