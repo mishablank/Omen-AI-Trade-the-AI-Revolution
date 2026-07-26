@@ -1,5 +1,5 @@
 {
- "updated": "2026-07-26T09:20:35Z",
+ "updated": "2026-07-26T11:24:23Z",
  "snapshot_date": "2026-07-26",
  "artificial_analysis": {
   "cn_best": "GLM-5.2",
@@ -38,7 +38,7 @@
   "best": [
    {
     "label": "Kimi",
-    "rank": 110,
+    "rank": 112,
     "store": "android",
     "country": "au"
    },
@@ -67,7 +67,7 @@
    "au",
    "kr"
   ],
-  "detail": "no Chinese AI app in any iOS or Play top-100 (nearest: Kimi #110 (AU Play)); basket-mean Western top-100 presence 0/100 across 10 markets",
+  "detail": "no Chinese AI app in any iOS or Play top-100 (nearest: Kimi #112 (AU Play)); basket-mean Western top-100 presence 0/100 across 10 markets",
   "note": "iOS Apple RSS top-100 + Android Play top-200 across 10 markets; presence = basket-mean of best top-100 chart rank (DeepSeek/Qwen/Doubao/Kimi/MiniMax), #1=100 #100=1; ranks past top-100 score 0."
  },
  "lmarena": {
@@ -149,40 +149,40 @@
  },
  "openrouter_week": {
   "week": "2026-07-20",
-  "cn_share": 0.5634,
-  "us_share": 0.2975,
-  "spi": 1.894,
-  "total_tokens": 52940299462335
+  "cn_share": 0.5642,
+  "us_share": 0.2967,
+  "spi": 1.902,
+  "total_tokens": 53823425474073
  },
  "vercel_gateway": {
   "asof": "2026-07-26",
-  "cn_share": 53.31,
-  "us_share": 46.51,
-  "spi": 1.146,
+  "cn_share": 54.8,
+  "us_share": 45.05,
+  "spi": 1.216,
   "top_cn": [
    {
     "lab": "deepseek",
-    "share": 24.8
+    "share": 25.22
    },
    {
     "lab": "inclusionai",
-    "share": 7.23
+    "share": 8.07
    },
    {
     "lab": "stepfun",
-    "share": 6.81
-   },
-   {
-    "lab": "zai",
-    "share": 6.23
+    "share": 7.5
    },
    {
     "lab": "moonshotai",
-    "share": 4.86
+    "share": 5.4
+   },
+   {
+    "lab": "zai",
+    "share": 5.13
    },
    {
     "lab": "minimax",
-    "share": 1.76
+    "share": 1.75
    }
   ],
   "series": [
@@ -488,15 +488,15 @@
    },
    {
     "d": "2026-07-26",
-    "cn": 53.31,
-    "us": 46.51
+    "cn": 54.8,
+    "us": 45.05
    }
   ],
   "license": "AI Gateway Leaderboard Data (c) Vercel, CC BY 4.0"
  },
  "ollama": {
-  "cn": 273327799,
-  "us": 445194359,
+  "cn": 273330399,
+  "us": 445299404,
   "cn_top": [
    {
     "name": "deepseek-r1",
@@ -530,7 +530,7 @@
    },
    {
     "name": "llama3.2",
-    "pulls": 77800000
+    "pulls": 77900000
    },
    {
     "name": "gemma3",
@@ -569,7 +569,7 @@
    },
    {
     "label": "Best AI at end of 2026: Claude",
-    "p": 0.628,
+    "p": 0.637,
     "ticker": "KXLLM1-26DEC31-A",
     "series": "kxllm1"
    }
@@ -621,9 +621,21 @@
    {
     "pkg": "dashscope",
     "wk": 659387
+   },
+   {
+    "pkg": "zhipuai",
+    "wk": 66773
+   },
+   {
+    "pkg": "zai-sdk",
+    "wk": 24202
    }
   ],
   "us": [
+   {
+    "pkg": "openai",
+    "wk": 86185535
+   },
    {
     "pkg": "anthropic",
     "wk": 42241475
