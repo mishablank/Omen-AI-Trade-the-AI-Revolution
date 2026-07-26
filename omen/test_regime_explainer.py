@@ -10,7 +10,8 @@ from pathlib import Path
 import pytest
 
 HERE = Path(__file__).parent
-SUITES = ["test-regime-explainer.mjs", "test-pure-helpers.mjs"]
+SUITES = ["test-regime-explainer.mjs", "test-pure-helpers.mjs", "test-verdict.mjs",
+          "test-omen-common.mjs"]
 
 
 @pytest.mark.skipif(shutil.which("node") is None, reason="node not installed")

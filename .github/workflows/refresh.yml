@@ -19,12 +19,16 @@ concurrency:
 jobs:
   refresh:
     runs-on: ubuntu-latest
-    # surfacing secrets as job-level env lets the steps' `if:` test them
-    # (the `secrets` context itself is not available inside `if:` expressions)
+    # `if:` expressions cannot read the `secrets` context, which is why these were once
+    # job-level env. But job-level env puts the *values* in scope for every step —
+    # including the one that executes third-party scraper code and its transitive deps,
+    # which would let a malicious release read a production R2 *write* token straight
+    # out of the environment. So job level now carries only non-sensitive boolean
+    # presence flags for the `if:` conditions; the secret values themselves are set on
+    # the individual steps that need them, and nowhere else.
     env:
-      XAI_API_KEY: ${{ secrets.XAI_API_KEY }}
-      CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-      CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+      HAS_XAI: ${{ secrets.XAI_API_KEY != '' }}
+      HAS_CLOUDFLARE: ${{ secrets.CLOUDFLARE_API_TOKEN != '' }}
     steps:
       - uses: actions/checkout@v4
 
@@ -35,6 +39,8 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: "20"
+          cache: npm
+          cache-dependency-path: omen/package-lock.json
 
       - name: Fetch market data + append snapshot + evaluate alert
         env:
@@ -45,7 +51,11 @@ jobs:
         run: python3 omen/update-market-data.py --snapshot --alert
 
       - name: Refresh influencer sentiment (optional; needs XAI_API_KEY)
-        if: ${{ env.XAI_API_KEY != '' }}
+        # HAS_XAI is the job-level presence flag (a string "true"/"false"); the key
+        # itself is injected here only.
+        if: ${{ env.HAS_XAI == 'true' }}
+        env:
+          XAI_API_KEY: ${{ secrets.XAI_API_KEY }}
         run: python3 omen/update-influencers.py
 
       - name: Fetch Android app charts (best-effort; feeds the consumer-app family)
@@ -53,9 +63,14 @@ jobs:
         # which update-china-data.py folds into the "apps" signal (iOS it fetches itself).
         # Best-effort: a scraper break must not fail the refresh — the Python step then
         # carries the previous computed value or the manual snapshot.
+        #
+        # Installs from omen/package-lock.json (`npm ci`) rather than resolving
+        # `google-play-scraper@10` fresh at runtime, so the dependency tree is pinned and
+        # auditable instead of being whatever the registry serves this half-hour. This
+        # step deliberately runs with NO secrets in scope.
         run: |
           cd omen
-          npm install --no-save --silent google-play-scraper@10 && node update-app-charts.mjs \
+          npm ci --silent && node update-app-charts.mjs \
             || echo "app-charts fetch failed — china-data will fall back"
 
       - name: Refresh China AI monitor snapshot data
@@ -83,7 +98,10 @@ jobs:
       # Skips cleanly if the Cloudflare secrets aren't set (the site then falls back to
       # the bundled copy, i.e. previous behaviour).
       - name: Upload data to R2
-        if: ${{ env.CLOUDFLARE_API_TOKEN != '' }}
+        if: ${{ env.HAS_CLOUDFLARE == 'true' }}
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
         run: |
           # A missing optional file (e.g. influencers.json without XAI_API_KEY) must skip,
           # not fail the step — otherwise `bash -e` would kill the run and skip the commit.
@@ -101,7 +119,44 @@ jobs:
         run: |
           git config user.name "ai-crash-monitor bot"
           git config user.email "actions@github.com"
-          for f in omen/market-data.json omen/snapshots.csv omen/alert-state.json omen/influencers.json \
+
+          # market-data.json is deliberately NOT in the per-run loop below. At 171 KB
+          # rewritten in full every 30 minutes it is ~86% of all the data churn here — for
+          # a file the site never reads out of git, since worker.js streams it live from
+          # R2. It must stay *tracked* all the same: the Worker falls back to the bundled
+          # copy on an R2 miss, so a deploy needs a reasonably fresh one. Compromise —
+          # re-commit it only when the committed copy is over 7 days old, which is ~1
+          # commit/week instead of ~48/day.
+          SEED_MAX_AGE=$((7 * 24 * 60 * 60))
+          seed_ts=""
+          if [ "$(git rev-parse --is-shallow-repository)" = "false" ]; then
+            seed_ts="$(git log -1 --format=%ct -- omen/market-data.json)"
+          else
+            # actions/checkout defaults to fetch-depth: 1, and on a shallow clone
+            # `git log -1 --format=%ct -- <path>` reports the grafted tip for every path in
+            # its tree — it would claim the seed had just been committed and we would never
+            # re-seed. Ask the committed blob directly instead: its own "updated" stamp is
+            # exactly the staleness an R2-miss fallback would serve.
+            seed_iso="$(git show HEAD:omen/market-data.json 2>/dev/null \
+                        | head -c 200 | sed -n 's/.*"updated": *"\([^"]*\)".*/\1/p')"
+            if [ -n "$seed_iso" ]; then
+              seed_ts="$(date -u -d "$seed_iso" +%s 2>/dev/null || true)"
+            fi
+          fi
+          # an empty seed_ts means never committed (fresh fork) or unparseable — seed it
+          if [ ! -f omen/market-data.json ]; then
+            echo "market-data.json absent — nothing to seed"
+          elif [ -z "$seed_ts" ] || [ "$(( $(date +%s) - seed_ts ))" -ge "$SEED_MAX_AGE" ]; then
+            echo "market-data.json seed is stale or never committed — re-seeding this run"
+            git add -f omen/market-data.json
+          else
+            echo "market-data.json seed is $(( ($(date +%s) - seed_ts) / 86400 ))d old — skipping (R2 serves it live)"
+          fi
+
+          # Everything else stays a per-run commit: the append-only *-snapshots.csv history,
+          # the alert dedup state, and the small JSON files that are bundled-asset-only
+          # (china-*, app-charts) or cheap enough to keep as a warm fallback. All 1–10 KB.
+          for f in omen/snapshots.csv omen/alert-state.json omen/influencers.json \
                    omen/china-data.json omen/china-history.json omen/china-snapshots.csv \
                    omen/app-charts.json omen/capex-data.json omen/capex-snapshots.csv; do
             [ -f "$f" ] && git add -f "$f"

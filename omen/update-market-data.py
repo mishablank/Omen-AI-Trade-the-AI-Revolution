@@ -29,7 +29,7 @@ Env for --alert (all optional): TELEGRAM_BOT_TOKEN + TELEGRAM_CHAT_ID, and/or NT
 
 No third-party dependencies. Run it from the folder that serves the dashboard.
 """
-import urllib.request, urllib.error, urllib.parse, json, datetime, re, sys, os, time, math
+import urllib.request, urllib.error, urllib.parse, json, datetime, re, sys, os, time, math, gzip
 import xml.etree.ElementTree as ET
 
 HERE = os.path.dirname(os.path.abspath(__file__))
@@ -165,11 +165,90 @@ def sleeve_level(price, sleeve):
     return sum(vals) / len(vals) * 100 if vals else None
 
 
-def get(url, timeout=25, headers=None, data=None):
-    req = urllib.request.Request(url, headers=headers or UA,
-                                 data=data.encode() if isinstance(data, str) else data)
-    with urllib.request.urlopen(req, timeout=timeout) as r:
-        return r.read().decode()
+# ---------- fetching ----------
+# Transient-failure policy for every outbound request. A single dropped fetch does not
+# just blank one panel: compute_gauge reads the equity/vol/skew/credit/fred keys directly,
+# so a lost request can remove a whole family from the blended score and flip the regime an
+# alert fires on. Retry what is worth retrying — network blips, 429s, 5xx — and fail fast on
+# a 4xx, which is a real answer that will not change on a second ask.
+RETRY_STATUS = {408, 425, 429, 500, 502, 503, 504}
+RETRIES = 2               # total attempts = RETRIES + 1
+RETRY_BACKOFF = 1.5       # seconds before the first retry, doubled each attempt
+RETRY_AFTER_CAP = 30.0    # never honour a Retry-After longer than this
+# Whole-process ceiling on time spent sleeping between retries. Retrying is the right
+# answer for the one flaky endpoint this is built for, but the run touches ~40 URLs: if
+# the network is down wholesale, per-request retries would add minutes of pure sleep to a
+# job that runs every 30 minutes. Once the budget is gone the fetcher degrades to
+# single-attempt behaviour and the carry-forward policy in build() takes over — which is
+# the correct response to a broad outage anyway.
+RETRY_BUDGET = 60.0
+_retry_spent = 0.0
+
+
+def retry_budget_left():
+    return max(0.0, RETRY_BUDGET - _retry_spent)
+
+
+def reset_retry_budget():
+    """--watch runs many refreshes in one process; each gets its own budget."""
+    global _retry_spent
+    _retry_spent = 0.0
+
+
+def retryable(e):
+    """Is this exception worth another attempt? HTTPError first — it subclasses URLError."""
+    if isinstance(e, urllib.error.HTTPError):
+        return e.code in RETRY_STATUS
+    return isinstance(e, (urllib.error.URLError, TimeoutError, ConnectionError))
+
+
+def retry_wait(e, attempt):
+    """Exponential backoff, widened to the server's Retry-After when it sends one."""
+    wait = RETRY_BACKOFF * (2 ** attempt)
+    if isinstance(e, urllib.error.HTTPError):
+        try:
+            wait = max(wait, min(RETRY_AFTER_CAP, float(e.headers.get("Retry-After") or 0)))
+        except (TypeError, ValueError):
+            pass
+    return wait
+
+
+def get_bytes(url, timeout=25, headers=None, data=None, retries=RETRIES):
+    """Fetch a URL as bytes, retrying transient failures and decompressing gzip.
+
+    Several hosts (api.nasdaq.com in particular) gzip by default, so the decode is done
+    here once rather than in each caller.
+    """
+    for attempt in range(retries + 1):
+        req = urllib.request.Request(url, headers=headers or UA,
+                                     data=data.encode() if isinstance(data, str) else data)
+        try:
+            with urllib.request.urlopen(req, timeout=timeout) as r:
+                raw = r.read()
+                if r.headers.get("Content-Encoding") == "gzip" or raw[:2] == b"\x1f\x8b":
+                    raw = gzip.decompress(raw)
+                return raw
+        except Exception as e:
+            global _retry_spent
+            if attempt == retries or not retryable(e):
+                raise
+            wait = min(retry_wait(e, attempt), retry_budget_left())
+            if wait <= 0:          # budget spent — treat as non-retryable from here on
+                raise
+            _retry_spent += wait
+            print(f"  retry {attempt + 1}/{retries} in {wait:.1f}s: {url.split('?')[0]} ({e})")
+            time.sleep(wait)
+
+
+def get(url, timeout=25, headers=None, data=None, retries=RETRIES):
+    return get_bytes(url, timeout=timeout, headers=headers, data=data, retries=retries).decode()
+
+
+def nasdaq_get(url, timeout=30):
+    """GET api.nasdaq.com JSON. The endpoint gzips by default; get_bytes handles that."""
+    return json.loads(get_bytes(url, timeout=timeout,
+                                headers={**UA, "Accept": "application/json",
+                                         "Accept-Encoding": "gzip"}))
 
 
 def nasdaq_caps(symbols):
@@ -180,15 +259,8 @@ def nasdaq_caps(symbols):
     only annually) with marketCap and last sale. Yahoo's quote endpoint would
     be the obvious source but is crumb-gated; this one is not.
     """
-    import gzip
     url = "https://api.nasdaq.com/api/screener/stocks?tableonly=true&limit=25&download=true"
-    req = urllib.request.Request(url, headers={**UA, "Accept": "application/json",
-                                               "Accept-Encoding": "gzip"})
-    with urllib.request.urlopen(req, timeout=40) as r:
-        raw = r.read()
-        if r.headers.get("Content-Encoding") == "gzip" or raw[:2] == b"\x1f\x8b":
-            raw = gzip.decompress(raw)
-    rows = json.loads(raw)["data"]["rows"]
+    rows = nasdaq_get(url, timeout=40)["data"]["rows"]
     want = set(symbols)
     out = {}
     for row in rows:
@@ -943,12 +1015,16 @@ def backfill_bear(d):
         return ""
 
 
-def append_snapshot(data=None):
-    try:
-        price = poly_prices()
-    except Exception as e:
-        print("  snapshot skipped:", e)
-        return
+def append_snapshot(data=None, price=None):
+    """Append today's snapshot row. `price` is the run's single Polymarket read, threaded in
+    from build() so the stored gauge matches the one embedded in market-data.json; it is
+    fetched here only when called standalone."""
+    if price is None:
+        try:
+            price = poly_prices()
+        except Exception as e:
+            print("  snapshot skipped:", e)
+            return
     row = snapshot_row(price)
     gauge = lead = conf = ""
     if data:
@@ -1064,18 +1140,6 @@ def cot():
 
 
 # ---------- FINRA short interest (single-name short crowding, via api.nasdaq.com) ----------
-def nasdaq_json(url, timeout=30):
-    """GET api.nasdaq.com JSON, decompressing gzip (the endpoint gzips by default)."""
-    import gzip
-    req = urllib.request.Request(url, headers={**UA, "Accept": "application/json",
-                                               "Accept-Encoding": "gzip"})
-    with urllib.request.urlopen(req, timeout=timeout) as r:
-        raw = r.read()
-        if r.headers.get("Content-Encoding") == "gzip" or raw[:2] == b"\x1f\x8b":
-            raw = gzip.decompress(raw)
-    return json.loads(raw)
-
-
 def si_num(x):
     """'80,963,200' / '$12.30' -> float; None on junk or empty."""
     if x is None:
@@ -1113,7 +1177,7 @@ def short_interest():
            "names": []}
     for sym in SHORT_INTEREST:
         try:
-            j = nasdaq_json(NASDAQ_SI_URL.format(sym=sym))
+            j = nasdaq_get(NASDAQ_SI_URL.format(sym=sym))
             rows = ((j.get("data") or {}).get("shortInterestTable") or {}).get("rows") or []
             red = short_interest_reduce(sym, rows)
         except Exception as e:
@@ -1133,8 +1197,11 @@ def send_alert(title, body):
     sent = False
     if tok and chat:
         try:
+            # retries=0: this is a POST, and a timeout after delivery would double-send.
+            # A genuinely failed push is reported below rather than retried blind.
             get(f"https://api.telegram.org/bot{tok}/sendMessage",
-                data=urllib.parse.urlencode({"chat_id": chat, "text": f"{title}\n{body}"}))
+                data=urllib.parse.urlencode({"chat_id": chat, "text": f"{title}\n{body}"}),
+                retries=0)
             sent = True
         except Exception as e:
             print("telegram alert failed:", e)
@@ -1151,12 +1218,14 @@ def send_alert(title, body):
         print("alert (no channel configured):", title, "|", body)
 
 
-def check_alert(data):
-    try:
-        price = poly_prices()
-    except Exception as e:
-        print("alert skipped:", e)
-        return
+def check_alert(data, price=None):
+    """Escalation check on the same prices the stored gauge was built from (see build())."""
+    if price is None:
+        try:
+            price = poly_prices()
+        except Exception as e:
+            print("alert skipped:", e)
+            return
     gauge, fam = compute_gauge(data, price)
     regime = compute_regime(gauge, price)
     prev = {}
@@ -1180,6 +1249,36 @@ def check_alert(data):
 
 
 # ---------- build ----------
+# One failure policy for every panel. These used to differ: caps/cot/short_interest fell back
+# to the previous run, everything else silently dropped its key. That is not cosmetic —
+# compute_gauge reads data["equity"], ["vol"], ["skew"], ["credit"] and ["fred"] directly, so a
+# dropped key removes a whole family from the blended mean, moves the headline score, and can
+# escalate or suppress an alert on nothing worse than a transient Yahoo blip. Carrying the last
+# good value keeps the gauge on a constant basis until the source recovers, and the staleness
+# stays visible because every panel carries its own asof/date.
+def carry(data, prev, key, e):
+    """Log a panel failure, then fall back to the previous run's value. True if carried."""
+    print(f"{key}: FAIL {e}")
+    old = prev.get(key)
+    if old is None:
+        return False
+    data[key] = old
+    print(f"{key}: carried previous value")
+    return True
+
+
+def carry_sub(data, prev, section, key, e=None):
+    """Same, for the per-symbol sections (equity/vol/credit/fred/skew/term/tail)."""
+    if e is not None:
+        print(f"{section} {key}: FAIL {e}")
+    old = (prev.get(section) or {}).get(key)
+    if old is None:
+        return False
+    data[section][key] = old
+    print(f"{section} {key}: carried previous value")
+    return True
+
+
 def build():
     prev = {}
     if os.path.exists(OUT):
@@ -1202,7 +1301,7 @@ def build():
             data["equity"][sym] = yahoo_series(sym)
             print(f"equity {sym}: {len(data['equity'][sym])} pts")
         except Exception as e:
-            print(f"equity {sym}: FAIL {e}")
+            carry_sub(data, prev, "equity", sym, e)
 
     # market caps for the stack-comparison card (ETFs have no cap; skip the benchmarks)
     cap_syms = [s for s in EQUITY if s not in ("SOXX", "SPY")]
@@ -1214,9 +1313,7 @@ def build():
         if missing:
             print(f"caps missing: {missing}")
     except Exception as e:
-        print(f"caps: FAIL {e}")
-        if prev.get("caps"):           # carry the last good snapshot, original asof intact
-            data["caps"] = prev["caps"]
+        carry(data, prev, "caps", e)   # last good snapshot, original asof intact
 
     for ysym, name in VOL.items():
         try:
@@ -1224,7 +1321,7 @@ def build():
             data["vol"][name] = {"last": s[-1]["c"], "series": s}
             print(f"vol {name}: {s[-1]['c']}")
         except Exception as e:
-            print(f"vol {name}: FAIL {e}")
+            carry_sub(data, prev, "vol", name, e)
 
     for sym in SKEW_SYMS:
         try:
@@ -1238,7 +1335,7 @@ def build():
                     print(f"tail {sym}: P({trig['pct']}% @ {tail['dte']}d) = "
                           f"{trig['p'] * 100:.1f}%" if trig["p"] is not None else f"tail {sym}: no quote at trigger")
             except Exception as e:
-                print(f"tail {sym}: FAIL {e}")
+                carry_sub(data, prev, "tail", sym, e)
             if sk:
                 hist = (prev.get("skew", {}).get(sym, {}) or {}).get("history", [])
                 hist = [h for h in hist if h["date"] != sk["date"]]
@@ -1254,14 +1351,17 @@ def build():
                 data["term"][sym] = term
                 print(f"term {sym}: {term['ratio']} ({term['front_dte']}d/{term['back_dte']}d)")
         except Exception as e:
+            # one chain download feeds all three, so a failure here loses all three
             print(f"skew {sym}: FAIL {e}")
+            for section in ("skew", "term", "tail"):
+                carry_sub(data, prev, section, sym)
 
     for sym in CREDIT:
         try:
             data["credit"][sym] = yahoo_series(sym)
             print(f"credit {sym}: {data['credit'][sym][-1]['c']}")
         except Exception as e:
-            print(f"credit {sym}: FAIL {e}")
+            carry_sub(data, prev, "credit", sym, e)
 
     for series_id, name in FRED.items():
         try:
@@ -1269,14 +1369,14 @@ def build():
             data["fred"][name] = {"last": s[-1]["c"], "last_date": s[-1]["d"], "series": s}
             print(f"fred {name}: {s[-1]['c']} ({s[-1]['d']})")
         except Exception as e:
-            print(f"fred {name}: FAIL {e}")
+            carry_sub(data, prev, "fred", name, e)
 
     try:
         data["kalshi"] = kalshi()
         print(f"kalshi: {len(data['kalshi']['markets'])} markets, authed={data['kalshi']['authed']}")
     except Exception as e:
-        print(f"kalshi: FAIL {e}")
-        data["kalshi"] = {"authed": False, "markets": [], "note": str(e)}
+        if not carry(data, prev, "kalshi", e):
+            data["kalshi"] = {"authed": False, "markets": [], "note": str(e)}
 
     try:
         data["kalshi_gpu"] = kalshi_gpu()
@@ -1285,20 +1385,19 @@ def build():
             print(f"kalshi_gpu {c['chip']}: ref ${c['ref']} ({c['ref_date']}) "
                   f"month-end {imp}, {c['strikes']} usable strikes")
     except Exception as e:
-        print(f"kalshi_gpu: FAIL {e}")
-        data["kalshi_gpu"] = None
+        carry(data, prev, "kalshi_gpu", e)
 
     try:
         data["manifold"] = manifold()
         print(f"manifold: {len(data['manifold'])} markets")
     except Exception as e:
-        print(f"manifold: FAIL {e}")
+        carry(data, prev, "manifold", e)
 
     try:
         data["metaculus"] = metaculus()
         print(f"metaculus: {len(data['metaculus']['questions'])} questions, enabled={data['metaculus']['enabled']}")
     except Exception as e:
-        print(f"metaculus: FAIL {e}")
+        carry(data, prev, "metaculus", e)
 
     try:
         data["fundamentals"] = fundamentals()
@@ -1306,7 +1405,7 @@ def build():
             f = data["fundamentals"]
             print(f"fundamentals: {len(f['quarters'])} quarters, latest capex ${f['capex_b'][-1]}B")
     except Exception as e:
-        print(f"fundamentals: FAIL {e}")
+        carry(data, prev, "fundamentals", e)
 
     try:
         data["backlog"] = backlog()
@@ -1314,7 +1413,7 @@ def build():
             b = data["backlog"]
             print(f"backlog: {len(b['names'])} filers, ${b['total_latest_b']:.0f}B combined")
     except Exception as e:
-        print(f"backlog: FAIL {e}")
+        carry(data, prev, "backlog", e)
 
     try:
         gdp = (data["fred"].get("GDP") or {}).get("series")
@@ -1323,19 +1422,19 @@ def build():
             m = data["macro"]
             print(f"macro: capex {m['pct_gdp'][-1]}% of GDP, {m['growth_share'][-1]}% of GDP growth ({m['quarters'][-1]})")
     except Exception as e:
-        print(f"macro: FAIL {e}")
+        carry(data, prev, "macro", e)
 
     try:
         data["gpu"] = gpu_spot(prev.get("gpu"))
         if data["gpu"]:
             print(f"gpu: H100 median ${data['gpu']['median_dph']}/hr ({data['gpu']['n_offers']} offers)")
     except Exception as e:
-        print(f"gpu: FAIL {e}")
+        carry(data, prev, "gpu", e)
 
     try:
         data["insiders"] = edgar_insiders()
     except Exception as e:
-        print(f"insiders: FAIL {e}")
+        carry(data, prev, "insiders", e)
 
     try:
         data["cot"] = cot() or prev.get("cot")
@@ -1344,8 +1443,7 @@ def build():
                 print(f"cot {c['key']}: net {c['net']:+d} ({c['net_pct_oi']:+.1f}% OI) "
                       f"pctile {c['pctile']} z {c['z']} [{c['n_weeks']}w]")
     except Exception as e:
-        print(f"cot: FAIL {e}")
-        data["cot"] = prev.get("cot")
+        carry(data, prev, "cot", e)
 
     try:
         data["short_interest"] = short_interest() or prev.get("short_interest")
@@ -1354,11 +1452,15 @@ def build():
                 print(f"short_interest {n['sym']}: {n['si'] / 1e6:.0f}M sh "
                       f"dtc {n['dtc']} chg {n['chg_pct']}% ({n['date']})")
     except Exception as e:
-        print(f"short_interest: FAIL {e}")
-        data["short_interest"] = prev.get("short_interest")
+        carry(data, prev, "short_interest", e)
 
-    # server-side gauge + regime, embedded so the landing page and the monitor
-    # can never disagree about the headline regime
+    # Server-side gauge + regime, embedded so the landing page and the monitor can never
+    # disagree about the headline regime. This is also the run's single Polymarket read:
+    # it is returned to main() and threaded into the snapshot and the alert, so all three
+    # are computed from the same prices. Fetching it three times (as this used to) let the
+    # gauge in the JSON, the row in snapshots.csv and the regime an alert fires on each see
+    # a different tape.
+    price = None
     try:
         price = poly_prices()
         score, fam = compute_gauge(data, price)
@@ -1377,12 +1479,12 @@ def build():
         print(f"server gauge: {data['server_gauge']['score']} ({data['server_gauge']['regime']}) "
               f"lead {data['server_gauge']['lead']} conf {data['server_gauge']['conf']}")
     except Exception as e:
-        print(f"server gauge: FAIL {e}")
+        carry(data, prev, "server_gauge", e)   # stale, but its own `at` stamp says so
 
     with open(OUT, "w") as f:
         json.dump(data, f)
     print("written:", OUT)
-    return data
+    return data, price
 
 
 def write_bundle():
@@ -1412,12 +1514,13 @@ def main():
         i = args.index("--watch")
         watch = int(args[i + 1]) if i + 1 < len(args) and args[i + 1].isdigit() else 600
     while True:
+        reset_retry_budget()
         try:
-            data = build()
+            data, price = build()
             if do_snap:
-                append_snapshot(data)
+                append_snapshot(data, price)
             if do_alert:
-                check_alert(data)
+                check_alert(data, price)
         except Exception as e:
             print("build error:", e)
         write_bundle()

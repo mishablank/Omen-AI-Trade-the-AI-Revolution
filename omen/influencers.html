@@ -4,18 +4,8 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>KOL Board &middot; AI Crash Monitor</title>
+<link rel="stylesheet" href="omen.css">
 <style>
-  :root {
-    /* OMEN dark-almanac theme: warm charcoal, amber accent */
-    --surface-1: #13110c; --page: #0b0a08;
-    --text-primary: #ece7db; --text-secondary: #a59c88; --muted: #6e6656;
-    --grid: #262117; --baseline: #3a3222; --border: rgba(236,231,219,0.12);
-    --acc: #e3a63c; --accT: #f2c977;
-    --bull: #79c99a; --crash: #e2685a; --reg: #8fa8d8; --aqua: #79c99a; --violet: #e3a63c;
-    --bull-wash: rgba(121,201,154,0.12); --crash-wash: rgba(226,104,90,0.12);
-    --delta-up: #79c99a; --delta-down: #e2685a;
-    --serif: Georgia, "Iowan Old Style", "Palatino Linotype", "Times New Roman", serif;
-  }
   * { box-sizing: border-box; margin: 0; padding: 0; }
   body { font-family: system-ui, -apple-system, "Segoe UI", sans-serif; background: var(--page); color: var(--text-primary); padding: 22px 20px 48px; max-width: 1160px; margin: 0 auto;
     background-image: radial-gradient(900px 380px at 78% -120px, rgba(227,166,60,.06), transparent 70%); }
@@ -87,6 +77,7 @@
   <p>Constituents are a curated editorial roster, not scraped live. Edit the <code>INFLUENCERS</code> array in this file, or run <code>update-influencers.py</code> to regenerate <code>influencers.json</code>. Not investment advice.</p>
 </footer>
 
+<script src="omen-common.js"></script>
 <script>
 /* ================= KOL board =================
    Fallback data if influencers.json is absent. score drives direction + ordering only;
@@ -109,8 +100,7 @@ let INFLUENCERS = [
   { name:"Ed Zitron",            org:"Where's Your Ed At",    cat:"tech",  score: -85, url:"https://x.com/edzitron",      take:"“Rot economy” critic: argues the unit economics never close and the industry is subprime." },
 ];
 
-const $ = id => document.getElementById(id);
-const esc = s => String(s==null?"":s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const {$,esc,safeUrl} = OMEN;
 const stanceOf = s => s>0 ? "bull" : s<0 ? "bear" : "neutral";
 const stanceLabel = { bull:"Bull", bear:"Bear", neutral:"Neutral" };
 
@@ -123,7 +113,7 @@ function renderInfluencers(){
   $("infList").innerHTML=rows.map(p=>{
     const st=stanceOf(p.score);
     return `<div class="inf">
-      <span class="who"><a href="${esc(p.url)}" target="_blank" rel="noopener">${esc(p.name)}</a><div class="sub">${esc(p.org)} &middot; ${p.cat==="macro"?"macro / markets":"tech / AI"}</div></span>
+      <span class="who"><a href="${safeUrl(p.url)}" target="_blank" rel="noopener">${esc(p.name)}</a><div class="sub">${esc(p.org)} &middot; ${p.cat==="macro"?"macro / markets":"tech / AI"}</div></span>
       <span class="mid"><div class="take">${esc(p.take)}</div></span>
       <span class="stance"><span class="pill ${st}"><i></i>${stanceLabel[st]}</span></span>
     </div>`;

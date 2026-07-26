@@ -1,0 +1,39 @@
+/* OMEN design tokens — the palette and type stack shared by every page.
+ *
+ * These custom properties were previously re-declared in a :root block inside each page's
+ * inline <style>: eight copies, kept in agreement by hand and by luck. Link this before the
+ * page's own <style> so a page can still override a token locally.
+ *
+ * Two naming vocabularies are collected here. The landing/index/gauge pages use
+ * --bg/--panel/--ink/--mut/--line; the monitor, China and influencer pages use the older
+ * --page/--surface-1/--text-primary/--text-secondary/--grid/--baseline. They resolve to the
+ * same palette — every value below was verified identical across all eight pages before
+ * being hoisted. Converging on one vocabulary means touching every var() call site in three
+ * large files, so it is left as follow-up rather than smuggled into this change.
+ */
+:root{
+  /* surfaces · canonical */
+  --bg:#0b0a08; --bg2:#0f0d0a; --panel:#13110c; --panel2:#181510; --line:#262117; --line2:#3a3222;
+  /* surfaces · monitor vocabulary (same palette, older names) */
+  --page:#0b0a08; --surface-1:#13110c; --grid:#262117; --baseline:#3a3222; --border:rgba(236,231,219,0.12);
+  /* type · canonical */
+  --ink:#ece7db; --mut:#a59c88; --dim:#6e6656;
+  /* type · monitor vocabulary */
+  --text-primary:#ece7db; --text-secondary:#a59c88; --muted:#6e6656;
+  /* accent */
+  --acc:#e3a63c; --accT:#f2c977; --accD:#8a6420;
+  /* index sides */
+  --bull:#79c99a; --bullT:#a1e0bb; --bullD:#2c5c43; --bear:#e2685a; --bearT:#f1968c; --bearD:#6e2c25;
+  /* gauge palette */
+  --crash:#e2685a; --crashT:#f1968c; --crashD:#6e2c25; --reg:#8fa8d8; --regT:#b0c4e9; --regD:#37456b;
+  /* deltas */
+  --pos:#79c99a; --neg:#e2685a; --delta-up:#79c99a; --delta-down:#e2685a;
+  /* China monitor series */
+  --cn:#e2685a; --us:#8fa8d8; --other:#6e6656; --cn-wash:rgba(226,104,90,0.12); --us-wash:rgba(143,168,216,0.12);
+  /* status washes */
+  --good:#79c99a; --good-wash:rgba(121,201,154,0.10); --warn:#e3a63c; --warn-wash:rgba(227,166,60,0.12); --crit:#e2685a; --crit-wash:rgba(226,104,90,0.12); --serious:#e08a4f; --bull-wash:rgba(121,201,154,0.12); --crash-wash:rgba(226,104,90,0.12);
+  /* misc series */
+  --aqua:#79c99a; --violet:#e3a63c;
+  /* fonts */
+  --sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif; --serif:Georgia,"Iowan Old Style","Palatino Linotype","Times New Roman",serif; --mono:ui-monospace,"SF Mono",Menlo,Consolas,monospace;
+}

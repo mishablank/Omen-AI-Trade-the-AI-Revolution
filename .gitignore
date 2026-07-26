@@ -3,6 +3,27 @@ __pycache__/
 .pytest_cache/
 .wrangler/
 node_modules/
-# data files (market-data.json, snapshots.csv, alert-state.json, influencers.json) are
-# intentionally tracked — they are the durable history the GitHub Action commits and
-# Cloudflare Pages serves. Do not ignore them.
+# The data files under omen/ are intentionally tracked. Do not ignore them — but note
+# they are tracked for three different reasons, and the refresh Action treats them
+# differently (see .github/workflows/refresh.yml). The site is a Worker + R2, not
+# Cloudflare Pages: worker.js serves the R2 copy live and only falls back to the
+# committed one on an R2 miss.
+#
+#   Committed every run — durable history / state that only exists in git:
+#     snapshots.csv, china-snapshots.csv, capex-snapshots.csv  (append-only history)
+#     alert-state.json  (alert dedup; ephemeral CI would re-alert without it)
+#
+#   Committed every run — bundled static assets, NOT in R2, so the committed copy is
+#   the only copy the site ever serves:
+#     china-data.json, china-history.json, app-charts.json
+#     (influencers.json and capex-data.json are in R2, but are ~KB, so they are
+#      committed every run too and stay a warm fallback)
+#
+#   Bootstrap seed, refreshed periodically rather than per run:
+#     market-data.json — 171 KB rewritten every 30 min and served live from R2, so
+#     committing it hourly was pure repo bloat. It stays tracked because the Worker's
+#     R2-miss fallback needs a bundled copy at deploy time; the Action re-commits it
+#     only when the tracked copy is older than 7 days.
+#
+# market-data.js is likewise tracked but not in the commit loop at all — a hand-refreshed
+# stale seed, the existing precedent for the above.

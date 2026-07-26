@@ -40,3 +40,57 @@ The consumer-app family now pulls Android chart presence from `update-app-charts
 - [ ] SerpApi's free tier is ~100 searches/month; one daily 10-country pull ≈ 300/month, so either cap the fallback to the core markets (US/GB/DE/JP) or run it only when the primary scraper is down. Document the quota math in a comment.
 - [ ] Keep the output schema identical (`{ hits: [{label, store:"android", country, rank, appId, title}] }`) so `android_hits()` in `update-china-data.py` needs no change.
 - [ ] No behavioural change when `SERPAPI_KEY` is unset — the primary scraper path must stay the default.
+
+## Front end — converge the two CSS token vocabularies
+
+**Status:** Open
+**Component:** `omen.css`, `polymarket-ai-index.html`, `china-ai-monitor.html`, `influencers.html`
+**Priority:** Low
+
+### Problem
+
+The eight pages' `:root` blocks were hoisted into a single `omen.css`, but they arrived
+carrying *two* names for the same palette. The landing/index/gauge/capex/methodology pages
+use `--bg` / `--panel` / `--ink` / `--mut` / `--line` / `--line2`; the monitor, China and
+influencer pages use `--page` / `--surface-1` / `--text-primary` / `--text-secondary` /
+`--grid` / `--baseline`. Every overlapping value was verified identical before hoisting, so
+this is naming duplication rather than a behavioural risk — but `omen.css` now has to
+declare both sets, and a palette change means editing two aliases in lockstep.
+
+Converging them means rewriting every `var()` call site in three large files, which is a
+mechanical but wide diff with no test coverage behind it, so it was left out of the change
+that created `omen.css`.
+
+### Acceptance Criteria
+
+- [ ] Pick the canonical set (the `--bg`/`--ink` family is used by more pages).
+- [ ] Rewrite `var(--page)`, `var(--surface-1)`, `var(--text-primary)`, `var(--text-secondary)`,
+      `var(--grid)`, `var(--baseline)` and `var(--muted)` call sites in the three monitor-family
+      pages to the canonical names.
+- [ ] Delete the alias block from `omen.css`; the file should declare each colour once.
+- [ ] Verify with a before/after render diff (headless Chromium, compare `innerText`,
+      `scrollHeight` and the computed `background-color`/`color` of `body`) that all eight
+      pages are unchanged.
+
+## Front end — chart accessibility
+
+**Status:** Open
+**Component:** `polymarket-ai-index.html`, `index.html`, `gauge.html`, `indexes.html`
+**Priority:** Medium
+
+### Problem
+
+The gauges, dials, sparklines and line/area charts are raw SVG injected via `innerHTML` with
+no text alternative, so a screen reader gets nothing from them. `OMEN.sparkSvg` now marks its
+output `aria-hidden` (honest: it is decorative next to the number it accompanies), but the
+larger charts carry real information that exists nowhere else on the page. Separately, signal
+direction is encoded by colour alone (`.up`/`.down`), and the sortable table headers in the
+monitor use a bare `th.onclick` with no `role`, `tabindex` or keyboard handler.
+
+### Acceptance Criteria
+
+- [ ] Give each information-bearing chart an `aria-label` or an adjacent visually-hidden
+      summary stating the series, range and latest value.
+- [ ] Pair the up/down colour with a non-colour cue (arrow or sign glyph).
+- [ ] Make the sortable headers real `<button>`s, or add `role="button"`, `tabindex="0"` and
+      Enter/Space handling, plus `aria-sort` reflecting the current state.

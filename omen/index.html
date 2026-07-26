@@ -21,23 +21,8 @@
 <meta name="twitter:title" content="OMEN — The AI-Cycle Verdict">
 <meta name="twitter:description" content="One daily verdict on the AI cycle – prediction-market direction × crash-pressure stress, computed by a published rule.">
 <meta name="twitter:image" content="og-image.png">
+<link rel="stylesheet" href="omen.css">
 <style>
-:root{
-  --bg:#0b0a08; --bg2:#0f0d0a; --panel:#13110c; --panel2:#181510;
-  --line:#262117; --line2:#3a3222;
-  --ink:#ece7db; --mut:#a59c88; --dim:#6e6656;
-  --acc:#e3a63c; --accT:#f2c977; --accD:#8a6420;
-  --bull:#79c99a; --bullT:#a1e0bb; --bullD:#2c5c43;
-  /* --bear is the short-side index token; --crash/--reg stay as the gauge's own
-     palette (regime bands, signal families), which is not the index. */
-  --bear:#e2685a;
-  --crash:#e2685a; --crashT:#f1968c; --crashD:#6e2c25;
-  --reg:#8fa8d8; --regT:#b0c4e9; --regD:#37456b;
-  --pos:#79c99a; --neg:#e2685a;
-  --mono:ui-monospace,"SF Mono",Menlo,Consolas,monospace;
-  --sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
-  --serif:Georgia,"Iowan Old Style","Palatino Linotype","Times New Roman",serif;
-}
 *{margin:0;padding:0;box-sizing:border-box}
 html{scroll-behavior:smooth}
 body{background:var(--bg);color:var(--ink);font-family:var(--sans);overflow-x:hidden;
@@ -329,6 +314,7 @@ footer{border-top:1px solid var(--line);padding:64px 0 40px;position:relative;z-
   </div>
 </footer>
 
+<script src="omen-common.js"></script>
 <script>
 "use strict";
 /* Old deep links (#indexes, #gauge, #method) now live on their own pages. */
@@ -364,40 +350,16 @@ let GAUGE = 23.6;
 // family labels only – the full per-family breakdown lives on gauge.html
 const FAM_LABELS={pred:"Prediction markets",opt:"Options skew",credit:"Credit",vol:"Volatility complex",equity:"Equity drawdown"};
 const GAMMA="https://gamma-api.polymarket.com";
-const $=id=>document.getElementById(id);
-const esc=s=>String(s??"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const {$,esc,safeUrl}=OMEN;
 
 /* ================= index math ================= */
-// theme is optional: pass it to read one sleeve (Bear's MKT/GOV, Bull's TECH/CAP)
-// instead of the whole index.
-function indexOf(side,theme){
-  const ms=MARKETS.filter(m=>m.side===side&&!m.closed&&(!theme||m.theme===theme));
-  return ms.length?ms.reduce((a,m)=>a+m.yes,0)/ms.length*100:0;
-}
-function d1Of(side){
-  const ms=MARKETS.filter(m=>m.side===side&&!m.closed&&m.d1!=null);
-  return ms.length?ms.reduce((a,m)=>a+m.d1,0)/ms.length*100:0;
-}
-// The pair prices like one two-sided market: each side's displayed price is its
-// share of the pair, so BULL + BEAR always sums to exactly 1.
-function pairShare(side){
-  const b=indexOf("bull"), x=indexOf("bear"), t=b+x;
-  return t>0?(side==="bull"?b:x)/t:0;
-}
-function pairD1(side){
-  const b=indexOf("bull")-d1Of("bull"), x=indexOf("bear")-d1Of("bear"), t=b+x;
-  return t>0?(pairShare(side)-(side==="bull"?b:x)/t)*100:0;
-}
+const {indexOf,d1Of,pairShare,pairD1}=OMEN.indexMath(()=>MARKETS);
 
 /* ================= verdict ================= */
 // The one synthesis this page exists for: direction (pair share) × stress (regime)
 // → one of five states. Deterministic and published – the matrix in #why renders
 // exactly this table, and methodology.html#verdict documents the thresholds.
-const REGIME_META={
-  calm:{word:"Calm", color:"var(--bullT)", border:"var(--bull)"},
-  elevated:{word:"Elevated", color:"var(--regT)", border:"var(--reg)"},
-  stressed:{word:"Stressed", color:"var(--crashT)", border:"var(--crash)"},
-};
+const REGIME_META=OMEN.REGIME_META;
 const VERDICTS={
   riskon:{label:"Risk-on", color:"var(--bullT)", border:"var(--bullD)",
     h:"Markets price acceleration – and little stress underneath.",
@@ -427,14 +389,10 @@ function verdictOf(bullShare,regime){
   if(dir==="mixed") return "mixed";
   return regime==="calm"?"riskon":"constructive";
 }
-// Same regime rules as the monitor: the blended gauge or the crash basket can trip
-// Stressed; a single market (the bubble-burst market included) can raise Elevated
-// but never trips red on its own.
-function regimeOf(score,crashLevel,bubblePct){
-  if(score>=55||crashLevel>=40) return "stressed";
-  if(score>=35||crashLevel>=25||bubblePct>=15) return "elevated";
-  return "calm";
-}
+// Same regime rules as the monitor, from the one place the thresholds are written down:
+// the blended gauge or the crash basket can trip Stressed; a single market (the
+// bubble-burst market included) can raise Elevated but never trips red on its own.
+const regimeOf=OMEN.regimeOf;
 
 /* ================= render ================= */
 function chgTxt(v){ return (v>=0?"+":"−")+Math.abs(v).toFixed(1)+"¢"; }
@@ -544,11 +502,9 @@ async function goLive(){
     for(const m of arr) byId[String(m.id)]=m;
     for(const m of MARKETS){
       const g=byId[m.id]; if(!g) continue;
-      m.closed=!!g.closed||g.active===false;
+      m.closed=OMEN.isClosed(g);
       if(!m.closed){
-        const p=JSON.parse(g.outcomePrices||'["0"]');
-        const bid=parseFloat(g.bestBid), ask=parseFloat(g.bestAsk);
-        m.yes=(isFinite(bid)&&isFinite(ask)&&ask>0)?(bid+ask)/2:parseFloat(p[0]||"0");
+        m.yes=OMEN.outcomeYes(g);
         m.d1=g.oneDayPriceChange??m.d1;
       }
     }

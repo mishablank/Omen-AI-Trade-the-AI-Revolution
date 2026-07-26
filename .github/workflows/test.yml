@@ -1,0 +1,60 @@
+# CI gate.
+#
+# Until this workflow existed, the repo's test suites never ran anywhere: the only
+# workflow was refresh.yml (a data cron), so both the Python fetcher tests and the
+# three Node suites were only ever run by hand on a developer's machine — a broken
+# test could sit green-looking on main indefinitely.
+#
+# `python3 -m pytest omen/` is the documented single entry point and covers both
+# languages: omen/test_regime_explainer.py shells out to the Node suites.
+#
+# There is no bundler and no linter in this repo, so `node --check` (parse-only) is
+# the pragmatic static gate for the files pytest never loads — the Worker itself and
+# the Play-charts fetcher, which would otherwise only fail at deploy/cron time.
+
+name: Tests
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: test-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Install test dependencies
+        # The fetchers and their tests are stdlib-only; pytest is the sole requirement.
+        run: pip install pytest
+
+      - name: Syntax-check the Node sources
+        # Parse-only check for the JS that pytest never imports: the Worker entrypoint
+        # and the Play-charts fetcher. The test-*.mjs files are checked too so a syntax
+        # error in a suite is reported as such rather than as a suite failure.
+        run: |
+          node --check worker.js
+          node --check omen/update-app-charts.mjs
+          for f in omen/test-*.mjs; do
+            node --check "$f"
+          done
+
+      - name: Run tests
+        # Covers the Python fetcher tests and, via test_regime_explainer.py, the
+        # Node suites (test-regime-explainer, test-pure-helpers, test-verdict).
+        run: python3 -m pytest omen/ -v

@@ -1,4 +1,5 @@
 import importlib.util
+import urllib.error
 from pathlib import Path
 
 import pytest
@@ -468,3 +469,215 @@ def test_short_interest_reduce_single_row_has_no_change():
 def test_short_interest_reduce_returns_none_when_empty():
     assert umd.short_interest_reduce("X", []) is None
     assert umd.short_interest_reduce("X", [{"settlementDate": "", "interest": None}]) is None
+
+
+# ---------- transient-failure policy ----------
+def _http_error(code, retry_after=None):
+    import email.message
+    hdrs = email.message.Message()
+    if retry_after is not None:
+        hdrs["Retry-After"] = str(retry_after)
+    return urllib.error.HTTPError("http://x", code, "boom", hdrs, None)
+
+
+@pytest.fixture(autouse=True)
+def _fresh_retry_budget():
+    """The budget is process-wide state; no test may inherit another's spend."""
+    umd.reset_retry_budget()
+    yield
+    umd.reset_retry_budget()
+
+
+@pytest.mark.parametrize("code", sorted(umd.RETRY_STATUS))
+def test_retryable_true_for_transient_status(code):
+    assert umd.retryable(_http_error(code)) is True
+
+
+@pytest.mark.parametrize("code", [400, 401, 403, 404, 410, 422])
+def test_retryable_false_for_client_errors(code):
+    """A 4xx is a real answer — asking again just burns the rate limit."""
+    assert umd.retryable(_http_error(code)) is False
+
+
+def test_retryable_true_for_network_errors():
+    # HTTPError subclasses URLError, so ordering inside retryable() matters
+    assert umd.retryable(urllib.error.URLError("dns")) is True
+    assert umd.retryable(TimeoutError()) is True
+    assert umd.retryable(ConnectionResetError()) is True
+    assert umd.retryable(ValueError("bad json")) is False
+
+
+def test_retry_wait_is_exponential():
+    plain = urllib.error.URLError("dns")
+    assert umd.retry_wait(plain, 0) == umd.RETRY_BACKOFF
+    assert umd.retry_wait(plain, 1) == umd.RETRY_BACKOFF * 2
+    assert umd.retry_wait(plain, 2) == umd.RETRY_BACKOFF * 4
+
+
+def test_retry_wait_honours_retry_after_but_caps_it():
+    assert umd.retry_wait(_http_error(429, retry_after=10), 0) == 10.0
+    # a server asking for an hour must not stall the whole refresh
+    assert umd.retry_wait(_http_error(429, retry_after=3600), 0) == umd.RETRY_AFTER_CAP
+    # a Retry-After shorter than the backoff never shortens it
+    assert umd.retry_wait(_http_error(429, retry_after=0.1), 1) == umd.RETRY_BACKOFF * 2
+    # junk header falls back to plain backoff
+    assert umd.retry_wait(_http_error(429, retry_after="soon"), 0) == umd.RETRY_BACKOFF
+
+
+def test_get_bytes_retries_transient_then_succeeds(monkeypatch):
+    calls = []
+
+    class FakeResp:
+        headers = {}
+
+        def read(self):
+            return b"payload"
+
+        def __enter__(self):
+            return self
+
+        def __exit__(self, *a):
+            return False
+
+    def fake_urlopen(req, timeout=None):
+        calls.append(req.full_url)
+        if len(calls) < 3:
+            raise _http_error(503)
+        return FakeResp()
+
+    monkeypatch.setattr(umd.urllib.request, "urlopen", fake_urlopen)
+    monkeypatch.setattr(umd.time, "sleep", lambda s: None)
+    assert umd.get("http://x/y") == "payload"
+    assert len(calls) == 3
+
+
+def test_get_bytes_does_not_retry_a_4xx(monkeypatch):
+    calls = []
+
+    def fake_urlopen(req, timeout=None):
+        calls.append(1)
+        raise _http_error(404)
+
+    monkeypatch.setattr(umd.urllib.request, "urlopen", fake_urlopen)
+    monkeypatch.setattr(umd.time, "sleep", lambda s: None)
+    with pytest.raises(urllib.error.HTTPError):
+        umd.get("http://x/y")
+    assert len(calls) == 1
+
+
+def test_get_bytes_gives_up_after_the_retry_budget(monkeypatch):
+    calls = []
+
+    def fake_urlopen(req, timeout=None):
+        calls.append(1)
+        raise _http_error(503)
+
+    monkeypatch.setattr(umd.urllib.request, "urlopen", fake_urlopen)
+    monkeypatch.setattr(umd.time, "sleep", lambda s: None)
+    with pytest.raises(urllib.error.HTTPError):
+        umd.get("http://x/y")
+    assert len(calls) == umd.RETRIES + 1
+
+
+def test_get_bytes_decompresses_gzip(monkeypatch):
+    import gzip as _gzip
+
+    class FakeResp:
+        headers = {"Content-Encoding": "gzip"}
+
+        def read(self):
+            return _gzip.compress(b'{"ok":1}')
+
+        def __enter__(self):
+            return self
+
+        def __exit__(self, *a):
+            return False
+
+    monkeypatch.setattr(umd.urllib.request, "urlopen", lambda req, timeout=None: FakeResp())
+    assert umd.get("http://x/y") == '{"ok":1}'
+
+
+# ---------- uniform carry-forward ----------
+def test_carry_restores_previous_panel():
+    data, prev = {}, {"gpu": {"median_dph": 2.1}}
+    assert umd.carry(data, prev, "gpu", RuntimeError("timeout")) is True
+    assert data["gpu"] == {"median_dph": 2.1}
+
+
+def test_carry_reports_false_when_there_is_nothing_to_carry():
+    data = {}
+    assert umd.carry(data, {}, "gpu", RuntimeError("timeout")) is False
+    assert "gpu" not in data
+
+
+def test_carry_sub_restores_one_symbol_only():
+    data = {"equity": {"NVDA": [{"d": "2026-07-25", "c": 1.0}]}}
+    prev = {"equity": {"NVDA": ["stale"], "SOXX": [{"d": "2026-07-24", "c": 2.0}]}}
+    assert umd.carry_sub(data, prev, "equity", "SOXX", RuntimeError("boom")) is True
+    assert data["equity"]["SOXX"] == [{"d": "2026-07-24", "c": 2.0}]
+    assert data["equity"]["NVDA"] == [{"d": "2026-07-25", "c": 1.0}]   # live value untouched
+
+
+def test_carry_sub_handles_a_missing_section():
+    data = {"tail": {}}
+    assert umd.carry_sub(data, {}, "tail", "NVDA", RuntimeError("boom")) is False
+    assert data["tail"] == {}
+
+
+def test_carried_equity_keeps_the_gauge_family_alive():
+    """The reason the policy exists: a dropped equity key silently rescales the gauge."""
+    series = [{"d": "2026-07-01", "c": 100.0}, {"d": "2026-07-25", "c": 60.0}]
+    prev = {"equity": {"NVDA": series, "SOXX": series}}
+    healthy, _ = umd.compute_gauge({"equity": prev["equity"]}, {})
+    dropped, fam_dropped = umd.compute_gauge({"equity": {}}, {})
+    assert fam_dropped["equity"] is None and dropped != healthy
+
+    data = {"equity": {}}
+    for sym in ("NVDA", "SOXX"):
+        umd.carry_sub(data, prev, "equity", sym, RuntimeError("yahoo blip"))
+    carried, fam_carried = umd.compute_gauge(data, {})
+    assert fam_carried["equity"] is not None
+    assert carried == healthy
+
+
+def test_retry_budget_caps_total_backoff(monkeypatch):
+    """A broad outage must not turn ~40 endpoints into minutes of pure sleep."""
+    slept = []
+    monkeypatch.setattr(umd.time, "sleep", lambda s: slept.append(s))
+    monkeypatch.setattr(umd.urllib.request, "urlopen",
+                        lambda req, timeout=None: (_ for _ in ()).throw(_http_error(503)))
+    umd.reset_retry_budget()
+    for _ in range(50):                       # every endpoint down
+        with pytest.raises(urllib.error.HTTPError):
+            umd.get("http://x/y")
+    assert sum(slept) <= umd.RETRY_BUDGET
+    assert umd.retry_budget_left() == 0
+
+
+def test_retry_budget_lets_the_first_failures_retry(monkeypatch):
+    """The common case — one flaky endpoint — still gets its retries."""
+    slept, calls = [], []
+    monkeypatch.setattr(umd.time, "sleep", lambda s: slept.append(s))
+
+    class FakeResp:
+        headers = {}
+        def read(self): return b"ok"
+        def __enter__(self): return self
+        def __exit__(self, *a): return False
+
+    def flaky(req, timeout=None):
+        calls.append(1)
+        if len(calls) < 3:
+            raise _http_error(503)
+        return FakeResp()
+
+    monkeypatch.setattr(umd.urllib.request, "urlopen", flaky)
+    umd.reset_retry_budget()
+    assert umd.get("http://x/y") == "ok"
+    assert len(calls) == 3 and slept == [umd.RETRY_BACKOFF, umd.RETRY_BACKOFF * 2]
+
+
+def test_reset_retry_budget_restores_it():
+    umd.reset_retry_budget()
+    assert umd.retry_budget_left() == umd.RETRY_BUDGET

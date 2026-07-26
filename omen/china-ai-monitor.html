@@ -6,21 +6,8 @@
 <title>China AI Substitution Monitor</title>
 <meta name="description" content="Tracks demand for Chinese LLMs (DeepSeek, Qwen, GLM, Kimi, MiniMax) as a leading indicator of substitution pressure on US AI stocks.">
 <link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="omen.css">
 <style>
-  :root {
-    /* OMEN dark-almanac theme: warm charcoal, amber accent (matches the landing page + monitor) */
-    --surface-1: #13110c; --page: #0b0a08;
-    --text-primary: #ece7db; --text-secondary: #a59c88; --muted: #6e6656;
-    --grid: #262117; --baseline: #3a3222; --border: rgba(236,231,219,0.12);
-    --acc: #e3a63c; --accT: #f2c977;
-    --cn: #e2685a; --us: #8fa8d8; --other: #6e6656;
-    --cn-wash: rgba(226,104,90,0.12); --us-wash: rgba(143,168,216,0.12);
-    --aqua: #79c99a; --violet: #e3a63c; --reg: #8fa8d8;
-    --delta-up: #79c99a; --delta-down: #e2685a;
-    --good: #79c99a; --warn: #e3a63c; --crit: #e2685a;
-    --good-wash: rgba(121,201,154,0.10); --warn-wash: rgba(227,166,60,0.12); --crit-wash: rgba(226,104,90,0.12);
-    --serif: Georgia, "Iowan Old Style", "Palatino Linotype", "Times New Roman", serif;
-  }
   * { box-sizing: border-box; margin: 0; padding: 0; }
   body { font-family: system-ui, -apple-system, "Segoe UI", sans-serif; background: var(--page); color: var(--text-primary); padding: 22px 20px 48px; max-width: 1160px; margin: 0 auto;
     background-image: radial-gradient(900px 380px at 78% -120px, rgba(227,166,60,.06), transparent 70%); }
@@ -301,6 +288,7 @@
   <br><br>Built as part of <a href="index.html">OMEN</a>. Not investment advice.
 </footer>
 
+<script src="omen-common.js"></script>
 <script>
 "use strict";
 /* ---------------- snapshot defaults (overridden by china-data.json if present) ---------------- */
@@ -358,8 +346,9 @@ const PRICE_US = [
 ];
 const EQ_SYMS = ["NVDA","SOXX","AVGO","MU","ANET","CRWV","ORCL","SMCI","VST","MSFT","META","SPY"];
 /* ---------------- helpers ---------------- */
-const $ = id => document.getElementById(id);
-const esc = s => String(s).replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+// This page's own esc() had lost the null guard the other five carried, so a null field
+// from OpenRouter/HF/GitHub/Polymarket threw instead of rendering blank. Shared now.
+const {$,esc,safeUrl} = OMEN;
 const fmtT = n => n >= 1e12 ? (n/1e12).toFixed(2)+"T" : n >= 1e9 ? (n/1e9).toFixed(1)+"B" : n >= 1e6 ? (n/1e6).toFixed(1)+"M" : n >= 1e3 ? (n/1e3).toFixed(0)+"k" : String(n);
 const pct = (x, d=1) => (x*100).toFixed(d) + "%";
 const clamp01 = x => Math.max(0, Math.min(1, x));
@@ -464,7 +453,7 @@ async function loadPM(){
     const byId = new Map(d.map(m=>[String(m.id),m]));
     S.pm = PM_MARKETS.map(spec => {
       const m = byId.get(spec.id); if(!m || m.closed) return null;
-      let p = null; try{ p = JSON.parse(m.outcomePrices||"[]")[0]; }catch(e){}
+      const p = OMEN.jsonList(m.outcomePrices)[0] ?? null;
       return { ...spec, p: p!=null? +p : null, d24: m.oneDayPriceChange!=null? +m.oneDayPriceChange : null, slug: m.slug ? (m.events?.[0]?.slug || m.slug) : null };
     }).filter(Boolean);
     dot("pm","ok","live");
