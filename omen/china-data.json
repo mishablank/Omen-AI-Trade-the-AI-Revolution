@@ -1,5 +1,5 @@
 {
- "updated": "2026-07-26T06:43:48Z",
+ "updated": "2026-07-26T09:20:35Z",
  "snapshot_date": "2026-07-26",
  "artificial_analysis": {
   "cn_best": "GLM-5.2",
@@ -44,7 +44,7 @@
    },
    {
     "label": "MiniMax",
-    "rank": 128,
+    "rank": 129,
     "store": "android",
     "country": "br"
    },
@@ -87,102 +87,102 @@
   "cnOrgs": [
    {
     "org": "Qwen",
-    "dl": 265842668
+    "dl": 265781687
    },
    {
     "org": "deepseek-ai",
-    "dl": 35057142
+    "dl": 34187041
    },
    {
     "org": "zai-org",
-    "dl": 15226425
+    "dl": 14963857
    },
    {
     "org": "moonshotai",
-    "dl": 4003027
+    "dl": 3876988
    },
    {
     "org": "MiniMaxAI",
-    "dl": 2710563
+    "dl": 2641435
    },
    {
     "org": "tencent",
-    "dl": 1559340
+    "dl": 1549307
    },
    {
     "org": "XiaomiMiMo",
-    "dl": 1442288
+    "dl": 1437867
    },
    {
     "org": "stepfun-ai",
-    "dl": 1307736
+    "dl": 1283019
    }
   ],
   "usOrgs": [
    {
     "org": "google",
-    "dl": 62741901
+    "dl": 62387585
    },
    {
     "org": "meta-llama",
-    "dl": 38030873
+    "dl": 37462699
    },
    {
     "org": "nvidia",
-    "dl": 23681475
+    "dl": 23610129
    },
    {
     "org": "openai",
-    "dl": 12435649
+    "dl": 12414576
    },
    {
     "org": "microsoft",
-    "dl": 7023962
+    "dl": 6904762
    },
    {
     "org": "allenai",
-    "dl": 3490643
+    "dl": 3508607
    }
   ],
-  "cn": 327149189,
-  "us": 147404503
+  "cn": 325721201,
+  "us": 146288358
  },
  "openrouter_week": {
   "week": "2026-07-20",
-  "cn_share": 0.5629,
-  "us_share": 0.298,
-  "spi": 1.889,
-  "total_tokens": 52210544021596
+  "cn_share": 0.5634,
+  "us_share": 0.2975,
+  "spi": 1.894,
+  "total_tokens": 52940299462335
  },
  "vercel_gateway": {
   "asof": "2026-07-26",
-  "cn_share": 53.73,
-  "us_share": 46.08,
-  "spi": 1.166,
+  "cn_share": 53.31,
+  "us_share": 46.51,
+  "spi": 1.146,
   "top_cn": [
    {
     "lab": "deepseek",
-    "share": 25.44
-   },
-   {
-    "lab": "moonshotai",
-    "share": 7.16
+    "share": 24.8
    },
    {
     "lab": "inclusionai",
-    "share": 6.62
+    "share": 7.23
    },
    {
     "lab": "stepfun",
-    "share": 5.91
+    "share": 6.81
    },
    {
     "lab": "zai",
-    "share": 5.71
+    "share": 6.23
+   },
+   {
+    "lab": "moonshotai",
+    "share": 4.86
    },
    {
     "lab": "minimax",
-    "share": 1.62
+    "share": 1.76
    }
   ],
   "series": [
@@ -488,15 +488,15 @@
    },
    {
     "d": "2026-07-26",
-    "cn": 53.73,
-    "us": 46.08
+    "cn": 53.31,
+    "us": 46.51
    }
   ],
   "license": "AI Gateway Leaderboard Data (c) Vercel, CC BY 4.0"
  },
  "ollama": {
-  "cn": 273325399,
-  "us": 445190748,
+  "cn": 273327799,
+  "us": 445194359,
   "cn_top": [
    {
     "name": "deepseek-r1",
@@ -569,7 +569,7 @@
    },
    {
     "label": "Best AI at end of 2026: Claude",
-    "p": 0.639,
+    "p": 0.628,
     "ticker": "KXLLM1-26DEC31-A",
     "series": "kxllm1"
    }
@@ -579,7 +579,7 @@
   "cn": [
    {
     "base": "Qwen/Qwen3-8B",
-    "n": 1968
+    "n": 1969
    },
    {
     "base": "deepseek-ai/DeepSeek-R1",
@@ -612,25 +612,21 @@
     "n": 102
    }
   ],
-  "cn_total": 2347,
+  "cn_total": 2348,
   "us_total": 2468,
   "asof": "2026-07-26"
  },
  "sdk": {
   "cn": [
    {
-    "pkg": "zhipuai",
-    "wk": 66773
-   },
-   {
-    "pkg": "zai-sdk",
-    "wk": 24202
+    "pkg": "dashscope",
+    "wk": 659387
    }
   ],
   "us": [
    {
-    "pkg": "openai",
-    "wk": 86185535
+    "pkg": "anthropic",
+    "wk": 42241475
    },
    {
     "pkg": "google-genai",
