@@ -1,5 +1,5 @@
 {
- "updated": "2026-07-26T11:24:22Z",
+ "updated": "2026-07-26T13:44:48Z",
  "source": "google-play-scraper",
  "store": "android",
  "depth": 200,
@@ -9,7 +9,7 @@
    "label": "MiniMax",
    "store": "android",
    "country": "br",
-   "rank": 129,
+   "rank": 136,
    "appId": "ai.hailuo.video",
    "title": "Hailuo AI: Image&Video Maker"
   },
@@ -17,7 +17,7 @@
    "label": "Qwen",
    "store": "android",
    "country": "br",
-   "rank": 187,
+   "rank": 188,
    "appId": "com.tongyi.intl",
    "title": "Qwen - Alibaba AI Assistant"
   },
@@ -25,7 +25,7 @@
    "label": "Kimi",
    "store": "android",
    "country": "ca",
-   "rank": 131,
+   "rank": 137,
    "appId": "com.moonshot.kimichat",
    "title": "Kimi"
   },
@@ -33,7 +33,7 @@
    "label": "Kimi",
    "store": "android",
    "country": "au",
-   "rank": 112,
+   "rank": 116,
    "appId": "com.moonshot.kimichat",
    "title": "Kimi"
   }
