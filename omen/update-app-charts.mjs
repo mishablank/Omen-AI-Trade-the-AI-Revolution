@@ -7,7 +7,11 @@
 // Best-effort: a per-country failure is skipped; if EVERY country fails, we exit
 // non-zero WITHOUT writing, so the Python side keeps the previous file / falls back.
 //
-// Run: (cd omen && npm install --no-save google-play-scraper@10 && node update-app-charts.mjs)
+// Run: (cd omen && npm ci && node update-app-charts.mjs)
+// The dependency is pinned in omen/package.json + package-lock.json rather than resolved
+// fresh at runtime, so CI installs an auditable tree instead of whatever the registry
+// happens to serve — this file executes reverse-engineered scraper code, so its
+// dependency set is worth pinning.
 import gplay from "google-play-scraper";
 import { writeFileSync } from "node:fs";
 

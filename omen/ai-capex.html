@@ -16,20 +16,8 @@
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="OMEN — AI CapEx">
 <meta name="twitter:description" content="The financing plumbing of the AI buildout: debt saturation, AI credit stress, equity raises, capex vs GDP, stranded gigawatts.">
+<link rel="stylesheet" href="omen.css">
 <style>
-:root{
-  --bg:#0b0a08; --bg2:#0f0d0a; --panel:#13110c; --panel2:#181510;
-  --line:#262117; --line2:#3a3222;
-  --ink:#ece7db; --mut:#a59c88; --dim:#6e6656;
-  --acc:#e3a63c; --accT:#f2c977; --accD:#8a6420;
-  --bull:#79c99a; --bullT:#a1e0bb; --bullD:#2c5c43;
-  --bear:#e2685a; --bearT:#f1968c; --bearD:#6e2c25;
-  --reg:#8fa8d8; --regT:#b0c4e9; --regD:#37456b;
-  --pos:#79c99a; --neg:#e2685a;
-  --mono:ui-monospace,"SF Mono",Menlo,Consolas,monospace;
-  --sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
-  --serif:Georgia,"Iowan Old Style","Palatino Linotype","Times New Roman",serif;
-}
 *{margin:0;padding:0;box-sizing:border-box}
 html{scroll-behavior:smooth}
 body{background:var(--bg);color:var(--ink);font-family:var(--sans);overflow-x:hidden;
@@ -590,6 +578,7 @@ footer{border-top:1px solid var(--line);padding:56px 0 40px;background:var(--bg2
   </div>
 </footer>
 
+<script src="omen-common.js"></script>
 <script>
 "use strict";
 // reveal on scroll + animate bars once visible
@@ -606,7 +595,7 @@ document.querySelectorAll(".rv").forEach(el=>io.observe(el));
 // ---- live tape (section 0): populate from capex-data.json ----
 // Everything below degrades to the "–" placeholders if the fetch fails
 // (file://, stale worker, adblock), so the curated page never breaks.
-const $=id=>document.getElementById(id);
+const {$,esc,safeUrl}=OMEN;
 const MINUS="−";
 function sn(x,nd,unit){ // signed number, typographic minus
   if(x==null||!isFinite(x)) return null;

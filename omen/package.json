@@ -1,0 +1,15 @@
+{
+  "name": "omen",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Node side of the OMEN dashboard: the Play-charts fetcher (update-app-charts.mjs) and the browser-JS test suites.",
+  "scripts": {
+    "test": "node test-regime-explainer.mjs && node test-pure-helpers.mjs && node test-verdict.mjs && node test-omen-common.mjs"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "dependencies": {
+    "google-play-scraper": "10.1.3"
+  }
+}

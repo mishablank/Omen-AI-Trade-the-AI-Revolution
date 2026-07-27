@@ -11,7 +11,13 @@ import { readFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { dirname, join } from "node:path";
 
-const HTML = join(dirname(fileURLToPath(import.meta.url)), "polymarket-ai-index.html");
+const HERE = dirname(fileURLToPath(import.meta.url));
+const HTML = join(HERE, "polymarket-ai-index.html");
+// The regime thresholds now live in the shared module rather than being re-typed in this
+// page, so the slice needs OMEN in scope. Evaluating the real file (not a stub) means these
+// cases also assert that the shared thresholds are the ones the explainer renders.
+const OMEN = new Function(
+  readFileSync(join(HERE, "omen-common.js"), "utf8") + "\nreturn OMEN;")();
 const START = "const GAUGE_BANDS=";
 const END = "/* ================= Historical gauge reconstruction";
 
@@ -35,10 +41,10 @@ function build({ gauge, z, level, stack, snaps = {} }) {
   };
   const localStorage = { getItem: () => JSON.stringify(snaps) };
   const factory = new Function(
-    "sig", "indexNowFixed", "migrateSnaps", "SNAP_KEY", "localStorage",
+    "sig", "indexNowFixed", "migrateSnaps", "SNAP_KEY", "localStorage", "OMEN",
     BLOCK + "\nreturn { computeRegime, regimeExplainer, gaugeBand, regimeRules };"
   );
-  return factory(sig, () => level, (s) => s, "snap-key", localStorage);
+  return factory(sig, () => level, (s) => s, "snap-key", localStorage, OMEN);
 }
 
 /* ---------- assertions ---------- */

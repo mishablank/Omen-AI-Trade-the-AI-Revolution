@@ -9,7 +9,13 @@ import { readFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { dirname, join } from "node:path";
 
-const HTML = join(dirname(fileURLToPath(import.meta.url)), "index.html");
+const HERE = dirname(fileURLToPath(import.meta.url));
+const HTML = join(HERE, "index.html");
+// regimeOf and REGIME_META come from the shared module now, so the sliced verdict block
+// needs OMEN in scope. The real module is evaluated, not stubbed, so these cases cover the
+// shared regime thresholds too.
+const OMEN = new Function(
+  readFileSync(join(HERE, "omen-common.js"), "utf8") + "\nreturn OMEN;")();
 const SRC = readFileSync(HTML, "utf8");
 
 // Slice [start, end) out of the source. Fails loudly if a marker moves, rather than
@@ -44,6 +50,7 @@ console.log("verdict rule — dirOf / verdictOf / regimeOf / VERDICTS\n");
 const { VERDICTS, dirOf, verdictOf, regimeOf } = build(
   slice("/* ================= verdict", "/* ================= render"),
   ["VERDICTS", "dirOf", "verdictOf", "regimeOf"],
+  { OMEN },
 );
 
 /* ---------- dirOf: direction bands ---------- */

@@ -17,21 +17,8 @@
 <meta name="twitter:title" content="OMEN — The Gauge">
 <meta name="twitter:description" content="How much crash risk is priced in: five signal families scored 0–100 against fixed calm→stress ranges.">
 <meta name="twitter:image" content="og-image.png">
+<link rel="stylesheet" href="omen.css">
 <style>
-:root{
-  --bg:#0b0a08; --bg2:#0f0d0a; --panel:#13110c; --panel2:#181510;
-  --line:#262117; --line2:#3a3222;
-  --ink:#ece7db; --mut:#a59c88; --dim:#6e6656;
-  --acc:#e3a63c; --accT:#f2c977; --accD:#8a6420;
-  --bull:#79c99a; --bullT:#a1e0bb; --bullD:#2c5c43;
-  --bear:#e2685a;
-  --crash:#e2685a; --crashT:#f1968c; --crashD:#6e2c25;
-  --reg:#8fa8d8; --regT:#b0c4e9; --regD:#37456b;
-  --pos:#79c99a; --neg:#e2685a;
-  --mono:ui-monospace,"SF Mono",Menlo,Consolas,monospace;
-  --sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
-  --serif:Georgia,"Iowan Old Style","Palatino Linotype","Times New Roman",serif;
-}
 *{margin:0;padding:0;box-sizing:border-box}
 html{scroll-behavior:smooth}
 body{background:var(--bg);color:var(--ink);font-family:var(--sans);overflow-x:hidden;
@@ -208,6 +195,7 @@ footer{border-top:1px solid var(--line);padding:40px 0;background:var(--bg2)}
   </div>
 </footer>
 
+<script src="omen-common.js"></script>
 <script>
 "use strict";
 /* ================= baked snapshot (2026-07-11) ================= */
@@ -240,15 +228,10 @@ const EQ = {
  ORCL:{px:140.64,dd:-43.3,s:[149.01,152.37,154.79,152.96,151.56,149.4,163.12,159.16,155.11,155.97,154.69,152.9,155.52,149.68,154.34,147.09,146.02,142.81,139.66,138.8,147.11,145.23,146.38,145.54,143.17,143.66,137.86,138.09,155.62,163.0,169.81,178.34,175.06,177.58,181.17,187.5,176.28,173.28,172.96,165.96,163.83,161.39,171.83,180.29,185.35,194.03,194.59,195.95,193.84,186.83,189.76,195.61,192.95,186.61,181.46,188.16,189.77,192.08,193.06,190.96,203.7,225.78,248.15,244.58,230.33,236.34,213.68,211.82,205.81,201.26,184.1,184.13,192.64,188.33,183.53,184.29,175.07,165.16,157.53,152.46,148.53,147.76,146.55,142.5,140.27,143.76,141.6,140.49,144.22,140.64]},
 };
 const GAMMA="https://gamma-api.polymarket.com";
-const $=id=>document.getElementById(id);
-const esc=s=>String(s??"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const {$,esc,safeUrl}=OMEN;
 
 /* ================= regime rules (same as the landing verdict) ================= */
-const REGIME_META={
-  calm:{word:"Calm", color:"var(--bullT)", border:"var(--bull)"},
-  elevated:{word:"Elevated", color:"var(--regT)", border:"var(--reg)"},
-  stressed:{word:"Stressed", color:"var(--crashT)", border:"var(--crash)"},
-};
+const REGIME_META=OMEN.REGIME_META;
 function crashLevel(){
   const ms=MARKETS.filter(m=>m.theme==="mkt"&&!m.closed);
   return ms.length?ms.reduce((a,m)=>a+m.yes,0)/ms.length*100:0;
@@ -257,11 +240,7 @@ function bubblePct(){
   const bm=MARKETS.find(m=>m.id==="691340");
   return (bm&&!bm.closed?bm.yes:0)*100;
 }
-function regimeOf(score,crash,bubble){
-  if(score>=55||crash>=40) return "stressed";
-  if(score>=35||crash>=25||bubble>=15) return "elevated";
-  return "calm";
-}
+const regimeOf=OMEN.regimeOf;
 
 /* ================= families ================= */
 const GROUPS={lead:"LEADING · PRICED BEFORE THE FACT", conf:"CONFIRMING · MOVES WITH PRICES"};
@@ -298,16 +277,7 @@ function animateGauge(){
 }
 
 /* ================= equity strip ================= */
-function sparkSvg(vals,w,h,color,fill){
-  const mn=Math.min(...vals), mx=Math.max(...vals), r=(mx-mn)||1;
-  const pts=vals.map((v,i)=>[i/(vals.length-1)*w, h-3-(v-mn)/r*(h-8)]);
-  const line=pts.map(p=>p[0].toFixed(1)+","+p[1].toFixed(1)).join(" ");
-  const area=`M0,${h} L${line.replace(/ /g," L")} L${w},${h} Z`;
-  return `<svg width="100%" height="100%" viewBox="0 0 ${w} ${h}" preserveAspectRatio="none">
-    ${fill?`<path d="${area}" fill="${color}" opacity=".12"/>`:""}
-    <polyline points="${line}" fill="none" stroke="${color}" stroke-width="2" vector-effect="non-scaling-stroke"/>
-    <circle cx="${pts[pts.length-1][0]}" cy="${pts[pts.length-1][1]}" r="3" fill="${color}"/></svg>`;
-}
+const sparkSvg=OMEN.sparkSvg;
 function renderEquity(){
   const host=$("eqgrid"); host.innerHTML="";
   for(const [sym,e] of Object.entries(EQ)){
@@ -406,12 +376,8 @@ async function goLive(){
       for(const m of arr) byId[String(m.id)]=m;
       for(const m of MARKETS){
         const g=byId[m.id]; if(!g) continue;
-        m.closed=!!g.closed||g.active===false;
-        if(!m.closed){
-          const p=JSON.parse(g.outcomePrices||'["0"]');
-          const bid=parseFloat(g.bestBid), ask=parseFloat(g.bestAsk);
-          m.yes=(isFinite(bid)&&isFinite(ask)&&ask>0)?(bid+ask)/2:parseFloat(p[0]||"0");
-        }
+        m.closed=OMEN.isClosed(g);
+        if(!m.closed) m.yes=OMEN.outcomeYes(g);
       }
     }
     try{ applyServerData(mktData); }catch(e){ /* baked gauge stays */ }

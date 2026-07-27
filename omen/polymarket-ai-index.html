@@ -4,20 +4,8 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>AI Crash Monitor</title>
+<link rel="stylesheet" href="omen.css">
 <style>
-  :root {
-    /* OMEN dark-almanac theme: warm charcoal, amber accent */
-    --surface-1: #13110c; --page: #0b0a08;
-    --text-primary: #ece7db; --text-secondary: #a59c88; --muted: #6e6656;
-    --grid: #262117; --baseline: #3a3222; --border: rgba(236,231,219,0.12);
-    --acc: #e3a63c; --accT: #f2c977;
-    --bull: #79c99a; --bear: #e2685a; --crash: #e2685a; --reg: #8fa8d8; --aqua: #79c99a; --violet: #e3a63c;
-    --bull-wash: rgba(121,201,154,0.12);
-    --delta-up: #79c99a; --delta-down: #e2685a;
-    --good: #79c99a; --warn: #e3a63c; --serious: #e08a4f; --crit: #e2685a;
-    --good-wash: rgba(121,201,154,0.10); --warn-wash: rgba(227,166,60,0.12); --crit-wash: rgba(226,104,90,0.12);
-    --serif: Georgia, "Iowan Old Style", "Palatino Linotype", "Times New Roman", serif;
-  }
   * { box-sizing: border-box; margin: 0; padding: 0; }
   /* the view switcher hides with [hidden]; author display rules (.grid2, .tiles, .seg …)
      out-specify the UA [hidden] rule, so state it once here and win */
@@ -570,6 +558,7 @@
   <details id="methodDetails" open><summary><strong>Methodology &amp; sources</strong></summary><div id="foot"></div></details>
 </footer>
 
+<script src="omen-common.js"></script>
 <script>
 "use strict";
 
@@ -665,11 +654,10 @@ let leadlagCache = null, gaugeHistCache = null;
 let lastPolyRefresh = null;
 const sortState = { bull:{k:"yes",dir:-1}, bear:{k:"yes",dir:-1}, china:{k:"yes",dir:-1}, macro:{k:"yes",dir:-1} };
 
-const $ = id => document.getElementById(id);
+const { $, esc, safeUrl } = OMEN;
 const clamp = (x,a,b) => Math.max(a, Math.min(b, x));
 const fmtVol = v => v>=1e6 ? "$"+(v/1e6).toFixed(1)+"M" : v>=1e3 ? "$"+(v/1e3).toFixed(0)+"K" : "$"+Math.round(v);
 const fmtUsd = v => { const a=Math.abs(v), s=v<0?"−$":"$"; return a>=1e9?s+(a/1e9).toFixed(1)+"B":a>=1e6?s+(a/1e6).toFixed(0)+"M":a>=1e3?s+(a/1e3).toFixed(0)+"K":s+Math.round(a); };
-const esc = s => String(s==null?"":s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
 // toFixed() emits a hyphen-minus; prose uses a real minus sign. Sign off the *rounded*
 // value, or a small negative renders as "−0" at low precision.
 const mnum = (v,d=0) => { const s=Math.abs(v).toFixed(d); return (v<0 && +s!==0 ? "−" : "")+s; };
@@ -679,10 +667,8 @@ const xlink = (label, view, panel) =>
 
 /* ================= Fetching ================= */
 function parseMarket(m){
-  const prices=JSON.parse(m.outcomePrices||"[]"), tokens=JSON.parse(m.clobTokenIds||"[]");
-  const bid=parseFloat(m.bestBid), ask=parseFloat(m.bestAsk), hasBook=isFinite(bid)&&isFinite(ask)&&ask>0;
-  const last=parseFloat(prices[0]??"0");
-  return { id:String(m.id), question:m.question, yes:hasBook?(bid+ask)/2:last, spread:hasBook?ask-bid:null,
+  const tokens=OMEN.jsonList(m.clobTokenIds);
+  return { id:String(m.id), question:m.question, yes:OMEN.outcomeYes(m), spread:OMEN.bookSpread(m),
     d1:m.oneDayPriceChange??null, d7:m.oneWeekPriceChange??null,
     volume:parseFloat(m.volumeNum??m.volume??0), vol24:parseFloat(m.volume24hr??0), vol1wk:parseFloat(m.volume1wk??0),
     endDate:m.endDate?Date.parse(m.endDate):null, yesToken:tokens[0]||null, closed:!!m.closed||m.active===false,
@@ -952,7 +938,7 @@ function renderClaims(){
   $("claimsVerdict").innerHTML = hot.length?`The tape currently <strong>validates ${hot.length} of 5</strong> singularity claims &ndash; euphoria (or its backlash channel) moving past the narrative stage.`
     : wm.length?`No claim is validated by the tape; <strong>${wm.length}</strong> ${wm.length>1?"are":"is"} moving its way.`
     : `None of the five claims is validated by capital-at-risk pricing or official data &ndash; the narrative runs ahead of the tape on every count.`;
-  const src=gdpq?` GDP brackets: <a href="${esc(gdpq.url)}" target="_blank" rel="noopener">${esc(gdpq.title)}</a>.`:"";
+  const src=gdpq?` GDP brackets: <a href="${safeUrl(gdpq.url)}" target="_blank" rel="noopener">${esc(gdpq.title)}</a>.`:"";
   $("claimsNote").innerHTML=`Claims from Raoul Pal&rsquo;s &ldquo;AI Revolution: How to Invest&rdquo; (Real Vision, Jul 9 2026) &ndash; the maximal-bull economic-singularity thesis. Dots escalate as the tape moves <em>toward</em> the world each claim describes: markets converging up toward the narrative is euphoria broadening (itself a crash-monitor signal), and a displacement signature in the labor data is the political-backlash channel going live. AGI/Arena and Optimus/robotaxi odds are live Polymarket mids tracked outside the indexes (they move no composite); CPI, unemployment, participation and GDP growth are FRED series via the fetcher.${src}`;
 }
 
@@ -1227,24 +1213,28 @@ function regimeRules(i){
   // gTxt stays null when the gauge is dark, so the "closest rule" line can't name a rule
   // whose value it doesn't know
   const g=i.gauge, pct=v=>v.toFixed(1)+"%", gTxt=g!=null?`${g.toFixed(0)}/100`:null;
+  // Thresholds come from OMEN.REGIME, the single place they are written down — the landing
+  // page and the gauge page read the same numbers through OMEN.regimeOf. They used to be
+  // typed out in all three files.
+  const R=OMEN.REGIME;
   return [
-    { id:"gauge55", tier:"stressed", fired:g!=null&&g>=55, why:`gauge ${g?.toFixed(0)} ≥ 55`,
-      plain:"the blended gauge", valTxt:gTxt, thrTxt:"55/100", near:g!=null?g/55:0 },
-    { id:"level40", tier:"stressed", fired:i.level>=40, why:`crash markets ${i.level.toFixed(1)} ≥ 40`,
-      plain:"crash-market odds", pl:true, valTxt:pct(i.level), thrTxt:"40%", near:i.level/40 },
-    { id:"level25z2", tier:"stressed", fired:i.level>=25&&i.z>=2, why:`crash ${i.level.toFixed(1)} ≥ 25 with z ${i.z.toFixed(1)} ≥ 2`,
+    { id:"gauge55", tier:"stressed", fired:g!=null&&g>=R.GAUGE_STRESSED, why:`gauge ${g?.toFixed(0)} ≥ ${R.GAUGE_STRESSED}`,
+      plain:"the blended gauge", valTxt:gTxt, thrTxt:`${R.GAUGE_STRESSED}/100`, near:g!=null?g/R.GAUGE_STRESSED:0 },
+    { id:"level40", tier:"stressed", fired:i.level>=R.LEVEL_STRESSED, why:`crash markets ${i.level.toFixed(1)} ≥ ${R.LEVEL_STRESSED}`,
+      plain:"crash-market odds", pl:true, valTxt:pct(i.level), thrTxt:`${R.LEVEL_STRESSED}%`, near:i.level/R.LEVEL_STRESSED },
+    { id:"level25z2", tier:"stressed", fired:i.level>=R.LEVEL_ELEVATED&&i.z>=R.Z_STRESSED, why:`crash ${i.level.toFixed(1)} ≥ ${R.LEVEL_ELEVATED} with z ${i.z.toFixed(1)} ≥ ${R.Z_STRESSED}`,
       plain:`crash-market odds at ${pct(i.level)} and climbing unusually fast`, pl:true, quiet:true, near:0 },
     // No single-market stressed trip: a lone distress market (China competition, one bubble
     // print, one euphoria read) caps at Elevated via stack15 below. Letting it trip Stressed
     // produced false red regimes (e.g. China top-3 at 35% while the blended gauge was calm).
-    { id:"gauge35", tier:"elevated", fired:g!=null&&g>=35, why:`gauge ${g?.toFixed(0)} ≥ 35`,
-      plain:"the blended gauge", valTxt:gTxt, thrTxt:"35/100", near:g!=null?g/35:0 },
-    { id:"level25", tier:"elevated", fired:i.level>=25, why:`crash markets ${i.level.toFixed(1)} ≥ 25`,
-      plain:"crash-market odds", pl:true, valTxt:pct(i.level), thrTxt:"25%", near:i.level/25 },
-    { id:"z15", tier:"elevated", fired:i.z>=1.5, why:`crash z-score ${i.z.toFixed(1)} ≥ 1.5`,
-      plain:"crash-market odds are climbing unusually fast", pl:true, quiet:true, near:i.z/1.5 },
-    { id:"stack15", tier:"elevated", fired:i.stackMax>=15, why:`${i.stackName} at ${i.stackMax.toFixed(1)}% ≥ 15%`,
-      plain:i.stackPlain, pl:i.stackPl, valTxt:pct(i.stackMax), thrTxt:"15%", near:i.stackMax/15 },
+    { id:"gauge35", tier:"elevated", fired:g!=null&&g>=R.GAUGE_ELEVATED, why:`gauge ${g?.toFixed(0)} ≥ ${R.GAUGE_ELEVATED}`,
+      plain:"the blended gauge", valTxt:gTxt, thrTxt:`${R.GAUGE_ELEVATED}/100`, near:g!=null?g/R.GAUGE_ELEVATED:0 },
+    { id:"level25", tier:"elevated", fired:i.level>=R.LEVEL_ELEVATED, why:`crash markets ${i.level.toFixed(1)} ≥ ${R.LEVEL_ELEVATED}`,
+      plain:"crash-market odds", pl:true, valTxt:pct(i.level), thrTxt:`${R.LEVEL_ELEVATED}%`, near:i.level/R.LEVEL_ELEVATED },
+    { id:"z15", tier:"elevated", fired:i.z>=R.Z_ELEVATED, why:`crash z-score ${i.z.toFixed(1)} ≥ ${R.Z_ELEVATED}`,
+      plain:"crash-market odds are climbing unusually fast", pl:true, quiet:true, near:i.z/R.Z_ELEVATED },
+    { id:"stack15", tier:"elevated", fired:i.stackMax>=R.SIGNAL_ELEVATED, why:`${i.stackName} at ${i.stackMax.toFixed(1)}% ≥ ${R.SIGNAL_ELEVATED}%`,
+      plain:i.stackPlain, pl:i.stackPl, valTxt:pct(i.stackMax), thrTxt:`${R.SIGNAL_ELEVATED}%`, near:i.stackMax/R.SIGNAL_ELEVATED },
   ];
 }
 // returns { r, trips, why: [human-readable triggered conditions], inp, rules }
@@ -1694,7 +1684,7 @@ function renderCrown(){
     const isNvRow=r=>/nvidia|nvda/i.test(r.name), nvRow=crown.rows.find(isNvRow);
     const top=crown.rows.filter(r=>!isNvRow(r))[0];
     const deadline=crown.end?new Date(crown.end).toLocaleDateString(undefined,{month:"short",day:"numeric",timeZone:"UTC"}):"month-end";
-    if(nvRow) crownFoot=`Context, not signal: <a href="${crown.url}" target="_blank" rel="noopener">Polymarket&rsquo;s market-cap crown</a> prices NVDA at <strong>${(nvRow.p*100).toFixed(0)}%</strong> to be the largest US company at ${esc(deadline)}${top?`, ${esc(top.name)} at ${(top.p*100).toFixed(0)}%`:""} &ndash; a size ranking vs Apple and friends, not a read on the AI stack.`;
+    if(nvRow) crownFoot=`Context, not signal: <a href="${safeUrl(crown.url)}" target="_blank" rel="noopener">Polymarket&rsquo;s market-cap crown</a> prices NVDA at <strong>${(nvRow.p*100).toFixed(0)}%</strong> to be the largest US company at ${esc(deadline)}${top?`, ${esc(top.name)} at ${(top.p*100).toFixed(0)}%`:""} &ndash; a size ranking vs Apple and friends, not a read on the AI stack.`;
   }
   if(!nvS||nvS.length<30){
     box.innerHTML=""; stat.innerHTML=""; capsEl.innerHTML=""; groups.innerHTML=""; bars.innerHTML="";
@@ -1802,7 +1792,7 @@ function renderCrown(){
 }
 function renderNvda(){
   if(!nvda){ $("nvdaLadder").innerHTML='<div class="note">Monthly NVDA bracket event not found right now.</div>'; $("nvdaVerdict").innerHTML=""; return; }
-  $("nvdaTitle").innerHTML=`NVDA market-implied tail <span class="sub" style="font-weight:400">&ndash; <a href="${nvda.url}" target="_blank" rel="noopener">${esc(nvda.title)}</a></span>`;
+  $("nvdaTitle").innerHTML=`NVDA market-implied tail <span class="sub" style="font-weight:400">&ndash; <a href="${safeUrl(nvda.url)}" target="_blank" rel="noopener">${esc(nvda.title)}</a></span>`;
   const spot=mkt?.equity?.NVDA?.length?mkt.equity.NVDA[mkt.equity.NVDA.length-1].c:null;
   let h='<div class="note" style="margin-top:8px"><strong>Downside touches</strong>'+(spot?` (last $${spot.toFixed(2)})`:"")+"</div>";
   for(const l of nvda.lows) h+=hbar(`&le; $${l.strike}${spot?` (${((l.strike/spot-1)*100).toFixed(0)}%)`:""}`, l.p*100, "var(--crash)");
@@ -1819,7 +1809,7 @@ function renderNvda(){
 function renderH100(){
   const spot=mkt?.gpu;
   if(!h100&&!spot){ $("h100Dist").innerHTML='<div class="note">H100 bracket event not found and no realized spot data.</div>'; $("h100Stats").innerHTML=""; $("h100Verdict").innerHTML=""; $("h100Note").innerHTML=""; return; }
-  if(h100) $("h100Title").innerHTML=`H100 GPU rent &ndash; implied vs realized <span class="sub" style="font-weight:400">&ndash; <a href="${h100.url}" target="_blank" rel="noopener">${esc(h100.title)}</a></span>`;
+  if(h100) $("h100Title").innerHTML=`H100 GPU rent &ndash; implied vs realized <span class="sub" style="font-weight:400">&ndash; <a href="${safeUrl(h100.url)}" target="_blank" rel="noopener">${esc(h100.title)}</a></span>`;
   const exp=h100Expected(), sub2=h100Sub2();
   const kg=kalshiChip("H100");
   const cells=[];
@@ -1898,7 +1888,7 @@ function renderKalshiGpu(){
 }
 function renderB200(){
   if(!b200){ $("b200Stats").innerHTML='<div class="sub">B200 bracket event not found right now.</div>'; $("b200Dist").innerHTML=""; $("b200Verdict").innerHTML=""; return; }
-  $("b200Title").innerHTML=`B200 GPU rent <span class="sub" style="font-weight:400">&ndash; <a href="${b200.url}" target="_blank" rel="noopener">${esc(b200.title)}</a></span>`;
+  $("b200Title").innerHTML=`B200 GPU rent <span class="sub" style="font-weight:400">&ndash; <a href="${safeUrl(b200.url)}" target="_blank" rel="noopener">${esc(b200.title)}</a></span>`;
   const exp=b200Expected(), sub3=b200Sub3();
   const cells=[];
   if(exp!=null) cells.push(`<div class="stat"><div class="l">Market-implied</div><div class="v">$${exp.toFixed(2)}</div></div>`);
@@ -1916,7 +1906,7 @@ function renderValuations(){
   if(!valuations||!valuations.firms.length){ $("valDist").innerHTML='<div class="sub">Valuation bracket markets not found.</div>'; $("valNote").innerHTML=""; $("valVerdict").innerHTML=""; return; }
   let h="";
   for(const f of valuations.firms){
-    h+=`<div class="note" style="margin-top:10px"><strong>${esc(f.name)}</strong> &ndash; <a href="${f.url}" target="_blank" rel="noopener">${esc(f.title)}</a></div>`;
+    h+=`<div class="note" style="margin-top:10px"><strong>${esc(f.name)}</strong> &ndash; <a href="${safeUrl(f.url)}" target="_blank" rel="noopener">${esc(f.title)}</a></div>`;
     h+=f.brackets.map(b=>{
       const label=b.lo!=null?`≥ $${b.lo}B`:`< $${b.hi}B`;
       return hbar(label, b.p*100, b.lo!=null&&b.lo>=500?"var(--acc)":"var(--reg)"); }).join("");
@@ -2164,21 +2154,21 @@ function renderCrossVenue(){
   if(!K||!K.markets||!K.markets.length){ $("kalshiTable").innerHTML=""; }
   else{
     let h=`<thead><tr><th>Theme</th><th>Kalshi market</th><th class="num">YES</th></tr></thead><tbody>`;
-    for(const m of K.markets) h+=`<tr><td class="sub">${esc(m.theme)}</td><td><a href="${esc(m.url)}" target="_blank" rel="noopener">${esc(m.title)}</a>${m.subtitle?` <span class="sub">${esc(m.subtitle)}</span>`:""}</td><td class="num">${m.price!=null?(m.price*100).toFixed(1)+"%":'<span class="dim">no quote</span>'}</td></tr>`;
+    for(const m of K.markets) h+=`<tr><td class="sub">${esc(m.theme)}</td><td><a href="${safeUrl(m.url)}" target="_blank" rel="noopener">${esc(m.title)}</a>${m.subtitle?` <span class="sub">${esc(m.subtitle)}</span>`:""}</td><td class="num">${m.price!=null?(m.price*100).toFixed(1)+"%":'<span class="dim">no quote</span>'}</td></tr>`;
     $("kalshiTable").innerHTML=h+"</tbody>";
   }
   const MC=mkt?.metaculus;
   if(!MC||!MC.questions||!MC.questions.length){ $("metaculusTable").innerHTML=""; }
   else{
     let h=`<thead><tr><th>Search</th><th>Metaculus question <span class="sub">(calibrated forecaster crowd)</span></th><th class="num">Prob</th><th class="num">Forecasters</th></tr></thead><tbody>`;
-    for(const q of MC.questions) h+=`<tr><td class="sub">${esc(q.theme)}</td><td><a href="${esc(q.url)}" target="_blank" rel="noopener">${esc(q.title)}</a></td><td class="num">${(q.prob*100).toFixed(0)}%</td><td class="num dim">${q.forecasters??"–"}</td></tr>`;
+    for(const q of MC.questions) h+=`<tr><td class="sub">${esc(q.theme)}</td><td><a href="${safeUrl(q.url)}" target="_blank" rel="noopener">${esc(q.title)}</a></td><td class="num">${(q.prob*100).toFixed(0)}%</td><td class="num dim">${q.forecasters??"–"}</td></tr>`;
     $("metaculusTable").innerHTML=h+"</tbody>";
   }
   const M=mkt?.manifold;
   if(!M||!M.length){ $("manifoldTable").innerHTML=""; }
   else{
     let h=`<thead><tr><th>Search</th><th>Manifold market <span class="sub">(play-money crowd)</span></th><th class="num">Prob</th><th class="num">Bettors</th></tr></thead><tbody>`;
-    for(const m of M) h+=`<tr><td class="sub">${esc(m.theme)}</td><td><a href="${esc(m.url)}" target="_blank" rel="noopener">${esc(m.title)}</a></td><td class="num">${(m.price*100).toFixed(0)}%</td><td class="num dim">${m.bettors??"–"}</td></tr>`;
+    for(const m of M) h+=`<tr><td class="sub">${esc(m.theme)}</td><td><a href="${safeUrl(m.url)}" target="_blank" rel="noopener">${esc(m.title)}</a></td><td class="num">${(m.price*100).toFixed(0)}%</td><td class="num dim">${m.bettors??"–"}</td></tr>`;
     $("manifoldTable").innerHTML=h+"</tbody>";
   }
   // A venue divergence signal needs the same theme priced on 2+ venues; the widest such
@@ -2231,7 +2221,7 @@ function renderTable(side){
     const spike=m.vol24>=1000&&m.vol1wk&&m.vol24/(m.vol1wk/7)>=2, thin=m.spread!=null&&m.spread>0.06;
     const padj=adjustP(m.yes,m.endDate,now,c.htype);
     const themeTag=c.theme&&THEME_TAG[c.theme]?`<span class="badge" style="margin-left:5px" title="${esc(THEME_TIP[c.theme]||"")}">${THEME_TAG[c.theme]}</span>`:"";
-    h+=`<tr><td><a href="${m.url}" target="_blank" rel="noopener">${esc(c.label)}</a>${themeTag}${c.htype==="structural"?'<span class="flag" title="structural question – not annualized">†</span>':""}${thin?'<span class="flag" title="wide bid/ask spread">⚠</span>':""}${spike?'<span class="flag" title="unusual 24h volume">⚡</span>':""}
+    h+=`<tr><td><a href="${safeUrl(m.url)}" target="_blank" rel="noopener">${esc(c.label)}</a>${themeTag}${c.htype==="structural"?'<span class="flag" title="structural question – not annualized">†</span>':""}${thin?'<span class="flag" title="wide bid/ask spread">⚠</span>':""}${spike?'<span class="flag" title="unusual 24h volume">⚡</span>':""}
       <div class="bar" style="max-width:150px"><i style="width:${(m.yes*100).toFixed(1)}%;background:${color}"></i></div></td>
       <td class="num">${(m.yes*100).toFixed(1)}%</td>${hz?`<td class="num dim">${c.htype==="event"?(padj*100).toFixed(1)+"%":"–"}</td>`:""}
       <td class="num">${deltaSpan(m.d1!=null?m.d1*100:null,1,"",risky)}</td><td class="num">${deltaSpan(m.d7!=null?m.d7*100:null,1,"",risky)}</td>

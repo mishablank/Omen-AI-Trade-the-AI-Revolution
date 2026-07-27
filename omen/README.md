@@ -47,7 +47,29 @@ python3 -m http.server 8844                   # serve over HTTP (fetch() needs i
 python3 update-market-data.py --watch 600 --snapshot   # optional: refresh every 10 min
 ```
 
-Tests: `python3 -m pytest` (covers FRED parsing, Form 4 parsing, and the server-side gauge/regime).
+Tests: `python3 -m pytest` from the repo root. One command covers both languages — the
+Python fetcher tests (FRED parsing, Form 4 parsing, the server-side gauge/regime, the fetch
+retry/carry-forward policy) and, via `test_regime_explainer.py`, the browser-JS suites
+(`test-regime-explainer`, `test-pure-helpers`, `test-verdict`, `test-omen-common`). The same
+command runs in CI on every push and pull request (`.github/workflows/test.yml`); before that
+workflow existed the suites only ever ran by hand.
+
+## Shared front-end code
+
+The pages are hand-authored HTML with inline JS and no build step, but the parts they share
+are no longer copy-pasted per page:
+
+- **`omen-common.js`** — one classic script publishing an `OMEN` global, loaded before each
+  page's inline script. Holds the DOM/escaping helpers (`$`, `esc`, `safeUrl`), the
+  Polymarket response shapes (`outcomeYes`, `bookSpread`, `isClosed`, `jsonList`), the
+  regime thresholds (`REGIME`, `regimeOf`, `REGIME_META`), the index math, and `sparkSvg`.
+  Every `href` built from remote data goes through `safeUrl`, which allowlists http/https —
+  `esc` makes a string safe *inside* an attribute but does nothing about a `javascript:`
+  scheme.
+- **`omen.css`** — the design tokens, previously re-declared in all eight pages.
+
+Both are plain files with no imports, so the Node suites load them the same way they load
+the pages' inline code.
 
 ## Data sources (all free / keyless)
 
@@ -77,6 +99,12 @@ served **live from an R2 bucket** so they're always current with no redeploy.
 - **GitHub Action** (`.github/workflows/refresh.yml`) runs `omen/update-market-data.py
   --snapshot --alert` every ~30 min, commits the data back (durable history) **and uploads
   it to R2** (when the Cloudflare secrets are set), which the live Worker picks up instantly.
+- What gets committed each run is deliberately not "everything": the append-only
+  `*-snapshots.csv` history, the alert dedup state, and the small bundled-asset JSON files.
+  `market-data.json` is the exception — 171 KB rewritten every 30 minutes, and served live
+  from R2 anyway, so committing it per run was pure repo bloat (bot commits had reached 74%
+  of all history). It stays tracked so the Worker's R2-miss fallback has a bundled copy, but
+  the Action re-commits it only once the tracked copy is over 7 days old.
 
 ### One-time R2 setup (run from the repo root, where `wrangler.jsonc` lives)
 
