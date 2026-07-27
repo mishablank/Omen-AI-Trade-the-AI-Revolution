@@ -231,17 +231,23 @@ def parse_eia_860m(payload):
     latest = max(r.get("period", "") for r in data)
     if not latest:
         return None
-    sums = {k: 0.0 for k in EIA_STATUS_GROUPS}
+    # None, not 0.0: a status group that matched no rows is unknown, not "zero GW".
+    # The operating-generator-capacity route carries operating units only, so the
+    # planned/under-construction groups come back empty — the panel must render "–"
+    # for those, never a false 0 that reads as "no pipeline".
+    sums = {k: None for k in EIA_STATUS_GROUPS}
     for r in data:
         if r.get("period") != latest:
             continue
         for key, codes in EIA_STATUS_GROUPS.items():
             if r.get("status") in codes:
                 try:
-                    sums[key] += float(r.get("nameplate-capacity-mw") or 0)
+                    mw = float(r.get("nameplate-capacity-mw") or 0)
                 except ValueError:
-                    pass
-    out = {k: rnd(v / 1000, 1) for k, v in sums.items()}  # MW -> GW
+                    continue
+                sums[key] = (sums[key] or 0.0) + mw
+    out = {k: (rnd(v / 1000, 1) if v is not None else None)  # MW -> GW; None stays None
+           for k, v in sums.items()}
     out["asof"] = latest
     return out
 

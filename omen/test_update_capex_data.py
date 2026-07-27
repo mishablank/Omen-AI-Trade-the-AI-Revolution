@@ -144,6 +144,21 @@ def test_parse_eia_860m_empty_is_none():
     assert ucd.parse_eia_860m({}) is None
 
 
+def test_parse_eia_860m_operating_only_leaves_pipeline_unknown():
+    # the live operating-generator-capacity route carries operating units only, so
+    # the planned/under-construction groups match nothing -> None (rendered "–"),
+    # never a false 0.0 that would read as "no pipeline"
+    payload = {"response": {"data": [
+        {"period": "2026-04", "status": "OP", "nameplate-capacity-mw": "1365900"},
+        {"period": "2026-03", "status": "OP", "nameplate-capacity-mw": "999999"},
+    ]}}
+    out = ucd.parse_eia_860m(payload)
+    assert out["asof"] == "2026-04"
+    assert out["operating_gw"] == 1365.9
+    assert out["planned_gw"] is None
+    assert out["under_construction_gw"] is None
+
+
 def test_snapshot_row_flattens_payload():
     payload = {
         "updated": "2026-07-19T12:00:00Z",
