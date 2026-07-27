@@ -144,6 +144,21 @@ def test_parse_eia_860m_empty_is_none():
     assert ucd.parse_eia_860m({}) is None
 
 
+def test_parse_eia_860m_operating_only_leaves_pipeline_unknown():
+    # the live operating-generator-capacity route carries operating units only, so
+    # the planned/under-construction groups match nothing -> None (rendered "–"),
+    # never a false 0.0 that would read as "no pipeline"
+    payload = {"response": {"data": [
+        {"period": "2026-04", "status": "OP", "nameplate-capacity-mw": "1365900"},
+        {"period": "2026-03", "status": "OP", "nameplate-capacity-mw": "999999"},
+    ]}}
+    out = ucd.parse_eia_860m(payload)
+    assert out["asof"] == "2026-04"
+    assert out["operating_gw"] == 1365.9
+    assert out["planned_gw"] is None
+    assert out["under_construction_gw"] is None
+
+
 def test_snapshot_row_flattens_payload():
     payload = {
         "updated": "2026-07-19T12:00:00Z",
@@ -253,6 +268,27 @@ def test_fetch_eia_paginates_until_short_page(monkeypatch):
     assert "api_key" not in calls[0]             # key rides the X-Api-Key header only
     assert out["operating_gw"] == 5000.0         # 5000 rows x 1000 MW -> 5000 GW
     assert out["planned_gw"] == 1.5
+
+
+def test_eia_start_period_is_lookback_months_back():
+    import datetime as dt
+    # a recent window keeps EIA from sorting its full multi-year table (the timeout cause)
+    assert ucd.eia_start_period(dt.date(2026, 7, 15)) == "2025-07"
+    assert ucd.eia_start_period(dt.date(2026, 1, 31)) == "2025-01"   # crosses the year
+
+
+def test_fetch_eia_bounds_the_server_sort_and_lifts_timeout(monkeypatch):
+    seen = {}
+    def fake_jget(url, **kw):
+        seen["url"], seen["timeout"] = url, kw.get("timeout")
+        return {"response": {"data": [{"period": "2026-05", "status": "OP",
+                                       "nameplate-capacity-mw": "10"}]}}   # short -> one call
+    monkeypatch.setattr(ucd, "jget", fake_jget)
+    ucd.fetch_eia("k")
+    # the recent 'start' filter is what stops EIA sorting every month back to 2015
+    assert "start=" in seen["url"]
+    # timeout lifted above the 30s default that was tripping on the heavy query
+    assert seen["timeout"] is not None and seen["timeout"] >= 60
 
 
 def test_refresh_carries_forward_prev_on_failure(tmp_path, monkeypatch):

@@ -231,35 +231,57 @@ def parse_eia_860m(payload):
     latest = max(r.get("period", "") for r in data)
     if not latest:
         return None
-    sums = {k: 0.0 for k in EIA_STATUS_GROUPS}
+    # None, not 0.0: a status group that matched no rows is unknown, not "zero GW".
+    # The operating-generator-capacity route carries operating units only, so the
+    # planned/under-construction groups come back empty — the panel must render "–"
+    # for those, never a false 0 that reads as "no pipeline".
+    sums = {k: None for k in EIA_STATUS_GROUPS}
     for r in data:
         if r.get("period") != latest:
             continue
         for key, codes in EIA_STATUS_GROUPS.items():
             if r.get("status") in codes:
                 try:
-                    sums[key] += float(r.get("nameplate-capacity-mw") or 0)
+                    mw = float(r.get("nameplate-capacity-mw") or 0)
                 except ValueError:
-                    pass
-    out = {k: rnd(v / 1000, 1) for k, v in sums.items()}  # MW -> GW
+                    continue
+                sums[key] = (sums[key] or 0.0) + mw
+    out = {k: (rnd(v / 1000, 1) if v is not None else None)  # MW -> GW; None stays None
+           for k, v in sums.items()}
     out["asof"] = latest
     return out
 
 
 EIA_PAGE = 5000
 EIA_MAX_PAGES = 10  # 860M has ~25k+ generator rows per month; one page truncates it
+EIA_LOOKBACK_MONTHS = 12  # bound the server-side sort to a recent window (see eia_start_period)
+EIA_TIMEOUT = 60          # the windowed query is quick, but 30s (default) tripped on the raw one
+
+
+def eia_start_period(ref=None):
+    """EIA monthly 'start' (YYYY-MM) EIA_LOOKBACK_MONTHS back from ref (default today).
+
+    Without it the API sorts every generator-month back to 2015 before returning
+    the latest period, which reliably exceeds the request timeout on CI. 860M lags
+    ~2 months, so a one-year window comfortably contains the latest available period
+    while cutting the rows the server must sort by ~100x."""
+    d = ref or datetime.date.today()
+    m = d.month - 1 - EIA_LOOKBACK_MONTHS
+    return f"{d.year + m // 12:04d}-{m % 12 + 1:02d}"
 
 
 def fetch_eia(key):
     # key goes in the X-Api-Key header, not the query string, so it never
     # lands in proxy logs or error output that echoes the URL
     rows = []
+    start = eia_start_period()
     for page in range(EIA_MAX_PAGES):
         params = [("frequency", "monthly"), ("data[0]", "nameplate-capacity-mw"),
+                  ("start", start),
                   ("length", str(EIA_PAGE)), ("offset", str(page * EIA_PAGE)),
                   ("sort[0][column]", "period"), ("sort[0][direction]", "desc")]
         j = jget(f"{EIA_860M_URL}?{urllib.parse.urlencode(params)}",
-                 headers={**UA, "X-Api-Key": key})
+                 timeout=EIA_TIMEOUT, headers={**UA, "X-Api-Key": key})
         batch = (j.get("response") or {}).get("data") or []
         rows += batch
         # stop once past the latest period (sorted desc) or on a short page
