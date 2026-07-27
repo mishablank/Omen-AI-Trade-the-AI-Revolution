@@ -1,5 +1,5 @@
 {
- "updated": "2026-07-27T07:40:43Z",
+ "updated": "2026-07-27T11:33:29Z",
  "source": "google-play-scraper",
  "store": "android",
  "depth": 200,
@@ -9,7 +9,7 @@
    "label": "Kimi",
    "store": "android",
    "country": "de",
-   "rank": 190,
+   "rank": 194,
    "appId": "com.moonshot.kimichat",
    "title": "Kimi"
   },
@@ -17,7 +17,7 @@
    "label": "MiniMax",
    "store": "android",
    "country": "br",
-   "rank": 127,
+   "rank": 123,
    "appId": "ai.hailuo.video",
    "title": "Hailuo AI: Image&Video Maker"
   },
@@ -33,7 +33,7 @@
    "label": "Kimi",
    "store": "android",
    "country": "au",
-   "rank": 131,
+   "rank": 132,
    "appId": "com.moonshot.kimichat",
    "title": "Kimi"
   }
