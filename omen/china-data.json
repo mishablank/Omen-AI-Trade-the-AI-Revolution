@@ -1,5 +1,5 @@
 {
- "updated": "2026-07-27T11:33:29Z",
+ "updated": "2026-07-27T14:53:19Z",
  "snapshot_date": "2026-07-27",
  "artificial_analysis": {
   "cn_best": "GLM-5.2",
@@ -44,7 +44,7 @@
    },
    {
     "label": "Kimi",
-    "rank": 132,
+    "rank": 133,
     "store": "android",
     "country": "au"
    }
@@ -143,40 +143,40 @@
  },
  "openrouter_week": {
   "week": "2026-07-27",
-  "cn_share": 0.6086,
-  "us_share": 0.2625,
-  "spi": 2.318,
-  "total_tokens": 4021930308034
+  "cn_share": 0.6034,
+  "us_share": 0.2657,
+  "spi": 2.271,
+  "total_tokens": 4989088253352
  },
  "vercel_gateway": {
   "asof": "2026-07-27",
-  "cn_share": 46.79,
-  "us_share": 53.04,
-  "spi": 0.882,
+  "cn_share": 48.64,
+  "us_share": 51.2,
+  "spi": 0.95,
   "top_cn": [
    {
     "lab": "deepseek",
-    "share": 23.12
+    "share": 24.29
    },
    {
     "lab": "stepfun",
-    "share": 5.97
-   },
-   {
-    "lab": "inclusionai",
-    "share": 5.8
+    "share": 6.16
    },
    {
     "lab": "moonshotai",
-    "share": 4.9
+    "share": 5.7
+   },
+   {
+    "lab": "inclusionai",
+    "share": 5.11
    },
    {
     "lab": "zai",
-    "share": 3.56
+    "share": 3.95
    },
    {
     "lab": "minimax",
-    "share": 2.01
+    "share": 2.02
    }
   ],
   "series": [
@@ -482,15 +482,15 @@
    },
    {
     "d": "2026-07-27",
-    "cn": 46.79,
-    "us": 53.04
+    "cn": 48.64,
+    "us": 51.2
    }
   ],
   "license": "AI Gateway Leaderboard Data (c) Vercel, CC BY 4.0"
  },
  "ollama": {
-  "cn": 273758599,
-  "us": 445947774,
+  "cn": 273762699,
+  "us": 446052797,
   "cn_top": [
    {
     "name": "deepseek-r1",
@@ -520,7 +520,7 @@
   "us_top": [
    {
     "name": "llama3.1",
-    "pulls": 117700000
+    "pulls": 117800000
    },
    {
     "name": "llama3.2",
@@ -539,7 +539,7 @@
   "markets": [
    {
     "label": "Will a Chinese AI model be #1 this year?",
-    "p": 0.2,
+    "p": 0.15,
     "ticker": "KXBESTLLMCHINA-27",
     "series": "kxbestllmchina"
    },
@@ -563,7 +563,7 @@
    },
    {
     "label": "Best AI at end of 2026: Claude",
-    "p": 0.634,
+    "p": 0.63,
     "ticker": "KXLLM1-26DEC31-A",
     "series": "kxllm1"
    }
@@ -573,7 +573,7 @@
   "cn": [
    {
     "base": "Qwen/Qwen3-8B",
-    "n": 1969
+    "n": 1968
    },
    {
     "base": "deepseek-ai/DeepSeek-R1",
@@ -591,7 +591,7 @@
   "us": [
    {
     "base": "meta-llama/Llama-3.1-8B",
-    "n": 1458
+    "n": 1460
    },
    {
     "base": "google/gemma-3-12b-it",
@@ -606,23 +606,15 @@
     "n": 102
    }
   ],
-  "cn_total": 2348,
-  "us_total": 2474,
+  "cn_total": 2347,
+  "us_total": 2476,
   "asof": "2026-07-27"
  },
  "sdk": {
   "cn": [
    {
-    "pkg": "dashscope",
-    "wk": 657143
-   },
-   {
     "pkg": "zhipuai",
     "wk": 68826
-   },
-   {
-    "pkg": "zai-sdk",
-    "wk": 24100
    }
   ],
   "us": [
