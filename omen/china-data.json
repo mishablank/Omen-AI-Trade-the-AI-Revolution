@@ -1,6 +1,6 @@
 {
- "updated": "2026-07-27T23:12:48Z",
- "snapshot_date": "2026-07-27",
+ "updated": "2026-07-28T03:20:32Z",
+ "snapshot_date": "2026-07-28",
  "artificial_analysis": {
   "cn_best": "GLM-5.2",
   "cn_score": 51,
@@ -33,18 +33,18 @@
  },
  "apps": {
   "score": 0,
-  "asof": "2026-07-27",
+  "asof": "2026-07-28",
   "source": "app-charts",
   "best": [
    {
     "label": "MiniMax",
-    "rank": 113,
+    "rank": 108,
     "store": "android",
     "country": "br"
    },
    {
     "label": "Kimi",
-    "rank": 174,
+    "rank": 164,
     "store": "android",
     "country": "au"
    }
@@ -61,19 +61,19 @@
    "au",
    "kr"
   ],
-  "detail": "no Chinese AI app in any iOS or Play top-100 (nearest: MiniMax #113 (BR Play)); basket-mean Western top-100 presence 0/100 across 10 markets",
+  "detail": "no Chinese AI app in any iOS or Play top-100 (nearest: MiniMax #108 (BR Play)); basket-mean Western top-100 presence 0/100 across 10 markets",
   "note": "iOS Apple RSS top-100 + Android Play top-200 across 10 markets; presence = basket-mean of best top-100 chart rank (DeepSeek/Qwen/Doubao/Kimi/MiniMax), #1=100 #100=1; ranks past top-100 score 0."
  },
  "lmarena": {
-  "best_model": "kimi-k3",
+  "best_model": "kimi-k3-max",
   "best_org": "moonshot",
-  "best_rank": 10,
+  "best_rank": 11,
   "best_score": 1486,
   "us_leader": "claude-fable-5",
-  "us_leader_score": 1507,
-  "top10": 1,
-  "top20": 2,
-  "asof": "2026-07-21",
+  "us_leader_score": 1508,
+  "top10": 0,
+  "top20": 1,
+  "asof": "2026-07-27",
   "source": "lmarena-dataset"
  },
  "github_stars_per_day": -282776.7,
@@ -143,48 +143,43 @@
  },
  "openrouter_week": {
   "week": "2026-07-27",
-  "cn_share": 0.5882,
-  "us_share": 0.2736,
-  "spi": 2.15,
-  "total_tokens": 8478421617626
+  "cn_share": 0.5875,
+  "us_share": 0.272,
+  "spi": 2.159,
+  "total_tokens": 9842566593894
  },
  "vercel_gateway": {
-  "asof": "2026-07-27",
-  "cn_share": 47.92,
-  "us_share": 51.94,
-  "spi": 0.923,
+  "asof": "2026-07-28",
+  "cn_share": 47.31,
+  "us_share": 52.6,
+  "spi": 0.899,
   "top_cn": [
    {
     "lab": "deepseek",
-    "share": 23.83
-   },
-   {
-    "lab": "stepfun",
-    "share": 5.76
+    "share": 23.32
    },
    {
     "lab": "moonshotai",
-    "share": 5.66
+    "share": 8.84
    },
    {
     "lab": "inclusionai",
-    "share": 5.13
+    "share": 4.86
    },
    {
     "lab": "zai",
-    "share": 4.08
+    "share": 3.91
+   },
+   {
+    "lab": "stepfun",
+    "share": 3.88
    },
    {
     "lab": "minimax",
-    "share": 1.86
+    "share": 1.55
    }
   ],
   "series": [
-   {
-    "d": "2026-05-28",
-    "cn": 27.92,
-    "us": 71.64
-   },
    {
     "d": "2026-05-29",
     "cn": 32.22,
@@ -482,15 +477,20 @@
    },
    {
     "d": "2026-07-27",
-    "cn": 47.92,
-    "us": 51.94
+    "cn": 47.88,
+    "us": 51.97
+   },
+   {
+    "d": "2026-07-28",
+    "cn": 47.31,
+    "us": 52.6
    }
   ],
   "license": "AI Gateway Leaderboard Data (c) Vercel, CC BY 4.0"
  },
  "ollama": {
-  "cn": 274176169,
-  "us": 446268431,
+  "cn": 274381107,
+  "us": 446375647,
   "cn_top": [
    {
     "name": "deepseek-r1",
@@ -524,7 +524,7 @@
    },
    {
     "name": "llama3.2",
-    "pulls": 78000000
+    "pulls": 78100000
    },
    {
     "name": "gemma3",
@@ -532,20 +532,22 @@
    }
   ],
   "n_models": 234,
-  "asof": "2026-07-27"
+  "asof": "2026-07-28",
+  "cn_per_day": 645946,
+  "us_per_day": 657723
  },
  "kalshi": {
-  "asof": "2026-07-27",
+  "asof": "2026-07-28",
   "markets": [
    {
     "label": "Will a Chinese AI model be #1 this year?",
-    "p": 0.15,
+    "p": 0.17,
     "ticker": "KXBESTLLMCHINA-27",
     "series": "kxbestllmchina"
    },
    {
     "label": "Best AI at end of 2026: Kimi",
-    "p": 0.02,
+    "p": 0.01,
     "ticker": "KXLLM1-26DEC31-MOON",
     "series": "kxllm1"
    },
@@ -563,7 +565,7 @@
    },
    {
     "label": "Best AI at end of 2026: Claude",
-    "p": 0.653,
+    "p": 0.655,
     "ticker": "KXLLM1-26DEC31-A",
     "series": "kxllm1"
    }
@@ -591,7 +593,7 @@
   "us": [
    {
     "base": "meta-llama/Llama-3.1-8B",
-    "n": 1461
+    "n": 1464
    },
    {
     "base": "google/gemma-3-12b-it",
@@ -607,34 +609,30 @@
    }
   ],
   "cn_total": 2350,
-  "us_total": 2478,
-  "asof": "2026-07-27"
+  "us_total": 2481,
+  "asof": "2026-07-28"
  },
  "sdk": {
   "cn": [
    {
     "pkg": "dashscope",
-    "wk": 657143
-   },
-   {
-    "pkg": "zhipuai",
-    "wk": 68826
+    "wk": 657924
    },
    {
     "pkg": "zai-sdk",
-    "wk": 24100
+    "wk": 25152
    }
   ],
   "us": [
    {
     "pkg": "anthropic",
-    "wk": 42151584
+    "wk": 42229895
    },
    {
     "pkg": "google-genai",
-    "wk": 69500773
+    "wk": 70102283
    }
   ],
-  "asof": "2026-07-27"
+  "asof": "2026-07-28"
  }
 }
