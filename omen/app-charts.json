@@ -1,15 +1,31 @@
 {
- "updated": "2026-07-29T09:44:08Z",
+ "updated": "2026-07-29T12:07:37Z",
  "source": "google-play-scraper",
  "store": "android",
  "depth": 200,
  "countries_ok": 10,
  "hits": [
   {
+   "label": "MiniMax",
+   "store": "android",
+   "country": "us",
+   "rank": 198,
+   "appId": "com.weaver.app.prod",
+   "title": "Talkie: Creative AI Community"
+  },
+  {
+   "label": "Kimi",
+   "store": "android",
+   "country": "fr",
+   "rank": 186,
+   "appId": "com.moonshot.kimichat",
+   "title": "Kimi"
+  },
+  {
    "label": "Kimi",
    "store": "android",
    "country": "ca",
-   "rank": 164,
+   "rank": 156,
    "appId": "com.moonshot.kimichat",
    "title": "Kimi"
   },
@@ -17,7 +33,7 @@
    "label": "Kimi",
    "store": "android",
    "country": "au",
-   "rank": 181,
+   "rank": 177,
    "appId": "com.moonshot.kimichat",
    "title": "Kimi"
   }
