@@ -1,5 +1,5 @@
 {
- "updated": "2026-07-29T18:10:47Z",
+ "updated": "2026-07-29T19:53:42Z",
  "source": "google-play-scraper",
  "store": "android",
  "depth": 200,
@@ -9,7 +9,7 @@
    "label": "MiniMax",
    "store": "android",
    "country": "us",
-   "rank": 185,
+   "rank": 173,
    "appId": "com.weaver.app.prod",
    "title": "Talkie: Creative AI Community"
   },
@@ -17,7 +17,7 @@
    "label": "Kimi",
    "store": "android",
    "country": "fr",
-   "rank": 192,
+   "rank": 186,
    "appId": "com.moonshot.kimichat",
    "title": "Kimi"
   }
