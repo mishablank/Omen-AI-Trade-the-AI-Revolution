@@ -1,5 +1,5 @@
 {
- "updated": "2026-07-29T16:51:05Z",
+ "updated": "2026-07-29T18:10:47Z",
  "snapshot_date": "2026-07-29",
  "artificial_analysis": {
   "cn_best": "GLM-5.2",
@@ -37,16 +37,16 @@
   "source": "app-charts",
   "best": [
    {
-    "label": "Kimi",
-    "rank": 151,
-    "store": "android",
-    "country": "ca"
-   },
-   {
     "label": "MiniMax",
-    "rank": 198,
+    "rank": 185,
     "store": "android",
     "country": "us"
+   },
+   {
+    "label": "Kimi",
+    "rank": 192,
+    "store": "android",
+    "country": "fr"
    }
   ],
   "markets": [
@@ -61,7 +61,7 @@
    "au",
    "kr"
   ],
-  "detail": "no Chinese AI app in any iOS or Play top-100 (nearest: Kimi #151 (CA Play)); basket-mean Western top-100 presence 0/100 across 10 markets",
+  "detail": "no Chinese AI app in any iOS or Play top-100 (nearest: MiniMax #185 (US Play)); basket-mean Western top-100 presence 0/100 across 10 markets",
   "note": "iOS Apple RSS top-100 + Android Play top-200 across 10 markets; presence = basket-mean of best top-100 chart rank (DeepSeek/Qwen/Doubao/Kimi/MiniMax), #1=100 #100=1; ranks past top-100 score 0."
  },
  "lmarena": {
@@ -143,40 +143,40 @@
  },
  "openrouter_week": {
   "week": "2026-07-27",
-  "cn_share": 0.5608,
-  "us_share": 0.2833,
-  "spi": 1.979,
-  "total_tokens": 23281849421905
+  "cn_share": 0.5598,
+  "us_share": 0.2842,
+  "spi": 1.97,
+  "total_tokens": 23733999961298
  },
  "vercel_gateway": {
   "asof": "2026-07-29",
-  "cn_share": 46.88,
-  "us_share": 53.0,
-  "spi": 0.885,
+  "cn_share": 46.44,
+  "us_share": 53.44,
+  "spi": 0.869,
   "top_cn": [
    {
     "lab": "deepseek",
-    "share": 21.83
+    "share": 21.97
    },
    {
     "lab": "zai",
-    "share": 6.13
+    "share": 6.17
    },
    {
     "lab": "inclusionai",
-    "share": 5.83
+    "share": 5.64
    },
    {
     "lab": "stepfun",
-    "share": 5.82
+    "share": 5.47
    },
    {
     "lab": "moonshotai",
-    "share": 4.0
+    "share": 3.93
    },
    {
     "lab": "minimax",
-    "share": 1.78
+    "share": 1.75
    }
   ],
   "series": [
@@ -482,15 +482,15 @@
    },
    {
     "d": "2026-07-29",
-    "cn": 46.88,
-    "us": 53.0
+    "cn": 46.44,
+    "us": 53.44
    }
   ],
   "license": "AI Gateway Leaderboard Data (c) Vercel, CC BY 4.0"
  },
  "ollama": {
-  "cn": 275332500,
-  "us": 447325607,
+  "cn": 275334400,
+  "us": 447328309,
   "cn_top": [
    {
     "name": "deepseek-r1",
