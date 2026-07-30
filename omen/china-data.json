@@ -1,5 +1,5 @@
 {
- "updated": "2026-07-30T21:45:24Z",
+ "updated": "2026-07-30T23:13:54Z",
  "snapshot_date": "2026-07-30",
  "artificial_analysis": {
   "cn_best": "GLM-5.2",
@@ -9,7 +9,7 @@
   "asof": "2026-07-12"
  },
  "search_consumer": {
-  "western_share_pct": 3.3,
+  "western_share_pct": 3.2,
   "asof": "2026-07",
   "source": "google-trends",
   "terms_us": [
@@ -29,7 +29,7 @@
    "Seed 1.6",
    "Seed 2.0"
   ],
-  "note": "Google Trends US, 90-day avg: 8 Chinese AI terms = 3.3% of AI-assistant search interest vs ChatGPT+Gemini+Claude+Llama AI+Meta AI."
+  "note": "Google Trends US, 90-day avg: 8 Chinese AI terms = 3.2% of AI-assistant search interest vs ChatGPT+Gemini+Claude+Llama AI+Meta AI."
  },
  "apps": {
   "score": 0,
@@ -136,40 +136,40 @@
  },
  "openrouter_week": {
   "week": "2026-07-27",
-  "cn_share": 0.543,
-  "us_share": 0.2963,
-  "spi": 1.833,
-  "total_tokens": 33518330357130
+  "cn_share": 0.5419,
+  "us_share": 0.2971,
+  "spi": 1.824,
+  "total_tokens": 33970367018836
  },
  "vercel_gateway": {
   "asof": "2026-07-30",
-  "cn_share": 49.66,
-  "us_share": 50.24,
-  "spi": 0.988,
+  "cn_share": 49.43,
+  "us_share": 50.47,
+  "spi": 0.979,
   "top_cn": [
    {
     "lab": "deepseek",
-    "share": 22.82
+    "share": 22.67
    },
    {
     "lab": "moonshotai",
-    "share": 8.2
+    "share": 8.36
    },
    {
     "lab": "zai",
-    "share": 6.51
+    "share": 6.46
    },
    {
     "lab": "stepfun",
-    "share": 5.29
+    "share": 5.17
    },
    {
     "lab": "inclusionai",
-    "share": 3.19
+    "share": 3.11
    },
    {
     "lab": "minimax",
-    "share": 2.39
+    "share": 2.41
    }
   ],
   "series": [
@@ -475,15 +475,15 @@
    },
    {
     "d": "2026-07-30",
-    "cn": 49.66,
-    "us": 50.24
+    "cn": 49.43,
+    "us": 50.47
    }
   ],
   "license": "AI Gateway Leaderboard Data (c) Vercel, CC BY 4.0"
  },
  "ollama": {
-  "cn": 276366000,
-  "us": 448056908,
+  "cn": 276366900,
+  "us": 448057612,
   "cn_top": [
    {
     "name": "deepseek-r1",
@@ -525,7 +525,9 @@
    }
   ],
   "n_models": 234,
-  "asof": "2026-07-30"
+  "asof": "2026-07-30",
+  "cn_per_day": 735128,
+  "us_per_day": 615779
  },
  "kalshi": {
   "asof": "2026-07-30",
@@ -556,7 +558,7 @@
    },
    {
     "label": "Best AI at end of 2026: Claude",
-    "p": 0.634,
+    "p": 0.623,
     "ticker": "KXLLM1-26DEC31-A",
     "series": "kxllm1"
    }
