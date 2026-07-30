@@ -106,17 +106,39 @@ served **live from an R2 bucket** so they're always current with no redeploy.
   of all history). It stays tracked so the Worker's R2-miss fallback has a bundled copy, but
   the Action re-commits it only once the tracked copy is over 7 days old.
 
+### Deploying
+
+**Production is deployed by CI, from `main`, and only from CI**
+(`.github/workflows/deploy.yml`): merge to `main`, the test suite runs, the Worker
+ships. There is nothing to run by hand.
+
+Do not run `wrangler deploy` from a laptop. It bundles `omen/` straight off disk, so it
+ships the *working tree* rather than a commit — a stale worktree or an uncommitted local
+`update-*.py` run goes live exactly as it sits. That is not hypothetical: on 2026-07-27 a
+hand-run deploy put a `china-data.json` into production that existed in no commit on any
+branch, together with HTML a week behind `main`.
+
+If you genuinely must deploy by hand, go through the guard, which fails closed unless
+`HEAD` is `origin/main` and the tree is clean:
+
+```bash
+git fetch origin main
+python3 omen/deploy-guard.py && npx wrangler@4 deploy
+```
+
 ### One-time R2 setup (run from the repo root, where `wrangler.jsonc` lives)
 
 ```bash
-npx wrangler r2 bucket create omen-data          # create the bucket (must exist before deploy)
-npx wrangler deploy                              # deploy worker.js + the R2/ASSETS bindings
+npx wrangler r2 bucket create omen-data          # create the bucket (must exist before the first deploy)
 # seed R2 now so the site is fresh immediately:
 npx wrangler r2 object put omen-data/market-data.json --file omen/market-data.json --content-type application/json --remote
 npx wrangler r2 object put omen-data/snapshots.csv     --file omen/snapshots.csv     --content-type text/csv           --remote
-# let CI keep R2 fresh — add an R2-Edit API token + account id as Action secrets:
-gh secret set CLOUDFLARE_API_TOKEN  -R mishablank/ai-crash-monitor
-gh secret set CLOUDFLARE_ACCOUNT_ID -R mishablank/ai-crash-monitor
+# let CI keep R2 fresh and ship the Worker — add an API token + account id as secrets.
+# The token needs BOTH permissions: "Workers R2 Storage: Edit" for refresh.yml's
+# uploads and "Workers Scripts: Edit" for deploy.yml. An R2-only token uploads data
+# fine and then fails every deploy.
+gh secret set CLOUDFLARE_API_TOKEN  -R mishablank/omen-ai
+gh secret set CLOUDFLARE_ACCOUNT_ID -R mishablank/omen-ai
 ```
 
 Without the two `CLOUDFLARE_*` secrets the upload step skips cleanly and the Worker serves the

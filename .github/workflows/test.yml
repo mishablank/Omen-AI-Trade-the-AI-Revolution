@@ -17,12 +17,19 @@ name: Tests
 on:
   push:
   pull_request:
+  # deploy.yml calls this as the gate in front of a production deploy, so the suite
+  # is defined once and cannot drift from what CI actually enforces.
+  workflow_call:
 
 permissions:
   contents: read
 
 concurrency:
-  group: test-${{ github.ref }}
+  # github.workflow is the *caller's* name in a reusable workflow ("Deploy"), which is
+  # what keeps the two runs apart. Without it, the push to main and the deploy's gate
+  # run would share a group and — with cancel-in-progress — cancel each other, turning
+  # a green deploy into a cancelled one at random.
+  group: test-${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
 jobs:
