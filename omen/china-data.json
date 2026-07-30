@@ -1,5 +1,5 @@
 {
- "updated": "2026-07-30T18:56:57Z",
+ "updated": "2026-07-30T20:20:03Z",
  "snapshot_date": "2026-07-30",
  "artificial_analysis": {
   "cn_best": "GLM-5.2",
@@ -70,7 +70,6 @@
   "asof": "2026-07-27",
   "source": "lmarena-dataset"
  },
- "github_stars_per_day": -282776.7,
  "hf": {
   "cnOrgs": [
    {
@@ -137,40 +136,40 @@
  },
  "openrouter_week": {
   "week": "2026-07-27",
-  "cn_share": 0.5448,
-  "us_share": 0.2943,
-  "spi": 1.851,
-  "total_tokens": 32577823816579
+  "cn_share": 0.5443,
+  "us_share": 0.2949,
+  "spi": 1.846,
+  "total_tokens": 32870872052796
  },
  "vercel_gateway": {
   "asof": "2026-07-30",
-  "cn_share": 50.23,
-  "us_share": 49.67,
-  "spi": 1.011,
+  "cn_share": 49.98,
+  "us_share": 49.93,
+  "spi": 1.001,
   "top_cn": [
    {
     "lab": "deepseek",
-    "share": 22.88
+    "share": 22.94
    },
    {
     "lab": "moonshotai",
-    "share": 8.27
+    "share": 8.21
    },
    {
     "lab": "zai",
-    "share": 6.47
+    "share": 6.46
    },
    {
     "lab": "stepfun",
-    "share": 5.58
+    "share": 5.46
    },
    {
     "lab": "inclusionai",
-    "share": 3.32
+    "share": 3.24
    },
    {
     "lab": "minimax",
-    "share": 2.43
+    "share": 2.4
    }
   ],
   "series": [
@@ -476,15 +475,15 @@
    },
    {
     "d": "2026-07-30",
-    "cn": 50.23,
-    "us": 49.67
+    "cn": 49.98,
+    "us": 49.93
    }
   ],
   "license": "AI Gateway Leaderboard Data (c) Vercel, CC BY 4.0"
  },
  "ollama": {
-  "cn": 276364000,
-  "us": 447954906,
+  "cn": 276365100,
+  "us": 448056007,
   "cn_top": [
    {
     "name": "deepseek-r1",
@@ -533,7 +532,7 @@
   "markets": [
    {
     "label": "Will a Chinese AI model be #1 this year?",
-    "p": 0.13,
+    "p": 0.12,
     "ticker": "KXBESTLLMCHINA-27",
     "series": "kxbestllmchina"
    },
@@ -557,7 +556,7 @@
    },
    {
     "label": "Best AI at end of 2026: Claude",
-    "p": 0.625,
+    "p": 0.622,
     "ticker": "KXLLM1-26DEC31-A",
     "series": "kxllm1"
    }
@@ -589,7 +588,7 @@
    },
    {
     "base": "google/gemma-3-12b-it",
-    "n": 377
+    "n": 380
    },
    {
     "base": "openai/gpt-oss-20b",
@@ -601,11 +600,15 @@
    }
   ],
   "cn_total": 2361,
-  "us_total": 2495,
+  "us_total": 2498,
   "asof": "2026-07-30"
  },
  "sdk": {
   "cn": [
+   {
+    "pkg": "dashscope",
+    "wk": 645660
+   },
    {
     "pkg": "zhipuai",
     "wk": 72564
