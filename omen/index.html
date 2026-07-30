@@ -60,11 +60,15 @@ nav .links a:hover{color:var(--accT)}
 .btn.ghost{background:transparent;color:var(--ink);border:1px solid var(--line2)}
 .btn.ghost:hover{border-color:var(--acc);color:var(--accT);background:transparent}
 nav .btn{padding:9px 16px;margin-left:6px}
-@media(max-width:760px){nav .links{display:none}}
 
 /* ---------- hero / verdict ---------- */
 .hero{padding:72px 0 96px}
 .hgrid{display:grid;grid-template-columns:1.15fr .85fr;gap:64px;align-items:center}
+/* A grid item's default min-width:auto floors the column at the item's min-content width.
+   The dial panel's .mini rows carry nowrap theme text, so that floor was 446px and the
+   whole page laid out 146px wider than a 390px phone — clipped, not scrollable, because
+   of the overflow-x:hidden above. The column is free to be as narrow as the viewport. */
+.hgrid>*{min-width:0}
 @media(max-width:940px){.hgrid{grid-template-columns:1fr}}
 .vchip{display:inline-block;margin:22px 0 4px;font-size:12px;letter-spacing:.18em;text-transform:uppercase;font-weight:800;
   border:1px solid;border-radius:99px;padding:8px 18px}
@@ -142,6 +146,95 @@ footer{border-top:1px solid var(--line);padding:64px 0 40px;position:relative;z-
 .rv{opacity:0;transform:translateY(26px);transition:opacity .7s ease,transform .7s ease}
 .rv.in{opacity:1;transform:none}
 .up{color:var(--pos)}.down{color:var(--neg)}
+
+/* ---------- mobile ----------
+ * Desktop rhythm on a phone: 96px section padding, a 44px dial readout dragged up onto
+ * its own needle, and a 560px verdict table inside a 334px scroller. The nav drawer that
+ * replaces the hidden link row lives in omen.css, shared with the other four pages.
+ */
+@media(max-width:760px){
+  .wrap{padding-left:max(20px,env(safe-area-inset-left));padding-right:max(20px,env(safe-area-inset-right))}
+  section{padding:56px 0}
+  .kick{font-size:10.5px;letter-spacing:.13em;line-height:1.5;align-items:flex-start}
+  .kick::before{width:16px;flex:0 0 16px;margin-top:7px}
+
+  /* the ticker still scrolls sideways; the mask is what says so */
+  .ticker{-webkit-mask-image:linear-gradient(90deg,#000 87%,transparent);mask-image:linear-gradient(90deg,#000 87%,transparent)}
+  .ticker .in{padding:0 20px;height:34px}
+  .ticker .it{padding:0 14px}
+
+  /* hero */
+  .hero{padding:34px 0 46px}
+  .hgrid{gap:34px}
+  .hero h1{font-size:clamp(27px,7.6vw,34px);line-height:1.14;margin:14px 0 18px}
+  .vchip{margin:18px 0 2px;font-size:11px;letter-spacing:.14em;padding:7px 14px}
+  .hero .sub{font-size:16px;line-height:1.62;margin-bottom:18px}
+  .caveat{font-size:12.5px;line-height:1.75;margin-bottom:24px}
+  .ctas{gap:10px;margin-bottom:22px}
+  .ctas .btn{flex:1 1 100%;justify-content:center;padding:14px 18px;font-size:14px}
+  .livechip{font-size:10px;line-height:1.6;flex-wrap:wrap}
+
+  /* The readout is pulled up into the arc by -46px, but the needle pivots at y=110 of a
+     220x122 viewBox — 90% of the way down the rendered height — so everything above the
+     pivot is swept by the needle. At 320px the number lands beside it; at phone widths
+     the needle goes straight through "38.9". Pull up only the ~12% of dead space below
+     the pivot, which parks the digits just under the pivot instead of on top of it. */
+  .dialpanel{padding:22px 18px 16px;border-radius:10px}
+  .dial{max-width:220px}
+  .dialread{margin-top:-14px}
+  .dialread .n{font-size:34px}
+  .dialread .n small{font-size:13px}
+  .dialread .regime{margin-top:6px}
+  /* the nowrap+ellipsis theme text is what floored the grid column at 446px; on its own
+     line it can wrap instead of being truncated to a stub */
+  .mini{flex-wrap:wrap;gap:0 10px;padding:13px 2px}
+  .mini .nm{width:auto;flex:0 0 auto;margin-right:auto}
+  .mini .th{order:3;flex:0 0 100%;white-space:normal;overflow:visible;text-overflow:clip;
+    font-size:12.5px;line-height:1.5;margin-top:5px}
+  .mini .chg{width:auto;min-width:52px}
+
+  /* why today */
+  .shead{margin-bottom:34px;padding-top:26px}
+  .shead h2{font-size:clamp(25px,6.6vw,30px);line-height:1.16;margin-top:14px}
+  .shead p{margin-top:12px;font-size:14.5px}
+  .reading-h{font-size:clamp(24px,6.4vw,30px);line-height:1.18}
+  .driver{margin-top:28px;padding-left:16px}
+  .driver .q{font-size:17px;line-height:1.35}
+  .driver .meta{font-size:11px;line-height:1.6}
+
+  /* The verdict matrix, unrolled. As a table it was min-width:560px inside a 334px
+     scroller: one swipe to read a row, and today's highlighted cell could start off
+     screen entirely — on the page whose entire job is to show you that cell. Each row
+     becomes its label over its own three stress cells, which fits without scrolling. */
+  .matrix{padding:20px 16px;margin-top:32px;overflow-x:visible}
+  .matrix .cap{font-size:10px;margin-bottom:16px;line-height:1.5}
+  .matrix table{min-width:0;display:block}
+  .matrix tbody{display:block}
+  .matrix tr{display:grid;grid-template-columns:repeat(3,1fr);margin-bottom:16px}
+  .matrix tr:last-child{margin-bottom:0}
+  .matrix tr>:first-child{grid-column:1/-1}
+  .matrix tr>th:first-child{font-size:10.5px;letter-spacing:.08em;color:var(--mut);padding:0 0 9px}
+  .matrix th+th{text-align:center;font-size:9px;padding:0 4px 8px}
+  .matrix td{padding:11px 6px;font-size:10.5px;text-align:center;line-height:1.35}
+  /* border-collapse stops applying once the table is display:block, so drop the
+     duplicated edge rather than draw every divider twice */
+  .matrix td+td{border-left:0}
+  .matrix .foot{font-size:11px;margin-top:18px}
+
+  /* explore */
+  .steps{gap:14px}
+  .step{padding:24px 20px}
+  .step h3{font-size:19px}
+  .step .rom{margin-bottom:12px}
+  .step .go{margin-top:16px}
+
+  /* footer */
+  footer{padding:44px 0 32px}
+  .fgrid{grid-template-columns:1fr 1fr;gap:30px 18px;margin-bottom:36px}
+  .fgrid>div:first-child{grid-column:1/-1}
+  .fgrid a,.fgrid span{font-size:13px;margin-bottom:14px}
+  .fbase{flex-direction:column;gap:8px;font-size:10.5px;padding-top:22px}
+}
 </style>
 </head>
 <body>
@@ -161,7 +254,7 @@ footer{border-top:1px solid var(--line);padding:64px 0 40px;position:relative;z-
       <svg viewBox="0 0 32 32" fill="none"><path d="M3 16C7 9.2 11.4 6 16 6s9 3.2 13 10c-4 6.8-8.4 10-13 10S7 22.8 3 16z" stroke="#e3a63c" stroke-width="2"/><circle cx="16" cy="16" r="4.6" fill="#e3a63c"/><circle cx="16" cy="16" r="1.8" fill="#0b0a08"/></svg>
       OMEN
     </a>
-    <div class="links">
+    <div class="links" id="navlinks">
       <a href="indexes.html">The Indexes</a>
       <a href="gauge.html">The Gauge</a>
       <a href="methodology.html">Methodology</a>
@@ -170,6 +263,7 @@ footer{border-top:1px solid var(--line);padding:64px 0 40px;position:relative;z-
       <a href="ai-capex.html">AI CapEx</a>
     </div>
     <a class="btn" href="polymarket-ai-index.html">Open the monitor</a>
+    <button class="navtoggle" type="button" aria-label="Menu" aria-expanded="false" aria-controls="navlinks"><span class="bars"></span></button>
   </div>
 </nav>
 
@@ -529,5 +623,6 @@ setDial(GAUGE,0);
 reveal();
 goLive();
 </script>
+<script src="omen-nav.js" defer></script>
 </body>
 </html>

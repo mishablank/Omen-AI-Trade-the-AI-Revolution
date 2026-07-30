@@ -52,6 +52,31 @@
   .pill.bull i { background: var(--bull); }
   .pill.bear i { background: var(--crash); }
   .pill.neutral i { background: var(--muted); }
+
+  /* ---------- mobile ----------
+   * The board reflows to "name + stance / take" at 700px, but the stance pill, the sort
+   * controls and the backlink were all around 26px tall — under the tap-target floor —
+   * and the take ran at 12px against a 220px-wide name column.
+   */
+  @media (max-width: 700px) {
+    body { padding: 16px 16px 40px; }
+    header h1 { font-size: 22px; }
+    header p.sub { font-size: 13px; }
+    .backlink { padding: 9px 14px; min-height: 40px; display: inline-flex; align-items: center; }
+
+    .toolbar { gap: 8px; margin: 14px 0 8px; }
+    .toolbar .grow { margin-left: 0; width: 100%; }
+    .seg { flex-wrap: wrap; }
+    .seg button { padding: 12px 13px; font-size: 13px; min-height: 44px; }
+
+    .card { padding: 14px; }
+    .inf { grid-template-columns: 1fr auto; gap: 6px 10px; padding: 13px 0; }
+    .inf .who { min-width: 0; }
+    .inf .stance { justify-self: end; align-self: start; }
+    .inf .take { font-size: 12.5px; line-height: 1.5; }
+    .pill { padding: 6px 12px; }
+    .statrow { gap: 14px 20px; }
+  }
 </style>
 </head>
 <body>

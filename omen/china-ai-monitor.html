@@ -87,6 +87,71 @@
   code { font-size: 11.5px; background: var(--grid); padding: 1px 5px; border-radius: 4px; }
   footer { margin-top: 22px; font-size: 12px; color: var(--muted); line-height: 1.65; }
   footer h3 { font-size: 12.5px; color: var(--text-secondary); margin: 14px 0 4px; }
+
+  /* ---------- mobile ----------
+   * This page laid out at 655px inside a 390px phone, clipped rather than scrolled. Two
+   * causes: the freshness strip's nowrap spans (one runs to 622px on its own), and the
+   * grid/flex children whose default min-width:auto lets their content set the floor.
+   * The label/track/value bars and the routed-token tables also need their fixed first
+   * columns cut down before the bar itself has any room left.
+   */
+  @media (max-width: 700px) {
+    body { padding: 16px 16px 40px; }
+    header h1 { font-size: 22px; }
+    header p.sub { font-size: 13px; }
+    .backlink { padding: 9px 14px; min-height: 40px; display: inline-flex; align-items: center; }
+
+    /* the nowrap freshness chips were the single widest thing on the page */
+    .fresh { gap: 8px 12px; font-size: 11px; padding: 8px 10px; }
+    .fresh span { white-space: normal; align-items: flex-start; }
+    .fresh i { margin-top: 4px; }
+
+    /* min-content floors: without these the widest cell reopens the whole column */
+    .grid2 > *, .gauge > *, .card, .chartwrap, .eqgrid > * { min-width: 0; }
+    .card { padding: 14px 14px 12px; }
+    .card h2 { font-size: 16px; }
+
+    .gauge { gap: 14px; }
+    .gaugeNum { font-size: 46px; }
+
+    .cat .cw { font-size: 10px; }
+
+    /* Squeezing the label column instead just wraps "Router token share (OR+Vercel)" to
+       three lines and leaves the bar 40px wide. Give the label the full row and put the
+       track under it with its readings alongside. */
+    .cat, .hbar {
+      grid-template-columns: 1fr auto auto;
+      grid-template-areas: "lab lab lab" "track val wt";
+      gap: 5px 10px; padding: 9px 0; font-size: 12px;
+    }
+    .cat > :first-child, .hbar > .k { grid-area: lab; white-space: normal; overflow: visible; }
+    .cat > .track, .hbar > .track { grid-area: track; }
+    .cat > .cv, .hbar > .v { grid-area: val; }
+    .cat > .cw { grid-area: wt; }
+    .hbar > .v { grid-area: val / val / wt / wt; }
+    .cat .sub { display: block; margin-top: 1px; }
+
+    .statrow { gap: 14px 20px; }
+    .stat .v { font-size: 17px; }
+
+    table { font-size: 12px; }
+    th, td { padding: 7px 5px; }
+    th:first-child, td:first-child { padding-left: 0; }
+    th:last-child, td:last-child { padding-right: 0; }
+    td.num, th.num { white-space: normal; }
+
+    .eqgrid { grid-template-columns: repeat(auto-fill, minmax(132px, 1fr)); gap: 8px; }
+    .legend { gap: 10px; font-size: 11.5px; }
+    .meterlab, .splitlab { font-size: 10.5px; }
+  }
+
+  /* One table here is five columns wide (rank · model · tag · tokens/wk · share) and its
+   * min-content is 314px, which will not fit a 320px phone however hard the type is
+   * squeezed. Let that one scroll sideways inside the card rather than clip. display:block
+   * on a table still generates an anonymous table box, so the columns stay aligned. */
+  @media (max-width: 430px) {
+    .card > table { display: block; overflow-x: auto; -webkit-overflow-scrolling: touch; }
+  }
 </style>
 </head>
 <body>

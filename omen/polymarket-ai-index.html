@@ -162,6 +162,44 @@
   footer { margin-top: 22px; font-size: 12px; color: var(--muted); line-height: 1.6; }
   .backlink { font-size: 12px; font-weight: 600; color: var(--text-secondary); text-decoration: none; border: 1px solid var(--border); border-radius: 999px; padding: 4px 12px; white-space: nowrap; }
   .backlink:hover { color: var(--accT); border-color: var(--acc); }
+
+  /* ---------- mobile ----------
+   * This page already reflows without overflowing; what it does not do is stay tappable.
+   * The view tabs, the segmented controls and the backlinks were all 24–31px tall, well
+   * under the 44px target floor, and they are the page's entire navigation. The corner
+   * links also floated to their own right-aligned line via margin-left:auto, which reads
+   * as a layout accident once the tab row wraps.
+   */
+  @media (max-width: 700px) {
+    body { padding: 16px 16px 40px; }
+    h1 { font-size: 23px; }
+
+    .topnav { gap: 2px; row-gap: 0; }
+    .topnav > a { padding: 12px 10px; font-size: 13.5px; min-height: 44px; display: inline-flex; align-items: center; }
+    .topnav .corner { margin-left: 0; width: 100%; gap: 8px; padding: 8px 0 10px; }
+    .backlink { padding: 9px 14px; min-height: 40px; display: inline-flex; align-items: center; }
+
+    /* segmented controls are the primary way to re-cut the data on this page */
+    .seg { flex-wrap: wrap; }
+    .seg button { padding: 12px 13px; font-size: 13px; min-height: 44px; }
+
+    /* two 148px columns leave a stat tile ~169px wide, which is enough for the number
+       but not for its caption; one column below 430px keeps the labels on one line */
+    .tiles, .navcards { gap: 10px; }
+    .navcard { padding: 14px; }
+    .statrow { gap: 14px 20px; }
+
+    /* the smallest labels sat at 9–10px, under the threshold where they read as texture */
+    .badge, .pstatus { font-size: 11px; }
+    .l, .sub, .note { font-size: 12px; }
+    table { font-size: 12px; }
+    th, td { padding: 8px 5px; }
+    th:first-child, td:first-child { padding-left: 0; }
+    th:last-child, td:last-child { padding-right: 0; }
+  }
+  @media (max-width: 430px) {
+    .tiles { grid-template-columns: 1fr; }
+  }
 </style>
 </head>
 <body>

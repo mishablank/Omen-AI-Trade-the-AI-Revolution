@@ -51,7 +51,6 @@ nav .links a.here{color:var(--accT);font-weight:600}
 .btn{display:inline-flex;align-items:center;gap:9px;font-size:13px;font-weight:600;
   background:var(--acc);color:#181204;padding:9px 16px;border:0;border-radius:6px;cursor:pointer;transition:background .15s,transform .15s;margin-left:6px}
 .btn:hover{background:var(--accT);transform:translateY(-1px)}
-@media(max-width:760px){nav .links{display:none}}
 
 /* ---------- hero ---------- */
 .hero{padding:76px 0 30px}
@@ -140,6 +139,65 @@ footer{border-top:1px solid var(--line);padding:56px 0 40px;background:var(--bg2
 .rv{opacity:0;transform:translateY(26px);transition:opacity .7s ease,transform .7s ease}
 .rv.in{opacity:1;transform:none}
 .up{color:var(--pos)}.down{color:var(--neg)}
+
+/* ---------- mobile ----------
+ * The eleven .dt tables are 3–4 columns of label + prose + figures, and .num's
+ * white-space:nowrap made their min-content 491px inside a 280px panel — the page laid
+ * out at 545px and body{overflow-x:hidden} clipped the rest away silently. Rather than
+ * put every table in a sideways scroller, each row becomes a block: the first cell is
+ * the row's title and the remaining cells are label/value pairs, with the label coming
+ * from data-l (stamped from that table's own header row, so nothing is lost when the
+ * header row is hidden).
+ */
+@media(max-width:760px){
+  .wrap{padding-left:max(20px,env(safe-area-inset-left));padding-right:max(20px,env(safe-area-inset-right))}
+  section{padding:56px 0}
+
+  .hero{padding:34px 0 24px}
+  .hero h1{font-size:clamp(28px,7.4vw,36px);line-height:1.14;margin:14px 0 18px}
+  .hero .sub{font-size:15.5px;line-height:1.62}
+  .snapline{margin-top:20px;flex-wrap:wrap;line-height:1.6}
+  .credit{font-size:12px}
+
+  .shead{margin-bottom:28px;padding-top:26px}
+  .shead h2{font-size:clamp(24px,6.4vw,30px);line-height:1.16}
+  .shead .claim{font-size:15.5px}
+  .shead p.exp{font-size:14px}
+
+  .tiles{gap:14px;margin-bottom:20px}
+  .tile{padding:18px 16px}
+  .tile .v{font-size:29px}
+
+  .panel{padding:20px 16px 16px;border-radius:10px}
+  .panel h3{font-size:17px}
+
+  /* tables → stacked rows */
+  table.dt,.dt tbody,.dt tr,.dt td{display:block;width:auto}
+  .dt tr:first-child{display:none}
+  .dt tr{border-bottom:1px solid var(--line);padding:13px 0}
+  .dt tr:last-child{border-bottom:none;padding-bottom:2px}
+  .dt td{border:0;padding:3px 0;font-size:13px}
+  .dt td:first-child{color:var(--ink);font-weight:600;padding-top:0;line-height:1.4}
+  .dt td[data-l]::before{content:attr(data-l) " ";display:block;
+    font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:var(--dim);
+    font-family:var(--sans);font-weight:700;margin-bottom:1px}
+  /* figures read left-aligned once they are their own block, not floated right */
+  .dt td.num{text-align:left;white-space:normal;font-size:13.5px}
+  .dt td:empty{display:none}
+
+  .hb{grid-template-columns:96px 1fr 58px;gap:10px;font-size:12px}
+  .srcline{font-size:11px}
+  .pull{padding-left:16px;margin-top:22px}
+  .pull .q{font-size:17px}
+  .honesty{padding:22px 18px 18px}
+  .honesty h3{font-size:18px}
+
+  footer{padding:44px 0 32px}
+  .fgrid{grid-template-columns:1fr 1fr;gap:30px 18px;margin-bottom:36px}
+  .fgrid>div:first-child{grid-column:1/-1}
+  .fgrid a,.fgrid span{font-size:13px;margin-bottom:14px}
+  .fbase{flex-direction:column;gap:8px;font-size:10.5px;padding-top:22px}
+}
 </style>
 </head>
 <body>
@@ -164,7 +222,7 @@ footer{border-top:1px solid var(--line);padding:56px 0 40px;background:var(--bg2
       <svg viewBox="0 0 32 32" fill="none"><path d="M3 16C7 9.2 11.4 6 16 6s9 3.2 13 10c-4 6.8-8.4 10-13 10S7 22.8 3 16z" stroke="#e3a63c" stroke-width="2"/><circle cx="16" cy="16" r="4.6" fill="#e3a63c"/><circle cx="16" cy="16" r="1.8" fill="#0b0a08"/></svg>
       OMEN
     </a>
-    <div class="links">
+    <div class="links" id="navlinks">
       <a href="indexes.html">The Indexes</a>
       <a href="gauge.html">The Gauge</a>
       <a href="methodology.html">Methodology</a>
@@ -173,6 +231,7 @@ footer{border-top:1px solid var(--line);padding:56px 0 40px;background:var(--bg2
       <a href="ai-capex.html" class="here">AI CapEx</a>
     </div>
     <a class="btn" href="polymarket-ai-index.html">Open the monitor</a>
+    <button class="navtoggle" type="button" aria-label="Menu" aria-expanded="false" aria-controls="navlinks"><span class="bars"></span></button>
   </div>
 </nav>
 
@@ -205,9 +264,9 @@ footer{border-top:1px solid var(--line);padding:56px 0 40px;background:var(--bg2
       <span class="cap">Upstream of the capex – what the fabs actually billed</span>
       <table class="dt">
         <tr><th>Series</th><th>Reads on</th><th class="num">Latest</th><th class="num">Δ</th></tr>
-        <tr><td>TSMC monthly revenue (<span class="ltAsof" id="ltTsmcAsof2">–</span>)</td><td>Realized AI-silicon demand, ~10-day lag</td><td class="num" id="ltTsmcRev">–</td><td class="num" id="ltTsmcDelta">–</td></tr>
-        <tr><td>TSMC revenue, YTD vs prior year</td><td>Trend, strips the monthly noise</td><td class="num" id="ltTsmcYtd">–</td><td class="num"></td></tr>
-        <tr><td>Korea semiconductor exports, 20-day</td><td>HBM/memory pulse every ~10 days – the classic cycle canary</td><td class="num" id="ltKorea">manual</td><td class="num"></td></tr>
+        <tr><td>TSMC monthly revenue (<span class="ltAsof" id="ltTsmcAsof2">–</span>)</td><td data-l="Reads on">Realized AI-silicon demand, ~10-day lag</td><td data-l="Latest" class="num" id="ltTsmcRev">–</td><td data-l="Δ" class="num" id="ltTsmcDelta">–</td></tr>
+        <tr><td>TSMC revenue, YTD vs prior year</td><td data-l="Reads on">Trend, strips the monthly noise</td><td data-l="Latest" class="num" id="ltTsmcYtd">–</td><td data-l="Δ" class="num"></td></tr>
+        <tr><td>Korea semiconductor exports, 20-day</td><td data-l="Reads on">HBM/memory pulse every ~10 days – the classic cycle canary</td><td data-l="Latest" class="num" id="ltKorea">manual</td><td data-l="Δ" class="num"></td></tr>
       </table>
       <div class="srcline"><b>METRIC</b> – monthly and YTD revenue growth at the fab that makes every AI accelerator; a Korea 20-day print that rolls over flags memory demand cracking before any earnings call. &nbsp;<b>SOURCE</b> – <a href="https://openapi.twse.com.tw/" target="_blank" rel="noopener">TWSE OpenAPI</a> (live) · <a href="https://www.customs.go.kr" target="_blank" rel="noopener">Korea Customs 20-day release</a> (hand-updated; no keyless API)</div>
     </div>
@@ -216,9 +275,9 @@ footer{border-top:1px solid var(--line);padding:56px 0 40px;background:var(--bg2
       <span class="cap">EDGAR full-text search counts · trailing 90 days vs the 90 before</span>
       <table class="dt">
         <tr><th>Paperwork</th><th>Reads on</th><th class="num">90d</th><th class="num">Prior 90d</th></tr>
-        <tr><td>FWP + 424B, six AI-capex issuers</td><td>Thesis i in filing counts – the debt wave, mechanically</td><td class="num" id="ltDebt2">–</td><td class="num" id="ltDebtPrev2">–</td></tr>
-        <tr><td>S-1s mentioning "artificial intelligence"</td><td>IPO pipeline – Kedrosky's "gonging of the bell"</td><td class="num" id="ltS1">–</td><td class="num" id="ltS1Prev">–</td></tr>
-        <tr><td>Form Ds mentioning "artificial intelligence"</td><td>Private raises – the pre-IPO froth layer</td><td class="num" id="ltFormD">–</td><td class="num" id="ltFormDPrev">–</td></tr>
+        <tr><td>FWP + 424B, six AI-capex issuers</td><td data-l="Reads on">Thesis i in filing counts – the debt wave, mechanically</td><td data-l="90d" class="num" id="ltDebt2">–</td><td data-l="Prior 90d" class="num" id="ltDebtPrev2">–</td></tr>
+        <tr><td>S-1s mentioning "artificial intelligence"</td><td data-l="Reads on">IPO pipeline – Kedrosky's "gonging of the bell"</td><td data-l="90d" class="num" id="ltS1">–</td><td data-l="Prior 90d" class="num" id="ltS1Prev">–</td></tr>
+        <tr><td>Form Ds mentioning "artificial intelligence"</td><td data-l="Reads on">Private raises – the pre-IPO froth layer</td><td data-l="90d" class="num" id="ltFormD">–</td><td data-l="Prior 90d" class="num" id="ltFormDPrev">–</td></tr>
       </table>
       <div class="srcline"><b>METRIC</b> – acceleration, not level: each count vs its own prior window. Issuers: MSFT · GOOGL · AMZN · META · ORCL · CRWV. &nbsp;<b>SOURCE</b> – <a href="https://efts.sec.gov/LATEST/search-index?q=%22artificial+intelligence%22&forms=S-1" target="_blank" rel="noopener">SEC EDGAR full-text search API</a> (live) · <a href="#debt">thesis i</a> · <a href="#equity">thesis iii</a></div>
     </div>
@@ -227,9 +286,9 @@ footer{border-top:1px solid var(--line);padding:56px 0 40px;background:var(--bg2
       <span class="cap">Does the capex earn its cost? The only live demand-side series on this page</span>
       <table class="dt">
         <tr><th>Series</th><th>Reads on</th><th class="num">Latest</th><th class="num">Δ</th></tr>
-        <tr><td>Ramp AI Index (<span id="ltRampAsof2">–</span>)</td><td>Share of US businesses with paid AI subscriptions – transaction data, not surveys</td><td class="num" id="ltRamp2">–</td><td class="num" id="ltRampDelta">–</td></tr>
-        <tr><td>Census BTOS estimate (contrast)</td><td>The survey number Ramp's transaction data corrects</td><td class="num" id="ltBtos">–</td><td class="num"></td></tr>
-        <tr><td>Anthropic Economic Index, latest release</td><td>Usage composition (augmentation <span id="ltAeiSplit">57/43</span> automation, hand-updated) – freshness tracked live</td><td class="num" id="ltAei">–</td><td class="num"></td></tr>
+        <tr><td>Ramp AI Index (<span id="ltRampAsof2">–</span>)</td><td data-l="Reads on">Share of US businesses with paid AI subscriptions – transaction data, not surveys</td><td data-l="Latest" class="num" id="ltRamp2">–</td><td data-l="Δ" class="num" id="ltRampDelta">–</td></tr>
+        <tr><td>Census BTOS estimate (contrast)</td><td data-l="Reads on">The survey number Ramp's transaction data corrects</td><td data-l="Latest" class="num" id="ltBtos">–</td><td data-l="Δ" class="num"></td></tr>
+        <tr><td>Anthropic Economic Index, latest release</td><td data-l="Reads on">Usage composition (augmentation <span id="ltAeiSplit">57/43</span> automation, hand-updated) – freshness tracked live</td><td data-l="Latest" class="num" id="ltAei">–</td><td data-l="Δ" class="num"></td></tr>
       </table>
       <div class="srcline"><b>METRIC</b> – adoption level and momentum; a stall here while capex accelerates is the ROI thesis confirming in the one dataset that can't be talked up. &nbsp;<b>SOURCE</b> – <a href="https://ramp.com/data/ai-index" target="_blank" rel="noopener">Ramp AI Index CSV</a> (live) · <a href="https://huggingface.co/datasets/Anthropic/EconomicIndex" target="_blank" rel="noopener">Anthropic Economic Index</a> (freshness live, split manual)</div>
     </div>
@@ -238,11 +297,11 @@ footer{border-top:1px solid var(--line);padding:56px 0 40px;background:var(--bg2
       <span class="cap">The stranded-GW thesis in federal data · EIA-860M inventory by status</span>
       <table class="dt">
         <tr><th>Status</th><th>Reads on</th><th class="num">Nameplate GW</th></tr>
-        <tr><td>Operating</td><td>What the grid actually has</td><td class="num" id="ltEiaOp">–</td></tr>
-        <tr><td>Under construction</td><td>Steel in the ground</td><td class="num" id="ltEiaUc">–</td></tr>
-        <tr><td>Planned / approvals pending</td><td>The press-release layer</td><td class="num" id="ltEiaPlan">–</td></tr>
-        <tr><td>US interconnection queue (LBNL, <span id="ltLbnlAsof">2023-12</span>)</td><td>Requests, most of which never build</td><td class="num" id="ltLbnl">≈2,600</td></tr>
-        <tr><td>PJM capacity clears (2025/26 → 2026/27)</td><td>Scarcity pricing the AI load already caused</td><td class="num" id="ltPjm">$269.92 → $329.17/MW-day</td></tr>
+        <tr><td>Operating</td><td data-l="Reads on">What the grid actually has</td><td data-l="Nameplate GW" class="num" id="ltEiaOp">–</td></tr>
+        <tr><td>Under construction</td><td data-l="Reads on">Steel in the ground</td><td data-l="Nameplate GW" class="num" id="ltEiaUc">–</td></tr>
+        <tr><td>Planned / approvals pending</td><td data-l="Reads on">The press-release layer</td><td data-l="Nameplate GW" class="num" id="ltEiaPlan">–</td></tr>
+        <tr><td>US interconnection queue (LBNL, <span id="ltLbnlAsof">2023-12</span>)</td><td data-l="Reads on">Requests, most of which never build</td><td data-l="Nameplate GW" class="num" id="ltLbnl">≈2,600</td></tr>
+        <tr><td>PJM capacity clears (2025/26 → 2026/27)</td><td data-l="Reads on">Scarcity pricing the AI load already caused</td><td data-l="Nameplate GW" class="num" id="ltPjm">$269.92 → $329.17/MW-day</td></tr>
       </table>
       <div class="srcline" id="ltEiaSrc"><b>METRIC</b> – planned vs under-construction vs operating GW; a widening planned-minus-built gap is the stranded-asset pipeline forming. &nbsp;<b>SOURCE</b> – <a href="https://www.eia.gov/opendata/" target="_blank" rel="noopener">EIA-860M via API v2</a> (<span id="ltEiaState">needs EIA_API_KEY – free registration</span>) · <a href="https://emp.lbl.gov/queues" target="_blank" rel="noopener">LBNL queues</a> + <a href="https://www.pjm.com" target="_blank" rel="noopener">PJM auctions</a> (hand-updated) · <a href="#stranded">thesis v</a></div>
     </div>
@@ -268,12 +327,12 @@ footer{border-top:1px solid var(--line);padding:56px 0 40px;background:var(--bg2
       <span class="cap">Benchmark deals, Sep 2025 → Jul 2026 · curated from prospectus + press</span>
       <table class="dt">
         <tr><th>Date</th><th>Issuer</th><th>Vehicle</th><th class="num">Size</th></tr>
-        <tr><td>Sep 2025</td><td>Oracle</td><td>IG bonds, 5–40y</td><td class="num">$18.0B</td></tr>
-        <tr><td>Oct 2025</td><td>Meta</td><td>IG bonds – largest corporate deal of 2025</td><td class="num">$30.0B</td></tr>
-        <tr><td>Oct 2025</td><td>Meta / Blue Owl</td><td>Hyperion SPV private placement (off balance sheet)</td><td class="num">$27.3B</td></tr>
-        <tr><td>Nov 2025</td><td>Alphabet</td><td>IG bonds, USD + EUR tranches</td><td class="num">$25.0B + €6.75B</td></tr>
-        <tr><td>Dec 2025</td><td>Amazon</td><td>IG bonds – first issuance since 2022</td><td class="num">$15.0B</td></tr>
-        <tr><td>H1 2026</td><td>Complex-wide</td><td>Follow-on IG + SPV/private-credit vehicles</td><td class="num">≈$100B+</td></tr>
+        <tr><td>Sep 2025</td><td data-l="Issuer">Oracle</td><td data-l="Vehicle">IG bonds, 5–40y</td><td data-l="Size" class="num">$18.0B</td></tr>
+        <tr><td>Oct 2025</td><td data-l="Issuer">Meta</td><td data-l="Vehicle">IG bonds – largest corporate deal of 2025</td><td data-l="Size" class="num">$30.0B</td></tr>
+        <tr><td>Oct 2025</td><td data-l="Issuer">Meta / Blue Owl</td><td data-l="Vehicle">Hyperion SPV private placement (off balance sheet)</td><td data-l="Size" class="num">$27.3B</td></tr>
+        <tr><td>Nov 2025</td><td data-l="Issuer">Alphabet</td><td data-l="Vehicle">IG bonds, USD + EUR tranches</td><td data-l="Size" class="num">$25.0B + €6.75B</td></tr>
+        <tr><td>Dec 2025</td><td data-l="Issuer">Amazon</td><td data-l="Vehicle">IG bonds – first issuance since 2022</td><td data-l="Size" class="num">$15.0B</td></tr>
+        <tr><td>H1 2026</td><td data-l="Issuer">Complex-wide</td><td data-l="Vehicle">Follow-on IG + SPV/private-credit vehicles</td><td data-l="Size" class="num">≈$100B+</td></tr>
       </table>
       <div class="srcline"><b>METRIC</b> – TTM IG issuance by hyperscalers vs banks; new-issue concession; share of book taken by insurers and sovereign wealth. &nbsp;<b>SOURCE</b> – <a href="https://efts.sec.gov/LATEST/search-index?q=%22free%20writing%20prospectus%22&dateRange=custom&forms=FWP" target="_blank" rel="noopener">SEC EDGAR 424B/FWP filings</a> · <a href="https://www.finra.org/finra-data/fixed-income" target="_blank" rel="noopener">FINRA TRACE</a> · <a href="https://www.sifma.org/resources/research/statistics/" target="_blank" rel="noopener">SIFMA issuance statistics</a> · live filing counts in <a href="#tape">the tape</a></div>
     </div>
@@ -299,10 +358,10 @@ footer{border-top:1px solid var(--line);padding:56px 0 40px;background:var(--bg2
       <span class="cap">Single-name and structure watchlist · levels approximate, from TRACE prints + filings</span>
       <table class="dt">
         <tr><th>Instrument</th><th>Reads on</th><th class="num">Level</th><th class="num">Δ 90d</th></tr>
-        <tr><td>CoreWeave 9¼% 2030</td><td>Neocloud funding cost – GPU-backed, contract-concentrated</td><td class="num">≈+560bp</td><td class="num down">+85bp</td></tr>
-        <tr><td>Oracle 10y benchmark</td><td>Most-leveraged major – capex running ahead of operating cash flow</td><td class="num">≈+130bp</td><td class="num down">+22bp</td></tr>
-        <tr><td>Meta Hyperion SPV 2049 (Blue Owl)</td><td>Off-balance-sheet data-center paper – the new marginal structure</td><td class="num">≈+240bp</td><td class="num down">+15bp</td></tr>
-        <tr><td>ICE BofA HY OAS (contrast)</td><td>Generic high yield – what the gauge already reads</td><td class="num">≈+310bp</td><td class="num up">−5bp</td></tr>
+        <tr><td>CoreWeave 9¼% 2030</td><td data-l="Reads on">Neocloud funding cost – GPU-backed, contract-concentrated</td><td data-l="Level" class="num">≈+560bp</td><td data-l="Δ 90d" class="num down">+85bp</td></tr>
+        <tr><td>Oracle 10y benchmark</td><td data-l="Reads on">Most-leveraged major – capex running ahead of operating cash flow</td><td data-l="Level" class="num">≈+130bp</td><td data-l="Δ 90d" class="num down">+22bp</td></tr>
+        <tr><td>Meta Hyperion SPV 2049 (Blue Owl)</td><td data-l="Reads on">Off-balance-sheet data-center paper – the new marginal structure</td><td data-l="Level" class="num">≈+240bp</td><td data-l="Δ 90d" class="num down">+15bp</td></tr>
+        <tr><td>ICE BofA HY OAS (contrast)</td><td data-l="Reads on">Generic high yield – what the gauge already reads</td><td data-l="Level" class="num">≈+310bp</td><td data-l="Δ 90d" class="num up">−5bp</td></tr>
       </table>
       <div class="hbars" id="creditBars">
         <div class="hb"><span class="k"><b>CRWV 2030</b> vs own 12m range</span><span class="track"><i class="hot" data-w="72"></i></span><span class="v">72%</span></div>
@@ -334,10 +393,10 @@ footer{border-top:1px solid var(--line);padding:56px 0 40px;background:var(--bg2
       <span class="cap">Secondary issuance, placements, and ATM programs · trailing 12 months</span>
       <table class="dt">
         <tr><th>Date</th><th>Issuer</th><th>Event</th><th class="num">Size</th></tr>
-        <tr><td>Jul 2026</td><td>Alphabet</td><td>Berkshire private placement</td><td class="num">$10B</td></tr>
-        <tr><td>Jul 2026</td><td>Alphabet</td><td>Two at-the-market sale programs</td><td class="num">≈$70B</td></tr>
-        <tr><td>Watch</td><td>Meta · Oracle</td><td>Next-most-stretched capex/OCF ratios – candidates to follow</td><td class="num">–</td></tr>
-        <tr><td>Watch</td><td>OpenAI · Anthropic</td><td>IPO S-1s – check whether training costs get capitalized ("earnings before bad stuff")</td><td class="num">–</td></tr>
+        <tr><td>Jul 2026</td><td data-l="Issuer">Alphabet</td><td data-l="Event">Berkshire private placement</td><td data-l="Size" class="num">$10B</td></tr>
+        <tr><td>Jul 2026</td><td data-l="Issuer">Alphabet</td><td data-l="Event">Two at-the-market sale programs</td><td data-l="Size" class="num">≈$70B</td></tr>
+        <tr><td>Watch</td><td data-l="Issuer">Meta · Oracle</td><td data-l="Event">Next-most-stretched capex/OCF ratios – candidates to follow</td><td data-l="Size" class="num">–</td></tr>
+        <tr><td>Watch</td><td data-l="Issuer">OpenAI · Anthropic</td><td data-l="Event">IPO S-1s – check whether training costs get capitalized ("earnings before bad stuff")</td><td data-l="Size" class="num">–</td></tr>
       </table>
       <div class="pull">
         <div class="q">"The blow-off top is this year's three mega IPOs. That marks the gonging of the bell."</div>
@@ -374,9 +433,9 @@ footer{border-top:1px solid var(--line);padding:56px 0 40px;background:var(--bg2
       </div>
       <table class="dt" style="margin-top:22px">
         <tr><th>Buildout</th><th>Peak share of GDP</th><th>What followed</th></tr>
-        <tr><td>Railroads, 1880s</td><td class="num">≈6%</td><td>Panics of 1873/1893 · ≈half of boom-era track eventually abandoned</td></tr>
-        <tr><td>Telecom fiber, 2000</td><td class="num">≈1.2%</td><td>2001–02 bust · fiber found reuse, but only after the equity was destroyed</td></tr>
-        <tr><td>AI data centers, 2026</td><td class="num">≈1.8% ↑</td><td>Open – this page exists to watch it</td></tr>
+        <tr><td>Railroads, 1880s</td><td data-l="Peak share of GDP" class="num">≈6%</td><td data-l="What followed">Panics of 1873/1893 · ≈half of boom-era track eventually abandoned</td></tr>
+        <tr><td>Telecom fiber, 2000</td><td data-l="Peak share of GDP" class="num">≈1.2%</td><td data-l="What followed">2001–02 bust · fiber found reuse, but only after the equity was destroyed</td></tr>
+        <tr><td>AI data centers, 2026</td><td data-l="Peak share of GDP" class="num">≈1.8% ↑</td><td data-l="What followed">Open – this page exists to watch it</td></tr>
       </table>
       <div class="srcline"><b>METRIC</b> – big-5 capex TTM and capex/OCF per filer; AI investment contribution to real GDP growth, quarterly. &nbsp;<b>SOURCE</b> – <a href="https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany" target="_blank" rel="noopener">SEC EDGAR / XBRL</a> (monitor's existing capex anchor) · <a href="https://www.bea.gov/data/gdp/gross-domestic-product" target="_blank" rel="noopener">BEA NIPA tables</a> · <a href="https://fred.stlouisfed.org" target="_blank" rel="noopener">FRED</a></div>
     </div>
@@ -402,13 +461,13 @@ footer{border-top:1px solid var(--line);padding:56px 0 40px;background:var(--bg2
       <span class="cap">Announced ≥1 GW campuses · status per company statements + utility filings</span>
       <table class="dt">
         <tr><th>Project</th><th>Sponsor</th><th class="num">Target</th><th>Status</th></tr>
-        <tr><td>Stargate Abilene, TX</td><td>OpenAI · Oracle · Crusoe</td><td class="num">1.2 GW</td><td><span class="chip part">Partially energized</span></td></tr>
-        <tr><td>Hyperion, Richland Parish, LA</td><td>Meta</td><td class="num">5 GW</td><td><span class="chip uc">Under construction</span></td></tr>
-        <tr><td>Prometheus, New Albany, OH</td><td>Meta</td><td class="num">1 GW</td><td><span class="chip uc">Under construction</span></td></tr>
-        <tr><td>Colossus 2, Memphis, TN</td><td>xAI</td><td class="num">1.5 GW</td><td><span class="chip uc">Under construction</span></td></tr>
-        <tr><td>Fairwater, Mt Pleasant, WI</td><td>Microsoft</td><td class="num">≈1 GW</td><td><span class="chip uc">Under construction</span></td></tr>
-        <tr><td>Wonder Valley, AB (Canada)</td><td>O'Leary / Greenview</td><td class="num">7.5 GW</td><td><span class="chip ann">Announced</span></td></tr>
-        <tr><td>Utah / New Mexico mega-sites</td><td>Various</td><td class="num">1–10 GW</td><td><span class="chip risk">Speculative</span></td></tr>
+        <tr><td>Stargate Abilene, TX</td><td data-l="Sponsor">OpenAI · Oracle · Crusoe</td><td data-l="Target" class="num">1.2 GW</td><td data-l="Status"><span class="chip part">Partially energized</span></td></tr>
+        <tr><td>Hyperion, Richland Parish, LA</td><td data-l="Sponsor">Meta</td><td data-l="Target" class="num">5 GW</td><td data-l="Status"><span class="chip uc">Under construction</span></td></tr>
+        <tr><td>Prometheus, New Albany, OH</td><td data-l="Sponsor">Meta</td><td data-l="Target" class="num">1 GW</td><td data-l="Status"><span class="chip uc">Under construction</span></td></tr>
+        <tr><td>Colossus 2, Memphis, TN</td><td data-l="Sponsor">xAI</td><td data-l="Target" class="num">1.5 GW</td><td data-l="Status"><span class="chip uc">Under construction</span></td></tr>
+        <tr><td>Fairwater, Mt Pleasant, WI</td><td data-l="Sponsor">Microsoft</td><td data-l="Target" class="num">≈1 GW</td><td data-l="Status"><span class="chip uc">Under construction</span></td></tr>
+        <tr><td>Wonder Valley, AB (Canada)</td><td data-l="Sponsor">O'Leary / Greenview</td><td data-l="Target" class="num">7.5 GW</td><td data-l="Status"><span class="chip ann">Announced</span></td></tr>
+        <tr><td>Utah / New Mexico mega-sites</td><td data-l="Sponsor">Various</td><td data-l="Target" class="num">1–10 GW</td><td data-l="Status"><span class="chip risk">Speculative</span></td></tr>
       </table>
       <div class="pull">
         <div class="q">"Counties pre-budget the tax revenue – new playgrounds, water, schools. When the data center doesn't get finished, they're worse off than before it was announced."</div>
@@ -438,11 +497,11 @@ footer{border-top:1px solid var(--line);padding:56px 0 40px;background:var(--bg2
       <span class="cap">Telecom 1998–2002 vs AI 2024–2026 · mechanics, not levels</span>
       <table class="dt">
         <tr><th>Mechanic</th><th>Telecom, 2000</th><th>AI, 2026</th></tr>
-        <tr><td>Asset built ahead of demand</td><td>Long-haul fiber</td><td>GPU clusters + power</td></tr>
-        <tr><td>Vendor financing</td><td>Lucent / Nortel to CLECs</td><td>Nvidia to neoclouds + labs</td></tr>
-        <tr><td>Depreciation vs reality</td><td>20–25y book life on gear obsoleted in ~5</td><td>5–6y book life on GPUs obsoleted in ~2–3</td></tr>
-        <tr><td>Utilization tell</td><td>% of fiber lit</td><td>GPU rental price · fleet utilization</td></tr>
-        <tr><td>Outcome</td><td>≈$5T erased; capacity reused post-bankruptcy</td><td><span class="chip risk">Open</span></td></tr>
+        <tr><td>Asset built ahead of demand</td><td data-l="Telecom, 2000">Long-haul fiber</td><td data-l="AI, 2026">GPU clusters + power</td></tr>
+        <tr><td>Vendor financing</td><td data-l="Telecom, 2000">Lucent / Nortel to CLECs</td><td data-l="AI, 2026">Nvidia to neoclouds + labs</td></tr>
+        <tr><td>Depreciation vs reality</td><td data-l="Telecom, 2000">20–25y book life on gear obsoleted in ~5</td><td data-l="AI, 2026">5–6y book life on GPUs obsoleted in ~2–3</td></tr>
+        <tr><td>Utilization tell</td><td data-l="Telecom, 2000">% of fiber lit</td><td data-l="AI, 2026">GPU rental price · fleet utilization</td></tr>
+        <tr><td>Outcome</td><td data-l="Telecom, 2000">≈$5T erased; capacity reused post-bankruptcy</td><td data-l="AI, 2026"><span class="chip risk">Open</span></td></tr>
       </table>
       <div class="pull">
         <div class="q">"This has identical mechanics to the telecom build-out that erased five trillion dollars of value."</div>
@@ -505,10 +564,10 @@ footer{border-top:1px solid var(--line);padding:56px 0 40px;background:var(--bg2
       <span class="cap">Premium/discount to holdings · curated · a discount (mNAV &lt;1) is where the loop breaks</span>
       <table class="dt">
         <tr><th>Vehicle type</th><th>Underlying</th><th class="num">mNAV</th><th>State</th></tr>
-        <tr><td>Flagship BTC treasury</td><td>Bitcoin</td><td class="num">≈1.6×</td><td><span class="chip risk">Premium</span></td></tr>
-        <tr><td>Second-wave BTC treasuries</td><td>Bitcoin</td><td class="num">≈1.0–1.2×</td><td><span class="chip uc">Compressing</span></td></tr>
-        <tr><td>ETH / SOL treasuries</td><td>Ether · Solana</td><td class="num">≈0.9–1.1×</td><td><span class="chip ann">At/near NAV</span></td></tr>
-        <tr><td>Emerging AI-compute treasuries</td><td>GPUs · token credits</td><td class="num">–</td><td><span class="chip part">Watch</span></td></tr>
+        <tr><td>Flagship BTC treasury</td><td data-l="Underlying">Bitcoin</td><td data-l="mNAV" class="num">≈1.6×</td><td data-l="State"><span class="chip risk">Premium</span></td></tr>
+        <tr><td>Second-wave BTC treasuries</td><td data-l="Underlying">Bitcoin</td><td data-l="mNAV" class="num">≈1.0–1.2×</td><td data-l="State"><span class="chip uc">Compressing</span></td></tr>
+        <tr><td>ETH / SOL treasuries</td><td data-l="Underlying">Ether · Solana</td><td data-l="mNAV" class="num">≈0.9–1.1×</td><td data-l="State"><span class="chip ann">At/near NAV</span></td></tr>
+        <tr><td>Emerging AI-compute treasuries</td><td data-l="Underlying">GPUs · token credits</td><td data-l="mNAV" class="num">–</td><td data-l="State"><span class="chip part">Watch</span></td></tr>
       </table>
       <div class="pull">
         <div class="q">"These bitcoin treasury companies are absurd."</div>
@@ -657,5 +716,6 @@ async function liveTape(){
 liveTape();
 </script>
 
+<script src="omen-nav.js" defer></script>
 </body>
 </html>
