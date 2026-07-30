@@ -363,9 +363,14 @@ It also routes the monitor's five views: /polymarket-ai-index/<view> serves the
 same document for every allowlisted view and lets the page read
 location.pathname. One fetch, instant view switching, real shareable URLs.
 
+Production is deployed by .github/workflows/deploy.yml, from main, and only from
+CI: merge to main, the suite runs, the Worker ships. Do not run `wrangler deploy`
+by hand — it bundles omen/ off disk, so it ships your working tree rather than a
+commit, and a stale worktree goes live exactly as it sits. omen/deploy-guard.py
+is the escape hatch, and refuses unless HEAD is origin/main and the tree clean.
+
     One-time setup:
       npx wrangler r2 bucket create omen-data
-      npx wrangler deploy
       npx wrangler r2 object put omen-data/market-data.json \
           --file omen/market-data.json --content-type application/json --remote
 
