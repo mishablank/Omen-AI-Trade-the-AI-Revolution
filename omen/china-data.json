@@ -1,5 +1,5 @@
 {
- "updated": "2026-07-30T11:16:16Z",
+ "updated": "2026-07-30T14:23:12Z",
  "snapshot_date": "2026-07-30",
  "artificial_analysis": {
   "cn_best": "GLM-5.2",
@@ -137,28 +137,28 @@
  },
  "openrouter_week": {
   "week": "2026-07-27",
-  "cn_share": 0.5493,
-  "us_share": 0.2908,
-  "spi": 1.889,
-  "total_tokens": 29543253845394
+  "cn_share": 0.5477,
+  "us_share": 0.292,
+  "spi": 1.876,
+  "total_tokens": 30836485983931
  },
  "vercel_gateway": {
   "asof": "2026-07-30",
-  "cn_share": 49.8,
-  "us_share": 50.1,
-  "spi": 0.994,
+  "cn_share": 50.81,
+  "us_share": 49.09,
+  "spi": 1.035,
   "top_cn": [
    {
     "lab": "deepseek",
-    "share": 22.49
+    "share": 22.83
    },
    {
     "lab": "moonshotai",
-    "share": 7.66
+    "share": 8.34
    },
    {
     "lab": "zai",
-    "share": 6.27
+    "share": 6.62
    },
    {
     "lab": "stepfun",
@@ -166,11 +166,11 @@
    },
    {
     "lab": "inclusionai",
-    "share": 3.56
+    "share": 3.47
    },
    {
     "lab": "minimax",
-    "share": 2.56
+    "share": 2.35
    }
   ],
   "series": [
@@ -476,15 +476,15 @@
    },
    {
     "d": "2026-07-30",
-    "cn": 49.8,
-    "us": 50.1
+    "cn": 50.81,
+    "us": 49.09
    }
   ],
   "license": "AI Gateway Leaderboard Data (c) Vercel, CC BY 4.0"
  },
  "ollama": {
-  "cn": 276255000,
-  "us": 447646095,
+  "cn": 276258400,
+  "us": 447849500,
   "cn_top": [
    {
     "name": "deepseek-r1",
@@ -551,13 +551,13 @@
    },
    {
     "label": "Best AI at end of 2026: Qwen",
-    "p": 0.01,
+    "p": 0.011,
     "ticker": "KXLLM1-26DEC31-ALI",
     "series": "kxllm1"
    },
    {
     "label": "Best AI at end of 2026: Claude",
-    "p": 0.639,
+    "p": 0.629,
     "ticker": "KXLLM1-26DEC31-A",
     "series": "kxllm1"
    }
@@ -607,26 +607,14 @@
  "sdk": {
   "cn": [
    {
-    "pkg": "dashscope",
-    "wk": 645660
-   },
-   {
     "pkg": "zhipuai",
     "wk": 72564
-   },
-   {
-    "pkg": "zai-sdk",
-    "wk": 27047
    }
   ],
   "us": [
    {
     "pkg": "openai",
     "wk": 95886110
-   },
-   {
-    "pkg": "google-genai",
-    "wk": 68742502
    }
   ],
   "asof": "2026-07-30"
