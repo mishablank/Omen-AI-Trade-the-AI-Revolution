@@ -85,9 +85,17 @@ jobs:
         # fetches the fast data live in-browser; this only regenerates china-data.json.
         # Both keys are optional: without ARTIFICIAL_ANALYSIS_API_KEY the AA scores stay
         # a dated snapshot; without CF_RADAR_TOKEN the Radar panel stays hidden.
+        #
+        # GITHUB_TOKEN is the run's own ephemeral token, not a stored secret. Shared
+        # runner IPs exhaust the 60 req/hr unauthenticated limit on api.github.com, and
+        # a run where all seven repos failed at once is what poisoned the star-velocity
+        # baseline; this raises the ceiling to 1,000/hr. It is in scope only for this
+        # step, which runs first-party Python — the step that executes third-party
+        # scraper code stays secret-free.
         env:
           ARTIFICIAL_ANALYSIS_API_KEY: ${{ secrets.ARTIFICIAL_ANALYSIS_API_KEY }}
           CF_RADAR_TOKEN: ${{ secrets.CF_RADAR_TOKEN }}
+          GITHUB_TOKEN: ${{ github.token }}
         run: python3 omen/update-china-data.py
 
       - name: Refresh AI CapEx live tape

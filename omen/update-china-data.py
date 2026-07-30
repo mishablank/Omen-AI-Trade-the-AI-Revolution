@@ -139,37 +139,64 @@ def arena():
     return out
 
 
+def gh_headers():
+    """api.github.com allows 60 req/hr unauthenticated, per egress IP - shared CI
+    runners blow through that, which is how all seven repos once failed at once.
+    Any token (Actions hands out `github.token` free) raises the ceiling to 1,000/hr."""
+    tok = os.environ.get("GITHUB_TOKEN")
+    return {"Authorization": f"Bearer {tok}"} if tok else {}
+
+
 def github_velocity(hist):
     """Stars now vs last run -> stars/day across the basket."""
     now = time.time()
     stars = {}
     for repo in GH_REPOS:
         try:
-            stars[repo] = jget(f"https://api.github.com/repos/{repo}")["stargazers_count"]
+            stars[repo] = jget(f"https://api.github.com/repos/{repo}",
+                               headers=gh_headers())["stargazers_count"]
         except Exception as e:
             print(f"  github {repo}: {e}", file=sys.stderr)
-    total = sum(stars.values())
+    if not stars:
+        # A run where every repo failed must not be written down as a baseline. One
+        # did: it stored 0 stars, and because the reseed below only fired when the
+        # key was *absent*, nothing could ever overwrite it - the page reported
+        # -282,777 stars/day for five days straight.
+        return None, stars
     prev = hist.get("github")
+    base = (prev or {}).get("stars")
     per_day = None
-    if prev and prev.get("total") and now - prev["t"] >= 20 * 3600:
-        # baseline is old enough to measure a stable rate; measure, then reset it
-        per_day = (total - prev["total"]) / ((now - prev["t"]) / 86400)
-        hist["github"] = {"t": now, "total": total, "stars": stars}
-    elif not prev:
-        # seed the baseline once; keep it until it ages past 20h so frequent CI
-        # runs don't reset it to "now" every time and never produce a velocity
-        hist["github"] = {"t": now, "total": total, "stars": stars}
+    if base and now - prev["t"] >= 20 * 3600:
+        # Only repos in both snapshots: when a fetch fails the basket has not lost
+        # every star that repo held, we just cannot see it this run. Undercounting
+        # a rate by one small repo is survivable; sign-flipping it is not.
+        shared = [r for r in stars if r in base]
+        if shared:
+            per_day = sum(stars[r] - base[r] for r in shared) / ((now - prev["t"]) / 86400)
+        hist["github"] = {"t": now, "stars": stars}
+    elif not base:
+        # seed, or reseed a baseline an all-failed run left empty; keep it until it
+        # ages past 20h so frequent CI runs don't reset it to "now" every time and
+        # never produce a velocity
+        hist["github"] = {"t": now, "stars": stars}
     return per_day, stars
 
 
-def pick_github_velocity(per_day, prev):
+def pick_github_velocity(per_day, prev, stars):
     """Fresh measured velocity, else the previous run's value. A measurement only
     happens on the ~1 run/day where the baseline has aged past 20h; without the
     carry, every other run drops the key and the page's GitHub gauge family goes
     dark for most of the day."""
     if per_day is not None:
         return round(per_day, 1)
-    return (prev or {}).get("github_stars_per_day")
+    vel = (prev or {}).get("github_stars_per_day")
+    total = sum(stars.values())
+    if vel is not None and total and abs(vel) > total:
+        # The basket cannot move more stars in a day than it holds, so this came from
+        # a run measured against a broken baseline. Drop it rather than carry it
+        # forever - with no basket to check against (a total outage) carry as usual.
+        return None
+    return vel
 
 
 def huggingface():
@@ -759,13 +786,16 @@ def run():
 
     print("github velocity ...")
     per_day, stars = github_velocity(hist)
-    vel = pick_github_velocity(per_day, prev)
+    vel = pick_github_velocity(per_day, prev, stars)
     if vel is not None:
         out["github_stars_per_day"] = vel
     if per_day is not None:
         print(f"  +{per_day:.0f} stars/day across basket")
     elif vel is not None:
         print(f"  baseline too fresh to remeasure - carrying previous +{vel:.0f}/day")
+    elif not stars:
+        print("  every repo failed - baseline left untouched, no velocity published",
+              file=sys.stderr)
     else:
         print("  baseline stored; velocity available from next run (>20h apart)")
 

@@ -1,5 +1,6 @@
 import importlib.util
 import re
+import time
 from pathlib import Path
 
 import pytest
@@ -158,18 +159,97 @@ def test_pick_apps_falls_back_to_manual():
     assert got == ucd.MANUAL["apps"]
 
 
+BASKET = {r: 35000 for r in ucd.GH_REPOS}
+
+
+def stub_github(stars, monkeypatch):
+    """Make github_velocity see exactly `stars`; any other repo fails like a 403."""
+    def jget(url, *a, **kw):
+        repo = url.split("/repos/", 1)[1]
+        if repo not in stars:
+            raise RuntimeError("403 rate limit exceeded")
+        return {"stargazers_count": stars[repo]}
+    monkeypatch.setattr(ucd, "jget", jget)
+
+
 def test_pick_github_velocity_prefers_fresh_measurement():
-    assert ucd.pick_github_velocity(41.66, {"github_stars_per_day": 99.0}) == 41.7
+    assert ucd.pick_github_velocity(41.66, {"github_stars_per_day": 99.0}, BASKET) == 41.7
 
 
 def test_pick_github_velocity_carries_forward_previous_value():
     prev = {"github_stars_per_day": 32.3}
-    assert ucd.pick_github_velocity(None, prev) == 32.3
+    assert ucd.pick_github_velocity(None, prev, BASKET) == 32.3
 
 
 def test_pick_github_velocity_none_when_never_measured():
-    assert ucd.pick_github_velocity(None, {}) is None
-    assert ucd.pick_github_velocity(None, None) is None
+    assert ucd.pick_github_velocity(None, {}, BASKET) is None
+    assert ucd.pick_github_velocity(None, None, BASKET) is None
+
+
+def test_pick_github_velocity_drops_a_carried_value_larger_than_the_basket():
+    # the basket cannot gain or lose more stars in a day than it holds; a value that
+    # big came from a run measured against a broken baseline, so it must not be carried
+    assert ucd.pick_github_velocity(None, {"github_stars_per_day": -282776.7}, BASKET) is None
+    assert ucd.pick_github_velocity(None, {"github_stars_per_day": 120.0}, BASKET) == 120.0
+
+
+def test_pick_github_velocity_carries_forward_when_the_basket_is_unknown():
+    # every repo failed this run, so there is nothing to sanity-check against - a
+    # GitHub outage must not erase the last good measurement
+    assert ucd.pick_github_velocity(None, {"github_stars_per_day": 32.3}, {}) == 32.3
+
+
+def test_gh_headers_authorize_only_when_a_token_is_set(monkeypatch):
+    monkeypatch.delenv("GITHUB_TOKEN", raising=False)
+    assert ucd.gh_headers() == {}
+    monkeypatch.setenv("GITHUB_TOKEN", "ghs_test")
+    assert ucd.gh_headers()["Authorization"] == "Bearer ghs_test"
+
+
+def test_github_velocity_seeds_the_baseline_on_a_first_run(monkeypatch):
+    stub_github(BASKET, monkeypatch)
+    hist = {}
+    per_day, stars = ucd.github_velocity(hist)
+    assert per_day is None and stars == BASKET
+    assert hist["github"]["stars"] == BASKET
+
+
+def test_github_velocity_never_seeds_a_baseline_when_every_repo_fails(monkeypatch):
+    # the bug of record: an all-failed run stored total=0 / stars={}, and the old
+    # reseed only fired when the key was absent, so the baseline was poisoned for good
+    stub_github({}, monkeypatch)
+    hist = {}
+    per_day, stars = ucd.github_velocity(hist)
+    assert per_day is None and stars == {}
+    assert "github" not in hist
+
+
+def test_github_velocity_reseeds_a_baseline_left_empty_by_a_failed_run(monkeypatch):
+    stub_github(BASKET, monkeypatch)
+    hist = {"github": {"t": time.time() - 5 * 86400, "total": 0, "stars": {}}}
+    per_day, _ = ucd.github_velocity(hist)
+    assert per_day is None
+    assert hist["github"]["stars"] == BASKET
+
+
+def test_github_velocity_measures_only_repos_present_in_both_snapshots(monkeypatch):
+    # two repos fail this run; the rate is over the five we can see on both sides,
+    # not the whole basket "losing" everything the missing two had
+    seen = {r: 35100 for r in ucd.GH_REPOS[:-2]}
+    stub_github(seen, monkeypatch)
+    hist = {"github": {"t": time.time() - 2 * 86400, "stars": dict(BASKET)}}
+    per_day, _ = ucd.github_velocity(hist)
+    assert per_day == pytest.approx(len(seen) * 100 / 2, rel=1e-3)
+    assert hist["github"]["stars"] == seen
+
+
+def test_github_velocity_keeps_a_fresh_baseline_until_it_ages_past_20h(monkeypatch):
+    stub_github({r: 99000 for r in ucd.GH_REPOS}, monkeypatch)
+    t0 = time.time() - 3600
+    hist = {"github": {"t": t0, "stars": dict(BASKET)}}
+    per_day, _ = ucd.github_velocity(hist)
+    assert per_day is None
+    assert hist["github"] == {"t": t0, "stars": BASKET}
 
 
 # ---- new source families (2026-07-20) --------------------------------------------
