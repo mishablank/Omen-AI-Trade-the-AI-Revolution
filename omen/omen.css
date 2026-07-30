@@ -1,4 +1,8 @@
-/* OMEN design tokens — the palette and type stack shared by every page.
+/* OMEN design tokens and shared mobile chrome.
+ *
+ * Two parts: the :root token block every page inherits, and — at the bottom — the one
+ * copy of the mobile nav drawer, which is layout rather than tokens but has the same
+ * "declared once, used by five hand-written navs" problem the tokens had.
  *
  * These custom properties were previously re-declared in a :root block inside each page's
  * inline <style>: eight copies, kept in agreement by hand and by luck. Link this before the
@@ -36,4 +40,97 @@
   --aqua:#79c99a; --violet:#e3a63c;
   /* fonts */
   --sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif; --serif:Georgia,"Iowan Old Style","Palatino Linotype","Times New Roman",serif; --mono:ui-monospace,"SF Mono",Menlo,Consolas,monospace;
+}
+
+/* ---------- mobile nav drawer ----------
+ * Each page's inline <style> used to end its nav rules with
+ *   @media(max-width:760px){nav .links{display:none}}
+ * which deleted six of the site's seven destinations on a phone and left nothing behind
+ * to reach them with. Below the breakpoint the same link row now becomes a panel under
+ * the bar, opened by .navtoggle; omen-nav.js owns the state and test_mobile_nav.py fails
+ * if a page reintroduces the bare display:none.
+ *
+ * The leading `body ` on the nav selectors is load-bearing, not decoration. Every page
+ * links this file *before* its own inline <style>, and those styles declare `nav .links`
+ * and `nav .wrap` at the same specificity — at equal specificity the later rule wins, so
+ * an unprefixed rule here would lose `gap` and `margin-left` to the desktop bar and the
+ * drawer would open as a 28px-gapped column. One extra element selector outranks them
+ * without reaching for !important, which a page would then be unable to override at all.
+ */
+.navtoggle{display:none;background:transparent;border:0;color:inherit;font:inherit}
+
+@media(max-width:760px){
+  .navtoggle{
+    display:inline-flex;align-items:center;justify-content:center;
+    width:44px;height:44px;flex:0 0 auto;
+    border:1px solid var(--line2);border-radius:8px;
+    color:var(--ink);cursor:pointer;-webkit-tap-highlight-color:transparent;
+    transition:border-color .2s,color .2s
+  }
+  .navtoggle:hover,.navtoggle[aria-expanded="true"]{border-color:var(--acc);color:var(--accT)}
+  .navtoggle:focus-visible{outline:2px solid var(--acc);outline-offset:2px}
+  /* three 17px rules that fold into an X — one element plus its two pseudo-elements */
+  .navtoggle .bars,.navtoggle .bars::before,.navtoggle .bars::after{
+    display:block;width:17px;height:1.5px;background:currentColor;border-radius:2px;
+    transition:transform .22s ease,background-color .18s ease
+  }
+  .navtoggle .bars{position:relative}
+  .navtoggle .bars::before,.navtoggle .bars::after{content:"";position:absolute;left:0}
+  .navtoggle .bars::before{transform:translateY(-6px)}
+  .navtoggle .bars::after{transform:translateY(6px)}
+  .navtoggle[aria-expanded="true"] .bars{background:transparent}
+  .navtoggle[aria-expanded="true"] .bars::before{transform:rotate(45deg)}
+  .navtoggle[aria-expanded="true"] .bars::after{transform:rotate(-45deg)}
+
+  /* nav .wrap is position:relative on every page, so top:100% lands just under the bar */
+  body nav .links{
+    display:flex;flex-direction:column;gap:0;margin-left:0;
+    position:absolute;left:0;right:0;top:100%;
+    background:var(--bg2);border-bottom:1px solid var(--line);
+    box-shadow:0 24px 40px rgba(0,0,0,.5);
+    max-height:0;overflow:hidden;visibility:hidden;
+    transition:max-height .28s ease,visibility 0s linear .28s
+  }
+  body nav .links[data-open]{
+    max-height:70vh;overflow-y:auto;visibility:visible;
+    transition:max-height .28s ease,visibility 0s
+  }
+  body nav .links a{
+    display:block;padding:15px 20px;font-size:15px;color:var(--ink);
+    border-top:1px solid var(--line)
+  }
+  body nav .links a:first-child{border-top:0}
+  body nav .links a.here{color:var(--accT)}
+  /* the bar itself: logo + CTA + toggle, with the gap coming off the wrap */
+  body nav .wrap{gap:10px}
+  body nav .logo{margin-right:auto;font-size:19px}
+  body nav .btn{padding:10px 13px;font-size:12px;margin-left:0}
+
+  /* nothing in the bar should be under the 44px tap-target floor — the wordmark is a
+     link home on every page, and at 26px tall it was the smallest target in the chrome */
+  .btn{min-height:44px}
+  body nav .logo{min-height:44px}
+  /* standalone "read on →" affordances at the foot of a card, sized as text on desktop */
+  .step .go{min-height:44px;align-items:center}
+}
+
+/* At 320px (SE, and any phone at 100% text zoom in landscape split view) the three bar
+ * items add up to 270 of the 280 available, so they end up touching. Buy back ~20px
+ * rather than drop the wordmark or retitle the CTA at a breakpoint. */
+@media(max-width:380px){
+  body nav .logo{font-size:17px;gap:8px}
+  body nav .logo svg{width:22px;height:22px}
+  body nav .btn{padding:10px 10px;font-size:11.5px}
+}
+
+/* Without this, every in-page anchor lands under the sticky bar. */
+@media(max-width:760px){
+  [id]{scroll-margin-top:76px}
+}
+
+/* The drawer's open/closed state must not depend on an animation running. */
+@media(prefers-reduced-motion:reduce){
+  body nav .links,body nav .links[data-open],.navtoggle .bars,
+  .navtoggle .bars::before,.navtoggle .bars::after{transition:none}
+  html{scroll-behavior:auto}
 }

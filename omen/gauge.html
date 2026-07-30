@@ -53,7 +53,6 @@ nav .links a.here{color:var(--accT);font-weight:600}
   background:var(--acc);color:#181204;padding:11px 20px;border:0;border-radius:6px;cursor:pointer;transition:background .15s,transform .15s}
 .btn:hover{background:var(--accT);transform:translateY(-1px)}
 nav .btn{padding:9px 16px;margin-left:6px}
-@media(max-width:760px){nav .links{display:none}}
 
 /* ---------- section headers ---------- */
 .shead{margin-bottom:56px}
@@ -133,7 +132,7 @@ footer{border-top:1px solid var(--line);padding:40px 0;background:var(--bg2)}
       <svg viewBox="0 0 32 32" fill="none"><path d="M3 16C7 9.2 11.4 6 16 6s9 3.2 13 10c-4 6.8-8.4 10-13 10S7 22.8 3 16z" stroke="#e3a63c" stroke-width="2"/><circle cx="16" cy="16" r="4.6" fill="#e3a63c"/><circle cx="16" cy="16" r="1.8" fill="#0b0a08"/></svg>
       OMEN
     </a>
-    <div class="links">
+    <div class="links" id="navlinks">
       <a href="indexes.html">The Indexes</a>
       <a href="gauge.html" class="here">The Gauge</a>
       <a href="methodology.html">Methodology</a>
@@ -142,6 +141,7 @@ footer{border-top:1px solid var(--line);padding:40px 0;background:var(--bg2)}
       <a href="ai-capex.html">AI CapEx</a>
     </div>
     <a class="btn" href="polymarket-ai-index.html">Open the monitor</a>
+    <button class="navtoggle" type="button" aria-label="Menu" aria-expanded="false" aria-controls="navlinks"><span class="bars"></span></button>
   </div>
 </nav>
 
@@ -388,5 +388,6 @@ renderFams(true); renderEquity(); animateGauge();
 requestAnimationFrame(()=>{ $("needle").style.left=GAUGE+"%"; });
 goLive();
 </script>
+<script src="omen-nav.js" defer></script>
 </body>
 </html>
