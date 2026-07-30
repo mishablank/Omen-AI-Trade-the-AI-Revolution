@@ -1,5 +1,5 @@
 {
- "updated": "2026-07-30T14:23:12Z",
+ "updated": "2026-07-30T15:13:43Z",
  "snapshot_date": "2026-07-30",
  "artificial_analysis": {
   "cn_best": "GLM-5.2",
@@ -137,10 +137,10 @@
  },
  "openrouter_week": {
   "week": "2026-07-27",
-  "cn_share": 0.5477,
-  "us_share": 0.292,
-  "spi": 1.876,
-  "total_tokens": 30836485983931
+  "cn_share": 0.5471,
+  "us_share": 0.2923,
+  "spi": 1.872,
+  "total_tokens": 31182166258167
  },
  "vercel_gateway": {
   "asof": "2026-07-30",
@@ -483,8 +483,8 @@
   "license": "AI Gateway Leaderboard Data (c) Vercel, CC BY 4.0"
  },
  "ollama": {
-  "cn": 276258400,
-  "us": 447849500,
+  "cn": 276259600,
+  "us": 447950002,
   "cn_top": [
    {
     "name": "deepseek-r1",
@@ -557,7 +557,7 @@
    },
    {
     "label": "Best AI at end of 2026: Claude",
-    "p": 0.629,
+    "p": 0.626,
     "ticker": "KXLLM1-26DEC31-A",
     "series": "kxllm1"
    }
@@ -567,7 +567,7 @@
   "cn": [
    {
     "base": "Qwen/Qwen3-8B",
-    "n": 1982
+    "n": 1983
    },
    {
     "base": "deepseek-ai/DeepSeek-R1",
@@ -589,19 +589,19 @@
    },
    {
     "base": "google/gemma-3-12b-it",
-    "n": 371
+    "n": 374
    },
    {
     "base": "openai/gpt-oss-20b",
-    "n": 545
+    "n": 546
    },
    {
     "base": "microsoft/phi-4",
     "n": 102
    }
   ],
-  "cn_total": 2362,
-  "us_total": 2487,
+  "cn_total": 2363,
+  "us_total": 2491,
   "asof": "2026-07-30"
  },
  "sdk": {
