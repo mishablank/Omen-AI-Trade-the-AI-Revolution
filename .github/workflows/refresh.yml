@@ -3,8 +3,13 @@ name: Refresh market data
 on:
   schedule:
     # every 30 minutes during and around US market hours (13:00–21:59 UTC ≈ 9am–5pm ET),
-    # then hourly overnight so the dashboard is never badly stale
+    # then hourly the rest of the time so the dashboard is never badly stale.
+    # The third line exists because the first two together left 13:00–21:59 UTC on
+    # Sat/Sun with no trigger at all: the weekday line is `1-5`, and the hourly line
+    # skips 13–21. Equities don't move then, but the China monitor's router, Ollama and
+    # Kalshi feeds ride the same job and were freezing for ~9h every weekend afternoon.
     - cron: "*/30 13-21 * * 1-5"
+    - cron: "0 13-21 * * 0,6"
     - cron: "0 0-12,22-23 * * *"
   workflow_dispatch: {}
 
@@ -114,6 +119,7 @@ jobs:
           put snapshots.csv    "text/csv"
           put influencers.json "application/json"
           put capex-data.json  "application/json"
+          put china-data.json  "application/json"
 
       - name: Commit refreshed data
         run: |
@@ -155,7 +161,8 @@ jobs:
 
           # Everything else stays a per-run commit: the append-only *-snapshots.csv history,
           # the alert dedup state, and the small JSON files that are bundled-asset-only
-          # (china-*, app-charts) or cheap enough to keep as a warm fallback. All 1–10 KB.
+          # (china-history, china-snapshots, app-charts) or cheap enough to keep as a warm
+          # fallback for an R2 miss (china-data now, like influencers). All 1–10 KB.
           for f in omen/snapshots.csv omen/alert-state.json omen/influencers.json \
                    omen/china-data.json omen/china-history.json omen/china-snapshots.csv \
                    omen/app-charts.json omen/capex-data.json omen/capex-snapshots.csv; do

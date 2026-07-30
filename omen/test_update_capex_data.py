@@ -338,3 +338,76 @@ def test_every_worker_data_path_is_run_worker_first():
     rwf = set(wrangler["assets"]["run_worker_first"])
     missing = data_paths - rwf
     assert not missing, f"DATA_FILES paths absent from run_worker_first: {missing}"
+
+
+def test_every_worker_data_path_is_uploaded_to_r2():
+    """The third list. run_worker_first only routes the request; if refresh.yml never
+    puts the file in the bucket, every request misses R2 and falls back to the bundled
+    asset, which is the same freeze in a different disguise."""
+    import re
+    root = Path(__file__).resolve().parents[1]
+    worker = (root / "worker.js").read_text()
+    block = re.search(r"const DATA_FILES\s*=\s*\{(.*?)\};", worker, re.S).group(1)
+    keys = set(re.findall(r'key:\s*"([^"]+)"', block))
+    workflow = (root / ".github/workflows/refresh.yml").read_text()
+    uploaded = set(re.findall(r'^\s*put\s+(\S+)\s', workflow, re.M))
+    missing = keys - uploaded
+    assert not missing, f"DATA_FILES keys never uploaded to R2 by refresh.yml: {missing}"
+
+
+def test_every_page_fetched_data_file_is_live_served():
+    """Any same-origin data file a page fetches at runtime has to come off the R2 path,
+    or the panel silently freezes at whatever was bundled on the last deploy. This is
+    how china-data.json served 6-day-old Vercel/Ollama numbers while the batch job was
+    refreshing it on time every 30 minutes."""
+    import re
+    root = Path(__file__).resolve().parents[1]
+    worker = (root / "worker.js").read_text()
+    block = re.search(r"const DATA_FILES\s*=\s*\{(.*?)\};", worker, re.S).group(1)
+    keys = set(re.findall(r'key:\s*"([^"]+)"', block))
+    fetched = set()
+    for page in (root / "omen").glob("*.html"):
+        fetched |= set(re.findall(
+            r'(?:fetch|jget)\(\s*"([a-z0-9-]+\.(?:json|csv))"', page.read_text()))
+    missing = fetched - keys
+    assert not missing, f"pages fetch data files that are not live-served: {missing}"
+
+
+def _cron_covered_hours(crons):
+    """(day-of-week, hour) pairs that at least one cron expression fires in."""
+    def expand(field, lo, hi):
+        out = set()
+        for part in field.split(","):
+            step = 1
+            if "/" in part:
+                part, raw = part.split("/")
+                step = int(raw)
+            if part == "*":
+                start, end = lo, hi
+            elif "-" in part:
+                start, end = (int(x) for x in part.split("-"))
+            else:
+                start = end = int(part)
+            out |= set(range(start, end + 1, step))
+        return out
+
+    covered = set()
+    for cron in crons:
+        _minute, hour, _dom, _month, dow = cron.split()
+        for d in expand(dow, 0, 6):
+            for h in expand(hour, 0, 23):
+                covered.add((d % 7, h))
+    return covered
+
+
+def test_refresh_schedule_has_no_uncovered_hours():
+    """Every hour of every day needs a trigger. The original pair of expressions left
+    Sat/Sun 13:00–21:59 UTC with none, so the China panels froze for ~9h each weekend
+    afternoon while the freshness strip still claimed 'live'."""
+    import re
+    root = Path(__file__).resolve().parents[1]
+    workflow = (root / ".github/workflows/refresh.yml").read_text()
+    crons = re.findall(r'^\s*- cron:\s*"([^"]+)"', workflow, re.M)
+    assert crons, "no cron schedule found in refresh.yml"
+    gaps = {(d, h) for d in range(7) for h in range(24)} - _cron_covered_hours(crons)
+    assert not gaps, f"hours with no refresh trigger (dow, hour UTC): {sorted(gaps)}"
