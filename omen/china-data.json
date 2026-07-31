@@ -1,5 +1,5 @@
 {
- "updated": "2026-07-31T09:50:40Z",
+ "updated": "2026-07-31T12:58:46Z",
  "snapshot_date": "2026-07-31",
  "artificial_analysis": {
   "cn_best": "GLM-5.2",
@@ -9,7 +9,7 @@
   "asof": "2026-07-12"
  },
  "search_consumer": {
-  "western_share_pct": 3.2,
+  "western_share_pct": 3.3,
   "asof": "2026-07",
   "source": "google-trends",
   "terms_us": [
@@ -29,7 +29,7 @@
    "Seed 1.6",
    "Seed 2.0"
   ],
-  "note": "Google Trends US, 90-day avg: 8 Chinese AI terms = 3.2% of AI-assistant search interest vs ChatGPT+Gemini+Claude+Llama AI+Meta AI."
+  "note": "Google Trends US, 90-day avg: 8 Chinese AI terms = 3.3% of AI-assistant search interest vs ChatGPT+Gemini+Claude+Llama AI+Meta AI."
  },
  "apps": {
   "score": 0,
@@ -136,10 +136,10 @@
  },
  "openrouter_week": {
   "week": "2026-07-27",
-  "cn_share": 0.537,
-  "us_share": 0.3014,
-  "spi": 1.781,
-  "total_tokens": 37349211286746
+  "cn_share": 0.5355,
+  "us_share": 0.3027,
+  "spi": 1.769,
+  "total_tokens": 38538007971806
  },
  "vercel_gateway": {
   "asof": "2026-07-31",
@@ -482,8 +482,8 @@
   "license": "AI Gateway Leaderboard Data (c) Vercel, CC BY 4.0"
  },
  "ollama": {
-  "cn": 274301200,
-  "us": 448170168,
+  "cn": 274504200,
+  "us": 448174088,
   "cn_top": [
    {
     "name": "deepseek-r1",
@@ -491,7 +491,7 @@
    },
    {
     "name": "qwen2.5",
-    "pulls": 35700000
+    "pulls": 35800000
    },
    {
     "name": "qwen3",
@@ -503,7 +503,7 @@
    },
    {
     "name": "qwen3.5",
-    "pulls": 16600000
+    "pulls": 16700000
    },
    {
     "name": "qwen3-coder",
@@ -538,13 +538,13 @@
    },
    {
     "label": "Best AI at end of 2026: Kimi",
-    "p": 0.04,
+    "p": 0.03,
     "ticker": "KXLLM1-26DEC31-MOON",
     "series": "kxllm1"
    },
    {
     "label": "Best AI at end of 2026: Ernie",
-    "p": 0.006,
+    "p": 0.005,
     "ticker": "KXLLM1-26DEC31-BAID",
     "series": "kxllm1"
    },
@@ -556,7 +556,7 @@
    },
    {
     "label": "Best AI at end of 2026: Claude",
-    "p": 0.646,
+    "p": 0.638,
     "ticker": "KXLLM1-26DEC31-A",
     "series": "kxllm1"
    }
@@ -608,14 +608,6 @@
    {
     "pkg": "dashscope",
     "wk": 666396
-   },
-   {
-    "pkg": "zhipuai",
-    "wk": 71822
-   },
-   {
-    "pkg": "zai-sdk",
-    "wk": 27609
    }
   ],
   "us": [
@@ -624,8 +616,8 @@
     "wk": 97663750
    },
    {
-    "pkg": "google-genai",
-    "wk": 68237300
+    "pkg": "anthropic",
+    "wk": 45133043
    }
   ],
   "asof": "2026-07-31"
