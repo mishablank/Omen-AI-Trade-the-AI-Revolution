@@ -1,5 +1,5 @@
 {
- "updated": "2026-07-31T06:51:31Z",
+ "updated": "2026-07-31T09:50:40Z",
  "snapshot_date": "2026-07-31",
  "artificial_analysis": {
   "cn_best": "GLM-5.2",
@@ -38,7 +38,7 @@
   "best": [
    {
     "label": "Kimi",
-    "rank": 147,
+    "rank": 146,
     "store": "android",
     "country": "fr"
    }
@@ -55,7 +55,7 @@
    "au",
    "kr"
   ],
-  "detail": "no Chinese AI app in any iOS or Play top-100 (nearest: Kimi #147 (FR Play)); basket-mean Western top-100 presence 0/100 across 10 markets",
+  "detail": "no Chinese AI app in any iOS or Play top-100 (nearest: Kimi #146 (FR Play)); basket-mean Western top-100 presence 0/100 across 10 markets",
   "note": "iOS Apple RSS top-100 + Android Play top-200 across 10 markets; presence = basket-mean of best top-100 chart rank (DeepSeek/Qwen/Doubao/Kimi/MiniMax), #1=100 #100=1; ranks past top-100 score 0."
  },
  "lmarena": {
@@ -74,102 +74,102 @@
   "cnOrgs": [
    {
     "org": "Qwen",
-    "dl": 270433409
+    "dl": 270778493
    },
    {
     "org": "deepseek-ai",
-    "dl": 34103944
+    "dl": 34084923
    },
    {
     "org": "zai-org",
-    "dl": 15392523
+    "dl": 15438448
    },
    {
     "org": "moonshotai",
-    "dl": 3969403
+    "dl": 4132262
    },
    {
     "org": "MiniMaxAI",
-    "dl": 2546390
+    "dl": 2577503
    },
    {
     "org": "tencent",
-    "dl": 1473433
+    "dl": 1449237
    },
    {
     "org": "XiaomiMiMo",
-    "dl": 1448081
+    "dl": 1441640
    },
    {
     "org": "stepfun-ai",
-    "dl": 1274845
+    "dl": 1281672
    }
   ],
   "usOrgs": [
    {
     "org": "google",
-    "dl": 63246614
+    "dl": 63080665
    },
    {
     "org": "meta-llama",
-    "dl": 37111960
+    "dl": 37132219
    },
    {
     "org": "nvidia",
-    "dl": 23546673
+    "dl": 23760670
    },
    {
     "org": "openai",
-    "dl": 12715975
+    "dl": 12793608
    },
    {
     "org": "microsoft",
-    "dl": 7115517
+    "dl": 7092203
    },
    {
     "org": "allenai",
-    "dl": 3781065
+    "dl": 3883170
    }
   ],
-  "cn": 330642028,
-  "us": 147517804
+  "cn": 331184178,
+  "us": 147742535
  },
  "openrouter_week": {
   "week": "2026-07-27",
-  "cn_share": 0.5382,
-  "us_share": 0.3004,
-  "spi": 1.792,
-  "total_tokens": 36342404447137
+  "cn_share": 0.537,
+  "us_share": 0.3014,
+  "spi": 1.781,
+  "total_tokens": 37349211286746
  },
  "vercel_gateway": {
   "asof": "2026-07-31",
-  "cn_share": 44.4,
-  "us_share": 55.44,
-  "spi": 0.801,
+  "cn_share": 42.92,
+  "us_share": 56.92,
+  "spi": 0.754,
   "top_cn": [
    {
     "lab": "deepseek",
-    "share": 22.88
+    "share": 22.19
    },
    {
     "lab": "moonshotai",
-    "share": 8.23
+    "share": 6.2
    },
    {
     "lab": "zai",
-    "share": 5.82
+    "share": 5.49
    },
    {
     "lab": "stepfun",
-    "share": 3.19
+    "share": 4.06
    },
    {
     "lab": "minimax",
-    "share": 1.72
+    "share": 1.98
    },
    {
     "lab": "inclusionai",
-    "share": 1.37
+    "share": 1.71
    }
   ],
   "series": [
@@ -475,15 +475,15 @@
    },
    {
     "d": "2026-07-31",
-    "cn": 44.4,
-    "us": 55.44
+    "cn": 42.92,
+    "us": 56.92
    }
   ],
   "license": "AI Gateway Leaderboard Data (c) Vercel, CC BY 4.0"
  },
  "ollama": {
-  "cn": 276772300,
-  "us": 448066129,
+  "cn": 274301200,
+  "us": 448170168,
   "cn_top": [
    {
     "name": "deepseek-r1",
@@ -499,7 +499,7 @@
    },
    {
     "name": "qwen2.5-coder",
-    "pulls": 19600000
+    "pulls": 19700000
    },
    {
     "name": "qwen3.5",
@@ -517,14 +517,14 @@
    },
    {
     "name": "llama3.2",
-    "pulls": 78400000
+    "pulls": 78500000
    },
    {
     "name": "gemma3",
     "pulls": 39100000
    }
   ],
-  "n_models": 234,
+  "n_models": 232,
   "asof": "2026-07-31"
  },
  "kalshi": {
@@ -556,7 +556,7 @@
    },
    {
     "label": "Best AI at end of 2026: Claude",
-    "p": 0.632,
+    "p": 0.646,
     "ticker": "KXLLM1-26DEC31-A",
     "series": "kxllm1"
    }
@@ -566,7 +566,7 @@
   "cn": [
    {
     "base": "Qwen/Qwen3-8B",
-    "n": 1982
+    "n": 1983
    },
    {
     "base": "deepseek-ai/DeepSeek-R1",
@@ -584,7 +584,7 @@
   "us": [
    {
     "base": "meta-llama/Llama-3.1-8B",
-    "n": 1469
+    "n": 1467
    },
    {
     "base": "google/gemma-3-12b-it",
@@ -599,8 +599,8 @@
     "n": 102
    }
   ],
-  "cn_total": 2362,
-  "us_total": 2497,
+  "cn_total": 2363,
+  "us_total": 2495,
   "asof": "2026-07-31"
  },
  "sdk": {
@@ -610,11 +610,19 @@
     "wk": 666396
    },
    {
+    "pkg": "zhipuai",
+    "wk": 71822
+   },
+   {
     "pkg": "zai-sdk",
     "wk": 27609
    }
   ],
   "us": [
+   {
+    "pkg": "openai",
+    "wk": 97663750
+   },
    {
     "pkg": "google-genai",
     "wk": 68237300
