@@ -1,5 +1,5 @@
 {
- "updated": "2026-07-31T21:39:29Z",
+ "updated": "2026-07-31T23:10:34Z",
  "snapshot_date": "2026-07-31",
  "artificial_analysis": {
   "cn_best": "GLM-5.2",
@@ -37,16 +37,16 @@
   "source": "app-charts",
   "best": [
    {
-    "label": "Kimi",
-    "rank": 173,
-    "store": "android",
-    "country": "fr"
-   },
-   {
     "label": "Qwen",
-    "rank": 173,
+    "rank": 164,
     "store": "android",
     "country": "br"
+   },
+   {
+    "label": "Kimi",
+    "rank": 170,
+    "store": "android",
+    "country": "fr"
    }
   ],
   "markets": [
@@ -61,7 +61,7 @@
    "au",
    "kr"
   ],
-  "detail": "no Chinese AI app in any iOS or Play top-100 (nearest: Kimi #173 (FR Play)); basket-mean Western top-100 presence 0/100 across 10 markets",
+  "detail": "no Chinese AI app in any iOS or Play top-100 (nearest: Qwen #164 (BR Play)); basket-mean Western top-100 presence 0/100 across 10 markets",
   "note": "iOS Apple RSS top-100 + Android Play top-200 across 10 markets; presence = basket-mean of best top-100 chart rank (DeepSeek/Qwen/Doubao/Kimi/MiniMax), #1=100 #100=1; ranks past top-100 score 0."
  },
  "lmarena": {
@@ -143,10 +143,10 @@
  },
  "openrouter_week": {
   "week": "2026-07-27",
-  "cn_share": 0.5296,
-  "us_share": 0.3081,
-  "spi": 1.719,
-  "total_tokens": 41806699695873
+  "cn_share": 0.5288,
+  "us_share": 0.3089,
+  "spi": 1.712,
+  "total_tokens": 42127699305702
  },
  "vercel_gateway": {
   "asof": "2026-07-31",
@@ -489,8 +489,8 @@
   "license": "AI Gateway Leaderboard Data (c) Vercel, CC BY 4.0"
  },
  "ollama": {
-  "cn": 274611000,
-  "us": 448282509,
+  "cn": 274711700,
+  "us": 448283314,
   "cn_top": [
    {
     "name": "deepseek-r1",
@@ -506,7 +506,7 @@
    },
    {
     "name": "qwen2.5-coder",
-    "pulls": 19700000
+    "pulls": 19800000
    },
    {
     "name": "qwen3.5",
@@ -545,7 +545,7 @@
    },
    {
     "label": "Best AI at end of 2026: Kimi",
-    "p": 0.02,
+    "p": 0.04,
     "ticker": "KXLLM1-26DEC31-MOON",
     "series": "kxllm1"
    },
@@ -563,7 +563,7 @@
    },
    {
     "label": "Best AI at end of 2026: Claude",
-    "p": 0.649,
+    "p": 0.65,
     "ticker": "KXLLM1-26DEC31-A",
     "series": "kxllm1"
    }

@@ -1,5 +1,5 @@
 {
- "updated": "2026-07-31T21:39:29Z",
+ "updated": "2026-07-31T23:10:34Z",
  "source": "google-play-scraper",
  "store": "android",
  "depth": 200,
@@ -9,7 +9,7 @@
    "label": "Kimi",
    "store": "android",
    "country": "fr",
-   "rank": 173,
+   "rank": 170,
    "appId": "com.moonshot.kimichat",
    "title": "Kimi"
   },
@@ -17,9 +17,17 @@
    "label": "Qwen",
    "store": "android",
    "country": "br",
-   "rank": 173,
+   "rank": 164,
    "appId": "com.tongyi.intl",
    "title": "Qwen - Alibaba AI Assistant"
+  },
+  {
+   "label": "Kimi",
+   "store": "android",
+   "country": "ca",
+   "rank": 195,
+   "appId": "com.moonshot.kimichat",
+   "title": "Kimi"
   }
  ]
 }
