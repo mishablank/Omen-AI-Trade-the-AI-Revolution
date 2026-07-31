@@ -1,5 +1,5 @@
 {
- "updated": "2026-07-31T15:33:19Z",
+ "updated": "2026-07-31T17:17:21Z",
  "snapshot_date": "2026-07-31",
  "artificial_analysis": {
   "cn_best": "GLM-5.2",
@@ -70,6 +70,7 @@
   "asof": "2026-07-30",
   "source": "lmarena-dataset"
  },
+ "github_stars_per_day": 35.5,
  "hf": {
   "cnOrgs": [
    {
@@ -136,40 +137,40 @@
  },
  "openrouter_week": {
   "week": "2026-07-27",
-  "cn_share": 0.5345,
-  "us_share": 0.3036,
-  "spi": 1.76,
-  "total_tokens": 39205248516285
+  "cn_share": 0.5331,
+  "us_share": 0.3049,
+  "spi": 1.749,
+  "total_tokens": 40286215592039
  },
  "vercel_gateway": {
   "asof": "2026-07-31",
-  "cn_share": 45.04,
-  "us_share": 54.83,
-  "spi": 0.821,
+  "cn_share": 44.95,
+  "us_share": 54.93,
+  "spi": 0.818,
   "top_cn": [
    {
     "lab": "deepseek",
-    "share": 24.32
+    "share": 24.4
    },
    {
     "lab": "zai",
-    "share": 5.86
+    "share": 5.87
    },
    {
     "lab": "moonshotai",
-    "share": 5.44
+    "share": 5.28
    },
    {
     "lab": "stepfun",
-    "share": 4.38
+    "share": 4.37
    },
    {
     "lab": "minimax",
-    "share": 2.11
+    "share": 2.03
    },
    {
     "lab": "inclusionai",
-    "share": 1.69
+    "share": 1.78
    }
   ],
   "series": [
@@ -475,15 +476,15 @@
    },
    {
     "d": "2026-07-31",
-    "cn": 45.04,
-    "us": 54.83
+    "cn": 44.95,
+    "us": 54.93
    }
   ],
   "license": "AI Gateway Leaderboard Data (c) Vercel, CC BY 4.0"
  },
  "ollama": {
-  "cn": 274506600,
-  "us": 448275995,
+  "cn": 274507900,
+  "us": 448277599,
   "cn_top": [
    {
     "name": "deepseek-r1",
@@ -538,7 +539,7 @@
    },
    {
     "label": "Best AI at end of 2026: Kimi",
-    "p": 0.03,
+    "p": 0.04,
     "ticker": "KXLLM1-26DEC31-MOON",
     "series": "kxllm1"
    },
@@ -556,7 +557,7 @@
    },
    {
     "label": "Best AI at end of 2026: Claude",
-    "p": 0.639,
+    "p": 0.638,
     "ticker": "KXLLM1-26DEC31-A",
     "series": "kxllm1"
    }
@@ -608,6 +609,14 @@
    {
     "pkg": "dashscope",
     "wk": 666396
+   },
+   {
+    "pkg": "zhipuai",
+    "wk": 71822
+   },
+   {
+    "pkg": "zai-sdk",
+    "wk": 27609
    }
   ],
   "us": [
@@ -618,6 +627,10 @@
    {
     "pkg": "anthropic",
     "wk": 45133043
+   },
+   {
+    "pkg": "google-genai",
+    "wk": 68237300
    }
   ],
   "asof": "2026-07-31"
