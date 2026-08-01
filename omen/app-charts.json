@@ -1,31 +1,39 @@
 {
- "updated": "2026-07-31T23:10:34Z",
+ "updated": "2026-08-01T03:37:55Z",
  "source": "google-play-scraper",
  "store": "android",
  "depth": 200,
  "countries_ok": 10,
  "hits": [
   {
+   "label": "MiniMax",
+   "store": "android",
+   "country": "us",
+   "rank": 176,
+   "appId": "com.weaver.app.prod",
+   "title": "Talkie: Creative AI Community"
+  },
+  {
    "label": "Kimi",
    "store": "android",
    "country": "fr",
-   "rank": 170,
+   "rank": 144,
    "appId": "com.moonshot.kimichat",
    "title": "Kimi"
-  },
-  {
-   "label": "Qwen",
-   "store": "android",
-   "country": "br",
-   "rank": 164,
-   "appId": "com.tongyi.intl",
-   "title": "Qwen - Alibaba AI Assistant"
   },
   {
    "label": "Kimi",
    "store": "android",
    "country": "ca",
-   "rank": 195,
+   "rank": 153,
+   "appId": "com.moonshot.kimichat",
+   "title": "Kimi"
+  },
+  {
+   "label": "Kimi",
+   "store": "android",
+   "country": "au",
+   "rank": 188,
    "appId": "com.moonshot.kimichat",
    "title": "Kimi"
   }
