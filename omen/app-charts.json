@@ -1,5 +1,5 @@
 {
- "updated": "2026-08-01T11:23:35Z",
+ "updated": "2026-08-01T13:44:42Z",
  "source": "google-play-scraper",
  "store": "android",
  "depth": 200,
@@ -9,15 +9,7 @@
    "label": "Kimi",
    "store": "android",
    "country": "fr",
-   "rank": 167,
-   "appId": "com.moonshot.kimichat",
-   "title": "Kimi"
-  },
-  {
-   "label": "Kimi",
-   "store": "android",
-   "country": "ca",
-   "rank": 198,
+   "rank": 188,
    "appId": "com.moonshot.kimichat",
    "title": "Kimi"
   }
