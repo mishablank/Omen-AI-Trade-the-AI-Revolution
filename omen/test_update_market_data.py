@@ -681,3 +681,214 @@ def test_retry_budget_lets_the_first_failures_retry(monkeypatch):
 def test_reset_retry_budget_restores_it():
     umd.reset_retry_budget()
     assert umd.retry_budget_left() == umd.RETRY_BUDGET
+
+
+# ---------- per-filer TTM (ai-capex theses iv + vii) ----------
+
+def _per(capex, ocf):
+    return {"capex": capex, "ocf": ocf, "dep": {}}
+
+
+def test_filer_ttm_sums_each_filers_own_last_four_quarters():
+    per = {
+        "MSFT": _per({"2025Q3": 25e9, "2025Q4": 28e9, "2026Q1": 30e9, "2026Q2": 32.9e9},
+                     {"2025Q3": 44e9, "2025Q4": 45e9, "2026Q1": 46e9, "2026Q2": 47.9e9}),
+        "ORCL": _per({"2025Q3": 12e9, "2025Q4": 13e9, "2026Q1": 14e9, "2026Q2": 16.7e9},
+                     {"2025Q3": 8e9, "2025Q4": 8e9, "2026Q1": 8e9, "2026Q2": 8e9}),
+    }
+    out = umd.filer_ttm(per)
+    assert out["per"]["MSFT"]["capex_ttm_b"] == 115.9
+    assert out["per"]["MSFT"]["ocf_ttm_b"] == 182.9
+    assert out["per"]["MSFT"]["fcf_ttm_b"] == 67.0
+    assert out["per"]["MSFT"]["capex_over_ocf"] == 0.63
+    assert out["per"]["ORCL"]["fcf_ttm_b"] == -23.7
+    assert out["per"]["ORCL"]["capex_over_ocf"] == 1.74
+
+
+def test_filer_ttm_windows_are_per_filer_not_shared():
+    """ORCL's quarters end Feb/May/Aug/Nov and META reports a quarter behind the rest.
+    A shared window would compare different 12-month periods and call it a comparison."""
+    per = {
+        "MSFT": _per({"2025Q3": 1e9, "2025Q4": 1e9, "2026Q1": 1e9, "2026Q2": 1e9},
+                     {"2025Q3": 2e9, "2025Q4": 2e9, "2026Q1": 2e9, "2026Q2": 2e9}),
+        "META": _per({"2025Q2": 1e9, "2025Q3": 1e9, "2025Q4": 1e9, "2026Q1": 1e9},
+                     {"2025Q2": 2e9, "2025Q3": 2e9, "2025Q4": 2e9, "2026Q1": 2e9}),
+    }
+    out = umd.filer_ttm(per)
+    assert out["per"]["MSFT"]["quarters"] == ["2025Q3", "2025Q4", "2026Q1", "2026Q2"]
+    assert out["per"]["META"]["quarters"] == ["2025Q2", "2025Q3", "2025Q4", "2026Q1"]
+
+
+def test_filer_ttm_skips_filers_without_four_aligned_quarters():
+    per = {"MSFT": _per({"2026Q1": 1e9, "2026Q2": 1e9}, {"2026Q1": 2e9, "2026Q2": 2e9})}
+    assert umd.filer_ttm(per) is None
+
+
+def test_filer_ttm_needs_capex_and_ocf_in_the_same_quarter():
+    """A quarter with capex but no OCF cannot produce an FCF figure — dropping it
+    silently would understate the window rather than shorten it."""
+    per = {"MSFT": _per({"2025Q3": 1e9, "2025Q4": 1e9, "2026Q1": 1e9, "2026Q2": 1e9},
+                        {"2025Q3": 2e9, "2025Q4": 2e9, "2026Q1": 2e9})}
+    assert umd.filer_ttm(per) is None
+
+
+def test_filer_ttm_totals_count_negative_fcf_filers():
+    per = {
+        "MSFT": _per({q: 1e9 for q in ("2025Q3", "2025Q4", "2026Q1", "2026Q2")},
+                     {q: 2e9 for q in ("2025Q3", "2025Q4", "2026Q1", "2026Q2")}),
+        "ORCL": _per({q: 3e9 for q in ("2025Q3", "2025Q4", "2026Q1", "2026Q2")},
+                     {q: 1e9 for q in ("2025Q3", "2025Q4", "2026Q1", "2026Q2")}),
+    }
+    t = umd.filer_ttm(per)["totals"]
+    assert t["capex_ttm_b"] == 16.0
+    assert t["ocf_ttm_b"] == 12.0
+    assert t["fcf_ttm_b"] == -4.0
+    assert t["n_fcf_negative"] == 1
+    assert t["n_filers"] == 2
+
+
+def test_filer_ttm_zero_ocf_does_not_divide_by_zero():
+    per = {"X": _per({q: 1e9 for q in ("2025Q3", "2025Q4", "2026Q1", "2026Q2")},
+                     {q: 0.0 for q in ("2025Q3", "2025Q4", "2026Q1", "2026Q2")})}
+    out = umd.filer_ttm(per)
+    assert out["per"]["X"]["capex_over_ocf"] is None
+    assert out["per"]["X"]["fcf_ttm_b"] == -4.0
+
+
+# ---------- XBRL issuance (ai-capex theses i + iii) ----------
+
+def _chan(quarters=None, fact=None):
+    return {"quarters": quarters or {}, "fact": fact}
+
+
+def test_quarter_window_counts_back_calendar_quarters():
+    assert umd.quarter_window("2026Q2", 4) == ["2025Q3", "2025Q4", "2026Q1", "2026Q2"]
+    assert umd.quarter_window("2026Q1", 2) == ["2025Q4", "2026Q1"]
+
+
+def test_issuance_ttm_sums_only_inside_the_calendar_window():
+    per = {"ORCL": {"debt": _chan({"2025Q3": 10e9, "2025Q4": 12e9,
+                                   "2026Q1": 12e9, "2026Q2": 12.1e9}),
+                    "equity": _chan()}}
+    out = umd.issuance_ttm(per, asof_q="2026Q2")
+    assert out["per"]["ORCL"]["debt_ttm_b"] == 46.1
+    assert out["per"]["ORCL"]["debt_window"] == "2025Q3–2026Q2"
+    assert out["per"]["ORCL"]["debt_full_year"] is True
+
+
+def test_issuance_ttm_ignores_quarters_outside_the_window():
+    """META tags debt proceeds only in the years it issued. Summing 'the last four
+    tagged quarters' produced a 2023Q4–2025Q4 window presented as a TTM — four real
+    numbers spanning two years, added together and labelled twelve months."""
+    per = {"META": {"debt": _chan({"2023Q4": 9e9, "2024Q2": 10e9,
+                                   "2025Q4": 29.9e9, "2026Q1": 1e9}),
+                    "equity": _chan()}}
+    out = umd.issuance_ttm(per, asof_q="2026Q2")
+    assert out["per"]["META"]["debt_ttm_b"] == 30.9      # 2025Q4 + 2026Q1 only
+    assert out["per"]["META"]["debt_window"] == "2025Q3–2026Q2"
+
+
+def test_issuance_ttm_nothing_in_window_is_none_not_zero():
+    per = {"META": {"debt": _chan({"2012Q3": 1.5e9}), "equity": _chan()}}
+    assert umd.issuance_ttm(per, asof_q="2026Q2") is None
+
+
+def test_issuance_ttm_falls_back_to_a_recent_cumulative_fact():
+    """Alphabet tags common-stock proceeds only as a fiscal-year-to-date cumulative —
+    two facts, no clean quarters — so quarterising alone drops the single number
+    thesis iii exists to show. The fallback keeps it, labelled with its real window."""
+    per = {"GOOGL": {"debt": _chan(),
+                     "equity": _chan(fact={"val": 30.499e9, "start": "2026-01-01",
+                                           "end": "2026-06-30", "days": 180})}}
+    out = umd.issuance_ttm(per, asof_q="2026Q2")
+    assert out["per"]["GOOGL"]["equity_ttm_b"] == 30.5
+    assert out["per"]["GOOGL"]["equity_full_year"] is False
+    assert out["per"]["GOOGL"]["equity_window"] == "2026-01-01→2026-06-30"
+
+
+def test_issuance_ttm_stale_fallback_fact_is_dropped():
+    """A 2013 cumulative is not this year's raise, however cleanly it parses."""
+    per = {"META": {"debt": _chan(),
+                    "equity": _chan(fact={"val": 1.5e9, "start": "2013-01-01",
+                                          "end": "2013-12-31", "days": 364})}}
+    assert umd.issuance_ttm(per, asof_q="2026Q2") is None
+
+
+def test_issuance_ttm_totals_only_sum_full_year_windows():
+    """A six-month figure added to twelve-month figures is not a TTM total. Partial
+    windows show per filer and are counted out of the headline."""
+    per = {
+        "META": {"debt": _chan({q: 5e9 for q in ("2025Q3", "2025Q4", "2026Q1", "2026Q2")}),
+                 "equity": _chan()},
+        "GOOGL": {"debt": _chan(),
+                  "equity": _chan(fact={"val": 30.499e9, "start": "2026-01-01",
+                                        "end": "2026-06-30", "days": 180})},
+    }
+    out = umd.issuance_ttm(per, asof_q="2026Q2")
+    assert out["totals"]["debt_ttm_b"] == 20.0
+    assert out["totals"]["equity_ttm_b"] is None
+    assert out["totals"]["equity_partial"] == ["GOOGL"]
+
+
+def test_issuance_ttm_a_full_year_cumulative_fact_counts_as_ttm():
+    per = {"META": {"debt": _chan(fact={"val": 29.9e9, "start": "2025-01-01",
+                                        "end": "2025-12-31", "days": 364}),
+                    "equity": _chan()}}
+    out = umd.issuance_ttm(per, asof_q="2026Q2")
+    assert out["per"]["META"]["debt_full_year"] is True
+    assert out["totals"]["debt_ttm_b"] == 29.9
+
+
+def test_issuance_ttm_missing_channel_is_none_not_zero():
+    """A filer that has never tagged equity proceeds is unknown, not '$0 raised' —
+    and thesis iii turns on exactly that distinction."""
+    per = {"AMZN": {"debt": _chan({q: 1e9 for q in ("2025Q3", "2025Q4", "2026Q1", "2026Q2")}),
+                    "equity": _chan()}}
+    out = umd.issuance_ttm(per, asof_q="2026Q2")
+    assert out["per"]["AMZN"]["debt_ttm_b"] == 4.0
+    assert out["per"]["AMZN"]["equity_ttm_b"] is None
+    assert out["totals"]["equity_ttm_b"] is None
+
+
+def test_issuance_ttm_infers_the_window_end_from_the_data():
+    per = {"ORCL": {"debt": _chan({"2025Q3": 1e9, "2025Q4": 1e9,
+                                   "2026Q1": 1e9, "2026Q2": 1e9}), "equity": _chan()}}
+    assert umd.issuance_ttm(per)["per"]["ORCL"]["debt_window"] == "2025Q3–2026Q2"
+
+
+def test_issuance_ttm_empty_is_none():
+    assert umd.issuance_ttm({}) is None
+    assert umd.issuance_ttm({"X": {"debt": _chan(), "equity": _chan()}}) is None
+
+
+def test_latest_period_fact_picks_the_most_recent_longest_window():
+    entries = [
+        {"start": "2026-01-01", "end": "2026-03-31", "val": 10.0, "filed": "2026-04-20"},
+        {"start": "2026-01-01", "end": "2026-06-30", "val": 30.5, "filed": "2026-07-23"},
+        {"start": "2025-01-01", "end": "2025-12-31", "val": 99.0, "filed": "2026-02-01"},
+    ]
+    out = umd.latest_period_fact(entries)
+    assert out["val"] == 30.5 and out["days"] == 180
+
+
+def test_latest_period_fact_ignores_multi_year_spans():
+    """Some filers tag a cumulative 'since inception' duration; counting it as a
+    period figure would inflate the raise by years of history."""
+    entries = [
+        {"start": "2020-01-01", "end": "2026-06-30", "val": 500.0, "filed": "2026-07-23"},
+        {"start": "2026-01-01", "end": "2026-06-30", "val": 30.5, "filed": "2026-07-23"},
+    ]
+    assert umd.latest_period_fact(entries)["val"] == 30.5
+
+
+def test_latest_period_fact_takes_the_latest_restatement():
+    entries = [
+        {"start": "2026-01-01", "end": "2026-06-30", "val": 28.0, "filed": "2026-07-01"},
+        {"start": "2026-01-01", "end": "2026-06-30", "val": 30.5, "filed": "2026-07-23"},
+    ]
+    assert umd.latest_period_fact(entries)["val"] == 30.5
+
+
+def test_latest_period_fact_empty_is_none():
+    assert umd.latest_period_fact([]) is None
+    assert umd.latest_period_fact([{"end": "2026-06-30", "val": 1.0}]) is None

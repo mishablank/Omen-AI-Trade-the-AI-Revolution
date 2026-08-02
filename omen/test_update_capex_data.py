@@ -116,49 +116,6 @@ def test_parse_aei_no_releases():
     assert out["latest_release"] is None
 
 
-EIA_PAYLOAD = {
-    "response": {
-        "data": [
-            {"period": "2026-05", "status": "OP", "nameplate-capacity-mw": "1000"},
-            {"period": "2026-05", "status": "OP", "nameplate-capacity-mw": "500"},
-            {"period": "2026-05", "status": "P", "nameplate-capacity-mw": "300"},
-            {"period": "2026-05", "status": "L", "nameplate-capacity-mw": "200"},
-            {"period": "2026-05", "status": "U", "nameplate-capacity-mw": "120"},
-            {"period": "2026-05", "status": "V", "nameplate-capacity-mw": "80"},
-            {"period": "2026-04", "status": "OP", "nameplate-capacity-mw": "999999"},
-        ]
-    }
-}
-
-
-def test_parse_eia_860m_groups_latest_period_by_status():
-    out = ucd.parse_eia_860m(EIA_PAYLOAD)
-    assert out["asof"] == "2026-05"
-    assert out["operating_gw"] == 1.5
-    assert out["planned_gw"] == 0.5
-    assert out["under_construction_gw"] == 0.2
-
-
-def test_parse_eia_860m_empty_is_none():
-    assert ucd.parse_eia_860m({"response": {"data": []}}) is None
-    assert ucd.parse_eia_860m({}) is None
-
-
-def test_parse_eia_860m_operating_only_leaves_pipeline_unknown():
-    # the live operating-generator-capacity route carries operating units only, so
-    # the planned/under-construction groups match nothing -> None (rendered "–"),
-    # never a false 0.0 that would read as "no pipeline"
-    payload = {"response": {"data": [
-        {"period": "2026-04", "status": "OP", "nameplate-capacity-mw": "1365900"},
-        {"period": "2026-03", "status": "OP", "nameplate-capacity-mw": "999999"},
-    ]}}
-    out = ucd.parse_eia_860m(payload)
-    assert out["asof"] == "2026-04"
-    assert out["operating_gw"] == 1365.9
-    assert out["planned_gw"] is None
-    assert out["under_construction_gw"] is None
-
-
 def test_snapshot_row_flattens_payload():
     payload = {
         "updated": "2026-07-19T12:00:00Z",
@@ -198,13 +155,14 @@ def test_refresh_survives_failing_fetchers_and_writes_json(tmp_path, monkeypatch
     monkeypatch.setattr(ucd, "fetch_issuance", lambda: (_ for _ in ()).throw(OSError("down")))
     monkeypatch.setattr(ucd, "fetch_ramp", lambda: None)
     monkeypatch.setattr(ucd, "fetch_aei", lambda: {"latest_release": "2026-06-26"})
-    monkeypatch.delenv("EIA_API_KEY", raising=False)
+    monkeypatch.setattr(ucd, "fetch_860m", lambda: None)
+    monkeypatch.setattr(ucd, "fetch_capex_gdp", lambda: None)
     ucd.refresh()
     import json
     d = json.loads((tmp_path / "capex-data.json").read_text())
     assert d["tsmc"]["rev_ntd_b"] == 442.7
     assert d["issuance"] is None          # failed fetcher -> null, not a crash
-    assert d["eia"] is None               # no key -> gated off
+    assert d["eia"] is None
     assert d["manual"] == ucd.MANUAL  # structural — MANUAL values are hand-refreshed
     assert "issuance: FAILED down" in capsys.readouterr().err
     assert (tmp_path / "capex-snapshots.csv").exists()
@@ -235,60 +193,17 @@ def test_fetch_issuance_carries_none_counts_without_crashing(monkeypatch):
     assert out["cur"]["debt"] is None and out["prev"]["s1_ai"] is None
 
 
-def test_refresh_eia_failure_is_gated_to_null(tmp_path, monkeypatch, capsys):
+def test_refresh_eia_failure_is_null_not_a_crash(tmp_path, monkeypatch, capsys):
     monkeypatch.setattr(ucd, "OUT", tmp_path / "capex-data.json")
     monkeypatch.setattr(ucd, "SNAP", tmp_path / "capex-snapshots.csv")
-    for n in ("fetch_tsmc", "fetch_issuance", "fetch_ramp", "fetch_aei"):
+    for n in ("fetch_tsmc", "fetch_issuance", "fetch_ramp", "fetch_aei",
+              "fetch_capex_gdp"):
         monkeypatch.setattr(ucd, n, lambda: None)
-    monkeypatch.setenv("EIA_API_KEY", "x")
-    monkeypatch.setattr(ucd, "fetch_eia", lambda k: (_ for _ in ()).throw(OSError("down")))
+    monkeypatch.setattr(ucd, "fetch_860m", lambda: (_ for _ in ()).throw(OSError("down")))
     ucd.refresh()
     import json
     assert json.loads((tmp_path / "capex-data.json").read_text())["eia"] is None
     assert "eia: FAILED down" in capsys.readouterr().err
-
-
-def test_parse_eia_860m_rows_without_period_is_none():
-    payload = {"response": {"data": [{"status": "OP", "nameplate-capacity-mw": "1000"}]}}
-    assert ucd.parse_eia_860m(payload) is None
-
-
-def test_fetch_eia_paginates_until_short_page(monkeypatch):
-    pages = [
-        {"response": {"data": [{"period": "2026-05", "status": "OP",
-                                "nameplate-capacity-mw": "1000"}] * ucd.EIA_PAGE}},
-        {"response": {"data": [{"period": "2026-05", "status": "P",
-                                "nameplate-capacity-mw": "500"}] * 3}},
-    ]
-    calls = []
-    monkeypatch.setattr(ucd, "jget", lambda url, **kw: (calls.append(url), pages[len(calls) - 1])[1])
-    out = ucd.fetch_eia("test-key")
-    assert len(calls) == 2                       # short second page stops the loop
-    assert "offset=5000" in calls[1]
-    assert "api_key" not in calls[0]             # key rides the X-Api-Key header only
-    assert out["operating_gw"] == 5000.0         # 5000 rows x 1000 MW -> 5000 GW
-    assert out["planned_gw"] == 1.5
-
-
-def test_eia_start_period_is_lookback_months_back():
-    import datetime as dt
-    # a recent window keeps EIA from sorting its full multi-year table (the timeout cause)
-    assert ucd.eia_start_period(dt.date(2026, 7, 15)) == "2025-07"
-    assert ucd.eia_start_period(dt.date(2026, 1, 31)) == "2025-01"   # crosses the year
-
-
-def test_fetch_eia_bounds_the_server_sort_and_lifts_timeout(monkeypatch):
-    seen = {}
-    def fake_jget(url, **kw):
-        seen["url"], seen["timeout"] = url, kw.get("timeout")
-        return {"response": {"data": [{"period": "2026-05", "status": "OP",
-                                       "nameplate-capacity-mw": "10"}]}}   # short -> one call
-    monkeypatch.setattr(ucd, "jget", fake_jget)
-    ucd.fetch_eia("k")
-    # the recent 'start' filter is what stops EIA sorting every month back to 2015
-    assert "start=" in seen["url"]
-    # timeout lifted above the 30s default that was tripping on the heavy query
-    assert seen["timeout"] is not None and seen["timeout"] >= 60
 
 
 def test_refresh_carries_forward_prev_on_failure(tmp_path, monkeypatch):
@@ -305,7 +220,8 @@ def test_refresh_carries_forward_prev_on_failure(tmp_path, monkeypatch):
     monkeypatch.setattr(ucd, "fetch_issuance", lambda: (_ for _ in ()).throw(OSError("down")))
     monkeypatch.setattr(ucd, "fetch_ramp", lambda: None)
     monkeypatch.setattr(ucd, "fetch_aei", lambda: None)
-    monkeypatch.delenv("EIA_API_KEY", raising=False)
+    monkeypatch.setattr(ucd, "fetch_860m", lambda: None)
+    monkeypatch.setattr(ucd, "fetch_capex_gdp", lambda: None)
     ucd.refresh()
     d = json.loads(out.read_text())
     assert d["tsmc"]["rev_ntd_b"] == 442.7          # live value wins
@@ -317,9 +233,9 @@ def test_refresh_carries_forward_prev_on_failure(tmp_path, monkeypatch):
 def test_refresh_skips_snapshot_when_all_feeds_down(tmp_path, monkeypatch):
     monkeypatch.setattr(ucd, "OUT", tmp_path / "capex-data.json")
     monkeypatch.setattr(ucd, "SNAP", tmp_path / "capex-snapshots.csv")
-    for n in ("fetch_tsmc", "fetch_issuance", "fetch_ramp", "fetch_aei"):
+    for n in ("fetch_tsmc", "fetch_issuance", "fetch_ramp", "fetch_aei",
+              "fetch_860m", "fetch_capex_gdp"):
         monkeypatch.setattr(ucd, n, lambda: None)
-    monkeypatch.delenv("EIA_API_KEY", raising=False)
     ucd.refresh()
     assert not (tmp_path / "capex-snapshots.csv").exists()  # no blank history row
 
@@ -411,3 +327,258 @@ def test_refresh_schedule_has_no_uncovered_hours():
     assert crons, "no cron schedule found in refresh.yml"
     gaps = {(d, h) for d in range(7) for h in range(24)} - _cron_covered_hours(crons)
     assert not gaps, f"hours with no refresh trigger (dow, hour UTC): {sorted(gaps)}"
+
+
+# ---------- EIA-860M monthly workbook (keyless) ----------
+
+def _xlsx(sheets):
+    """Minimal .xlsx blob: {sheet name: [[cell, ...], ...]}. Strings go through a real
+    sharedStrings table so the fixture exercises the same path as EIA's workbook."""
+    import io
+    import zipfile
+    from xml.sax.saxutils import escape
+
+    shared, index = [], {}
+    def sid(s):
+        if s not in index:
+            index[s] = len(shared)
+            shared.append(s)
+        return index[s]
+
+    def col(n):
+        name = ""
+        while n >= 0:
+            name = chr(ord("A") + n % 26) + name
+            n = n // 26 - 1
+        return name
+
+    parts = {}
+    names = list(sheets)
+    for i, name in enumerate(names, start=1):
+        xml = ['<worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main"><sheetData>']
+        for r, row in enumerate(sheets[name], start=1):
+            xml.append(f'<row r="{r}">')
+            for c, val in enumerate(row):
+                if val is None:
+                    continue                      # a genuinely absent cell, as Excel writes it
+                ref = f"{col(c)}{r}"
+                if isinstance(val, (int, float)):
+                    xml.append(f'<c r="{ref}"><v>{val}</v></c>')
+                else:
+                    xml.append(f'<c r="{ref}" t="s"><v>{sid(val)}</v></c>')
+            xml.append("</row>")
+        xml.append("</sheetData></worksheet>")
+        parts[f"xl/worksheets/sheet{i}.xml"] = "".join(xml)
+
+    wb = ['<workbook xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" '
+          'xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships"><sheets>']
+    rels = ['<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">']
+    for i, name in enumerate(names, start=1):
+        wb.append(f'<sheet name="{escape(name)}" sheetId="{i}" r:id="rId{i}"/>')
+        rels.append(f'<Relationship Id="rId{i}" Target="worksheets/sheet{i}.xml" '
+                    'Type="http://schemas.openxmlformats.org/officeDocument/2006/'
+                    'relationships/worksheet"/>')
+    wb.append("</sheets></workbook>")
+    rels.append("</Relationships>")
+
+    ss = ['<sst xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">']
+    ss += [f"<si><t>{escape(s)}</t></si>" for s in shared]
+    ss.append("</sst>")
+
+    buf = io.BytesIO()
+    with zipfile.ZipFile(buf, "w") as z:
+        z.writestr("xl/workbook.xml", "".join(wb))
+        z.writestr("xl/_rels/workbook.xml.rels", "".join(rels))
+        z.writestr("xl/sharedStrings.xml", "".join(ss))
+        for path, xml in parts.items():
+            z.writestr(path, xml)
+    return buf.getvalue()
+
+
+_860M_HDR = ["Entity ID", "Plant Name", "Nameplate Capacity (MW)", "Status"]
+
+
+def _860m_blob():
+    return _xlsx({
+        "Operating": [
+            ["Inventory of Operating Generators as of April 2026"], [],
+            _860M_HDR,
+            ["1", "Alpha", "1000", "(OP) Operating"],
+            ["2", "Beta", "500", "(OP) Operating"],
+            ["3", "Gamma", "250", "(SB) Standby"],
+        ],
+        "Planned": [
+            ["Inventory of Planned Generators as of April 2026"], [],
+            _860M_HDR,
+            ["4", "Delta", "300", "(P) Planned for installation, but regulatory approvals not initiated"],
+            ["5", "Epsilon", "200", "(L) Regulatory approvals pending"],
+            ["6", "Zeta", "120", "(U) Under construction, less than or equal to 50 percent complete"],
+            ["7", "Eta", "80", "(V) Under construction, more than 50 percent complete"],
+        ],
+        "Canceled or Postponed": [
+            ["Inventory of Canceled or Indefinitely Postponed Projects as of April 2026"], [],
+            _860M_HDR,
+            ["8", "Theta", "400", ""],
+        ],
+    })
+
+
+def test_parse_860m_groups_nameplate_by_status_across_sheets():
+    out = ucd.parse_860m(_860m_blob())
+    assert out["asof"] == "2026-04"
+    assert out["operating_gw"] == 1.5      # standby is not operating capacity
+    assert out["planned_gw"] == 0.5
+    assert out["under_construction_gw"] == 0.2
+    assert out["canceled_gw"] == 0.4
+
+
+def test_parse_860m_canceled_sheet_is_the_stranded_pipeline():
+    """The 'Canceled or Postponed' sheet is thesis v's own metric in federal data and
+    has no equivalent in the API route this replaced — announced capacity that stopped."""
+    out = ucd.parse_860m(_860m_blob())
+    assert out["canceled_gw"] == 0.4
+
+
+def test_parse_860m_absent_status_group_is_none_not_zero():
+    blob = _xlsx({"Operating": [
+        ["Inventory of Operating Generators as of April 2026"], [],
+        _860M_HDR, ["1", "Alpha", "1000", "(OP) Operating"]]})
+    out = ucd.parse_860m(blob)
+    assert out["operating_gw"] == 1.0
+    assert out["planned_gw"] is None
+    assert out["under_construction_gw"] is None
+    assert out["canceled_gw"] is None
+
+
+def test_parse_860m_tolerates_absent_cells_in_a_row():
+    """Excel omits empty cells entirely, so column position has to come from the cell
+    reference, not from counting siblings — otherwise Status shifts left and every
+    row lands in the wrong bucket."""
+    blob = _xlsx({"Planned": [
+        ["Inventory of Planned Generators as of April 2026"], [],
+        _860M_HDR,
+        ["9", None, "1500", "(V) Under construction, more than 50 percent complete"]]})
+    assert ucd.parse_860m(blob)["under_construction_gw"] == 1.5
+
+
+def test_parse_860m_no_recognisable_sheet_is_none():
+    assert ucd.parse_860m(_xlsx({"Notes": [["nothing here"]]})) is None
+
+
+def test_status_code_extracts_parenthesised_code():
+    assert ucd.status_code("(V) Under construction, more than 50 percent complete") == "V"
+    assert ucd.status_code("(OP) Operating") == "OP"
+    assert ucd.status_code("") is None
+    assert ucd.status_code(None) is None
+
+
+def test_sheet_asof_reads_the_title_row():
+    assert ucd.sheet_asof("Inventory of Planned Generators as of April 2026") == "2026-04"
+    assert ucd.sheet_asof("Inventory of Operating Generators as of December 2025") == "2025-12"
+    assert ucd.sheet_asof("something else") is None
+
+
+def test_eia_860m_urls_walk_back_from_current_month():
+    urls = ucd.eia_860m_urls(datetime.date(2026, 8, 2))
+    assert urls[0].endswith("/xls/august_generator2026.xlsx")
+    assert "/xls/july_generator2026.xlsx" in urls[1]
+    assert any("/archive/xls/" in u for u in urls)
+    # the release rolls over a year boundary without asking for month 0
+    jan = ucd.eia_860m_urls(datetime.date(2026, 1, 5))
+    assert "/xls/december_generator2025.xlsx" in jan[1]
+
+
+def test_fetch_860m_skips_html_redirect_pages(monkeypatch):
+    """A missing month redirects to an HTML page that answers 200. Taking the first
+    200 would parse a web page as a workbook and blank the panel."""
+    blob = _860m_blob()
+    seen = []
+    def fake(url, **kw):
+        seen.append(url)
+        return b"<!DOCTYPE html><html>404</html>" if len(seen) < 3 else blob
+    monkeypatch.setattr(ucd, "get_bytes", fake)
+    out = ucd.fetch_860m(ref=datetime.date(2026, 8, 2))
+    assert out["operating_gw"] == 1.5
+    assert len(seen) == 3
+
+
+def test_fetch_860m_all_candidates_missing_is_none(monkeypatch):
+    monkeypatch.setattr(ucd, "get_bytes", lambda url, **kw: b"<html>nope</html>")
+    assert ucd.fetch_860m(ref=datetime.date(2026, 8, 2)) is None
+
+
+# ---------- Census C30 data-center construction + capex/GDP ----------
+
+def _c30_blob():
+    return _xlsx({"Sheet1": [
+        ["Value of Private Construction Put in Place - Seasonally Adjusted Annual Rate"],
+        [], [], [], [],
+        ["Type of Construction:", "May\n2026p", "Apr\n2026r", "Mar\n2026r",
+         "Feb\n2026r", "Jan\n2026r", "May\n2025r"],
+        ["        Office", "107558", "107334", "107164", "106772", "105913", "102760"],
+        ["            Data center", "59307", "58977", "58121", "57361", "56211", "48210"],
+        ["            Financial", "9000", "8900", "8800", "8700", "8600", "8500"],
+    ]})
+
+
+def test_parse_c30_reads_the_data_center_line():
+    out = ucd.parse_c30(_c30_blob())
+    assert out["asof"] == "2026-05"
+    assert out["dc_saar_musd"] == 59307.0
+    assert out["yoy_pct"] == 23.0          # computed from the year-ago column, not the rounded one
+
+
+def test_parse_c30_ignores_the_office_parent_row():
+    """'Data center' is nested under 'Office'; matching loosely would pick the parent
+    and overstate the series by ~1.8x."""
+    assert ucd.parse_c30(_c30_blob())["dc_saar_musd"] == 59307.0
+
+
+def test_parse_c30_without_year_ago_column_has_no_yoy():
+    blob = _xlsx({"Sheet1": [
+        ["Value of Private Construction Put in Place"], [], [], [], [],
+        ["Type of Construction:", "May\n2026p"],
+        ["            Data center", "59307"]]})
+    out = ucd.parse_c30(blob)
+    assert out["dc_saar_musd"] == 59307.0
+    assert out["yoy_pct"] is None
+
+
+def test_parse_c30_missing_row_is_none():
+    blob = _xlsx({"Sheet1": [["x"], [], [], [], [],
+                             ["Type of Construction:", "May\n2026p"],
+                             ["            Financial", "9000"]]})
+    assert ucd.parse_c30(blob) is None
+
+
+def test_c30_month_parses_the_stacked_header():
+    assert ucd.c30_month("May\n2026p") == "2026-05"
+    assert ucd.c30_month("Apr\n2026r") == "2026-04"
+    assert ucd.c30_month("Dec\n2025") == "2025-12"
+    assert ucd.c30_month("Type of Construction:") is None
+
+
+def test_capex_gdp_pct_uses_the_definition_the_page_states():
+    """Data-center construction (SAAR, $M) plus computer & peripheral equipment
+    investment (SAAR, $B), over nominal GDP (SAAR, $B)."""
+    assert ucd.capex_gdp_pct(59307.0, 406.4, 32475.2) == 1.43
+
+
+def test_capex_gdp_pct_missing_input_is_none():
+    assert ucd.capex_gdp_pct(None, 406.4, 32475.2) is None
+    assert ucd.capex_gdp_pct(59307.0, None, 32475.2) is None
+    assert ucd.capex_gdp_pct(59307.0, 406.4, 0) is None
+
+
+def test_parse_fred_last_takes_the_final_observation():
+    csv = "observation_date,GDP\n2026-01-01,31865.721\n2026-04-01,32475.210\n"
+    assert ucd.parse_fred_last(csv) == {"d": "2026-04-01", "v": 32475.21}
+
+
+def test_parse_fred_last_skips_missing_observations():
+    csv = "observation_date,X\n2026-01-01,1.0\n2026-04-01,.\n"
+    assert ucd.parse_fred_last(csv) == {"d": "2026-01-01", "v": 1.0}
+
+
+def test_parse_fred_last_empty_is_none():
+    assert ucd.parse_fred_last("observation_date,X\n") is None

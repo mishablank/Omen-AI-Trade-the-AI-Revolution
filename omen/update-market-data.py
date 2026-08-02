@@ -88,6 +88,19 @@ FUND_TAGS = {"capex": ["PaymentsToAcquirePropertyPlantAndEquipment",
 # non-dimensionally via the XBRL API: AMZN stopped after 2020-06-30 and META has
 # never tagged it, so both are absent by design, not by oversight. CRWV is here
 # though it is not a capex filer — neocloud backlog concentration is the point.
+# Financing-channel proceeds for the same filers plus CoreWeave — theses i and iii of
+# the AI CapEx page in audited numbers instead of press tallies. sec_concept() merges
+# candidate tags in order and the LAST one wins a contested quarter, so the more
+# specific tag goes last (ORCL files both, and its Senior line is the benchmark-bond
+# figure; the generic tag on that filer stops at 2011 plus two near-zero stubs).
+ISSUANCE_CIKS = {"MSFT": "0000789019", "GOOGL": "0001652044", "AMZN": "0001018724",
+                 "META": "0001326801", "ORCL": "0001341439", "CRWV": "0001769628"}
+ISSUANCE_TAGS = {"debt": ["ProceedsFromNotesPayable",
+                          "ProceedsFromIssuanceOfUnsecuredDebt",
+                          "ProceedsFromIssuanceOfLongTermDebt",
+                          "ProceedsFromIssuanceOfSeniorLongTermDebt"],
+                 "equity": ["ProceedsFromIssuanceOrSaleOfEquity",
+                            "ProceedsFromIssuanceOfCommonStock"]}
 RPO_TAG = "RevenueRemainingPerformanceObligation"
 RPO_CIKS = {"MSFT": "0000789019", "GOOGL": "0001652044",
             "ORCL": "0001341439", "CRWV": "0001769628"}
@@ -553,7 +566,201 @@ def fundamentals():
         return None
     return {"names": list(per.keys()), "quarters": quarters, "capex_b": capex,
             "ocf_b": ocf, "dep_b": dep, "n_firms": count,
+            "per_filer": filer_ttm(per),
             "asof": datetime.date.today().isoformat()}
+
+
+TTM_QUARTERS = 4
+
+
+def filer_ttm(per, n=TTM_QUARTERS):
+    """Per-filer trailing-{n}-quarter capex, OCF, capex/OCF and free cash flow.
+
+    Each filer's window is its own last n quarters, never a window shared across
+    filers: ORCL's fiscal quarters end Feb/May/Aug/Nov and META reports a quarter
+    behind the rest, so one aligned window would compare different 12-month periods
+    and present it as a like-for-like ranking. The window is returned per filer so
+    the page can label what it is showing.
+
+    Only quarters carrying *both* capex and OCF count. Taking a capex quarter whose
+    OCF is missing would silently understate that filer's cash generation and push
+    capex/OCF up — the exact direction the page's thesis is arguing, so it has to be
+    the case that cannot happen by accident."""
+    out = {}
+    for sym, v in per.items():
+        both = sorted(set(v["capex"]) & set(v.get("ocf") or {}))
+        if len(both) < n:
+            continue
+        window = both[-n:]
+        capex = sum(v["capex"][q] for q in window) / 1e9
+        ocf = sum(v["ocf"][q] for q in window) / 1e9
+        out[sym] = {"quarters": window,
+                    "capex_ttm_b": round(capex, 1),
+                    "ocf_ttm_b": round(ocf, 1),
+                    "capex_over_ocf": round(capex / ocf, 2) if ocf else None,
+                    "fcf_ttm_b": round(ocf - capex, 1)}
+    if not out:
+        return None
+    capex_t = sum(v["capex_ttm_b"] for v in out.values())
+    ocf_t = sum(v["ocf_ttm_b"] for v in out.values())
+    return {"per": out,
+            "totals": {"capex_ttm_b": round(capex_t, 1),
+                       "ocf_ttm_b": round(ocf_t, 1),
+                       "fcf_ttm_b": round(ocf_t - capex_t, 1),
+                       "n_fcf_negative": sum(1 for v in out.values() if v["fcf_ttm_b"] < 0),
+                       "n_filers": len(out)}}
+
+
+FULL_YEAR_DAYS = 330       # a cumulative window this long is a year for these purposes
+MAX_PERIOD_DAYS = 400      # anything longer is multi-year, not a period figure
+
+
+def latest_period_fact(entries):
+    """Most recent duration fact of at most a year, latest restatement wins.
+
+    The fallback for filers that never tag a clean quarter. Multi-year spans are
+    excluded: some filers carry a since-inception cumulative under the same concept,
+    and counting it as a period figure would report years of history as this year's
+    raise."""
+    ded = {}
+    for e in entries:
+        if not e.get("start") or not e.get("end") or e.get("val") is None:
+            continue
+        try:
+            days = (datetime.date.fromisoformat(e["end"])
+                    - datetime.date.fromisoformat(e["start"])).days
+        except ValueError:
+            continue
+        if not 0 < days <= MAX_PERIOD_DAYS:
+            continue
+        key = (e["start"], e["end"])
+        if key not in ded or (e.get("filed") or "") >= ded[key][0]:
+            ded[key] = (e.get("filed") or "", e["val"], days)
+    if not ded:
+        return None
+    (start, end), (_filed, val, days) = max(ded.items(), key=lambda kv: (kv[0][1], kv[1][2]))
+    return {"val": val, "start": start, "end": end, "days": days}
+
+
+def quarter_window(end_q, n):
+    """The n calendar quarters ending at end_q, e.g. ('2026Q2', 4) -> 2025Q3..2026Q2."""
+    year, qn = int(end_q[:4]), int(end_q[-1])
+    out = []
+    for back in range(n - 1, -1, -1):
+        i = (year * 4 + qn - 1) - back
+        out.append(f"{i // 4}Q{i % 4 + 1}")
+    return out
+
+
+FALLBACK_MAX_STALE_Q = 5   # a cumulative fact older than this is history, not a raise
+
+
+def issuance_ttm(per, n=TTM_QUARTERS, asof_q=None):
+    """Debt and equity proceeds per filer, from XBRL cash flows.
+
+    The window is a CALENDAR one — the n quarters ending at the most recent quarter in
+    the data — not "the last n quarters this filer happened to tag". These concepts are
+    tagged sparsely, only in periods with an issuance, so summing the last four tagged
+    quarters produced windows like META's 2023Q4–2025Q4: four real numbers spanning two
+    years, added together and labelled a trailing twelve months.
+
+    A filer that tagged nothing inside the window falls back to its latest cumulative
+    fact, if that fact is recent — Alphabet tags common-stock proceeds only as a
+    fiscal-year-to-date cumulative, and quarterising alone drops the one number thesis
+    iii exists to show. Stale facts are discarded rather than presented as current.
+
+    Totals sum full-year windows only. A six-month figure added to twelve-month figures
+    is not a TTM total, so partial filers are named separately instead.
+
+    A channel with nothing to report stays None rather than 0.0 — "Alphabet raised no
+    secondary equity for a decade" and "Alphabet does not tag the concept" are
+    different claims, and only the first is evidence."""
+    seen = sorted({q for chans in per.values() for c in chans.values()
+                   for q in (c.get("quarters") or {})})
+    if asof_q is None:
+        ends = [c["fact"]["end"] for chans in per.values() for c in chans.values()
+                if c.get("fact")]
+        if seen:
+            asof_q = seen[-1]
+        elif ends:
+            d = max(ends)
+            asof_q = f"{d[:4]}Q{(int(d[5:7]) - 1) // 3 + 1}"
+        else:
+            return None
+    window = quarter_window(asof_q, n)
+    oldest_ok = quarter_window(asof_q, FALLBACK_MAX_STALE_Q)[0]
+    out = {}
+    for sym, chans in per.items():
+        row = {}
+        for chan in ("debt", "equity"):
+            c = chans.get(chan) or {}
+            qs = c.get("quarters") or {}
+            inside = [q for q in window if q in qs]
+            fact = c.get("fact")
+            if fact and f"{fact['end'][:4]}Q{(int(fact['end'][5:7]) - 1) // 3 + 1}" < oldest_ok:
+                fact = None
+            if inside:
+                row[f"{chan}_ttm_b"] = round(sum(qs[q] for q in inside) / 1e9, 1)
+                row[f"{chan}_window"] = f"{window[0]}–{window[-1]}"
+                row[f"{chan}_full_year"] = True
+            elif fact:
+                row[f"{chan}_ttm_b"] = round(fact["val"] / 1e9, 1)
+                row[f"{chan}_window"] = f"{fact['start']}→{fact['end']}"
+                row[f"{chan}_full_year"] = fact["days"] >= FULL_YEAR_DAYS
+            else:
+                row[f"{chan}_ttm_b"] = None
+                row[f"{chan}_window"] = None
+                row[f"{chan}_full_year"] = False
+        if row["debt_ttm_b"] is not None or row["equity_ttm_b"] is not None:
+            out[sym] = row
+    if not out:
+        return None
+    totals = {}
+    for chan in ("debt", "equity"):
+        full = [v[f"{chan}_ttm_b"] for v in out.values()
+                if v[f"{chan}_ttm_b"] is not None and v[f"{chan}_full_year"]]
+        totals[f"{chan}_ttm_b"] = round(sum(full), 1) if full else None
+        totals[f"{chan}_partial"] = [s for s, v in out.items()
+                                     if v[f"{chan}_ttm_b"] is not None
+                                     and not v[f"{chan}_full_year"]]
+    return {"names": list(out), "per": out, "totals": totals}
+
+
+def sec_channel(cik, tags):
+    """Quarterised series plus the raw cumulative fallback for one concept family."""
+    quarters, entries = {}, []
+    for tag in tags:
+        try:
+            j = json.loads(get(f"https://data.sec.gov/api/xbrl/companyconcept/CIK{cik}/us-gaap/{tag}.json",
+                               headers=SEC_UA))
+            rows = j.get("units", {}).get("USD", [])
+            if rows:
+                quarters.update(quarterlize(rows))
+                entries += rows
+        except Exception:
+            continue
+    return {"quarters": quarters, "fact": latest_period_fact(entries)}
+
+
+def issuance():
+    """Debt and equity proceeds per AI-capex filer (theses i and iii).
+
+    Deliberately one-sided: the page's "hyperscalers passed the banks" comparison is
+    NOT computed here. JPM and WFC tag no debt-issuance concept the XBRL API exposes,
+    so a big-6 bank total would silently omit two of six and flatter the very claim it
+    is meant to test. The bank figure stays curated and labelled as such."""
+    per = {}
+    for sym, cik in ISSUANCE_CIKS.items():
+        chans = {chan: sec_channel(cik, tags) for chan, tags in ISSUANCE_TAGS.items()}
+        if any(c["quarters"] or c["fact"] for c in chans.values()):
+            per[sym] = chans
+            print(f"issuance {sym}: debt {len(chans['debt']['quarters'])}q "
+                  f"equity {len(chans['equity']['quarters'])}q")
+        time.sleep(0.15)
+    out = issuance_ttm(per)
+    if out:
+        out["asof"] = datetime.date.today().isoformat()
+    return out
 
 
 def quarter_of(iso_date):
@@ -1293,7 +1500,7 @@ def build():
             "basket": BASKET, "bench": "SPY",
             "equity": {}, "vol": {}, "skew": {}, "term": {}, "tail": {}, "credit": {},
             "fred": {}, "kalshi": {}, "kalshi_gpu": None, "manifold": [], "metaculus": None,
-            "fundamentals": None, "backlog": None, "macro": None,
+            "fundamentals": None, "backlog": None, "macro": None, "issuance": None,
             "insiders": {}, "gpu": None, "cot": None, "short_interest": None}
 
     for sym in EQUITY + POWER_PROXY:
@@ -1406,6 +1613,14 @@ def build():
             print(f"fundamentals: {len(f['quarters'])} quarters, latest capex ${f['capex_b'][-1]}B")
     except Exception as e:
         carry(data, prev, "fundamentals", e)
+
+    try:
+        data["issuance"] = issuance()
+        if data["issuance"]:
+            t = data["issuance"]["totals"]
+            print(f"issuance: debt ${t['debt_ttm_b']}B, equity ${t['equity_ttm_b']}B TTM")
+    except Exception as e:
+        carry(data, prev, "issuance", e)
 
     try:
         data["backlog"] = backlog()
