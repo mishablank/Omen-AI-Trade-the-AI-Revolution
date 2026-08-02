@@ -1,5 +1,5 @@
 {
- "updated": "2026-08-02T17:55:04Z",
+ "updated": "2026-08-02T18:57:17Z",
  "snapshot_date": "2026-08-02",
  "artificial_analysis": {
   "cn_best": "GLM-5.2",
@@ -35,14 +35,7 @@
   "score": 0,
   "asof": "2026-08-02",
   "source": "app-charts",
-  "best": [
-   {
-    "label": "Kimi",
-    "rank": 162,
-    "store": "android",
-    "country": "fr"
-   }
-  ],
+  "best": [],
   "markets": [
    "us",
    "gb",
@@ -55,7 +48,7 @@
    "au",
    "kr"
   ],
-  "detail": "no Chinese AI app in any iOS or Play top-100 (nearest: Kimi #162 (FR Play)); basket-mean Western top-100 presence 0/100 across 10 markets",
+  "detail": "no Chinese AI app in any iOS or Play top-100; basket-mean Western top-100 presence 0/100 across 10 markets",
   "note": "iOS Apple RSS top-100 + Android Play top-200 across 10 markets; presence = basket-mean of best top-100 chart rank (DeepSeek/Qwen/Doubao/Kimi/MiniMax), #1=100 #100=1; ranks past top-100 score 0."
  },
  "lmarena": {
@@ -155,10 +148,10 @@
  },
  "openrouter_week": {
   "week": "2026-07-27",
-  "cn_share": 0.5217,
-  "us_share": 0.3155,
-  "spi": 1.653,
-  "total_tokens": 54906739864836
+  "cn_share": 0.5216,
+  "us_share": 0.3157,
+  "spi": 1.652,
+  "total_tokens": 55251766854633
  },
  "vercel_gateway": {
   "asof": "2026-08-02",
@@ -501,8 +494,8 @@
   "license": "AI Gateway Leaderboard Data (c) Vercel, CC BY 4.0"
  },
  "ollama": {
-  "cn": 275744400,
-  "us": 449628702,
+  "cn": 275745100,
+  "us": 449629507,
   "cn_top": [
    {
     "name": "deepseek-r1",
@@ -575,7 +568,7 @@
    },
    {
     "label": "Best AI at end of 2026: Claude",
-    "p": 0.655,
+    "p": 0.65,
     "ticker": "KXLLM1-26DEC31-A",
     "series": "kxllm1"
    }
@@ -611,7 +604,7 @@
    },
    {
     "base": "openai/gpt-oss-20b",
-    "n": 546
+    "n": 544
    },
    {
     "base": "microsoft/phi-4",
@@ -619,7 +612,7 @@
    }
   ],
   "cn_total": 2372,
-  "us_total": 2495,
+  "us_total": 2493,
   "asof": "2026-08-02"
  },
  "sdk": {

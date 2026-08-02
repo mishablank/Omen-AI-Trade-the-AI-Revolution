@@ -1,17 +1,8 @@
 {
- "updated": "2026-08-02T17:55:04Z",
+ "updated": "2026-08-02T18:57:17Z",
  "source": "google-play-scraper",
  "store": "android",
  "depth": 200,
  "countries_ok": 10,
- "hits": [
-  {
-   "label": "Kimi",
-   "store": "android",
-   "country": "fr",
-   "rank": 162,
-   "appId": "com.moonshot.kimichat",
-   "title": "Kimi"
-  }
- ]
+ "hits": []
 }
