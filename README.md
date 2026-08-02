@@ -49,7 +49,7 @@ Five equally-weighted families, each normalized 0–100 against a fixed calm→s
 | | Family | What it reads |
 | --- | --- | --- |
 | **Leading**<br>*priced before the fact* | `PRED` | Polymarket bubble-burst odds |
-| | `OPT` | 25Δ risk reversals, NVDA + SOXX (CBOE) |
+| | `OPT` | 25Δ risk reversals, NVDA + SOXX (Nasdaq OPRA composite) |
 | | `CREDIT` | HY OAS, CCC OAS, HYG drawdown, HYG/LQD ratio |
 | **Confirming**<br>*moves with or after prices* | `VOL` | VIX/VIX3M term structure, VXN, SKEW, VVIX |
 | | `EQUITY` | NVDA and SOXX drawdown from the running high |
@@ -73,7 +73,7 @@ The regime chip always states *which threshold fired*, in plain English, with th
 | Page | What it's for |
 | --- | --- |
 | [**index.html**](omen/index.html) | **The verdict.** The whole read in one viewport: pair price, gauge, regime, verdict, reasoning. |
-| [**polymarket-ai-index.html**](omen/polymarket-ai-index.html) | **The monitor** — the big one, ~2,700 lines. One document, five views at `/polymarket-ai-index/<view>`: `today`, `markets`, `gpu`, `prediction-markets`, `methodology`. Includes the LEAPS tail panel: risk-neutral P(NVDA −50% / SOXX −40% in ~1y) via N(−d2) from long-dated CBOE puts — a deep-market cross-check on the thin Polymarket bubble book. |
+| [**polymarket-ai-index.html**](omen/polymarket-ai-index.html) | **The monitor** — the big one, ~2,700 lines. One document, five views at `/polymarket-ai-index/<view>`: `today`, `markets`, `gpu`, `prediction-markets`, `methodology`. Includes the LEAPS tail panel: risk-neutral P(NVDA −50% / SOXX −40% in ~1y) via N(−d2) from long-dated long-dated puts — a deep-market cross-check on the thin Polymarket bubble book. |
 | [**gauge.html**](omen/gauge.html) | **The gauge.** Family-by-family breakdown, leading vs confirming, 90-day reconstruction with regime bands. |
 | [**indexes.html**](omen/indexes.html) | **The indexes.** Bull and Bear as one two-sided market that always sums to 1. Bull splits TECH vs CAP; Bear splits MKT vs GOV — because technology progress can survive a financial unwind, and a regulatory clampdown is not a crash. |
 | [**ai-capex.html**](omen/ai-capex.html) | **AI capex.** Eight fundamentals theses — debt saturation, credit stress, equity raises, capex vs GDP, stranded >1 GW projects, the dark-fiber overcapacity analogy, FCF erosion, reflexive treasury vehicles — plus a live tape. |
@@ -89,8 +89,8 @@ All free. All keyless unless marked.
 | --- | --- |
 | Prediction markets, order book | Polymarket Gamma + CLOB |
 | Equity / vol / credit proxies | Yahoo Finance chart API |
-| 25Δ risk reversal, IV term structure | CBOE delayed quotes |
-| LEAPS 1y tail — N(−d2) | CBOE delayed quotes (same chains) |
+| 25Δ risk reversal, IV term structure | Nasdaq option chains (OPRA composite); IV + delta computed locally |
+| LEAPS 1y tail — put-spread digital (Breeden–Litzenberger) | Nasdaq option chains (same windows) |
 | HY OAS, CCC OAS, NFCI | FRED `fredgraph.csv` *(honest UA required)* |
 | Hyperscaler capex / OCF, contracted backlog | SEC XBRL `companyconcept` *(honest UA)* |
 | Insider net-selling | SEC EDGAR Form 4 (open-market S/P only) |

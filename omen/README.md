@@ -27,7 +27,7 @@ else comes from `market-data.json`, produced by `update-market-data.py`.
   **MKT** (the unwind itself) vs **GOV** (the regulatory clampdown). A sleeve is a read on the
   basket, not a sub-index – Bear is the flat equal-weight mean of all 9 constituents, not the
   mean of its two unequal sleeves. The monitor also carries China AI and Macro indexes.
-- **LEAPS tail panel** — risk-neutral P(NVDA −50% / SOXX −40% in ~1y) from long-dated CBOE
+- **LEAPS tail panel** — risk-neutral P(NVDA −50% / SOXX −40% in ~1y) from long-dated
   puts via N(−d2), as a deep-market cross-check on the thin Polymarket bubble book.
 - **Fundamentals panel** — combined quarterly capex and operating cash flow for
   MSFT/GOOGL/AMZN/META/ORCL from SEC XBRL (the one non-market-priced anchor; capex/OCF is the
@@ -77,8 +77,8 @@ the pages' inline code.
 |---|---|
 | Prediction markets, order book | Polymarket Gamma + CLOB |
 | Equity / vol / credit proxies | Yahoo Finance chart API |
-| 25Δ risk reversal + IV term structure | CBOE delayed quotes |
-| LEAPS-implied 1y tail (N(−d2)) | CBOE delayed quotes (same chains) |
+| 25Δ risk reversal + IV term structure | Nasdaq option chains (OPRA composite); IV + delta computed locally |
+| LEAPS-implied 1y tail (put-spread digital) | Nasdaq option chains (same windows) |
 | HY OAS, CCC OAS, NFCI | FRED `fredgraph.csv` (honest UA required) |
 | Hyperscaler capex / OCF fundamentals | SEC XBRL `companyconcept` (honest UA required) |
 | Insider net-selling | SEC EDGAR Form 4 (open-market S/P only) |

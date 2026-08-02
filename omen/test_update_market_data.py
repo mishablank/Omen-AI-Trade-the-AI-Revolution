@@ -1,4 +1,5 @@
 import importlib.util
+import math
 import urllib.error
 from pathlib import Path
 
@@ -60,15 +61,71 @@ def test_parse_form4_bad_xml_is_zero():
     assert umd.parse_form4_xml("<not xml") == (0.0, 0.0)
 
 
-def test_bs_prob_below_is_sane_and_monotonic():
-    # deeper strikes must be less likely; a rough known value anchors the math
-    p50 = umd.bs_prob_below(210.0, 105.0, 0.51, 340)
-    p30 = umd.bs_prob_below(210.0, 147.0, 0.46, 340)
-    assert p50 is not None and p30 is not None
-    assert 0.05 < p50 < 0.20          # ~10% at current NVDA vols
-    assert p30 > p50                  # -30% strictly more likely than -50%
-    assert umd.bs_prob_below(210.0, 105.0, 0, 340) is None
-    assert umd.bs_prob_below(None, 105.0, 0.5, 340) is None
+def _synthetic_puts(spot, iv, dte, lo, hi, step):
+    """A Black-Scholes put curve on a flat smile, so the digital has a known answer."""
+    return {float(k): umd.bs_price(spot, float(k), iv, dte / 365.0, "P")
+            for k in range(lo, hi + 1, step)}
+
+
+def test_implied_vol_round_trips():
+    px = umd.bs_price(200.0, 150.0, 0.45, 0.9, "P")
+    assert abs(umd.implied_vol(px, 200.0, 150.0, 0.9, "P") - 0.45) < 1e-3
+    pxc = umd.bs_price(200.0, 250.0, 0.38, 0.5, "C")
+    assert abs(umd.implied_vol(pxc, 200.0, 250.0, 0.5, "C") - 0.38) < 1e-3
+
+
+def test_implied_vol_rejects_junk_quotes():
+    assert umd.implied_vol(None, 200.0, 100.0, 0.9, "P") is None
+    assert umd.implied_vol(0, 200.0, 100.0, 0.9, "P") is None
+    assert umd.implied_vol(1.0, 200.0, 100.0, 0, "P") is None
+    # below intrinsic: a $100 put on a $50 spot cannot trade at $1
+    assert umd.implied_vol(1.0, 50.0, 100.0, 0.9, "P") is None
+
+
+def test_digital_put_matches_n_minus_d2_on_a_flat_smile():
+    # With no skew the correction term vanishes, so BL must agree with N(-d2). That is
+    # the check that the new estimator is unbiased; the divergence on real chains is the
+    # smile, not an artefact.
+    spot, iv, dte = 200.0, 0.50, 319
+    puts = _synthetic_puts(spot, iv, dte, 60, 340, 5)
+    t = dte / 365.0
+    d2 = (math.log(spot / 100.0) + (umd.TAIL_RATE - iv * iv / 2) * t) / (iv * math.sqrt(t))
+    assert abs(umd.digital_put(puts, 100.0, dte, spot) - umd.norm_cdf(-d2)) < 0.01
+
+
+def test_digital_put_is_monotone_in_strike():
+    puts = _synthetic_puts(200.0, 0.50, 319, 60, 340, 5)
+    ps = [umd.digital_put(puts, k, 319, 200.0) for k in (100.0, 140.0, 180.0)]
+    assert all(p is not None for p in ps)
+    assert ps[0] < ps[1] < ps[2]          # a CDF must increase with strike
+
+
+def test_digital_put_half_width_scales_with_spot():
+    # The SOXX bug: a flat $5 floor on a ~$505 name reads pure quote noise. The floor
+    # must be the larger of $5 and 4% of spot.
+    puts = _synthetic_puts(505.0, 0.55, 319, 200, 700, 5)
+    assert umd.digital_put(puts, 380.0, 319, 505.0) is not None
+    wide = umd.digital_put(puts, 380.0, 319, 505.0)
+    narrow = umd.digital_put(puts, 380.0, 319, spot=None, min_h=5.0)
+    assert abs(wide - narrow) < 0.05      # on clean data both work; the floor is for noise
+    assert umd.digital_put(puts, 380.0, 319, 505.0) > 0
+
+
+def test_digital_put_needs_strikes_on_both_sides():
+    puts = _synthetic_puts(200.0, 0.5, 319, 100, 140, 5)
+    assert umd.digital_put(puts, 100.0, 319, 200.0) is None   # nothing below 100 - 8
+    assert umd.digital_put(puts, 140.0, 319, 200.0) is None   # nothing above 140 + 8
+
+
+def test_digital_put_clamps_to_a_probability():
+    # Non-convex junk quotes can imply a negative or >1 density; never emit one.
+    assert umd.digital_put({90.0: 5.0, 100.0: 4.0, 110.0: 3.0}, 100.0, 319, 200.0) == 0.0
+
+
+def test_num_parses_nasdaq_placeholders():
+    assert umd._num("--") is None and umd._num("") is None and umd._num(None) is None
+    assert umd._num("1,234.50") == 1234.5
+    assert umd._num("0.03") == 0.03
 
 
 def test_quarterlize_differences_cumulative_flows():
