@@ -1,5 +1,5 @@
 {
- "updated": "2026-08-02T00:07:39Z",
+ "updated": "2026-08-02T04:29:29Z",
  "snapshot_date": "2026-08-02",
  "artificial_analysis": {
   "cn_best": "GLM-5.2",
@@ -137,48 +137,43 @@
  },
  "openrouter_week": {
   "week": "2026-07-27",
-  "cn_share": 0.5232,
-  "us_share": 0.3139,
-  "spi": 1.667,
-  "total_tokens": 49555250259983
+  "cn_share": 0.5226,
+  "us_share": 0.3144,
+  "spi": 1.662,
+  "total_tokens": 50604409675255
  },
  "vercel_gateway": {
-  "asof": "2026-08-01",
-  "cn_share": 51.5,
-  "us_share": 48.33,
-  "spi": 1.066,
+  "asof": "2026-08-02",
+  "cn_share": 50.58,
+  "us_share": 48.89,
+  "spi": 1.035,
   "top_cn": [
    {
     "lab": "deepseek",
-    "share": 30.57
+    "share": 31.06
    },
    {
     "lab": "zai",
-    "share": 7.9
-   },
-   {
-    "lab": "stepfun",
-    "share": 4.61
+    "share": 7.75
    },
    {
     "lab": "moonshotai",
-    "share": 4.3
+    "share": 3.57
+   },
+   {
+    "lab": "stepfun",
+    "share": 3.48
    },
    {
     "lab": "inclusionai",
-    "share": 2.01
+    "share": 2.82
    },
    {
     "lab": "minimax",
-    "share": 1.22
+    "share": 1.16
    }
   ],
   "series": [
-   {
-    "d": "2026-06-02",
-    "cn": 29.23,
-    "us": 70.21
-   },
    {
     "d": "2026-06-03",
     "cn": 30.33,
@@ -476,15 +471,20 @@
    },
    {
     "d": "2026-08-01",
-    "cn": 51.5,
-    "us": 48.33
+    "cn": 51.95,
+    "us": 47.88
+   },
+   {
+    "d": "2026-08-02",
+    "cn": 50.58,
+    "us": 48.89
    }
   ],
   "license": "AI Gateway Leaderboard Data (c) Vercel, CC BY 4.0"
  },
  "ollama": {
-  "cn": 275431200,
-  "us": 449109027,
+  "cn": 275533700,
+  "us": 449312650,
   "cn_top": [
    {
     "name": "deepseek-r1",
@@ -504,7 +504,7 @@
    },
    {
     "name": "qwen3.5",
-    "pulls": 16700000
+    "pulls": 16800000
    },
    {
     "name": "qwen3-coder",
@@ -518,7 +518,7 @@
    },
    {
     "name": "llama3.2",
-    "pulls": 78600000
+    "pulls": 78700000
    },
    {
     "name": "gemma3",
@@ -533,7 +533,7 @@
   "markets": [
    {
     "label": "Will a Chinese AI model be #1 this year?",
-    "p": 0.13,
+    "p": 0.08,
     "ticker": "KXBESTLLMCHINA-27",
     "series": "kxbestllmchina"
    },
@@ -545,7 +545,7 @@
    },
    {
     "label": "Best AI at end of 2026: Ernie",
-    "p": 0.006,
+    "p": 0.007,
     "ticker": "KXLLM1-26DEC31-BAID",
     "series": "kxllm1"
    },
@@ -557,7 +557,7 @@
    },
    {
     "label": "Best AI at end of 2026: Claude",
-    "p": 0.656,
+    "p": 0.633,
     "ticker": "KXLLM1-26DEC31-A",
     "series": "kxllm1"
    }
@@ -608,23 +608,27 @@
   "cn": [
    {
     "pkg": "dashscope",
-    "wk": 683654
+    "wk": 776316
    },
    {
     "pkg": "zhipuai",
-    "wk": 110867
+    "wk": 109835
    },
    {
     "pkg": "zai-sdk",
-    "wk": 27726
+    "wk": 29786
    }
   ],
   "us": [
    {
-    "pkg": "openai",
-    "wk": 99729606
+    "pkg": "anthropic",
+    "wk": 46109761
+   },
+   {
+    "pkg": "google-genai",
+    "wk": 68016293
    }
   ],
-  "asof": "2026-08-01"
+  "asof": "2026-08-02"
  }
 }
