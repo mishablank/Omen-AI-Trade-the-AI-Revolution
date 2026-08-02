@@ -1,5 +1,5 @@
 {
- "updated": "2026-08-02T07:36:40Z",
+ "updated": "2026-08-02T10:04:55Z",
  "snapshot_date": "2026-08-02",
  "artificial_analysis": {
   "cn_best": "GLM-5.2",
@@ -70,77 +70,77 @@
   "asof": "2026-07-30",
   "source": "lmarena-dataset"
  },
- "github_stars_per_day": 10.6,
+ "github_stars_per_day": 11.8,
  "hf": {
   "cnOrgs": [
    {
     "org": "Qwen",
-    "dl": 267222959
+    "dl": 273107976
    },
    {
     "org": "deepseek-ai",
-    "dl": 33481440
+    "dl": 34000858
    },
    {
     "org": "zai-org",
-    "dl": 15194029
+    "dl": 15604706
    },
    {
     "org": "moonshotai",
-    "dl": 4161561
+    "dl": 4534893
    },
    {
     "org": "MiniMaxAI",
-    "dl": 2516954
+    "dl": 2535526
    },
    {
     "org": "XiaomiMiMo",
-    "dl": 1403690
+    "dl": 1428496
    },
    {
     "org": "tencent",
-    "dl": 1399060
+    "dl": 1373840
    },
    {
     "org": "stepfun-ai",
-    "dl": 1289150
+    "dl": 1292138
    }
   ],
   "usOrgs": [
    {
     "org": "google",
-    "dl": 61717967
+    "dl": 63162760
    },
    {
     "org": "meta-llama",
-    "dl": 36930441
+    "dl": 37108293
    },
    {
     "org": "nvidia",
-    "dl": 23350536
+    "dl": 23692621
    },
    {
     "org": "openai",
-    "dl": 12581476
+    "dl": 12819682
    },
    {
     "org": "microsoft",
-    "dl": 6939244
+    "dl": 6979820
    },
    {
     "org": "allenai",
-    "dl": 3847924
+    "dl": 3914849
    }
   ],
-  "cn": 326668843,
-  "us": 145367588
+  "cn": 333878433,
+  "us": 147678025
  },
  "openrouter_week": {
   "week": "2026-07-27",
   "cn_share": 0.5222,
-  "us_share": 0.3147,
+  "us_share": 0.3148,
   "spi": 1.659,
-  "total_tokens": 51567308072020
+  "total_tokens": 52116249642842
  },
  "vercel_gateway": {
   "asof": "2026-08-02",
@@ -483,8 +483,8 @@
   "license": "AI Gateway Leaderboard Data (c) Vercel, CC BY 4.0"
  },
  "ollama": {
-  "cn": 275536400,
-  "us": 449317051,
+  "cn": 275538000,
+  "us": 449320071,
   "cn_top": [
    {
     "name": "deepseek-r1",
@@ -557,7 +557,7 @@
    },
    {
     "label": "Best AI at end of 2026: Claude",
-    "p": 0.633,
+    "p": 0.651,
     "ticker": "KXLLM1-26DEC31-A",
     "series": "kxllm1"
    }
