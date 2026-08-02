@@ -1,5 +1,5 @@
 {
- "updated": "2026-08-02T04:29:29Z",
+ "updated": "2026-08-02T07:36:40Z",
  "snapshot_date": "2026-08-02",
  "artificial_analysis": {
   "cn_best": "GLM-5.2",
@@ -75,15 +75,15 @@
   "cnOrgs": [
    {
     "org": "Qwen",
-    "dl": 266134418
+    "dl": 267222959
    },
    {
     "org": "deepseek-ai",
-    "dl": 33347220
+    "dl": 33481440
    },
    {
     "org": "zai-org",
-    "dl": 15177390
+    "dl": 15194029
    },
    {
     "org": "moonshotai",
@@ -99,21 +99,21 @@
    },
    {
     "org": "tencent",
-    "dl": 1398959
+    "dl": 1399060
    },
    {
     "org": "stepfun-ai",
-    "dl": 1256181
+    "dl": 1289150
    }
   ],
   "usOrgs": [
    {
     "org": "google",
-    "dl": 61970178
+    "dl": 61717967
    },
    {
     "org": "meta-llama",
-    "dl": 36469551
+    "dl": 36930441
    },
    {
     "org": "nvidia",
@@ -125,52 +125,52 @@
    },
    {
     "org": "microsoft",
-    "dl": 6952208
+    "dl": 6939244
    },
    {
     "org": "allenai",
-    "dl": 3845622
+    "dl": 3847924
    }
   ],
-  "cn": 325396373,
-  "us": 145169571
+  "cn": 326668843,
+  "us": 145367588
  },
  "openrouter_week": {
   "week": "2026-07-27",
-  "cn_share": 0.5226,
-  "us_share": 0.3144,
-  "spi": 1.662,
-  "total_tokens": 50604409675255
+  "cn_share": 0.5222,
+  "us_share": 0.3147,
+  "spi": 1.659,
+  "total_tokens": 51567308072020
  },
  "vercel_gateway": {
   "asof": "2026-08-02",
-  "cn_share": 50.58,
-  "us_share": 48.89,
-  "spi": 1.035,
+  "cn_share": 50.3,
+  "us_share": 49.39,
+  "spi": 1.018,
   "top_cn": [
    {
     "lab": "deepseek",
-    "share": 31.06
+    "share": 30.23
    },
    {
     "lab": "zai",
-    "share": 7.75
-   },
-   {
-    "lab": "moonshotai",
-    "share": 3.57
+    "share": 7.52
    },
    {
     "lab": "stepfun",
-    "share": 3.48
+    "share": 3.92
+   },
+   {
+    "lab": "moonshotai",
+    "share": 3.77
    },
    {
     "lab": "inclusionai",
-    "share": 2.82
+    "share": 2.84
    },
    {
     "lab": "minimax",
-    "share": 1.16
+    "share": 1.14
    }
   ],
   "series": [
@@ -476,15 +476,15 @@
    },
    {
     "d": "2026-08-02",
-    "cn": 50.58,
-    "us": 48.89
+    "cn": 50.3,
+    "us": 49.39
    }
   ],
   "license": "AI Gateway Leaderboard Data (c) Vercel, CC BY 4.0"
  },
  "ollama": {
-  "cn": 275533700,
-  "us": 449312650,
+  "cn": 275536400,
+  "us": 449317051,
   "cn_top": [
    {
     "name": "deepseek-r1",
@@ -620,6 +620,10 @@
    }
   ],
   "us": [
+   {
+    "pkg": "openai",
+    "wk": 102784530
+   },
    {
     "pkg": "anthropic",
     "wk": 46109761
