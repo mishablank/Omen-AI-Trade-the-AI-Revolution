@@ -204,13 +204,13 @@ footer{border-top:1px solid var(--line);padding:56px 0 40px;background:var(--bg2
 
 <div class="ticker">
   <div class="in">
-    <span class="it"><span class="lab">HYPERSCALER IG TTM</span><b>≈$218B</b><span class="down">&gt; BANKS</span></span>
+    <span class="it"><span class="lab">HYPERSCALER DEBT TTM</span><b id="tkDebt">–</b><span class="down">XBRL PROCEEDS</span></span>
     <span class="it"><span class="lab">CRWV 2030 SPREAD</span><b>≈+560bp</b><span class="down">+85bp/90d</span></span>
-    <span class="it"><span class="lab">GOOGL EQUITY RAISE</span><b>$80B</b><span class="down">ATM + BRK</span></span>
-    <span class="it"><span class="lab">BIG-5 CAPEX / GDP</span><b>≈1.8%</b><span class="down">RISING</span></span>
-    <span class="it"><span class="lab">&gt;1GW FULLY ENERGIZED</span><b>0</b><span style="color:var(--dim)">OF 14 ANNOUNCED</span></span>
-    <span class="it"><span class="lab">BIG-5 FCF TTM</span><b>≈$65B</b><span class="down">−80% VS '23</span></span>
-    <span class="it"><span class="lab">H100 RENT</span><b>≈$2/hr</b><span class="down">−40%/YR</span></span>
+    <span class="it"><span class="lab">GOOGL EQUITY RAISE</span><b id="tkEquity">–</b><span class="down">ATM + BRK</span></span>
+    <span class="it"><span class="lab">DC BUILD / GDP</span><b id="tkGdp">–</b><span class="down" id="tkGdpNote">RISING</span></span>
+    <span class="it"><span class="lab">CANCELED GW (860M)</span><b id="tkCanceled">–</b><span class="down">VS BUILT</span></span>
+    <span class="it"><span class="lab">BIG-5 FCF TTM</span><b id="tkFcf">–</b><span class="down" id="tkFcfNote">OCF − CAPEX</span></span>
+    <span class="it"><span class="lab">H100 RENT</span><b id="tkGpu">–</b><span class="down" id="tkGpuNote">VAST.AI MEDIAN</span></span>
     <span class="it"><span class="lab">FLAGSHIP mNAV</span><b>≈1.6×</b><span class="down">PREMIUM</span></span>
     <span class="it"><span class="lab">SOURCE</span><b style="color:var(--mut)">EDGAR · TRACE · BEA · EIA · CBRE</b></span>
   </div>
@@ -300,10 +300,11 @@ footer{border-top:1px solid var(--line);padding:56px 0 40px;background:var(--bg2
         <tr><td>Operating</td><td data-l="Reads on">What the grid actually has</td><td data-l="Nameplate GW" class="num" id="ltEiaOp">–</td></tr>
         <tr><td>Under construction</td><td data-l="Reads on">Steel in the ground</td><td data-l="Nameplate GW" class="num" id="ltEiaUc">–</td></tr>
         <tr><td>Planned / approvals pending</td><td data-l="Reads on">The press-release layer</td><td data-l="Nameplate GW" class="num" id="ltEiaPlan">–</td></tr>
+        <tr><td>Canceled or postponed</td><td data-l="Reads on">Thesis v in federal data – capacity that stopped</td><td data-l="Nameplate GW" class="num" id="ltEiaCanceled">–</td></tr>
         <tr><td>US interconnection queue (LBNL, <span id="ltLbnlAsof">2023-12</span>)</td><td data-l="Reads on">Requests, most of which never build</td><td data-l="Nameplate GW" class="num" id="ltLbnl">≈2,600</td></tr>
         <tr><td>PJM capacity clears (2025/26 → 2026/27)</td><td data-l="Reads on">Scarcity pricing the AI load already caused</td><td data-l="Nameplate GW" class="num" id="ltPjm">$269.92 → $329.17/MW-day</td></tr>
       </table>
-      <div class="srcline" id="ltEiaSrc"><b>METRIC</b> – planned vs under-construction vs operating GW; a widening planned-minus-built gap is the stranded-asset pipeline forming. &nbsp;<b>SOURCE</b> – <a href="https://www.eia.gov/opendata/" target="_blank" rel="noopener">EIA-860M via API v2</a> (<span id="ltEiaState">needs EIA_API_KEY – free registration</span>) · <a href="https://emp.lbl.gov/queues" target="_blank" rel="noopener">LBNL queues</a> + <a href="https://www.pjm.com" target="_blank" rel="noopener">PJM auctions</a> (hand-updated) · <a href="#stranded">thesis v</a></div>
+      <div class="srcline" id="ltEiaSrc"><b>METRIC</b> – planned vs under-construction vs operating GW; a widening planned-minus-built gap is the stranded-asset pipeline forming, and the canceled line is that pipeline already realised. &nbsp;<b>SOURCE</b> – <a href="https://www.eia.gov/electricity/data/eia860m/" target="_blank" rel="noopener">EIA-860M monthly workbook</a> (<span id="ltEiaState">loading…</span>) · <a href="https://emp.lbl.gov/queues" target="_blank" rel="noopener">LBNL queues</a> + <a href="https://www.pjm.com" target="_blank" rel="noopener">PJM auctions</a> (hand-updated) · <a href="#stranded">thesis v</a></div>
     </div>
   </div>
 </section>
@@ -318,8 +319,8 @@ footer{border-top:1px solid var(--line);padding:56px 0 40px;background:var(--bg2
       <p class="exp">The buildout has migrated from cash flow to credit. When prime corporates saturate the IG market, the <b>marginal buyer</b> changes – recent books lean on European insurance funds and Middle East sovereign wealth, the buyers who historically show up at the end of a cycle. Watch issuance volume, book quality, and new-issue concessions.</p>
     </div>
     <div class="tiles rv">
-      <div class="tile"><div class="v">≈$218B</div><div class="t">Hyperscaler IG issuance, TTM</div><p>MSFT · GOOGL · META · AMZN · ORCL bonds priced in the trailing 12 months, per prospectus filings.</p></div>
-      <div class="tile"><div class="v">≈$196B</div><div class="t">Big-6 US banks, same window</div><p>The comparison group hyperscalers overtook in Q1 2026 – banks had been the largest IG issuer group for decades.</p></div>
+      <div class="tile"><div class="v" id="izDebt">–</div><div class="t">Hyperscaler debt proceeds, TTM</div><p>Cash proceeds from long-term debt issuance across <span id="izNames">the AI-capex filers</span>, trailing four reported quarters – audited XBRL, not a press tally.</p></div>
+      <div class="tile"><div class="v">≈$196B</div><div class="t">Big-6 US banks, same window <small>curated</small></div><p>The comparison group hyperscalers overtook in Q1 2026. Stays hand-curated on purpose: JPM and WFC tag no debt-issuance concept the XBRL API exposes, so a computed bank total would omit two of six and flatter this very comparison.</p></div>
       <div class="tile"><div class="v">$125B</div><div class="t">Order book on META's $30B deal</div><p>Oct 2025, the largest corporate bond deal of the year – demand at the top is not the question; capacity is.</p></div>
     </div>
     <div class="panel rv">
@@ -334,7 +335,7 @@ footer{border-top:1px solid var(--line);padding:56px 0 40px;background:var(--bg2
         <tr><td>Dec 2025</td><td data-l="Issuer">Amazon</td><td data-l="Vehicle">IG bonds – first issuance since 2022</td><td data-l="Size" class="num">$15.0B</td></tr>
         <tr><td>H1 2026</td><td data-l="Issuer">Complex-wide</td><td data-l="Vehicle">Follow-on IG + SPV/private-credit vehicles</td><td data-l="Size" class="num">≈$100B+</td></tr>
       </table>
-      <div class="srcline"><b>METRIC</b> – TTM IG issuance by hyperscalers vs banks; new-issue concession; share of book taken by insurers and sovereign wealth. &nbsp;<b>SOURCE</b> – <a href="https://efts.sec.gov/LATEST/search-index?q=%22free%20writing%20prospectus%22&dateRange=custom&forms=FWP" target="_blank" rel="noopener">SEC EDGAR 424B/FWP filings</a> · <a href="https://www.finra.org/finra-data/fixed-income" target="_blank" rel="noopener">FINRA TRACE</a> · <a href="https://www.sifma.org/resources/research/statistics/" target="_blank" rel="noopener">SIFMA issuance statistics</a> · live filing counts in <a href="#tape">the tape</a></div>
+      <div class="srcline"><b>METRIC</b> – TTM IG issuance by hyperscalers vs banks; new-issue concession; share of book taken by insurers and sovereign wealth. &nbsp;<b>SOURCE</b> – <a href="https://www.sec.gov/edgar/sec-api-documentation" target="_blank" rel="noopener">SEC XBRL companyconcept</a> (live: debt proceeds) · <a href="https://efts.sec.gov/LATEST/search-index?q=%22free%20writing%20prospectus%22&dateRange=custom&forms=FWP" target="_blank" rel="noopener">EDGAR 424B/FWP filings</a> · <a href="https://www.finra.org/finra-data/fixed-income" target="_blank" rel="noopener">FINRA TRACE</a> · <a href="https://www.sifma.org/resources/research/statistics/" target="_blank" rel="noopener">SIFMA issuance statistics</a> · live filing counts in <a href="#tape">the tape</a></div>
     </div>
   </div>
 </section>
@@ -355,13 +356,13 @@ footer{border-top:1px solid var(--line);padding:56px 0 40px;background:var(--bg2
     </div>
     <div class="panel rv">
       <h3>The AI credit tape</h3>
-      <span class="cap">Single-name and structure watchlist · levels approximate, from TRACE prints + filings</span>
+      <span class="cap">Single-name and structure watchlist · hand-curated · levels approximate, from TRACE prints + filings</span>
       <table class="dt">
         <tr><th>Instrument</th><th>Reads on</th><th class="num">Level</th><th class="num">Δ 90d</th></tr>
         <tr><td>CoreWeave 9¼% 2030</td><td data-l="Reads on">Neocloud funding cost – GPU-backed, contract-concentrated</td><td data-l="Level" class="num">≈+560bp</td><td data-l="Δ 90d" class="num down">+85bp</td></tr>
         <tr><td>Oracle 10y benchmark</td><td data-l="Reads on">Most-leveraged major – capex running ahead of operating cash flow</td><td data-l="Level" class="num">≈+130bp</td><td data-l="Δ 90d" class="num down">+22bp</td></tr>
         <tr><td>Meta Hyperion SPV 2049 (Blue Owl)</td><td data-l="Reads on">Off-balance-sheet data-center paper – the new marginal structure</td><td data-l="Level" class="num">≈+240bp</td><td data-l="Δ 90d" class="num down">+15bp</td></tr>
-        <tr><td>ICE BofA HY OAS (contrast)</td><td data-l="Reads on">Generic high yield – what the gauge already reads</td><td data-l="Level" class="num">≈+310bp</td><td data-l="Δ 90d" class="num up">−5bp</td></tr>
+        <tr><td>ICE BofA HY OAS (contrast)</td><td data-l="Reads on">Generic high yield – what the gauge already reads</td><td data-l="Level" class="num" id="crHyOas">–</td><td data-l="Δ 90d" class="num" id="crHyOasDelta">–</td></tr>
       </table>
       <div class="hbars" id="creditBars">
         <div class="hb"><span class="k"><b>CRWV 2030</b> vs own 12m range</span><span class="track"><i class="hot" data-w="72"></i></span><span class="v">72%</span></div>
@@ -384,8 +385,8 @@ footer{border-top:1px solid var(--line);padding:56px 0 40px;background:var(--bg2
       <p class="exp">A mega-cap selling stock at the market is a tell, not a flex. Equity is the <b>most expensive money a prime credit can raise</b> – you only reach for it when cheaper channels (operating cash flow, IG bonds, SPVs) are saturated. Alphabet's $80B program is the first mega-cap ATM era in the modern market. Track who follows.</p>
     </div>
     <div class="tiles rv">
-      <div class="tile"><div class="v">$80B</div><div class="t">Alphabet equity program</div><p>$10B Berkshire private placement plus two at-the-market sale programs – announced Jul 2026.</p></div>
-      <div class="tile"><div class="v">≈$0</div><div class="t">Hyperscaler secondary equity, any prior year</div><p>For a decade these companies only retired stock. The direction of flow has reversed.</p></div>
+      <div class="tile"><div class="v" id="izEquityGoogl">–</div><div class="t">Alphabet equity proceeds, <span id="izEquityWin">reported</span></div><p>Cash actually raised, per Alphabet's XBRL cash-flow statement – against an $80B announced program ($10B Berkshire placement plus two ATM sale programs, Jul 2026). Alphabet had never tagged this concept before 2026; the tag appearing at all is the tell.</p></div>
+      <div class="tile"><div class="v" id="izEquityAll">–</div><div class="t">Every other filer combined, TTM</div><p>MSFT · ORCL · CRWV, trailing twelve months – and this is ordinary employee stock-plan flow, not secondary issuance. That is the comparison: one mega-cap's raise against the entire rest of the complex's routine share sales.</p></div>
       <div class="tile"><div class="v">SBC→BB</div><div class="t">The buyback treadmill</div><p>Stock comp forces buybacks, buybacks eat cash flow, capex eats the rest – then the SPVs and the ATM appear.</p></div>
     </div>
     <div class="panel rv">
@@ -402,7 +403,7 @@ footer{border-top:1px solid var(--line);padding:56px 0 40px;background:var(--bg2
         <div class="q">"The blow-off top is this year's three mega IPOs. That marks the gonging of the bell."</div>
         <div class="who">Paul Kedrosky · <b>Better Offline, Jun 2026</b> · the IPO-timing markets already sit inside OMEN's Bull index</div>
       </div>
-      <div class="srcline"><b>METRIC</b> – trailing-12-month secondary equity issuance by hyperscalers; count of active ATM programs; S-1 accounting treatment of training costs. &nbsp;<b>SOURCE</b> – <a href="https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany" target="_blank" rel="noopener">SEC EDGAR 8-K / 424B5 / S-1</a> · <a href="indexes.html" >OMEN Bull index (IPO markets)</a></div>
+      <div class="srcline"><b>METRIC</b> – trailing-12-month secondary equity issuance by hyperscalers; count of active ATM programs; S-1 accounting treatment of training costs. &nbsp;<b>SOURCE</b> – <a href="https://www.sec.gov/edgar/sec-api-documentation" target="_blank" rel="noopener">SEC XBRL companyconcept</a> (live: equity proceeds) · <a href="https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany" target="_blank" rel="noopener">EDGAR 8-K / 424B5 / S-1</a> · <a href="indexes.html" >OMEN Bull index (IPO markets)</a></div>
     </div>
   </div>
 </section>
@@ -417,27 +418,21 @@ footer{border-top:1px solid var(--line);padding:56px 0 40px;background:var(--bg2
       <p class="exp">When one investment category carries a visible share of GDP growth, the macro cycle and the capex cycle become the <b>same cycle</b> – a slowdown in data-center spend reads as a recession print. The monitor already tracks audited <b>capex vs operating cash flow</b> from SEC XBRL; this section adds the macro layer on top.</p>
     </div>
     <div class="tiles rv">
-      <div class="tile"><div class="v">≈$556B</div><div class="t">Big-5 capex, TTM</div><p>MSFT + GOOGL + AMZN + META + ORCL, trailing 12 months per XBRL filings – roughly triple the 2023 run rate.</p></div>
-      <div class="tile"><div class="v">≈1.8%</div><div class="t">Of US GDP</div><p>Data-center construction plus computing equipment investment as a share of nominal GDP.</p></div>
-      <div class="tile"><div class="v">≈½</div><div class="t">Of H1-2026 GDP growth</div><p>Share of real GDP growth attributable to AI-related investment – strip it out and the economy is near stall speed.</p></div>
+      <div class="tile"><div class="v" id="gdCapex">–</div><div class="t">Big-5 capex, TTM</div><p>MSFT + GOOGL + AMZN + META + ORCL, each filer's own trailing four quarters per XBRL filings – roughly triple the 2023 run rate.</p></div>
+      <div class="tile"><div class="v" id="gdPct">–</div><div class="t">Of US GDP</div><p>Data-center construction (<span id="gdDc">–</span>, Census C30 SAAR) plus computer-equipment investment (<span id="gdComp">–</span>, BEA) over nominal GDP. Narrower than the monitor's big-5-capex/GDP ratio, which counts five companies' worldwide capex.</p></div>
+      <div class="tile"><div class="v" id="gdGrowth">–</div><div class="t">Of GDP growth, latest quarter</div><p>Big-5 capex growth as a share of the change in nominal GDP – strip it out and the economy is materially slower.</p></div>
     </div>
     <div class="panel rv">
       <h3>Capex ÷ operating cash flow, by filer</h3>
       <span class="cap">Audited XBRL, trailing 12 months · above 1.0 means the buildout outruns the business</span>
-      <div class="hbars" id="gdpBars">
-        <div class="hb"><span class="k"><b>ORCL</b> capex / OCF</span><span class="track"><i class="hot" data-w="100"></i></span><span class="v">≈1.6×</span></div>
-        <div class="hb"><span class="k"><b>AMZN</b> capex / OCF</span><span class="track"><i class="hot" data-w="64"></i></span><span class="v">≈1.02×</span></div>
-        <div class="hb"><span class="k"><b>META</b> capex / OCF</span><span class="track"><i data-w="59"></i></span><span class="v">≈0.94×</span></div>
-        <div class="hb"><span class="k"><b>MSFT</b> capex / OCF</span><span class="track"><i data-w="55"></i></span><span class="v">≈0.88×</span></div>
-        <div class="hb"><span class="k"><b>GOOGL</b> capex / OCF</span><span class="track"><i data-w="49"></i></span><span class="v">≈0.79×</span></div>
-      </div>
+      <div class="hbars" id="gdpBars"><div class="hb"><span class="k">loading…</span><span class="track"><i data-w="0"></i></span><span class="v">–</span></div></div>
       <table class="dt" style="margin-top:22px">
         <tr><th>Buildout</th><th>Peak share of GDP</th><th>What followed</th></tr>
         <tr><td>Railroads, 1880s</td><td data-l="Peak share of GDP" class="num">≈6%</td><td data-l="What followed">Panics of 1873/1893 · ≈half of boom-era track eventually abandoned</td></tr>
         <tr><td>Telecom fiber, 2000</td><td data-l="Peak share of GDP" class="num">≈1.2%</td><td data-l="What followed">2001–02 bust · fiber found reuse, but only after the equity was destroyed</td></tr>
-        <tr><td>AI data centers, 2026</td><td data-l="Peak share of GDP" class="num">≈1.8% ↑</td><td data-l="What followed">Open – this page exists to watch it</td></tr>
+        <tr><td>AI data centers, 2026</td><td data-l="Peak share of GDP" class="num" id="gdPct2">–</td><td data-l="What followed">Open – this page exists to watch it</td></tr>
       </table>
-      <div class="srcline"><b>METRIC</b> – big-5 capex TTM and capex/OCF per filer; AI investment contribution to real GDP growth, quarterly. &nbsp;<b>SOURCE</b> – <a href="https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany" target="_blank" rel="noopener">SEC EDGAR / XBRL</a> (monitor's existing capex anchor) · <a href="https://www.bea.gov/data/gdp/gross-domestic-product" target="_blank" rel="noopener">BEA NIPA tables</a> · <a href="https://fred.stlouisfed.org" target="_blank" rel="noopener">FRED</a></div>
+      <div class="srcline"><b>METRIC</b> – big-5 capex TTM and capex/OCF per filer; AI investment contribution to real GDP growth, quarterly. &nbsp;<b>SOURCE</b> – <a href="https://www.sec.gov/edgar/sec-api-documentation" target="_blank" rel="noopener">SEC XBRL</a> (live, per filer) · <a href="https://www.census.gov/construction/c30/c30index.html" target="_blank" rel="noopener">Census C30 data-center line</a> + <a href="https://fred.stlouisfed.org/series/B935RC1Q027SBEA" target="_blank" rel="noopener">BEA/FRED</a> (live)</div>
     </div>
   </div>
 </section>
@@ -489,7 +484,7 @@ footer{border-top:1px solid var(--line);padding:56px 0 40px;background:var(--bg2
     </div>
     <div class="tiles rv">
       <div class="tile"><div class="v">≈95%</div><div class="t">Fiber that sat dark, 2002</div><p>Of the strand-miles laid into the telecom bubble, most was never lit – ≈$5T of market value erased before it found reuse.</p></div>
-      <div class="tile"><div class="v">≈−40<small>%/yr</small></div><div class="t">H100 on-demand rental</div><p>Spot rental for last-gen GPUs has fallen from ≈$8/hr (2023) toward ≈$2/hr – depreciation on a ~2-year asset the hyperscalers still carry over 5–6.</p></div>
+      <div class="tile"><div class="v" id="dfGpu">–</div><div class="t">H100 on-demand rental, median ask</div><p>Live vast.ai median (<span id="dfGpuAsof">–</span>); p10 <span id="dfGpuP10">–</span>. Down from ≈$8/hr in 2023 – depreciation on a ~2-year asset the hyperscalers still carry over 5–6. The spot tape is noisy day to day; the multi-year direction is the claim.</p></div>
       <div class="tile"><div class="v">≈4×</div><div class="t">Announced vs absorbable load</div><p>≈48 GW announced against a demand curve that plausibly absorbs a fraction on the stated timeline – the overbuild ratio the fiber map warned about.</p></div>
     </div>
     <div class="panel rv">
@@ -507,7 +502,7 @@ footer{border-top:1px solid var(--line);padding:56px 0 40px;background:var(--bg2
         <div class="q">"This has identical mechanics to the telecom build-out that erased five trillion dollars of value."</div>
         <div class="who">Jim Chanos · <b>"The AI Bubble Is Much Worse Than Dot-Com," 2026</b> · the overbuild is the thesis, the utilization tape is the metric</div>
       </div>
-      <div class="srcline"><b>METRIC</b> – secondary GPU rental/spot price vs book depreciation curve; fleet utilization; data-center vacancy; announced vs absorbable GW. &nbsp;<b>SOURCE</b> – GPU price trackers (Vast.ai · SF Compute) · <a href="https://www.cbre.com/insights/figures" target="_blank" rel="noopener">CBRE data-center figures</a> · <a href="https://emp.lbl.gov/queues" target="_blank" rel="noopener">LBNL queues</a> · <a href="#stranded">OMEN stranded-GW tracker</a></div>
+      <div class="srcline"><b>METRIC</b> – secondary GPU rental/spot price vs book depreciation curve; fleet utilization; data-center vacancy; announced vs absorbable GW. &nbsp;<b>SOURCE</b> – <a href="https://vast.ai" target="_blank" rel="noopener">vast.ai H100 asks</a> (live) · <a href="https://www.cbre.com/insights/figures" target="_blank" rel="noopener">CBRE data-center figures</a> · <a href="https://emp.lbl.gov/queues" target="_blank" rel="noopener">LBNL queues</a> · <a href="#stranded">OMEN stranded-GW tracker</a></div>
     </div>
   </div>
 </section>
@@ -522,25 +517,19 @@ footer{border-top:1px solid var(--line);padding:56px 0 40px;background:var(--bg2
       <p class="exp">Thesis four watched <b>capex ÷ operating cash flow</b> climb toward 1.0. Push one line further down the statement and you get the punchline: <b>operating cash flow minus capex – true free cash flow – has fallen ~80%</b> across the Big-5, and turned negative at Oracle and Amazon. GAAP earnings don't show it for exactly Chanos's reason: <b>a ~2-year chip depreciated over 5–6 years</b> keeps net income high while the cash walks out the door now.</p>
     </div>
     <div class="tiles rv">
-      <div class="tile"><div class="v">≈$65B</div><div class="t">Big-5 free cash flow, TTM</div><p>OCF minus capex across MSFT · GOOGL · AMZN · META · ORCL – down from ≈$300B+ before the buildout, on roughly flat-to-higher net income.</p></div>
-      <div class="tile"><div class="v">2 of 5</div><div class="t">Now FCF-negative</div><p>Oracle and Amazon spend more on capex than their operations generate; Meta is near the line. Only MSFT and GOOGL still convert cleanly.</p></div>
+      <div class="tile"><div class="v" id="fcfTotal">–</div><div class="t">Big-5 free cash flow, TTM</div><p>OCF minus capex across MSFT · GOOGL · AMZN · META · ORCL – down from ≈$300B+ before the buildout, on roughly flat-to-higher net income.</p></div>
+      <div class="tile"><div class="v" id="fcfNeg">–</div><div class="t">Now FCF-negative</div><p>The filers whose capex outruns what their operations generate in cash. Audited XBRL, each filer on its own trailing four quarters.</p></div>
       <div class="tile"><div class="v">≈$400B</div><div class="t">Net-income-to-cash wedge</div><p>The gap between reported Big-5 net income and free cash flow – the non-cash cushion that lengthened depreciation keeps inflating.</p></div>
     </div>
     <div class="panel rv">
       <h3>Free cash flow, by filer</h3>
       <span class="cap">OCF − capex, trailing 12 months · audited XBRL · negative = the buildout outruns the business in cash, not just accruals</span>
-      <div class="hbars" id="fcfBars">
-        <div class="hb"><span class="k"><b>ORCL</b> FCF TTM</span><span class="track"><i class="hot" data-w="92"></i></span><span class="v">≈−$8B</span></div>
-        <div class="hb"><span class="k"><b>AMZN</b> FCF TTM</span><span class="track"><i class="hot" data-w="74"></i></span><span class="v">≈−$3B</span></div>
-        <div class="hb"><span class="k"><b>META</b> FCF TTM</span><span class="track"><i data-w="58"></i></span><span class="v">≈+$6B</span></div>
-        <div class="hb"><span class="k"><b>MSFT</b> FCF TTM</span><span class="track"><i data-w="42"></i></span><span class="v">≈+$30B</span></div>
-        <div class="hb"><span class="k"><b>GOOGL</b> FCF TTM</span><span class="track"><i data-w="34"></i></span><span class="v">≈+$40B</span></div>
-      </div>
+      <div class="hbars" id="fcfBars"><div class="hb"><span class="k">loading…</span><span class="track"><i data-w="0"></i></span><span class="v">–</span></div></div>
       <div class="pull">
         <div class="q">"A chip that's obsolete in two years is being depreciated over five, six, seven. It's a huge boost to reported earnings during the build-out."</div>
         <div class="who">Jim Chanos · <b>2026</b> · the wider the useful-life assumption, the wider the net-income-to-FCF wedge above</div>
       </div>
-      <div class="srcline"><b>METRIC</b> – OCF − capex per filer and aggregate, TTM; net-income-to-FCF conversion; disclosed server/GPU useful-life assumption. &nbsp;<b>SOURCE</b> – <a href="https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany" target="_blank" rel="noopener">SEC EDGAR 10-Q cash-flow statements</a> · XBRL PP&E useful-life notes · <a href="#gdp">OMEN capex/OCF panel</a></div>
+      <div class="srcline"><b>METRIC</b> – OCF − capex per filer and aggregate, TTM; net-income-to-FCF conversion; disclosed server/GPU useful-life assumption. &nbsp;<b>SOURCE</b> – <a href="https://www.sec.gov/edgar/sec-api-documentation" target="_blank" rel="noopener">SEC XBRL 10-Q cash flows</a> (live, per filer) · XBRL PP&E useful-life notes · <a href="#gdp">OMEN capex/OCF panel</a></div>
     </div>
   </div>
 </section>
@@ -583,7 +572,7 @@ footer{border-top:1px solid var(--line);padding:56px 0 40px;background:var(--bg2
   <div class="wrap">
     <div class="honesty rv">
       <h3>Honesty.</h3>
-      <p>The eight theses on this page are a <b>curated snapshot, refreshed by hand</b> – not a live feed. The exception is <a href="#tape" style="color:var(--accT)">the live tape</a>, which refreshes from primary sources (TWSE, EDGAR full-text, Ramp, Hugging Face, optionally EIA) on the data cadence and labels every number with its as-of date; rows marked "manual" there are still hand-updated. Levels marked ≈ are approximations assembled from filings, TRACE prints, and press, and can be stale or wrong; treat them as a reading list with numbers, not data. Unlike the indexes and the gauge, these are <b>fundamentals, not market prices</b> – they can't tell you when, only how much has been borrowed against the answer. The eight theses come from two aligned bearish worldviews – Kedrosky's ROI teardown and Chanos's telecom analogy; the bull rebuttal – that inference demand outruns the depreciation schedule – is exactly what the <a href="indexes.html" style="color:var(--accT)">Bull index</a> prices on the other side of the pair.</p>
+      <p>This page is <b>part live, part curated</b>, and every figure says which it is. Live from primary sources on the data cadence: the whole of <a href="#tape" style="color:var(--accT)">the live tape</a> (TWSE, EDGAR full-text, Ramp, Hugging Face, EIA-860M), plus every capex, cash-flow and issuance number in theses <a href="#debt" style="color:var(--accT)">i</a>, <a href="#equity" style="color:var(--accT)">iii</a>, <a href="#gdp" style="color:var(--accT)">iv</a> and <a href="#fcf" style="color:var(--accT)">vii</a> (audited SEC XBRL), the capex/GDP ratio (Census C30 + BEA), the GPU rental tape (vast.ai) and the HY OAS contrast (FRED). Still curated by hand and marked as such: the single-name credit spreads in thesis <a href="#credit" style="color:var(--accT)">ii</a> (no free per-CUSIP source exists), the bank issuance comparator, the gigawatt project tracker, and the treasury-vehicle watchlist. Levels marked ≈ are approximations assembled from filings, TRACE prints, and press, and can be stale or wrong; treat them as a reading list with numbers, not data. Unlike the indexes and the gauge, these are <b>fundamentals, not market prices</b> – they can't tell you when, only how much has been borrowed against the answer. The eight theses come from two aligned bearish worldviews – Kedrosky's ROI teardown and Chanos's telecom analogy; the bull rebuttal – that inference demand outruns the depreciation schedule – is exactly what the <a href="indexes.html" style="color:var(--accT)">Bull index</a> prices on the other side of the pair.</p>
     </div>
   </div>
 </section>
@@ -625,7 +614,7 @@ footer{border-top:1px solid var(--line);padding:56px 0 40px;background:var(--bg2
       </div>
       <div>
         <h4>Fine print</h4>
-        <span>Curated snapshot, not live</span>
+        <span>Part live, part curated – each figure says which</span>
         <span>Not investment advice</span>
         <span>Two bear worldviews – the Bull side is priced next door</span>
       </div>
@@ -706,14 +695,134 @@ async function liveTape(){
     if(ks.length) put("ltPjm",ks.map(k=>"$"+pa.clears_usd_mw_day[k].toFixed(2)).join(" → ")+"/MW-day");
   }
   if(eia){
-    put("ltEiaOp",eia.operating_gw!=null?eia.operating_gw.toLocaleString("en-US"):"–");
-    put("ltEiaUc",eia.under_construction_gw!=null?eia.under_construction_gw.toLocaleString("en-US"):"–");
-    put("ltEiaPlan",eia.planned_gw!=null?eia.planned_gw.toLocaleString("en-US"):"–");
+    const gw=v=>v!=null?v.toLocaleString("en-US"):"–";
+    put("ltEiaOp",gw(eia.operating_gw));
+    put("ltEiaUc",gw(eia.under_construction_gw));
+    put("ltEiaPlan",gw(eia.planned_gw));
+    put("ltEiaCanceled",gw(eia.canceled_gw),eia.canceled_gw!=null?"down":null);
     put("ltEiaState","live · "+eia.asof);
+    if(eia.canceled_gw!=null) put("tkCanceled",Math.round(eia.canceled_gw)+"GW");
+  }
+  if(d.capex_gdp){
+    const g=d.capex_gdp;
+    put("gdPct",g.pct_gdp!=null?g.pct_gdp.toFixed(2)+"%":null);
+    put("gdPct2",g.pct_gdp!=null?g.pct_gdp.toFixed(2)+"% ↑":null);
+    put("tkGdp",g.pct_gdp!=null?g.pct_gdp.toFixed(2)+"%":null);
+    put("gdDc","$"+g.dc_construction_saar_b+"B");
+    put("gdComp","$"+g.computers_saar_b+"B");
+    if(g.dc_yoy_pct!=null) put("tkGdpNote",sn(g.dc_yoy_pct,0,"% DC BUILD YOY"));
   }
   const upd=$("ltUpdated"); if(upd&&d.updated) upd.textContent="live tape "+d.updated.slice(0,16).replace("T"," ")+"Z";
 }
+
+// ---- theses i, iii, iv, vi, vii: the audited series behind the curated prose ----
+// These read market-data.json, the same SEC XBRL / FRED / vast.ai payload the monitor
+// already refreshes. Hardcoding them is how this page ended up claiming $65B of Big-5
+// free cash flow while its own data file said $133B.
+function bar(label,value,width,hotClass){
+  const row=document.createElement("div");
+  row.className="hb";
+  const k=document.createElement("span"); k.className="k";
+  const b=document.createElement("b"); b.textContent=label.sym;
+  k.append(b,document.createTextNode(" "+label.tail));
+  const track=document.createElement("span"); track.className="track";
+  const i=document.createElement("i");
+  if(hotClass) i.className="hot";
+  i.dataset.w=Math.max(0,Math.min(100,Math.round(width)));
+  track.append(i);
+  const v=document.createElement("span"); v.className="v"; v.textContent=value;
+  row.append(k,track,v);
+  return row;
+}
+function drawBars(id,rows){
+  const host=$(id); if(!host||!rows.length) return;
+  host.replaceChildren(...rows);
+  // .rv containers animate their bars once on reveal; anything drawn after that
+  // fired would otherwise sit at width 0 forever
+  if(host.closest(".rv")?.classList.contains("in"))
+    host.querySelectorAll(".track i[data-w]").forEach(b=>{b.style.width=b.dataset.w+"%";});
+}
+function usd(b){ return (b<0?MINUS:"")+"$"+Math.abs(b).toFixed(b>=100||b<=-100?0:1)+"B"; }
+async function liveFundamentals(){
+  let d;
+  try{ const r=await fetch("market-data.json",{cache:"no-store"}); if(!r.ok) return; d=await r.json(); }
+  catch(e){ return; }
+
+  const pf=(d.fundamentals||{}).per_filer;
+  if(pf&&pf.per){
+    const syms=Object.keys(pf.per);
+    const ratio=syms.filter(s=>pf.per[s].capex_over_ocf!=null)
+                    .sort((a,b)=>pf.per[b].capex_over_ocf-pf.per[a].capex_over_ocf);
+    const top=ratio.length?pf.per[ratio[0]].capex_over_ocf:1;
+    drawBars("gdpBars",ratio.map(s=>{
+      const v=pf.per[s].capex_over_ocf;
+      return bar({sym:s,tail:"capex / OCF"},v.toFixed(2)+"×",v/top*100,v>=1);
+    }));
+    const fcf=syms.slice().sort((a,b)=>pf.per[a].fcf_ttm_b-pf.per[b].fcf_ttm_b);
+    const lo=pf.per[fcf[0]].fcf_ttm_b, hi=pf.per[fcf[fcf.length-1]].fcf_ttm_b;
+    drawBars("fcfBars",fcf.map(s=>{
+      const v=pf.per[s].fcf_ttm_b;
+      // floor the track so the strongest converter still reads as a bar, not a gap
+      return bar({sym:s,tail:"FCF TTM"},(v<0?MINUS:"+")+"$"+Math.abs(v).toFixed(1)+"B",
+                 hi===lo?50:6+94*(hi-v)/(hi-lo),v<0);
+    }));
+    const t=pf.totals;
+    put("gdCapex","$"+Math.round(t.capex_ttm_b)+"B");
+    put("fcfTotal",usd(t.fcf_ttm_b),t.fcf_ttm_b<0?"down":null);
+    put("tkFcf",usd(t.fcf_ttm_b));
+    put("fcfNeg",t.n_fcf_negative+" of "+t.n_filers);
+    put("tkFcfNote",t.n_fcf_negative+"/"+t.n_filers+" NEGATIVE");
+  }
+
+  const m=d.macro;
+  if(m&&m.growth_share&&m.growth_share.length){
+    const g=m.growth_share[m.growth_share.length-1];
+    if(g!=null) put("gdGrowth",Math.round(g)+"%");
+  }
+
+  const iz=d.issuance;
+  if(iz&&iz.per){
+    if(iz.totals.debt_ttm_b!=null){
+      put("izDebt","$"+Math.round(iz.totals.debt_ttm_b)+"B");
+      put("tkDebt","$"+Math.round(iz.totals.debt_ttm_b)+"B");
+    }
+    // only the filers actually in the total — MSFT and GOOGL tag no debt proceeds,
+    // and listing them would imply a zero contribution rather than no disclosure
+    const contrib=iz.names.filter(s=>iz.per[s].debt_ttm_b!=null);
+    if(contrib.length) put("izNames",contrib.join(" · "));
+    const g=iz.per.GOOGL;
+    if(g&&g.equity_ttm_b!=null){
+      put("izEquityGoogl","$"+g.equity_ttm_b.toFixed(1)+"B");
+      put("tkEquity","$"+g.equity_ttm_b.toFixed(1)+"B");
+      // a half-year cumulative is a real number but not a year; say which it is
+      put("izEquityWin",g.equity_full_year?"TTM":g.equity_window);
+    }
+    if(iz.totals.equity_ttm_b!=null) put("izEquityAll","$"+iz.totals.equity_ttm_b.toFixed(1)+"B");
+  }
+
+  const gpu=d.gpu;
+  if(gpu&&gpu.median_dph!=null){
+    put("dfGpu","$"+gpu.median_dph.toFixed(2)+"/hr");
+    put("tkGpu","$"+gpu.median_dph.toFixed(2)+"/hr");
+    put("dfGpuAsof",gpu.date);
+    if(gpu.p10_dph!=null) put("dfGpuP10","$"+gpu.p10_dph.toFixed(2)+"/hr");
+  }
+
+  const oas=(d.fred||{}).HY_OAS;
+  if(oas&&oas.last!=null){
+    put("crHyOas","≈+"+Math.round(oas.last*100)+"bp");
+    const s=oas.series||[];
+    // the gauge's own 90-day window, so the two pages cannot disagree on the same series
+    const back=s.length>63?s[s.length-64].c:(s.length?s[0].c:null);
+    if(back!=null){
+      const bp=Math.round((oas.last-back)*100);
+      put("crHyOasDelta",sn(bp,0,"bp"),bp>0?"down":"up");
+    }
+  }
+
+}
 liveTape();
+liveFundamentals();
 </script>
 
 <script src="omen-nav.js" defer></script>

@@ -124,12 +124,11 @@ jobs:
         run: python3 omen/update-china-data.py
 
       - name: Refresh AI CapEx live tape
-        # TSMC monthly revenue (TWSE), EDGAR issuance counts, Ramp AI Index,
-        # Anthropic Economic Index freshness -> capex-data.json for ai-capex.html.
-        # EIA_API_KEY (free, eia.gov/opendata) additionally unlocks the EIA-860M
-        # generator pipeline; without it that block is null and the page says so.
-        env:
-          EIA_API_KEY: ${{ secrets.EIA_API_KEY }}
+        # TSMC monthly revenue (TWSE), EDGAR issuance counts, Ramp AI Index, Anthropic
+        # Economic Index freshness, the EIA-860M generator pipeline and Census/BEA
+        # capex-vs-GDP -> capex-data.json for ai-capex.html. All keyless: the 860M
+        # block used to need EIA_API_KEY and is now read from the published monthly
+        # workbook, which also carries the planned and canceled sheets the API lacked.
         run: python3 omen/update-capex-data.py
 
       # Push the fresh data straight to R2 so the Worker serves it live, with no redeploy.
