@@ -11,7 +11,7 @@ import pytest
 
 HERE = Path(__file__).parent
 SUITES = ["test-regime-explainer.mjs", "test-pure-helpers.mjs", "test-verdict.mjs",
-          "test-omen-common.mjs"]
+          "test-omen-common.mjs", "test-china-helpers.mjs"]
 
 
 @pytest.mark.skipif(shutil.which("node") is None, reason="node not installed")

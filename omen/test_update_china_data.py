@@ -159,7 +159,7 @@ def test_pick_apps_falls_back_to_manual():
     assert got == ucd.MANUAL["apps"]
 
 
-BASKET = {r: 35000 for r in ucd.GH_REPOS}
+BASKET = {r: 35000 for r in ucd.GH_SEED}
 
 
 def stub_github(stars, monkeypatch):
@@ -209,7 +209,7 @@ def test_gh_headers_authorize_only_when_a_token_is_set(monkeypatch):
 def test_github_velocity_seeds_the_baseline_on_a_first_run(monkeypatch):
     stub_github(BASKET, monkeypatch)
     hist = {}
-    per_day, stars = ucd.github_velocity(hist)
+    per_day, stars = ucd.github_velocity(hist, ucd.GH_SEED)
     assert per_day is None and stars == BASKET
     assert hist["github"]["stars"] == BASKET
 
@@ -219,7 +219,7 @@ def test_github_velocity_never_seeds_a_baseline_when_every_repo_fails(monkeypatc
     # reseed only fired when the key was absent, so the baseline was poisoned for good
     stub_github({}, monkeypatch)
     hist = {}
-    per_day, stars = ucd.github_velocity(hist)
+    per_day, stars = ucd.github_velocity(hist, ucd.GH_SEED)
     assert per_day is None and stars == {}
     assert "github" not in hist
 
@@ -227,7 +227,7 @@ def test_github_velocity_never_seeds_a_baseline_when_every_repo_fails(monkeypatc
 def test_github_velocity_reseeds_a_baseline_left_empty_by_a_failed_run(monkeypatch):
     stub_github(BASKET, monkeypatch)
     hist = {"github": {"t": time.time() - 5 * 86400, "total": 0, "stars": {}}}
-    per_day, _ = ucd.github_velocity(hist)
+    per_day, _ = ucd.github_velocity(hist, ucd.GH_SEED)
     assert per_day is None
     assert hist["github"]["stars"] == BASKET
 
@@ -235,21 +235,96 @@ def test_github_velocity_reseeds_a_baseline_left_empty_by_a_failed_run(monkeypat
 def test_github_velocity_measures_only_repos_present_in_both_snapshots(monkeypatch):
     # two repos fail this run; the rate is over the five we can see on both sides,
     # not the whole basket "losing" everything the missing two had
-    seen = {r: 35100 for r in ucd.GH_REPOS[:-2]}
+    seen = {r: 35100 for r in ucd.GH_SEED[:-2]}
     stub_github(seen, monkeypatch)
     hist = {"github": {"t": time.time() - 2 * 86400, "stars": dict(BASKET)}}
-    per_day, _ = ucd.github_velocity(hist)
+    per_day, _ = ucd.github_velocity(hist, ucd.GH_SEED)
     assert per_day == pytest.approx(len(seen) * 100 / 2, rel=1e-3)
     assert hist["github"]["stars"] == seen
 
 
 def test_github_velocity_keeps_a_fresh_baseline_until_it_ages_past_20h(monkeypatch):
-    stub_github({r: 99000 for r in ucd.GH_REPOS}, monkeypatch)
+    stub_github({r: 99000 for r in ucd.GH_SEED}, monkeypatch)
     t0 = time.time() - 3600
     hist = {"github": {"t": t0, "stars": dict(BASKET)}}
-    per_day, _ = ucd.github_velocity(hist)
+    per_day, _ = ucd.github_velocity(hist, ucd.GH_SEED)
     assert per_day is None
     assert hist["github"] == {"t": t0, "stars": BASKET}
+
+
+# ---- dynamic GitHub basket (2026-08-02) ------------------------------------------
+
+NOW = 1_785_000_000.0        # fixed clock so "pushed N days ago" is deterministic
+
+
+def repo(name, stars, days_ago):
+    ts = time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime(NOW - days_ago * 86400))
+    return {"full_name": name, "stargazers_count": stars, "pushed_at": ts}
+
+
+def stub_search(items_by_org, monkeypatch):
+    def jget(url, *a, **kw):
+        org = url.split("q=org:", 1)[1].split("+", 1)[0]
+        if org not in items_by_org:
+            raise RuntimeError("422 search unavailable")
+        return {"items": items_by_org[org]}
+    monkeypatch.setattr(ucd, "jget", jget)
+
+
+def test_gh_active_repos_drops_repos_pushed_outside_the_active_window(monkeypatch):
+    # the whole bug: DeepSeek-V3 still has 104k stars but has not been pushed to since
+    # 2025-08, so its star drift is not an adoption signal for anything
+    stub_search({"x": [repo("x/Dead-Flagship", 104000, 340),
+                       repo("x/Live-Model", 7800, 5)]}, monkeypatch)
+    assert ucd.gh_active_repos("x", now=NOW) == ["x/Live-Model"]
+
+
+def test_gh_active_repos_excludes_awesome_lists_and_docs(monkeypatch):
+    stub_search({"x": [repo("x/awesome-x-integration", 38000, 10),
+                       repo("x/x-cookbook", 9000, 3),
+                       repo("x/Real-Model", 5000, 3)]}, monkeypatch)
+    assert ucd.gh_active_repos("x", now=NOW) == ["x/Real-Model"]
+
+
+def test_gh_active_repos_caps_at_per_org_limit(monkeypatch):
+    stub_search({"x": [repo(f"x/r{i}", 9000 - i, 2) for i in range(6)]}, monkeypatch)
+    assert len(ucd.gh_active_repos("x", now=NOW)) == ucd.GH_PER_ORG
+
+
+def test_gh_active_repos_tolerates_a_malformed_pushed_at(monkeypatch):
+    stub_search({"x": [{"full_name": "x/no-date", "stargazers_count": 1},
+                       repo("x/ok", 10, 1)]}, monkeypatch)
+    assert ucd.gh_active_repos("x", now=NOW) == ["x/ok"]
+
+
+def test_github_basket_falls_back_to_the_seed_when_every_org_fails(monkeypatch):
+    stub_search({}, monkeypatch)
+    repos, src = ucd.github_basket(now=NOW)
+    assert (repos, src) == (ucd.GH_SEED, "seed")
+
+
+def test_github_basket_keeps_a_partial_result_when_one_org_fails(monkeypatch):
+    # one lab's search failing must not throw the run back to the stale seed basket
+    stub_search({"MoonshotAI": [repo("MoonshotAI/Kimi-K3", 7800, 5)]}, monkeypatch)
+    repos, src = ucd.github_basket(now=NOW)
+    assert (repos, src) == (["MoonshotAI/Kimi-K3"], "search")
+
+
+def test_github_basket_returns_sorted_repos_across_orgs(monkeypatch):
+    stub_search({o: [repo(f"{o}/model", 100, 1)] for o in ucd.GH_ORGS}, monkeypatch)
+    repos, src = ucd.github_basket(now=NOW)
+    assert src == "search"
+    assert repos == sorted(repos) and len(repos) == len(ucd.GH_ORGS)
+
+
+def test_github_velocity_rebaselines_when_the_basket_has_no_overlap(monkeypatch):
+    # swapping the basket leaves nothing measurable this run, but the new membership
+    # must still be written down or the velocity can never recover
+    stub_github({"new/A": 500, "new/B": 700}, monkeypatch)
+    hist = {"github": {"t": time.time() - 2 * 86400, "stars": {"old/X": 1000}}}
+    per_day, stars = ucd.github_velocity(hist, ["new/A", "new/B"])
+    assert per_day is None
+    assert hist["github"]["stars"] == {"new/A": 500, "new/B": 700}
 
 
 # ---- new source families (2026-07-20) --------------------------------------------

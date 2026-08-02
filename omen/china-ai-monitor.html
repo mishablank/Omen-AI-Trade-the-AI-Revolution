@@ -226,7 +226,7 @@
 <div class="grid2">
   <!-- ============ PRICING ============ -->
   <div class="card">
-    <h2>Inference price compression <span class="sub">&ndash; flagship $/1M tokens, live from OpenRouter</span></h2>
+    <h2>Inference price compression <span class="sub">&ndash; flagship $/1M tokens, newest model in each line, live from OpenRouter</span></h2>
     <table id="priceTable"><thead><tr><th>Model</th><th></th><th class="num">Input</th><th class="num">Output</th></tr></thead><tbody></tbody></table>
     <div class="note" id="priceNote"></div>
   </div>
@@ -244,7 +244,7 @@
 <div class="grid2">
   <!-- ============ GITHUB ============ -->
   <div class="card">
-    <h2>GitHub developer engagement <span class="sub">&ndash; flagship repos, live</span></h2>
+    <h2>GitHub developer engagement <span class="sub" id="ghAsof">&ndash; active flagship repos, live</span></h2>
     <table id="ghTable"><thead><tr><th>Repo</th><th class="num">Stars</th><th class="num">Forks</th><th class="num">&Delta;/day</th></tr></thead><tbody></tbody></table>
     <div class="note" id="ghNote">Star velocity is measured against this browser's first visit (stored locally), so it reads "calibrating" until a later visit. Fork counts are the stronger adoption signal.</div>
   </div>
@@ -310,7 +310,7 @@
 <div class="card">
   <h2>Prediction markets &ndash; Chinese AI leadership <span class="sub">&ndash; live Polymarket odds + Kalshi (batch, daily)</span></h2>
   <table id="pmTable"><thead><tr><th>Market</th><th class="num">YES</th><th class="num">24h &Delta;</th></tr></thead><tbody></tbody></table>
-  <div class="note">Polymarket leadership markets resolve on <a href="https://arena.ai/leaderboard/text" target="_blank" rel="noopener">arena.ai</a> rankings; <a href="https://kalshi.com/markets/kxbestllmchina/chinese-llm-best" target="_blank" rel="noopener">Kalshi</a> is a CFTC-regulated exchange with deeper AI books, fetched by the daily updater (no CORS API). These are the market's own probabilities that Chinese labs take or hold the frontier &ndash; the cleanest forward-looking read in this monitor.</div>
+  <div class="note">Polymarket leadership markets resolve on <a href="https://arena.ai/leaderboard/text" target="_blank" rel="noopener">arena.ai</a> rankings; <a href="https://kalshi.com/markets/kxbestllmchina/chinese-llm-best" target="_blank" rel="noopener">Kalshi</a> is a CFTC-regulated exchange with deeper AI books, fetched by the daily updater (no CORS API). These are the market's own probabilities that Chinese labs take or hold the frontier &ndash; the cleanest forward-looking read in this monitor. Rows tagged <span class="tag src">AUTO</span> were found by searching Polymarket's active markets rather than pinned by id, so the monthly "best Chinese AI model" cohort keeps refreshing as each one resolves; only markets above $5k volume are admitted, which excludes the unnamed placeholder outcomes that sit at 50&cent;.</div>
 </div>
 
 <!-- ============ EQUITY ============ -->
@@ -332,11 +332,11 @@
 
 <footer id="foot">
   <h3>Methodology</h3>
-  <b>Chinese AI Adoption Index</b> = &Sigma;(w<sub>i</sub>&middot;s<sub>i</sub>)/&Sigma;w<sub>i</sub> over available signal families, each normalized 0&ndash;100 against fixed reference ranges: router Chinese token share 0&rarr;70% (w=30; mean of the OpenRouter and Vercel-AI-Gateway normalized shares when both are available, OpenRouter alone otherwise), Hugging Face Chinese share of open-weight downloads 0&rarr;90% (w=20), GitHub star velocity across the flagship basket 0&rarr;300/day (w=15), Ollama Chinese share of named-family pulls 0&rarr;70% (w=10), Western search/consumer interest share 0&rarr;50% (w=10), consumer-app Western top-chart presence 0&rarr;100 (basket-mean best top-100 rank, w=10), LMArena proximity 100&minus;Elo-gap, floored at 0 (w=5). Weights follow the source note's suggested scheme, extended with the local-adoption family; excluded families renormalize.
+  <b>Chinese AI Adoption Index</b> = &Sigma;(w<sub>i</sub>&middot;s<sub>i</sub>)/&Sigma;w<sub>i</sub> over available signal families, each normalized 0&ndash;100 against fixed reference ranges: router Chinese token share 0&rarr;70% (w=30; mean of the OpenRouter and Vercel-AI-Gateway normalized shares when both are available, OpenRouter alone otherwise), Hugging Face Chinese share of open-weight downloads 0&rarr;90% (w=20), GitHub star velocity across the flagship basket 0&rarr;300/day (w=15; the basket is rediscovered each run as the two most-starred repos per lab still pushed to within 180 days, so a new release enters it the week it lands), Ollama Chinese share of named-family pulls 0&rarr;70% (w=10), Western search/consumer interest share 0&rarr;50% (w=10), consumer-app Western top-chart presence 0&rarr;100 (basket-mean best top-100 rank, w=10), LMArena proximity 100&minus;Elo-gap, floored at 0 (w=5). Weights follow the source note's suggested scheme, extended with the local-adoption family; excluded families renormalize.
   <b>SPI</b> = Chinese-lab &divide; US-lab routed tokens (named authors) on OpenRouter, trailing week.
-  <b>Frontier price gap</b> = median output $/M of US flagships (GPT-5.6 family, Claude Opus/Sonnet, Gemini Pro/Flash) &divide; median of Chinese flagships (DeepSeek V4, GLM-5.x, Kimi K2.x/K3, Qwen Max, MiniMax M3).
+  <b>Frontier price gap</b> = median output $/M of US flagship <i>lines</i> (GPT top/mid, Claude Opus/Sonnet, Gemini Pro/Flash) &divide; median of Chinese lines (DeepSeek pro/flash, GLM, Kimi and Kimi Code, MiniMax, Qwen Max). Each line resolves to its newest live model in OpenRouter's catalogue at page load rather than to a pinned version, so a launch or a price cut moves the gap the day it ships and a retired slug surfaces as a named warning instead of quietly leaving the median. Lines are matched on name, never on price: Chinese labs deliberately price their newest flagship <i>below</i> their previous one, so ranking by cost would pick the older model.
   <h3>Caveats</h3>
-  OpenRouter sees only routed traffic &ndash; it overstates Chinese share of the total market (first-party US API traffic is invisible) but is the best public real-time proxy for the substitutable segment; the Vercel AI Gateway cross-check (production apps, export cached 24h) partially corrects that bias and currently reads much lower. HF download totals mix model generations and exclude derivative quantizations. Ollama pulls are lifetime cumulative, so they lag shifts; the derived daily rate is the leading part. Fine-tune-tree counts depend on authors declaring <code>base_model</code> metadata. PyPI SDK installs undercount the Chinese side badly (OpenAI-compatible APIs ride the <code>openai</code> package). Leaderboard (LMArena official dataset, arena.ai scrape fallback), search interest (Google Trends), consumer-app chart presence (Apple RSS + Google Play), Vercel, Ollama, Kalshi, fine-tune trees and SDK installs are all refreshed by <code>update-china-data.py</code>; Artificial-Analysis scores refresh live when the updater has an <code>ARTIFICIAL_ANALYSIS_API_KEY</code>, else they remain a dated snapshot, and the Cloudflare-Radar consumer-traffic panel appears only when a <code>CF_RADAR_TOKEN</code> is configured (see freshness strip). Prediction-market prices are thin in places; Kalshi quotes are daily-batch, not live. Nothing here is a validated forecast of equity returns &ndash; the companion monitor's own lead-lag test is honest about that.
+  OpenRouter sees only routed traffic &ndash; it overstates Chinese share of the total market (first-party US API traffic is invisible) but is the best public real-time proxy for the substitutable segment; the Vercel AI Gateway cross-check (production apps, export cached 24h) partially corrects that bias and currently reads much lower. HF download totals mix model generations and exclude derivative quantizations. Ollama pulls are lifetime cumulative, so they lag shifts; the derived daily rate is the leading part. Fine-tune-tree counts depend on authors declaring <code>base_model</code> metadata. PyPI SDK installs undercount the Chinese side badly (OpenAI-compatible APIs ride the <code>openai</code> package). Leaderboard (LMArena official dataset, arena.ai scrape fallback), search interest (Google Trends), consumer-app chart presence (Apple RSS + Google Play), Vercel, Ollama, Kalshi, fine-tune trees and SDK installs are all refreshed by <code>update-china-data.py</code>; Artificial-Analysis scores refresh live when the updater has an <code>ARTIFICIAL_ANALYSIS_API_KEY</code>, else they remain a dated snapshot, and the Cloudflare-Radar consumer-traffic panel appears only when a <code>CF_RADAR_TOKEN</code> is configured (see freshness strip). Prediction-market prices are thin in places; Kalshi quotes are daily-batch, not live, and the discovered (<span class="tag src">AUTO</span>) leadership rows rotate as each monthly cohort resolves, so that block is not a fixed panel across visits. Nothing here is a validated forecast of equity returns &ndash; the companion monitor's own lead-lag test is honest about that.
   <h3>Sources</h3>
   <a href="https://openrouter.ai/rankings" target="_blank" rel="noopener">OpenRouter rankings</a> &middot;
   <a href="https://vercel.com/ai-gateway/leaderboards/models" target="_blank" rel="noopener">Vercel AI Gateway leaderboards</a> (data &copy; Vercel, CC BY 4.0) &middot;
@@ -381,33 +381,64 @@ const CN_LABEL = { deepseek:"DeepSeek", qwen:"Qwen (Alibaba)", "z-ai":"GLM (Z.ai
 const HF_CN_ORGS = ["deepseek-ai","Qwen","moonshotai","zai-org","MiniMaxAI","tencent","XiaomiMiMo","stepfun-ai"];
 const HF_US_ORGS = ["meta-llama","openai","google","microsoft","nvidia","allenai"];
 const HF_US_FAMILY = /llama|gemma|gpt-oss|phi-|phi\d|nemotron|olmo|granite|dbrx/i;
-const GH_REPOS = ["deepseek-ai/DeepSeek-V3","deepseek-ai/DeepSeek-R1","QwenLM/Qwen3","zai-org/GLM-5","MoonshotAI/Kimi-K2","MiniMax-AI/MiniMax-M2","XiaomiMiMo/MiMo"];
-const PM_MARKETS = [
+// Fallback only. The live basket is rediscovered server-side each run (see
+// update-china-data.py github_basket) and arrives as snap.github.repos - a hardcoded
+// list here went stale the moment each lab shipped its next generation.
+const GH_SEED = ["deepseek-ai/DeepSeek-V3","deepseek-ai/DeepSeek-R1","QwenLM/Qwen3","zai-org/GLM-5","MoonshotAI/Kimi-K2","MiniMax-AI/MiniMax-M2","XiaomiMiMo/MiMo"];
+
+/* ---- prediction markets ----
+ * Curated core, plus discovery to replace rows as they resolve. Pinning ids alone
+ * rots: the three "best Chinese AI model at end of July 2026" markets resolved and
+ * vanished from the API entirely, and because loadPM() drops anything it cannot
+ * fetch, the panel silently shrank from eight rows to five with the freshness dot
+ * still reading "live". Their successors (the end-of-August and end-of-September
+ * cohorts) are found by PM_DISCOVER below.
+ */
+const PM_SEED = [
   { id:"1820798", label:"Chinese company has the best AI model by Dec 31, 2026" },
   { id:"2873443", label:"Chinese company has a top-3 AI model by Dec 31, 2026" },
   { id:"2873458", label:"Chinese company has a top-5 AI model by Dec 31, 2026" },
   { id:"2873459", label:"Chinese company has a top-10 AI model by Dec 31, 2026" },
-  { id:"2787890", label:"US government removes public access to a major Chinese AI model in 2026" },
-  { id:"2431240", label:"Alibaba has the best Chinese AI model at end of July 2026" },
-  { id:"2431245", label:"DeepSeek has the best Chinese AI model at end of July 2026" },
-  { id:"2431244", label:"Z.ai has the best Chinese AI model at end of July 2026" }
+  { id:"2787890", label:"US government removes public access to a major Chinese AI model in 2026" }
 ];
-const PRICE_CN = [
-  { pick:["deepseek/deepseek-v4-pro"], label:"DeepSeek V4 Pro" },
-  { pick:["deepseek/deepseek-v4-flash"], label:"DeepSeek V4 Flash" },
-  { pick:["z-ai/glm-5.2","z-ai/glm-5.1"], label:"GLM-5.2 (Z.ai)" },
-  { pick:["moonshotai/kimi-k3"], label:"Kimi K3" },
-  { pick:["moonshotai/kimi-k2.7-code","moonshotai/kimi-k2.6"], label:"Kimi K2.7 Code" },
-  { pick:["minimax/minimax-m3"], label:"MiniMax M3" },
-  { pick:["qwen/qwen3.7-max","qwen/qwen3.6-max","qwen/qwen3-max"], label:"Qwen Max" }
+// Gamma's search is broad - "Chinese AI" alone returns the Chinese-Military-Companies
+// list markets and a full ladder of second/third-best rungs. Accept only the monthly
+// "best Chinese AI model" cohort, and only rungs with real money behind them.
+const PM_DISCOVER = [{ q:"Chinese company best AI model",
+                       accept:/best chinese ai (model|company) at the end of/i, take:3 }];
+// Polymarket seeds every such event with unnamed placeholder outcomes that sit at
+// exactly 50c on zero volume; they are not opinions and must never reach the table.
+const PM_JUNK = /\bcompany [a-z]\b|any other company/i;
+const PM_MIN_VOL = 5000;
+const PM_MAX_ROWS = 9;
+
+/* ---- flagship pricing ----
+ * Pin the model *line*, resolve the *version*. Exact slugs were pinned before and
+ * rotted in both directions: claude-opus-4.8 stayed pinned while Opus 5 shipped, and
+ * google/gemini-3-pro / qwen3.6-max stopped resolving at all and silently dropped out
+ * of the median. Version numbers turn over monthly; which line is a lab's flagship
+ * turns over every few years. Newest match in each line wins.
+ * Deliberately NOT price-ranked: the page's own thesis is that Chinese labs ship
+ * frontier quality cheap, so "most expensive = flagship" picks their previous
+ * generation (v3.1-terminus over v4-pro). Recency-within-a-named-line is the only
+ * non-circular rule here.
+ */
+const PRICE_FAMILIES_CN = [
+  { label:"DeepSeek (pro)",   re:/^deepseek\/deepseek-v[\d.]+-pro$/ },
+  { label:"DeepSeek (flash)", re:/^deepseek\/deepseek-v[\d.]+-flash(-\d+)?$/ },
+  { label:"GLM (Z.ai)",       re:/^z-ai\/glm-[\d.]+$/ },
+  { label:"Kimi (Moonshot)",  re:/^moonshotai\/kimi-k[\d.]+$/ },
+  { label:"Kimi Code",        re:/^moonshotai\/kimi-k[\d.]+-code$/ },
+  { label:"MiniMax",          re:/^minimax\/minimax-m[\d.]+$/ },
+  { label:"Qwen Max",         re:/^qwen\/qwen[\d.]+-max(-preview)?$/ }
 ];
-const PRICE_US = [
-  { pick:["openai/gpt-5.6-sol"], label:"GPT-5.6 Sol" },
-  { pick:["openai/gpt-5.6-terra"], label:"GPT-5.6 Terra" },
-  { pick:["anthropic/claude-opus-4.8"], label:"Claude Opus 4.8" },
-  { pick:["anthropic/claude-sonnet-5"], label:"Claude Sonnet 5" },
-  { pick:["google/gemini-3.5-flash"], label:"Gemini 3.5 Flash" },
-  { pick:["google/gemini-3.1-pro-preview","google/gemini-3-pro","google/gemini-3.1-pro"], label:"Gemini 3.1 Pro" }
+const PRICE_FAMILIES_US = [
+  { label:"GPT (top)",        re:/^openai\/gpt-[\d.]+-sol$/ },
+  { label:"GPT (mid)",        re:/^openai\/gpt-[\d.]+-terra$/ },
+  { label:"Claude Opus",      re:/^anthropic\/claude-opus-[\d.]+$/ },
+  { label:"Claude Sonnet",    re:/^anthropic\/claude-sonnet-[\d.]+$/ },
+  { label:"Gemini Pro",       re:/^google\/gemini-[\d.]+-pro(-preview)?$/ },
+  { label:"Gemini Flash",     re:/^google\/gemini-[\d.]+-flash$/ }
 ];
 const EQ_SYMS = ["NVDA","SOXX","AVGO","MU","ANET","CRWV","ORCL","SMCI","VST","MSFT","META","SPY"];
 /* ---------------- helpers ---------------- */
@@ -453,12 +484,27 @@ async function loadOpenRouter(){
   }catch(e){ dot("or","err","unavailable"); }
 }
 /* ---------------- OpenRouter pricing ---------------- */
+// Exported for test-pure-helpers.mjs: given the catalogue, resolve each family to its
+// newest live version. Pure so the selection rule can be tested without a network.
+function resolveFamilies(models, fams){
+  const live = (models||[]).filter(m => m && m.id && !m.id.endsWith(":free")
+                                        && +(m.pricing||{}).completion > 0);
+  const got = [], missing = [];
+  for(const fam of fams){
+    const hits = live.filter(m => fam.re.test(m.id));
+    if(!hits.length){ missing.push(fam.label); continue; }
+    const m = hits.reduce((a,b) => ((b.created||0) > (a.created||0) ? b : a));
+    got.push({ label:fam.label, id:m.id, created:m.created||0,
+               inP:+m.pricing.prompt*1e6, outP:+m.pricing.completion*1e6 });
+  }
+  return { got, missing };
+}
 async function loadPrices(){
   try{
     const d = await jget("https://openrouter.ai/api/v1/models");
-    const map = new Map(d.data.map(m=>[m.id,m]));
-    const resolve = spec => { for(const id of spec.pick){ const m=map.get(id); if(m) return { label:spec.label, id, inP:+m.pricing.prompt*1e6, outP:+m.pricing.completion*1e6 }; } return null; };
-    S.prices = { cn: PRICE_CN.map(resolve).filter(Boolean), us: PRICE_US.map(resolve).filter(Boolean) };
+    const cn = resolveFamilies(d.data, PRICE_FAMILIES_CN);
+    const us = resolveFamilies(d.data, PRICE_FAMILIES_US);
+    S.prices = { cn:cn.got, us:us.got, missing:[...cn.missing, ...us.missing] };
   }catch(e){ S.prices = null; }
 }
 /* ---------------- Hugging Face ---------------- */
@@ -490,39 +536,79 @@ async function loadHF(){
 /* ---------------- GitHub ---------------- */
 async function loadGH(){
   try{
-    const rows = (await Promise.all(GH_REPOS.map(async r => {
+    const basket = snap.github?.repos?.length ? snap.github.repos : GH_SEED;
+    const rows = (await Promise.all(basket.map(async r => {
       try{ const d = await jget("https://api.github.com/repos/"+r); return { repo:r, stars:d.stargazers_count, forks:d.forks_count }; }
       catch(e){ return null; }
     }))).filter(Boolean);
     if(!rows.length) throw new Error("all failed");
-    // velocity vs local baseline
+    // Velocity vs local baseline, over repos present in BOTH snapshots. The old code
+    // differenced basket totals, so the day the server-discovered basket changed
+    // membership the delta was mostly composition and could sign-flip; the updater
+    // already guards this the same way.
     const now = Date.now();
     let base = store.get("ghBase");
-    const totalStars = rows.reduce((s,r)=>s+r.stars,0);
+    const byRepo = Object.fromEntries(rows.map(r=>[r.repo,r.stars]));
     let perDay = null;
-    if(base && now - base.t > 20*3600e3){
-      perDay = (totalStars - base.stars) / ((now - base.t)/86400e3);
-      rows.forEach(r => { const b = base.rows?.[r.repo]; r.vel = b!=null ? (r.stars-b)/((now-base.t)/86400e3) : null; });
-    } else if(!base){
-      base = { t: now, stars: totalStars, rows: Object.fromEntries(rows.map(r=>[r.repo,r.stars])) };
-      store.set("ghBase", base);
+    if(base?.rows && now - base.t > 20*3600e3){
+      const days = (now - base.t)/86400e3;
+      const shared = rows.filter(r => base.rows[r.repo] != null);
+      if(shared.length) perDay = shared.reduce((s,r)=>s+(r.stars-base.rows[r.repo]),0)/days;
+      shared.forEach(r => { r.vel = (r.stars - base.rows[r.repo])/days; });
+      store.set("ghBase", { t: now, rows: byRepo });
+    } else if(!base?.rows){
+      store.set("ghBase", { t: now, rows: byRepo });
     }
-    S.gh = { rows, perDay };
+    S.gh = { rows, perDay, source: snap.github?.source, asof: snap.github?.asof };
     dot("gh","ok", perDay!=null ? "live +velocity" : "live, velocity calibrating");
   }catch(e){ dot("gh","err","rate-limited"); }
 }
 /* ---------------- Polymarket ---------------- */
+const GAMMA = "https://gamma-api.polymarket.com";
+const pmPrice = m => { const p = OMEN.jsonList(m.outcomePrices)[0] ?? null; return p!=null? +p : null; };
+const pmDelta = m => m.oneDayPriceChange!=null ? +m.oneDayPriceChange : null;
+// Exported for test-pure-helpers.mjs: everything about which discovered markets are
+// admissible, with no network in the way.
+function pmAccept(spec, ev, m, have){
+  const q = m.question || ev.title || "";
+  if(m.closed || have.has(String(m.id))) return null;
+  if(!spec.accept.test(q) || PM_JUNK.test(q)) return null;
+  const vol = +(m.volumeNum ?? m.volume ?? 0);
+  if(!(vol >= PM_MIN_VOL)) return null;
+  return { id:String(m.id), label:q, p:pmPrice(m), d24:pmDelta(m),
+           slug: ev.slug || m.slug || null, vol, found:true };
+}
 async function loadPM(){
+  const out = new Map();
+  let ok = false;
   try{
-    const d = await jget("https://gamma-api.polymarket.com/markets?" + PM_MARKETS.map(m=>"id="+m.id).join("&"));
+    const d = await jget(GAMMA + "/markets?" + PM_SEED.map(m=>"id="+m.id).join("&"));
     const byId = new Map(d.map(m=>[String(m.id),m]));
-    S.pm = PM_MARKETS.map(spec => {
-      const m = byId.get(spec.id); if(!m || m.closed) return null;
-      const p = OMEN.jsonList(m.outcomePrices)[0] ?? null;
-      return { ...spec, p: p!=null? +p : null, d24: m.oneDayPriceChange!=null? +m.oneDayPriceChange : null, slug: m.slug ? (m.events?.[0]?.slug || m.slug) : null };
-    }).filter(Boolean);
-    dot("pm","ok","live");
-  }catch(e){ dot("pm","err","unavailable"); }
+    for(const spec of PM_SEED){
+      const m = byId.get(spec.id);
+      if(!m || m.closed) continue;
+      out.set(spec.id, { ...spec, p:pmPrice(m), d24:pmDelta(m),
+                         slug: m.slug ? (m.events?.[0]?.slug || m.slug) : null, found:false });
+    }
+    ok = true;
+  }catch(e){}
+  for(const spec of PM_DISCOVER){
+    try{
+      const d = await jget(`${GAMMA}/public-search?q=${encodeURIComponent(spec.q)}&limit_per_type=10&events_status=active`);
+      const cands = [];
+      for(const ev of (d.events||[]))
+        for(const m of (ev.markets||[])){
+          const row = pmAccept(spec, ev, m, out);
+          if(row) cands.push(row);
+        }
+      cands.sort((a,b)=>b.vol-a.vol);
+      for(const c of cands.slice(0, spec.take)) out.set(c.id, c);
+      ok = true;
+    }catch(e){}
+  }
+  S.pm = [...out.values()].slice(0, PM_MAX_ROWS);
+  dot("pm", ok ? "ok" : "err",
+      !ok ? "unavailable" : S.pm.some(r=>r.found) ? "live, incl. discovered" : "live");
 }
 /* ---------------- Equity (same-origin, generated server-side) ---------------- */
 async function loadEQ(){
@@ -604,7 +690,7 @@ function renderTopModels(){
 function renderPrices(){
   const tb = $("priceTable").querySelector("tbody");
   if(!S.prices){ tb.innerHTML = '<tr><td colspan="4" class="sub">OpenRouter pricing unavailable.</td></tr>'; return; }
-  const row = (m,s) => `<tr><td>${esc(m.label)}</td><td><span class="tag ${s}">${s.toUpperCase()}</span></td><td class="num">$${m.inP.toFixed(2)}</td><td class="num">$${m.outP.toFixed(2)}</td></tr>`;
+  const row = (m,s) => `<tr><td>${esc(m.label)} <span class="sub">${esc(m.id.split("/")[1])}</span></td><td><span class="tag ${s}">${s.toUpperCase()}</span></td><td class="num">$${m.inP.toFixed(2)}</td><td class="num">$${m.outP.toFixed(2)}</td></tr>`;
   tb.innerHTML = [...S.prices.us.map(m=>({m,s:"us"})), ...S.prices.cn.map(m=>({m,s:"cn"}))]
     .sort((a,b)=>b.m.inP-a.m.inP).map(({m,s})=>row(m,s)).join("");
   const med = a => { const v=a.map(m=>m.outP).sort((x,y)=>x-y); return v.length? v[Math.floor(v.length/2)] : null; };
@@ -612,7 +698,12 @@ function renderPrices(){
   if(mu && mc){
     const ratio = mu/mc;
     $("priceGapVal").textContent = ratio.toFixed(0)+"x";
-    $("priceNote").innerHTML = `Median US flagship output <b>$${mu.toFixed(2)}/M</b> vs Chinese <b>$${mc.toFixed(2)}/M</b> &ndash; a <b>${ratio.toFixed(0)}x</b> gap. DeepSeek made its 75% price cut permanent on 2026-05-31; falling ratios here mean US pricing power is holding, rising means compression is biting.`;
+    // A family that stops resolving is a config bug, not a market event - say so out
+    // loud rather than letting it quietly drop out of the median.
+    const miss = (S.prices.missing||[]).length
+      ? ` <b class="down">Unresolved model line${S.prices.missing.length>1?"s":""}: ${esc(S.prices.missing.join(", "))}</b> &ndash; renamed or retired on OpenRouter, and excluded from the medians above until the pattern is updated.`
+      : "";
+    $("priceNote").innerHTML = `Median US flagship output <b>$${mu.toFixed(2)}/M</b> vs Chinese <b>$${mc.toFixed(2)}/M</b> &ndash; a <b>${ratio.toFixed(0)}x</b> gap. Each row is the newest live model in that line, resolved from OpenRouter's catalogue at load, so a launch moves this number the day it ships. Falling ratios mean US pricing power is holding, rising means compression is biting.${miss}`;
   }
 }
 function renderHF(){
@@ -634,6 +725,9 @@ function renderGH(){
   if(!S.gh){ tb.innerHTML = '<tr><td colspan="4" class="sub">GitHub API unavailable (unauthenticated rate limit is 60/hr - retry later).</td></tr>'; return; }
   tb.innerHTML = S.gh.rows.map(r =>
     `<tr><td><a href="https://github.com/${esc(r.repo)}" target="_blank" rel="noopener">${esc(r.repo)}</a></td><td class="num">${fmtT(r.stars)}</td><td class="num">${fmtT(r.forks)}</td><td class="num">${r.vel!=null? "+"+r.vel.toFixed(0) : "…"}</td></tr>`).join("");
+  $("ghAsof").textContent = S.gh.source === "search"
+    ? `– ${S.gh.rows.length} active repos, rediscovered ${S.gh.asof||"daily"}`
+    : "– static seed basket (repo discovery unavailable)";
   const pd = S.gh.perDay ?? snap.github_stars_per_day;
   // 0->300/day: the basket's steady state is tens of stars/day (2,000/day was a
   // launch-spike anchor that pinned this 15%-weight family at ~0); 300/day marks a
@@ -646,7 +740,8 @@ function renderPM(){
   const rows = [];
   if(S.pm) for(const m of S.pm){
     const d = m.d24!=null ? `<span class="${m.d24>=0?'down':'up'}">${m.d24>=0?"+":""}${(m.d24*100).toFixed(1)}pt</span>` : "–";
-    rows.push(`<tr><td><span class="tag src">PM</span> ${m.slug?`<a href="https://polymarket.com/event/${esc(m.slug)}" target="_blank" rel="noopener">${esc(m.label)}</a>`:esc(m.label)}</td><td class="num"><b>${m.p!=null? (m.p*100).toFixed(1)+"%":"–"}</b></td><td class="num">${d}</td></tr>`);
+    const src = `<span class="tag src">PM</span>${m.found?' <span class="tag src">AUTO</span>':""}`;
+    rows.push(`<tr><td>${src} ${m.slug?`<a href="https://polymarket.com/event/${esc(m.slug)}" target="_blank" rel="noopener">${esc(m.label)}</a>`:esc(m.label)}</td><td class="num"><b>${m.p!=null? (m.p*100).toFixed(1)+"%":"–"}</b></td><td class="num">${d}</td></tr>`);
   }
   if(snap.kalshi?.markets) for(const m of snap.kalshi.markets){
     rows.push(`<tr><td><span class="tag src">KALSHI</span> <a href="https://kalshi.com/markets/${esc(m.series)}" target="_blank" rel="noopener">${esc(m.label)}</a></td><td class="num"><b>${m.p!=null? (m.p*100).toFixed(1)+"%":"–"}</b></td><td class="num">–</td></tr>`);
