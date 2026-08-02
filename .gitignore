@@ -24,6 +24,10 @@ node_modules/
 #     committing it hourly was pure repo bloat. It stays tracked because the Worker's
 #     R2-miss fallback needs a bundled copy at deploy time; the Action re-commits it
 #     only when the tracked copy is older than 7 days.
+#     Because of that staleness the committed copy must NOT be what the fetcher appends
+#     its rolling histories to – refresh.yml pulls the live copy from R2 first (see
+#     "Seed fetcher baseline from R2"). Dropping that step silently shortens every
+#     history in the file to `last commit + today`.
 #
 # market-data.js is likewise tracked but not in the commit loop at all — a hand-refreshed
 # stale seed, the existing precedent for the above.

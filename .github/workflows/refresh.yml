@@ -47,6 +47,31 @@ jobs:
           cache: npm
           cache-dependency-path: omen/package-lock.json
 
+      # Hand the fetcher the *live* baseline, not the git seed.
+      #
+      # update-market-data.py appends its rolling histories (skew, term, tail, gpu) to
+      # whatever omen/market-data.json holds in the checkout. That file is re-committed
+      # only when it is over 7 days old – see "Commit refreshed data" below – so without
+      # this step every run rebuilds those histories on a week-old baseline and writes
+      # back only `baseline + today`, destroying yesterday's point. Found on 2026-08-02:
+      # the live skew history ran 07-18..07-27 then jumped straight to 08-02, five days
+      # gone, with every cron run green. The carry-on-failure fallbacks degrade the same
+      # way – they were resurrecting week-old values instead of the last run's.
+      #
+      # Best-effort by construction: an R2 miss, a network failure or a corrupt body
+      # leaves the committed seed in place, i.e. previous behaviour. seed-market-data.py
+      # holds the adopt/refuse rules (and its unit tests).
+      - name: Seed fetcher baseline from R2
+        if: ${{ env.HAS_CLOUDFLARE == 'true' }}
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: |
+          npx --yes wrangler@4 r2 object get "omen-data/market-data.json" \
+            --file /tmp/market-data.r2.json --remote \
+            || echo "R2 get failed — falling back to the committed seed"
+          python3 omen/seed-market-data.py /tmp/market-data.r2.json omen/market-data.json
+
       - name: Fetch market data + append snapshot + evaluate alert
         env:
           TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
