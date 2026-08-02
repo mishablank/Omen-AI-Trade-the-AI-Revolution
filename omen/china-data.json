@@ -1,6 +1,6 @@
 {
- "updated": "2026-08-01T23:00:40Z",
- "snapshot_date": "2026-08-01",
+ "updated": "2026-08-02T00:07:39Z",
+ "snapshot_date": "2026-08-02",
  "artificial_analysis": {
   "cn_best": "GLM-5.2",
   "cn_score": 51,
@@ -33,12 +33,12 @@
  },
  "apps": {
   "score": 0,
-  "asof": "2026-08-01",
+  "asof": "2026-08-02",
   "source": "app-charts",
   "best": [
    {
     "label": "Kimi",
-    "rank": 181,
+    "rank": 182,
     "store": "android",
     "country": "fr"
    }
@@ -55,7 +55,7 @@
    "au",
    "kr"
   ],
-  "detail": "no Chinese AI app in any iOS or Play top-100 (nearest: Kimi #181 (FR Play)); basket-mean Western top-100 presence 0/100 across 10 markets",
+  "detail": "no Chinese AI app in any iOS or Play top-100 (nearest: Kimi #182 (FR Play)); basket-mean Western top-100 presence 0/100 across 10 markets",
   "note": "iOS Apple RSS top-100 + Android Play top-200 across 10 markets; presence = basket-mean of best top-100 chart rank (DeepSeek/Qwen/Doubao/Kimi/MiniMax), #1=100 #100=1; ranks past top-100 score 0."
  },
  "lmarena": {
@@ -137,10 +137,10 @@
  },
  "openrouter_week": {
   "week": "2026-07-27",
-  "cn_share": 0.5235,
-  "us_share": 0.3136,
-  "spi": 1.669,
-  "total_tokens": 49286847742797
+  "cn_share": 0.5232,
+  "us_share": 0.3139,
+  "spi": 1.667,
+  "total_tokens": 49555250259983
  },
  "vercel_gateway": {
   "asof": "2026-08-01",
@@ -483,8 +483,8 @@
   "license": "AI Gateway Leaderboard Data (c) Vercel, CC BY 4.0"
  },
  "ollama": {
-  "cn": 275430600,
-  "us": 449107322,
+  "cn": 275431200,
+  "us": 449109027,
   "cn_top": [
    {
     "name": "deepseek-r1",
@@ -526,10 +526,10 @@
    }
   ],
   "n_models": 232,
-  "asof": "2026-08-01"
+  "asof": "2026-08-02"
  },
  "kalshi": {
-  "asof": "2026-08-01",
+  "asof": "2026-08-02",
   "markets": [
    {
     "label": "Will a Chinese AI model be #1 this year?",
@@ -545,7 +545,7 @@
    },
    {
     "label": "Best AI at end of 2026: Ernie",
-    "p": 0.005,
+    "p": 0.006,
     "ticker": "KXLLM1-26DEC31-BAID",
     "series": "kxllm1"
    },
@@ -602,7 +602,7 @@
   ],
   "cn_total": 2373,
   "us_total": 2495,
-  "asof": "2026-08-01"
+  "asof": "2026-08-02"
  },
  "sdk": {
   "cn": [
