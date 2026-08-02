@@ -8,7 +8,11 @@ CORS-open API:
 
   - LMArena leaderboard            : lmarena-ai/leaderboard-dataset on Hugging Face
                                      (CC BY 4.0), arena.ai HTML scrape as fallback
-  - GitHub star velocity           : server-side baseline in china-history.json
+  - GitHub star velocity           : server-side baseline in china-history.json; the
+                                     repo basket itself is rediscovered each run via
+                                     the search API (active repos only) and published
+                                     as github.repos, because a pinned list decays into
+                                     last generation's abandoned repos
   - OpenRouter weekly share        : appended to china-snapshots.csv (durable history)
   - Vercel AI Gateway lab share    : leaderboard-export endpoint (CC BY 4.0, 24h cache)
                                      - the second router, de-biases the OpenRouter SPI
@@ -33,7 +37,7 @@ Usage:
   python3 update-china-data.py --watch 86400  # daily loop
 After running, redeploy the site folder so the deployed china-data.json updates.
 """
-import json, os, re, csv, html, sys, time, urllib.request, urllib.parse, urllib.error, http.cookiejar
+import json, os, re, csv, html, sys, time, calendar, urllib.request, urllib.parse, urllib.error, http.cookiejar
 from datetime import datetime, timezone
 from pathlib import Path
 
@@ -52,8 +56,21 @@ MANUAL = {
              "note": "Qwen app >200M MAU, Doubao >100M DAU, DeepSeek ~82M WAU - overwhelmingly domestic."},
 }
 
-GH_REPOS = ["deepseek-ai/DeepSeek-V3", "deepseek-ai/DeepSeek-R1", "QwenLM/Qwen3", "zai-org/GLM-5",
-            "MoonshotAI/Kimi-K2", "MiniMax-AI/MiniMax-M2", "XiaomiMiMo/MiMo"]
+# GitHub star velocity. The basket used to be a hardcoded list of flagship repos, which
+# quietly became a list of *last generation's* flagship repos: by Aug 2026 five of the
+# seven had not been pushed to in six months (DeepSeek-V3 last touched 2025-08, MiMo
+# 2025-06), so the family measured the star drift of abandoned repos and read 11.8
+# stars/day - 3.9 out of 100 on a 15%-weight gauge family, which is a measurement
+# artefact, not an adoption signal. The seed below is only a fallback now; each run
+# rediscovers each lab's currently-active repos via the search API.
+GH_ORGS = ["deepseek-ai", "QwenLM", "zai-org", "MoonshotAI", "MiniMax-AI", "XiaomiMiMo"]
+GH_SEED = ["deepseek-ai/DeepSeek-V3", "deepseek-ai/DeepSeek-R1", "QwenLM/Qwen3", "zai-org/GLM-5",
+           "MoonshotAI/Kimi-K2", "MiniMax-AI/MiniMax-M2", "XiaomiMiMo/MiMo"]
+GH_PER_ORG = 2          # top-2 by stars keeps one org's monorepo from owning the basket
+GH_ACTIVE_DAYS = 180    # "active" = pushed within this window
+# Awesome-lists, docs and demo collections accumulate stars on a completely different
+# curve from a model release and would swamp the velocity signal.
+GH_EXCLUDE = re.compile(r"awesome|cookbook|docs?$|-docs|examples?$|tutorial|paper|guide", re.I)
 CN_AUTHORS = {"deepseek", "qwen", "z-ai", "thudm", "moonshotai", "minimax", "xiaomi", "tencent",
               "stepfun", "baidu", "bytedance-seed", "baai", "inclusionai", "01-ai", "internlm", "openbmb"}
 US_AUTHORS = {"openai", "anthropic", "google", "meta-llama", "x-ai", "nvidia", "microsoft", "amazon",
@@ -147,11 +164,63 @@ def gh_headers():
     return {"Authorization": f"Bearer {tok}"} if tok else {}
 
 
-def github_velocity(hist):
+def gh_active_repos(org, now=None):
+    """The org's most-starred repos that are still being pushed to.
+
+    Ranked by stars rather than by recency: a lab's flagship release is both, but
+    ranking by recency alone surfaces whatever CI-config repo was touched this morning.
+    """
+    now = time.time() if now is None else now
+    d = jget(f"https://api.github.com/search/repositories?q=org:{org}+fork:false"
+             f"&sort=stars&order=desc&per_page=20", headers=gh_headers())
+    picks = []
+    for r in d.get("items", []):
+        name = r.get("full_name") or ""
+        if GH_EXCLUDE.search(name.split("/")[-1]):
+            continue
+        try:
+            pushed = calendar.timegm(time.strptime(r["pushed_at"], "%Y-%m-%dT%H:%M:%SZ"))
+        except (KeyError, ValueError):
+            continue
+        if (now - pushed) / 86400 > GH_ACTIVE_DAYS:
+            continue
+        picks.append(name)
+        if len(picks) >= GH_PER_ORG:
+            break
+    return picks
+
+
+def github_basket(now=None):
+    """Rediscover the flagship-repo basket. Falls back to the static seed.
+
+    A partial result is still used: one org's search failing costs that lab's repos for
+    the run, and the velocity code below only measures repos present in both snapshots,
+    so a shrinking basket cannot sign-flip the rate.
+    """
+    repos, failed = [], []
+    for org in GH_ORGS:
+        try:
+            found = gh_active_repos(org, now=now)
+            repos += found
+            if not found:
+                failed.append(org)
+        except Exception as e:
+            print(f"  github search {org}: {e}", file=sys.stderr)
+            failed.append(org)
+    if not repos:
+        print("  every org search failed - falling back to the static seed basket",
+              file=sys.stderr)
+        return GH_SEED, "seed"
+    if failed:
+        print(f"  no active repos found for: {', '.join(failed)}", file=sys.stderr)
+    return sorted(repos), "search"
+
+
+def github_velocity(hist, repos=None):
     """Stars now vs last run -> stars/day across the basket."""
     now = time.time()
     stars = {}
-    for repo in GH_REPOS:
+    for repo in (GH_SEED if repos is None else repos):
         try:
             stars[repo] = jget(f"https://api.github.com/repos/{repo}",
                                headers=gh_headers())["stargazers_count"]
@@ -784,8 +853,14 @@ def run():
     else:
         print("  both sources failed - page keeps its embedded snapshot", file=sys.stderr)
 
+    print("github basket discovery ...")
+    gh_repos, gh_src = github_basket()
+    print(f"  {len(gh_repos)} active repos via {gh_src}: {', '.join(gh_repos)}")
+    out["github"] = {"repos": gh_repos, "source": gh_src,
+                     "asof": datetime.now(timezone.utc).strftime("%Y-%m-%d")}
+
     print("github velocity ...")
-    per_day, stars = github_velocity(hist)
+    per_day, stars = github_velocity(hist, gh_repos)
     vel = pick_github_velocity(per_day, prev, stars)
     if vel is not None:
         out["github_stars_per_day"] = vel
