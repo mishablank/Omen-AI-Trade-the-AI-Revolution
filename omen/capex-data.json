@@ -1,5 +1,5 @@
 {
- "updated": "2026-08-02T15:55:38Z",
+ "updated": "2026-08-02T16:50:13Z",
  "tsmc": {
   "asof": "2026-06",
   "rev_ntd_b": 442.7,
@@ -136,10 +136,21 @@
   "latest_release": "2026-06-26"
  },
  "eia": {
-  "operating_gw": 1372.1,
-  "planned_gw": null,
-  "under_construction_gw": null,
-  "asof": "2026-05"
+  "operating_gw": 1377.9,
+  "planned_gw": 191.3,
+  "under_construction_gw": 94.2,
+  "canceled_gw": 185.4,
+  "asof": "2026-06",
+  "src": "https://www.eia.gov/electricity/data/eia860m/xls/june_generator2026.xlsx"
+ },
+ "capex_gdp": {
+  "dc_construction_saar_b": 59.3,
+  "dc_yoy_pct": 23.0,
+  "dc_asof": "2026-05",
+  "computers_saar_b": 406.4,
+  "gdp_saar_b": 32475.2,
+  "gdp_asof": "2026-04-01",
+  "pct_gdp": 1.43
  },
  "manual": {
   "korea": {
