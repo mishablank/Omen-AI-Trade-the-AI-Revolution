@@ -1,5 +1,5 @@
 {
- "updated": "2026-08-03T22:35:00Z",
+ "updated": "2026-08-03T23:11:54Z",
  "snapshot_date": "2026-08-03",
  "artificial_analysis": {
   "cn_best": "GLM-5.2",
@@ -494,8 +494,8 @@
   "license": "AI Gateway Leaderboard Data (c) Vercel, CC BY 4.0"
  },
  "ollama": {
-  "cn": 276772899,
-  "us": 450258771,
+  "cn": 276773499,
+  "us": 450260089,
   "cn_top": [
    {
     "name": "deepseek-r1",
@@ -544,7 +544,7 @@
   "markets": [
    {
     "label": "Will a Chinese AI model be #1 this year?",
-    "p": 0.14,
+    "p": 0.12,
     "ticker": "KXBESTLLMCHINA-27",
     "series": "kxbestllmchina"
    },
@@ -568,7 +568,7 @@
    },
    {
     "label": "Best AI at end of 2026: Claude",
-    "p": 0.681,
+    "p": 0.688,
     "ticker": "KXLLM1-26DEC31-A",
     "series": "kxllm1"
    }
