@@ -1,5 +1,5 @@
 {
- "updated": "2026-08-03T11:37:31Z",
+ "updated": "2026-08-03T14:58:46Z",
  "tsmc": {
   "asof": "2026-06",
   "rev_ntd_b": 442.7,
@@ -144,13 +144,13 @@
   "src": "https://www.eia.gov/electricity/data/eia860m/xls/june_generator2026.xlsx"
  },
  "capex_gdp": {
-  "dc_construction_saar_b": 59.3,
-  "dc_yoy_pct": 23.0,
-  "dc_asof": "2026-05",
+  "dc_construction_saar_b": 68.3,
+  "dc_yoy_pct": 45.8,
+  "dc_asof": "2026-06",
   "computers_saar_b": 406.4,
   "gdp_saar_b": 32475.2,
   "gdp_asof": "2026-04-01",
-  "pct_gdp": 1.43
+  "pct_gdp": 1.46
  },
  "manual": {
   "korea": {
