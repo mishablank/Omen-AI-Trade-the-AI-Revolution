@@ -1,5 +1,5 @@
 {
- "updated": "2026-08-03T14:57:35Z",
+ "updated": "2026-08-03T15:46:07Z",
  "snapshot_date": "2026-08-03",
  "artificial_analysis": {
   "cn_best": "GLM-5.2",
@@ -155,33 +155,33 @@
  },
  "vercel_gateway": {
   "asof": "2026-08-03",
-  "cn_share": 52.18,
-  "us_share": 47.73,
-  "spi": 1.093,
+  "cn_share": 51.58,
+  "us_share": 48.33,
+  "spi": 1.067,
   "top_cn": [
    {
     "lab": "deepseek",
-    "share": 27.65
+    "share": 27.5
    },
    {
     "lab": "zai",
-    "share": 6.89
+    "share": 6.74
    },
    {
     "lab": "inclusionai",
-    "share": 6.34
+    "share": 5.96
    },
    {
     "lab": "moonshotai",
-    "share": 4.37
+    "share": 4.36
    },
    {
     "lab": "stepfun",
-    "share": 4.33
+    "share": 4.29
    },
    {
     "lab": "minimax",
-    "share": 1.53
+    "share": 1.54
    }
   ],
   "series": [
@@ -487,15 +487,15 @@
    },
    {
     "d": "2026-08-03",
-    "cn": 52.18,
-    "us": 47.73
+    "cn": 51.58,
+    "us": 48.33
    }
   ],
   "license": "AI Gateway Leaderboard Data (c) Vercel, CC BY 4.0"
  },
  "ollama": {
-  "cn": 276665299,
-  "us": 449851738,
+  "cn": 276766199,
+  "us": 449852340,
   "cn_top": [
    {
     "name": "deepseek-r1",
@@ -515,7 +515,7 @@
    },
    {
     "name": "qwen3.5",
-    "pulls": 16800000
+    "pulls": 16900000
    },
    {
     "name": "qwen3-coder",
@@ -550,7 +550,7 @@
    },
    {
     "label": "Best AI at end of 2026: Kimi",
-    "p": 0.02,
+    "p": 0.03,
     "ticker": "KXLLM1-26DEC31-MOON",
     "series": "kxllm1"
    },
@@ -568,7 +568,7 @@
    },
    {
     "label": "Best AI at end of 2026: Claude",
-    "p": 0.663,
+    "p": 0.661,
     "ticker": "KXLLM1-26DEC31-A",
     "series": "kxllm1"
    }
@@ -578,7 +578,7 @@
   "cn": [
    {
     "base": "Qwen/Qwen3-8B",
-    "n": 1995
+    "n": 1996
    },
    {
     "base": "deepseek-ai/DeepSeek-R1",
@@ -611,16 +611,12 @@
     "n": 102
    }
   ],
-  "cn_total": 2375,
+  "cn_total": 2376,
   "us_total": 2490,
   "asof": "2026-08-03"
  },
  "sdk": {
   "cn": [
-   {
-    "pkg": "dashscope",
-    "wk": 790787
-   },
    {
     "pkg": "zhipuai",
     "wk": 106618
@@ -632,12 +628,12 @@
   ],
   "us": [
    {
-    "pkg": "openai",
-    "wk": 105292610
-   },
-   {
     "pkg": "anthropic",
     "wk": 46478946
+   },
+   {
+    "pkg": "google-genai",
+    "wk": 67732904
    }
   ],
   "asof": "2026-08-03"
