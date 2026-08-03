@@ -1,5 +1,5 @@
 {
- "updated": "2026-08-03T07:36:37Z",
+ "updated": "2026-08-03T11:36:15Z",
  "snapshot_date": "2026-08-03",
  "artificial_analysis": {
   "cn_best": "GLM-5.2",
@@ -86,98 +86,98 @@
   "cnOrgs": [
    {
     "org": "Qwen",
-    "dl": 273052456
+    "dl": 273279226
    },
    {
     "org": "deepseek-ai",
-    "dl": 34049808
+    "dl": 33932444
    },
    {
     "org": "zai-org",
-    "dl": 15603931
+    "dl": 15521737
    },
    {
     "org": "moonshotai",
-    "dl": 4534893
+    "dl": 4656840
    },
    {
     "org": "MiniMaxAI",
-    "dl": 2535526
+    "dl": 2504337
    },
    {
     "org": "XiaomiMiMo",
-    "dl": 1428496
-   },
-   {
-    "org": "tencent",
-    "dl": 1374137
+    "dl": 1407568
    },
    {
     "org": "stepfun-ai",
-    "dl": 1310210
+    "dl": 1290924
+   },
+   {
+    "org": "tencent",
+    "dl": 1279937
    }
   ],
   "usOrgs": [
    {
     "org": "google",
-    "dl": 63137796
+    "dl": 63016592
    },
    {
     "org": "meta-llama",
-    "dl": 37085992
+    "dl": 37073981
    },
    {
     "org": "nvidia",
-    "dl": 23692621
+    "dl": 23242000
    },
    {
     "org": "openai",
-    "dl": 12819682
+    "dl": 12805187
    },
    {
     "org": "microsoft",
-    "dl": 6915374
+    "dl": 6902740
    },
    {
     "org": "allenai",
-    "dl": 3919398
+    "dl": 3916275
    }
   ],
-  "cn": 333889457,
-  "us": 147570863
+  "cn": 333873013,
+  "us": 146956775
  },
  "openrouter_week": {
   "week": "2026-08-03",
-  "cn_share": 0.5323,
-  "us_share": 0.3337,
-  "spi": 1.595,
-  "total_tokens": 2310257813144
+  "cn_share": 0.5357,
+  "us_share": 0.3342,
+  "spi": 1.603,
+  "total_tokens": 3896837812046
  },
  "vercel_gateway": {
   "asof": "2026-08-03",
-  "cn_share": 51.8,
-  "us_share": 48.12,
-  "spi": 1.076,
+  "cn_share": 52.31,
+  "us_share": 47.6,
+  "spi": 1.099,
   "top_cn": [
    {
     "lab": "deepseek",
-    "share": 26.51
+    "share": 27.36
    },
    {
     "lab": "zai",
-    "share": 9.12
+    "share": 7.24
    },
    {
     "lab": "inclusionai",
-    "share": 6.05
-   },
-   {
-    "lab": "moonshotai",
-    "share": 3.99
+    "share": 6.5
    },
    {
     "lab": "stepfun",
-    "share": 3.55
+    "share": 4.37
+   },
+   {
+    "lab": "moonshotai",
+    "share": 4.25
    },
    {
     "lab": "minimax",
@@ -487,19 +487,19 @@
    },
    {
     "d": "2026-08-03",
-    "cn": 51.8,
-    "us": 48.12
+    "cn": 52.31,
+    "us": 47.6
    }
   ],
   "license": "AI Gateway Leaderboard Data (c) Vercel, CC BY 4.0"
  },
  "ollama": {
-  "cn": 276056100,
-  "us": 449743788,
+  "cn": 276360799,
+  "us": 449849033,
   "cn_top": [
    {
     "name": "deepseek-r1",
-    "pulls": 90800000
+    "pulls": 90900000
    },
    {
     "name": "qwen2.5",
@@ -507,7 +507,7 @@
    },
    {
     "name": "qwen3",
-    "pulls": 33200000
+    "pulls": 33299999
    },
    {
     "name": "qwen2.5-coder",
@@ -519,7 +519,7 @@
    },
    {
     "name": "qwen3-coder",
-    "pulls": 7800000
+    "pulls": 7900000
    }
   ],
   "us_top": [
@@ -537,7 +537,9 @@
    }
   ],
   "n_models": 232,
-  "asof": "2026-08-03"
+  "asof": "2026-08-03",
+  "cn_per_day": 701306,
+  "us_per_day": 254384
  },
  "kalshi": {
   "asof": "2026-08-03",
@@ -568,7 +570,7 @@
    },
    {
     "label": "Best AI at end of 2026: Claude",
-    "p": 0.658,
+    "p": 0.674,
     "ticker": "KXLLM1-26DEC31-A",
     "series": "kxllm1"
    }
@@ -578,7 +580,7 @@
   "cn": [
    {
     "base": "Qwen/Qwen3-8B",
-    "n": 1993
+    "n": 1995
    },
    {
     "base": "deepseek-ai/DeepSeek-R1",
@@ -604,19 +606,23 @@
    },
    {
     "base": "openai/gpt-oss-20b",
-    "n": 542
+    "n": 541
    },
    {
     "base": "microsoft/phi-4",
     "n": 102
    }
   ],
-  "cn_total": 2373,
-  "us_total": 2491,
+  "cn_total": 2375,
+  "us_total": 2490,
   "asof": "2026-08-03"
  },
  "sdk": {
   "cn": [
+   {
+    "pkg": "zhipuai",
+    "wk": 106618
+   },
    {
     "pkg": "zai-sdk",
     "wk": 29162
@@ -626,6 +632,10 @@
    {
     "pkg": "openai",
     "wk": 105292610
+   },
+   {
+    "pkg": "anthropic",
+    "wk": 46478946
    },
    {
     "pkg": "google-genai",
