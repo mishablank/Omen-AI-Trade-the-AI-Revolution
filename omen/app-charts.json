@@ -1,17 +1,8 @@
 {
- "updated": "2026-08-03T21:07:36Z",
+ "updated": "2026-08-03T22:35:00Z",
  "source": "google-play-scraper",
  "store": "android",
  "depth": 200,
  "countries_ok": 10,
- "hits": [
-  {
-   "label": "MiniMax",
-   "store": "android",
-   "country": "us",
-   "rank": 188,
-   "appId": "com.weaver.app.prod",
-   "title": "Talkie: Creative AI Community"
-  }
- ]
+ "hits": []
 }
