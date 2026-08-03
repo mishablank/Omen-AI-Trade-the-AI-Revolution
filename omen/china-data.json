@@ -1,5 +1,5 @@
 {
- "updated": "2026-08-03T17:54:52Z",
+ "updated": "2026-08-03T19:42:39Z",
  "snapshot_date": "2026-08-03",
  "artificial_analysis": {
   "cn_best": "GLM-5.2",
@@ -148,40 +148,40 @@
  },
  "openrouter_week": {
   "week": "2026-08-03",
-  "cn_share": 0.5178,
-  "us_share": 0.3479,
-  "spi": 1.488,
-  "total_tokens": 6823832050464
+  "cn_share": 0.5131,
+  "us_share": 0.3505,
+  "spi": 1.464,
+  "total_tokens": 7589854151646
  },
  "vercel_gateway": {
   "asof": "2026-08-03",
-  "cn_share": 50.47,
-  "us_share": 49.39,
-  "spi": 1.022,
+  "cn_share": 49.7,
+  "us_share": 50.16,
+  "spi": 0.991,
   "top_cn": [
    {
     "lab": "deepseek",
-    "share": 27.15
+    "share": 27.12
    },
    {
     "lab": "zai",
-    "share": 6.68
+    "share": 6.59
    },
    {
     "lab": "inclusionai",
-    "share": 5.27
+    "share": 4.81
    },
    {
     "lab": "stepfun",
-    "share": 4.3
+    "share": 4.24
    },
    {
     "lab": "moonshotai",
-    "share": 4.3
+    "share": 4.22
    },
    {
     "lab": "minimax",
-    "share": 1.5
+    "share": 1.44
    }
   ],
   "series": [
@@ -487,15 +487,15 @@
    },
    {
     "d": "2026-08-03",
-    "cn": 50.47,
-    "us": 49.39
+    "cn": 49.7,
+    "us": 50.16
    }
   ],
   "license": "AI Gateway Leaderboard Data (c) Vercel, CC BY 4.0"
  },
  "ollama": {
-  "cn": 276768899,
-  "us": 449955558,
+  "cn": 276770699,
+  "us": 450056966,
   "cn_top": [
    {
     "name": "deepseek-r1",
@@ -544,7 +544,7 @@
   "markets": [
    {
     "label": "Will a Chinese AI model be #1 this year?",
-    "p": 0.16,
+    "p": 0.14,
     "ticker": "KXBESTLLMCHINA-27",
     "series": "kxbestllmchina"
    },
@@ -608,11 +608,11 @@
    },
    {
     "base": "microsoft/phi-4",
-    "n": 102
+    "n": 103
    }
   ],
   "cn_total": 2377,
-  "us_total": 2490,
+  "us_total": 2491,
   "asof": "2026-08-03"
  },
  "sdk": {
@@ -622,14 +622,18 @@
     "wk": 790787
    },
    {
-    "pkg": "zai-sdk",
-    "wk": 29162
+    "pkg": "zhipuai",
+    "wk": 106618
    }
   ],
   "us": [
    {
     "pkg": "openai",
     "wk": 105292610
+   },
+   {
+    "pkg": "anthropic",
+    "wk": 46478946
    },
    {
     "pkg": "google-genai",
