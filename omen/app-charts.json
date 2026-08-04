@@ -1,8 +1,25 @@
 {
- "updated": "2026-08-04T17:14:49Z",
+ "updated": "2026-08-04T19:09:54Z",
  "source": "google-play-scraper",
  "store": "android",
  "depth": 200,
  "countries_ok": 10,
- "hits": []
+ "hits": [
+  {
+   "label": "MiniMax",
+   "store": "android",
+   "country": "us",
+   "rank": 153,
+   "appId": "com.weaver.app.prod",
+   "title": "Talkie: Creative AI Community"
+  },
+  {
+   "label": "Qwen",
+   "store": "android",
+   "country": "br",
+   "rank": 195,
+   "appId": "com.tongyi.intl",
+   "title": "Qwen - Alibaba AI Assistant"
+  }
+ ]
 }
