@@ -1,5 +1,5 @@
 {
- "updated": "2026-08-04T09:44:05Z",
+ "updated": "2026-08-04T12:07:24Z",
  "snapshot_date": "2026-08-04",
  "artificial_analysis": {
   "cn_best": "GLM-5.2",
@@ -149,39 +149,39 @@
  "openrouter_week": {
   "week": "2026-08-03",
   "cn_share": 0.5205,
-  "us_share": 0.3427,
+  "us_share": 0.3425,
   "spi": 1.519,
-  "total_tokens": 12822296781330
+  "total_tokens": 13987330742931
  },
  "vercel_gateway": {
   "asof": "2026-08-04",
-  "cn_share": 46.89,
-  "us_share": 53.02,
-  "spi": 0.884,
+  "cn_share": 48.07,
+  "us_share": 51.84,
+  "spi": 0.927,
   "top_cn": [
    {
     "lab": "deepseek",
-    "share": 24.72
+    "share": 25.27
    },
    {
     "lab": "zai",
-    "share": 6.03
-   },
-   {
-    "lab": "inclusionai",
-    "share": 4.77
+    "share": 6.11
    },
    {
     "lab": "stepfun",
-    "share": 4.48
+    "share": 4.93
    },
    {
     "lab": "moonshotai",
-    "share": 4.34
+    "share": 4.65
+   },
+   {
+    "lab": "inclusionai",
+    "share": 4.5
    },
    {
     "lab": "minimax",
-    "share": 1.46
+    "share": 1.44
    }
   ],
   "series": [
@@ -487,15 +487,15 @@
    },
    {
     "d": "2026-08-04",
-    "cn": 46.89,
-    "us": 53.02
+    "cn": 48.07,
+    "us": 51.84
    }
   ],
   "license": "AI Gateway Leaderboard Data (c) Vercel, CC BY 4.0"
  },
  "ollama": {
-  "cn": 276882399,
-  "us": 450370238,
+  "cn": 276884799,
+  "us": 450373556,
   "cn_top": [
    {
     "name": "deepseek-r1",
@@ -537,9 +537,7 @@
    }
   ],
   "n_models": 231,
-  "asof": "2026-08-04",
-  "cn_per_day": 565647,
-  "us_per_day": 565219
+  "asof": "2026-08-04"
  },
  "kalshi": {
   "asof": "2026-08-04",
@@ -564,13 +562,13 @@
    },
    {
     "label": "Best AI at end of 2026: Qwen",
-    "p": 0.013,
+    "p": 0.012,
     "ticker": "KXLLM1-26DEC31-ALI",
     "series": "kxllm1"
    },
    {
     "label": "Best AI at end of 2026: Claude",
-    "p": 0.668,
+    "p": 0.672,
     "ticker": "KXLLM1-26DEC31-A",
     "series": "kxllm1"
    }
@@ -580,7 +578,7 @@
   "cn": [
    {
     "base": "Qwen/Qwen3-8B",
-    "n": 1994
+    "n": 1995
    },
    {
     "base": "deepseek-ai/DeepSeek-R1",
@@ -602,7 +600,7 @@
    },
    {
     "base": "google/gemma-3-12b-it",
-    "n": 379
+    "n": 378
    },
    {
     "base": "openai/gpt-oss-20b",
@@ -610,10 +608,10 @@
    },
    {
     "base": "microsoft/phi-4",
-    "n": 103
+    "n": 104
    }
   ],
-  "cn_total": 2374,
+  "cn_total": 2375,
   "us_total": 2491,
   "asof": "2026-08-04"
  },
@@ -622,6 +620,10 @@
    {
     "pkg": "dashscope",
     "wk": 796911
+   },
+   {
+    "pkg": "zai-sdk",
+    "wk": 30053
    }
   ],
   "us": [
