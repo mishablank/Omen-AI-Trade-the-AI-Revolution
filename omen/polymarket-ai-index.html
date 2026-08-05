@@ -2330,9 +2330,18 @@ function renderFresh(){
 }
 
 /* charts: bands = horizontal regime washes, events = vertical markers */
+// Right margin reserves room for a last-value label per series — the number a viewer
+// otherwise has to hover for. Labels are nudged apart when series end close together.
+function endLabels(series,y,x0){
+  const ls=series.filter(s=>s.vals[s.vals.length-1]!=null)
+    .map(s=>({y:y(s.vals[s.vals.length-1]), color:s.color, v:s.vals[s.vals.length-1]}))
+    .sort((a,b)=>a.y-b.y);
+  for(let i=1;i<ls.length;i++) if(ls[i].y-ls[i-1].y<13) ls[i].y=ls[i-1].y+13;
+  return ls.map(l=>`<text x="${x0}" y="${(l.y+4).toFixed(1)}" font-size="11" font-weight="700" fill="${l.color}" style="font-variant-numeric:tabular-nums">${l.v.toFixed(1)}</text>`).join("");
+}
 function lineChart(svgId,tipId,wrapId,data,H,opts={}){
   const svg=$(svgId), tip=$(tipId), wrap=$(wrapId);
-  const W=1000,mL=46,mR=16,mT=14,mB=30,iw=W-mL-mR,ih=H-mT-mB;
+  const W=1000,mL=46,mR=44,mT=14,mB=30,iw=W-mL-mR,ih=H-mT-mB;
   const {buckets,series}=data; if(!buckets.length){ svg.innerHTML=""; return; }
   const all=series.flatMap(s=>s.vals).filter(v=>v!=null); if(!all.length){ svg.innerHTML=""; return; }
   let lo,hi;
@@ -2357,10 +2366,11 @@ function lineChart(svgId,tipId,wrapId,data,H,opts={}){
   const path=arr=>arr.map((v,i)=>v==null?"":`${i===0||arr[i-1]==null?"M":"L"}${x(i).toFixed(1)},${y(v).toFixed(1)}`).join("");
   for(const s of series){ g+=`<path d="${path(s.vals)}" fill="none" stroke="${s.color}" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>`;
     const last=s.vals.length-1; if(s.vals[last]!=null) g+=`<circle cx="${x(last)}" cy="${y(s.vals[last])}" r="4.5" fill="${s.color}" stroke="var(--surface-1)" stroke-width="2"/>`; }
-  g+=`<g class="xh"></g><rect class="hit" x="${mL}" y="${mT}" width="${iw}" height="${ih}" fill="transparent"/>`;
+  g+=endLabels(series,y,W-mR+7);
+  g+=`<g class="xh"></g><rect class="hit" x="${mL}" y="${mT}" width="${iw}" height="${ih}" fill="transparent" style="touch-action:pan-y"/>`;
   svg.innerHTML=g;
   const hit=svg.querySelector(".hit"), xh=svg.querySelector(".xh");
-  hit.onmousemove=ev=>{ const rect=svg.getBoundingClientRect();
+  hit.onpointermove=ev=>{ const rect=svg.getBoundingClientRect();
     let i=Math.round((((ev.clientX-rect.left)/rect.width)*W-mL)/iw*(buckets.length-1)); i=clamp(i,0,buckets.length-1);
     let xg=`<line x1="${x(i)}" y1="${mT}" x2="${x(i)}" y2="${mT+ih}" stroke="var(--baseline)"/>`, rows="";
     for(const s of series){ if(s.vals[i]==null) continue;
@@ -2370,14 +2380,14 @@ function lineChart(svgId,tipId,wrapId,data,H,opts={}){
     tip.innerHTML=`<div class="t">${new Date(buckets[i]*1000).toLocaleString(undefined,{month:"short",day:"numeric",hour:"numeric"})}</div>`+rows;
     const wr=wrap.getBoundingClientRect(); let tx=(x(i)/W)*wr.width+14; if(tx+tip.offsetWidth>wr.width-4) tx=(x(i)/W)*wr.width-tip.offsetWidth-14;
     tip.style.left=tx+"px"; tip.style.top="16px"; };
-  hit.onmouseleave=()=>{ xh.innerHTML=""; tip.style.display="none"; };
+  hit.onpointerleave=()=>{ xh.innerHTML=""; tip.style.display="none"; };
 }
 
 /* small multiples: one SVG, three stacked panels with independent y-scales, shared hover */
 function multiPanelChart(svgId,tipId,wrapId,buckets,panels){
   const svg=$(svgId), tip=$(tipId), wrap=$(wrapId);
   if(!buckets.length){ svg.innerHTML=""; return; }
-  const W=1000, PH=170, GAP=14, mL=46, mR=16, mT=8, mB=4, H=panels.length*(PH+GAP)+22;
+  const W=1000, PH=170, GAP=14, mL=46, mR=44, mT=8, mB=4, H=panels.length*(PH+GAP)+22;
   svg.setAttribute("viewBox",`0 0 ${W} ${H}`);
   const iw=W-mL-mR;
   const x=i=>mL+(i/(buckets.length-1))*iw;
@@ -2399,7 +2409,8 @@ function multiPanelChart(svgId,tipId,wrapId,buckets,panels){
     const path=p.vals.map((v,i)=>v==null?"":`${i===0||p.vals[i-1]==null?"M":"L"}${x(i).toFixed(1)},${y(v).toFixed(1)}`).join("");
     g+=`<path d="${path}" fill="none" stroke="${p.color}" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>`;
     const last=p.vals.length-1;
-    if(p.vals[last]!=null) g+=`<circle cx="${x(last)}" cy="${y(p.vals[last])}" r="4" fill="${p.color}" stroke="var(--surface-1)" stroke-width="2"/>`;
+    if(p.vals[last]!=null){ g+=`<circle cx="${x(last)}" cy="${y(p.vals[last])}" r="4" fill="${p.color}" stroke="var(--surface-1)" stroke-width="2"/>`;
+      g+=`<text x="${W-mR+7}" y="${(y(p.vals[last])+4).toFixed(1)}" font-size="11" font-weight="700" fill="${p.color}" style="font-variant-numeric:tabular-nums">${p.vals[last].toFixed(1)}</text>`; }
     for(const ev of EVENTS){
       const t=Math.floor(Date.parse(ev.d+"T12:00:00Z")/1000);
       if(t<buckets[0]||t>buckets[buckets.length-1]) continue;
@@ -2409,10 +2420,10 @@ function multiPanelChart(svgId,tipId,wrapId,buckets,panels){
   });
   for(let k=0;k<6;k++){ const i=Math.round((k/5)*(buckets.length-1)); const d=new Date(buckets[i]*1000);
     g+=`<text x="${x(i)}" y="${H-6}" text-anchor="middle" font-size="11" fill="var(--muted)">${d.toLocaleDateString(undefined,{month:"short",day:"numeric"})}</text>`; }
-  g+=`<g class="xh"></g><rect class="hit" x="${mL}" y="0" width="${iw}" height="${H-18}" fill="transparent"/>`;
+  g+=`<g class="xh"></g><rect class="hit" x="${mL}" y="0" width="${iw}" height="${H-18}" fill="transparent" style="touch-action:pan-y"/>`;
   svg.innerHTML=g;
   const hit=svg.querySelector(".hit"), xh=svg.querySelector(".xh");
-  hit.onmousemove=ev=>{ const rect=svg.getBoundingClientRect();
+  hit.onpointermove=ev=>{ const rect=svg.getBoundingClientRect();
     let i=Math.round((((ev.clientX-rect.left)/rect.width)*W-mL)/iw*(buckets.length-1)); i=clamp(i,0,buckets.length-1);
     let xg="", rows="";
     panels.forEach((p,pi)=>{ const ge=geo[pi]; if(!ge) return;
@@ -2424,7 +2435,7 @@ function multiPanelChart(svgId,tipId,wrapId,buckets,panels){
     const wr=wrap.getBoundingClientRect(); let tx=(x(i)/W)*wr.width+14; if(tx+tip.offsetWidth>wr.width-4) tx=(x(i)/W)*wr.width-tip.offsetWidth-14;
     tip.style.left=tx+"px";
     tip.style.top=clamp((ev.clientY-wrap.getBoundingClientRect().top)-40,4,wr.height-60)+"px"; };
-  hit.onmouseleave=()=>{ xh.innerHTML=""; tip.style.display="none"; };
+  hit.onpointerleave=()=>{ xh.innerHTML=""; tip.style.display="none"; };
 }
 function renderMainChart(){
   const comp=buildComposite();

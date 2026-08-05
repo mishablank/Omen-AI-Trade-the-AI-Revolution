@@ -160,7 +160,66 @@ console.log("omen-common — esc / safeUrl / Polymarket shapes / regime / index 
   eq("sparkSvg/undefined draws nothing", sparkSvg(undefined, 300, 52, "#fff", true), "");
   // a flat series must not divide by a zero range
   ok("sparkSvg/flat series is finite", !sparkSvg([5, 5, 5], 300, 52, "#fff", true).includes("NaN"));
+
+  // the domain floor: a ±0.1% wiggle must not render full-height. With the default 4%
+  // floor a [0.690, 0.691] series spans ~2.7% of the panel, not 100% of it.
+  {
+    const ys = [...sparkSvg([0.690, 0.691], 100, 100, "#fff", false, { mean: false })
+      .matchAll(/points="([\d.,\s]+)"/g)][0][1].split(" ").map((p) => +p.split(",")[1]);
+    const used = Math.abs(ys[0] - ys[1]), avail = 100 - 8 - 3;
+    ok("sparkSvg/domain floor damps near-flat series", used < avail * 0.1, `used ${used}px of ${avail}px`);
+  }
+  ok("sparkSvg/mean line drawn by default", sparkSvg([1, 2, 3], 300, 52, "#fff", false).includes("stroke-dasharray"));
+  ok("sparkSvg/mean line can be omitted", !sparkSvg([1, 2, 3], 300, 52, "#fff", false, { mean: false }).includes("stroke-dasharray"));
+  ok("sparkSvg/explicit minSpan respected", !sparkSvg([5, 5, 5], 300, 52, "#fff", false, { minSpan: 2 }).includes("NaN"));
   console.log("  sparkSvg");
+}
+
+/* ---------- parseSnapshots: the daily history the landing page charts ---------- */
+{
+  const { parseSnapshots } = OMEN;
+  const csv = [
+    "date,bull,bull_n,bear,bear_n,crash,crash_n,reg,reg_n,gauge,lead,conf,comp",
+    "2026-07-11,45.18,11,16.6,9,8.8,3,20.5,6,27.3,,,1087074,653788",
+    "2026-07-12,44.95,11,16.22,9,9.17,3,19.75,6,,30.0,24.3,1087074",  // gauge cell empty
+    "2026-07-13,,11,16.22,9,9.17,3,19.75,6,27.7,30.0,24.3,1087074",   // bull cell empty
+  ].join("\n");
+  const rows = parseSnapshots(csv);
+  eq("parseSnapshots/keeps parsable rows", rows.length, 2);
+  eq("parseSnapshots/date", rows[0].date, "2026-07-11");
+  eq("parseSnapshots/share is bull over pair", +rows[0].share.toFixed(4), +(45.18 / (45.18 + 16.6)).toFixed(4));
+  eq("parseSnapshots/crash", rows[0].crash, 8.8);
+  eq("parseSnapshots/gauge", rows[0].gauge, 27.3);
+  eq("parseSnapshots/empty gauge becomes null", rows[1].gauge, null);
+  eq("parseSnapshots/empty input", parseSnapshots("").length, 0);
+  eq("parseSnapshots/header only", parseSnapshots("date,bull,bear").length, 0);
+  eq("parseSnapshots/missing pair columns", parseSnapshots("date,foo\n2026-01-01,1").length, 0);
+  console.log("  parseSnapshots");
+}
+
+/* ---------- pairShareSeries: shared CLOB-history resampler ---------- */
+{
+  const { pairShareSeries } = OMEN;
+  // two flat bull markets at 0.6, two flat bear markets at 0.2 → share 0.75 everywhere
+  const flat = (p) => [{ t: 0, p }, { t: 50, p }, { t: 100, p }];
+  const hist = { b1: flat(0.6), b2: flat(0.6), x1: flat(0.2), x2: flat(0.2) };
+  const r = pairShareSeries(hist, { bull: ["b1", "b2"], bear: ["x1", "x2"] }, 5);
+  ok("pairShareSeries/returns a result", !!r);
+  eq("pairShareSeries/bucket count", r.share.bull.length, 5);
+  eq("pairShareSeries/share level", +r.share.bull[2].toFixed(4), 0.75);
+  eq("pairShareSeries/shares sum to one", +(r.share.bull[0] + r.share.bear[0]).toFixed(10), 1);
+  // a sparse series is resampled as a step function: last trade holds
+  const step = { b1: [{ t: 0, p: 0.4 }, { t: 100, p: 0.8 }], b2: flat(0.6), x1: flat(0.2), x2: flat(0.2) };
+  const r2 = pairShareSeries(step, { bull: ["b1", "b2"], bear: ["x1", "x2"] }, 3);
+  ok("pairShareSeries/step resample holds last trade", r2.share.bull[1] > r2.share.bull[0] - 1e-9);
+  // one lone market per side is not an index
+  eq("pairShareSeries/needs two histories per side",
+    pairShareSeries({ b1: flat(0.6), x1: flat(0.2), x2: flat(0.2) }, { bull: ["b1", "b2"], bear: ["x1", "x2"] }, 5), null);
+  // an empty common window (histories that do not overlap) is rejected
+  const late = [{ t: 200, p: 0.5 }, { t: 300, p: 0.5 }];
+  eq("pairShareSeries/no overlap is null",
+    pairShareSeries({ b1: flat(0.6), b2: late, x1: flat(0.2), x2: flat(0.2) }, { bull: ["b1", "b2"], bear: ["x1", "x2"] }, 5), null);
+  console.log("  pairShareSeries");
 }
 
 console.log(failures ? `\n${failures} failure(s)` : "\nall omen-common tests passed");

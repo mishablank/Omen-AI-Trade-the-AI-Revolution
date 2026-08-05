@@ -73,7 +73,9 @@ nav .btn{padding:9px 16px;margin-left:6px}
 .ix .chg24{font-family:var(--mono);font-size:14px;font-weight:700;margin:14px 0 2px}
 .ix .thesis{font-family:var(--serif);font-style:italic;font-size:19px;margin:20px 0 10px;color:var(--ink)}
 .ix .desc{font-size:13.5px;color:var(--mut);line-height:1.6;margin-bottom:16px}
-.spark7{height:52px;margin:4px 0 16px}
+.spark7{height:52px;margin:4px 0 16px;position:relative}
+.spark7 .ph{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
+  font-family:var(--mono);font-size:9px;letter-spacing:2px;color:var(--dim)}
 .ix .tgl{width:100%;min-height:44px;background:none;border:1px solid var(--line);border-radius:6px;color:var(--mut);font-size:12px;letter-spacing:.08em;
   padding:10px;cursor:pointer;text-transform:uppercase;font-weight:600;transition:color .2s,border-color .2s}
 .ix .tgl:hover{color:var(--accT);border-color:var(--line2)}
@@ -221,7 +223,7 @@ function renderCards(){
       <div class="thesis">“${S.thesis}”</div>
       <p class="desc">${S.desc}</p>
       <span class="lbl">Past 7 days</span>
-      <div class="spark7" id="sp7-${side}"><svg width="100%" height="100%" viewBox="0 0 300 52" preserveAspectRatio="none"><text x="150" y="30" text-anchor="middle" fill="#6e6656" font-size="9" font-family="monospace" letter-spacing="2">LOADING LIVE HISTORY…</text></svg></div>
+      <div class="spark7" id="sp7-${side}"><span class="ph">LOADING LIVE HISTORY…</span></div>
       <button class="tgl">Constituents · ${ms.length} markets</button>
       <div class="mwrap">
         <table class="mtable"><tr><th>Market</th><th>Type</th><th>Yes</th></tr>${rows}</table>
@@ -233,6 +235,14 @@ function renderCards(){
 
 /* ================= sparklines ================= */
 const sparkSvg=OMEN.sparkSvg;
+// Failure text lives in an HTML overlay, not inside the SVG: these sparklines stretch
+// (preserveAspectRatio="none"), and stretched SVG text renders warped.
+function sparkFail(){
+  for(const s of Object.keys(SIDES)){
+    const el=document.getElementById("sp7-"+s); if(!el) continue;
+    const ph=el.querySelector(".ph"); if(ph) ph.textContent="LIVE HISTORY UNAVAILABLE";
+  }
+}
 async function fetchSparks(){
   const hist={};
   await Promise.all(MARKETS.filter(m=>m.tok&&!m.closed).map(async m=>{
@@ -244,31 +254,15 @@ async function fetchSparks(){
     }catch(e){}
   }));
   // the sparkline is the pair share over time, so both sides must resample over the
-  // SAME window: each bucket is bull/(bull+bear) of the two equal-weight raw means
-  const sides=Object.keys(SIDES), idsBy={};
-  const noHist='<svg width="100%" height="100%" viewBox="0 0 300 52"><text x="150" y="30" text-anchor="middle" fill="#6e6656" font-size="9" font-family="monospace" letter-spacing="2">LIVE HISTORY UNAVAILABLE</text></svg>';
-  const ok=sides.every(s=>{ idsBy[s]=MARKETS.filter(m=>m.side===s&&hist[m.id]).map(m=>m.id); return idsBy[s].length>=2; });
-  const allIds=sides.flatMap(s=>idsBy[s]);
-  const t0=allIds.length?Math.max(...allIds.map(i=>hist[i][0].t)):0;
-  const t1=allIds.length?Math.min(...allIds.map(i=>hist[i][hist[i].length-1].t)):0;
-  if(!ok||t1<=t0){ for(const s of sides){ const el=document.getElementById("sp7-"+s); if(el) el.innerHTML=noHist; } return; }
-  const N=60, lvl={};
-  for(const s of sides){
-    lvl[s]=[];
-    for(let k=0;k<N;k++){
-      const t=t0+(t1-t0)*k/(N-1); let sum=0;
-      for(const i of idsBy[s]){
-        const h=hist[i]; let lo=0;
-        while(lo<h.length-1&&h[lo+1].t<=t) lo++;
-        sum+=h[lo].p;
-      }
-      lvl[s].push(sum/idsBy[s].length);
-    }
-  }
-  for(const s of sides){
+  // SAME window: each bucket is bull/(bull+bear) of the two equal-weight raw means —
+  // OMEN.pairShareSeries, shared with the landing page's hero sparks
+  const idsBy={};
+  for(const s of Object.keys(SIDES)) idsBy[s]=MARKETS.filter(m=>m.side===s&&hist[m.id]).map(m=>m.id);
+  const r=OMEN.pairShareSeries(hist,idsBy,60);
+  if(!r){ sparkFail(); return; }
+  for(const s of Object.keys(SIDES)){
     const el=document.getElementById("sp7-"+s); if(!el) continue;
-    const series=lvl[s].map((v,k)=>{ const t=lvl.bull[k]+lvl.bear[k]; return t>0?v/t:0; });
-    el.innerHTML=sparkSvg(series,300,52,SIDES[s].mark,true);
+    el.innerHTML=sparkSvg(r.share[s],300,52,SIDES[s].mark,true,{minSpan:.02});
   }
 }
 

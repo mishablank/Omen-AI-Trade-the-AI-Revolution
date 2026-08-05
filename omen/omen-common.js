@@ -132,22 +132,106 @@
   /* ================= sparkline ================= */
   // Returns "" rather than an SVG full of NaN when there is nothing to draw: one point
   // makes the i/(n-1) step divide by zero, and zero points make Math.min() Infinity.
-  function sparkSvg(vals, w, h, color, fill) {
+  //
+  // The y-domain is floored at opts.minSpan (default 4% of the series' mean magnitude):
+  // raw min→max scaling renders a ±0.3% drift as a full-height mountain range, which
+  // reads as volatility that is not there. A dotted line marks the period mean so a
+  // genuinely flat week also *looks* flat; pass opts.mean:false to omit it.
+  function sparkSvg(vals, w, h, color, fill, opts) {
     if (!vals || vals.length < 2) return "";
-    const mn = Math.min(...vals), mx = Math.max(...vals), r = (mx - mn) || 1;
-    const pts = vals.map((v, i) => [i / (vals.length - 1) * w, h - 3 - (v - mn) / r * (h - 8)]);
+    opts = opts || {};
+    let mn = Math.min(...vals), mx = Math.max(...vals);
+    const avg = vals.reduce((a, b) => a + b, 0) / vals.length;
+    const floor = opts.minSpan != null ? opts.minSpan : Math.abs(avg) * 0.04;
+    if (mx - mn < floor) { const mid = (mx + mn) / 2; mn = mid - floor / 2; mx = mid + floor / 2; }
+    const r = (mx - mn) || 1;
+    const y = (v) => h - 3 - (v - mn) / r * (h - 8);
+    const pts = vals.map((v, i) => [i / (vals.length - 1) * w, y(v)]);
     const line = pts.map((p) => p[0].toFixed(1) + "," + p[1].toFixed(1)).join(" ");
     const area = `M0,${h} L${line.replace(/ /g, " L")} L${w},${h} Z`;
+    const meanLine = opts.mean === false ? "" :
+      `<line x1="0" y1="${y(avg).toFixed(1)}" x2="${w}" y2="${y(avg).toFixed(1)}" stroke="${color}" opacity=".28" stroke-dasharray="2,4" vector-effect="non-scaling-stroke"/>`;
     return `<svg width="100%" height="100%" viewBox="0 0 ${w} ${h}" preserveAspectRatio="none" aria-hidden="true" focusable="false">
-    ${fill ? `<path d="${area}" fill="${color}" opacity=".12"/>` : ""}
+    ${fill ? `<path d="${area}" fill="${color}" opacity=".12"/>` : ""}${meanLine}
     <polyline points="${line}" fill="none" stroke="${color}" stroke-width="2" vector-effect="non-scaling-stroke"/>
     <circle cx="${pts[pts.length - 1][0]}" cy="${pts[pts.length - 1][1]}" r="3" fill="${color}"/></svg>`;
+  }
+
+  /* ================= daily snapshots ================= */
+  // Parse snapshots.csv — the GitHub Action appends one row a day (see
+  // update-market-data.py --snapshot). Only the columns the pages chart are pulled out;
+  // the trailing constituent-id list is ignored. Rows whose pair is empty are dropped
+  // rather than rendered as 0/0 artifacts, and a malformed gauge cell becomes null so a
+  // chart can skip the point instead of plotting NaN.
+  function parseSnapshots(text) {
+    const lines = String(text == null ? "" : text).trim().split(/\r?\n/);
+    if (lines.length < 2) return [];
+    const head = lines[0].split(",");
+    const col = {};
+    for (const k of ["bull", "bear", "crash", "gauge"]) col[k] = head.indexOf(k);
+    if (col.bull < 0 || col.bear < 0) return [];
+    const rows = [];
+    for (let i = 1; i < lines.length; i++) {
+      const c = lines[i].split(",");
+      const bull = parseFloat(c[col.bull]), bear = parseFloat(c[col.bear]);
+      if (!isFinite(bull) || !isFinite(bear) || bull + bear <= 0) continue;
+      const crash = col.crash >= 0 ? parseFloat(c[col.crash]) : NaN;
+      const gauge = col.gauge >= 0 ? parseFloat(c[col.gauge]) : NaN;
+      rows.push({
+        date: c[0],
+        share: bull / (bull + bear),
+        crash: isFinite(crash) ? crash : 0,
+        gauge: isFinite(gauge) ? gauge : null,
+      });
+    }
+    return rows;
+  }
+
+  /* ================= pair-share history ================= */
+  // Resample per-market CLOB price histories onto N shared uniform buckets and price the
+  // pair at each bucket: side level = equal-weight mean of its constituents (step-function
+  // resample, so a sparse series holds its last trade), share = level / (sum of levels).
+  // Requires ≥2 histories per side — one lone market's noise should not masquerade as an
+  // index — and a non-empty common time window. Returns null when either fails.
+  //   hist: { marketId: [{t, p}, ...] }   sideIds: { bull: [ids], bear: [ids] }
+  function pairShareSeries(hist, sideIds, N) {
+    const sides = Object.keys(sideIds);
+    if (!sides.length || sides.some((s) => (sideIds[s] || []).filter((i) => hist[i] && hist[i].length > 1).length < 2)) return null;
+    const ids = {};
+    for (const s of sides) ids[s] = sideIds[s].filter((i) => hist[i] && hist[i].length > 1);
+    const all = sides.flatMap((s) => ids[s]);
+    const t0 = Math.max(...all.map((i) => hist[i][0].t));
+    const t1 = Math.min(...all.map((i) => hist[i][hist[i].length - 1].t));
+    if (!(t1 > t0)) return null;
+    const lvl = {};
+    for (const s of sides) {
+      lvl[s] = [];
+      for (let k = 0; k < N; k++) {
+        const t = t0 + (t1 - t0) * k / (N - 1);
+        let sum = 0;
+        for (const i of ids[s]) {
+          const h = hist[i];
+          let lo = 0;
+          while (lo < h.length - 1 && h[lo + 1].t <= t) lo++;
+          sum += h[lo].p;
+        }
+        lvl[s].push(sum / ids[s].length);
+      }
+    }
+    const share = {};
+    for (const s of sides) {
+      share[s] = lvl[s].map((v, k) => {
+        const tot = sides.reduce((a, x) => a + lvl[x][k], 0);
+        return tot > 0 ? v / tot : 0;
+      });
+    }
+    return { share, t0, t1 };
   }
 
   root.OMEN = {
     $, esc, safeUrl,
     outcomeYes, jsonList, isClosed, bookSpread,
     REGIME, regimeOf, REGIME_META,
-    indexMath, sparkSvg,
+    indexMath, sparkSvg, parseSnapshots, pairShareSeries,
   };
 })(typeof globalThis !== "undefined" ? globalThis : this);
