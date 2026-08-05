@@ -1,5 +1,5 @@
 {
- "updated": "2026-08-05T12:05:19Z",
+ "updated": "2026-08-05T15:17:07Z",
  "snapshot_date": "2026-08-05",
  "artificial_analysis": {
   "cn_best": "GLM-5.2",
@@ -148,40 +148,40 @@
  },
  "openrouter_week": {
   "week": "2026-08-03",
-  "cn_share": 0.515,
-  "us_share": 0.3508,
-  "spi": 1.468,
-  "total_tokens": 24000464116913
+  "cn_share": 0.511,
+  "us_share": 0.3541,
+  "spi": 1.443,
+  "total_tokens": 25917925412745
  },
  "vercel_gateway": {
   "asof": "2026-08-05",
-  "cn_share": 47.24,
-  "us_share": 52.26,
-  "spi": 0.904,
+  "cn_share": 49.08,
+  "us_share": 50.52,
+  "spi": 0.971,
   "top_cn": [
    {
     "lab": "deepseek",
-    "share": 25.15
+    "share": 26.23
    },
    {
     "lab": "zai",
-    "share": 6.22
+    "share": 6.64
    },
    {
     "lab": "stepfun",
-    "share": 5.79
+    "share": 5.86
    },
    {
     "lab": "moonshotai",
-    "share": 3.86
+    "share": 3.95
    },
    {
     "lab": "inclusionai",
-    "share": 3.62
+    "share": 3.84
    },
    {
     "lab": "minimax",
-    "share": 1.39
+    "share": 1.38
    }
   ],
   "series": [
@@ -487,15 +487,15 @@
    },
    {
     "d": "2026-08-05",
-    "cn": 47.24,
-    "us": 52.26
+    "cn": 49.08,
+    "us": 50.52
    }
   ],
   "license": "AI Gateway Leaderboard Data (c) Vercel, CC BY 4.0"
  },
  "ollama": {
-  "cn": 277604700,
-  "us": 451101571,
+  "cn": 277707400,
+  "us": 451206681,
   "cn_top": [
    {
     "name": "deepseek-r1",
@@ -515,7 +515,7 @@
    },
    {
     "name": "qwen3.5",
-    "pulls": 16900000
+    "pulls": 17000000
    },
    {
     "name": "qwen3-coder",
@@ -529,7 +529,7 @@
    },
    {
     "name": "llama3.2",
-    "pulls": 79000000
+    "pulls": 79100000
    },
    {
     "name": "gemma3",
@@ -544,7 +544,7 @@
   "markets": [
    {
     "label": "Will a Chinese AI model be #1 this year?",
-    "p": 0.14,
+    "p": 0.15,
     "ticker": "KXBESTLLMCHINA-27",
     "series": "kxbestllmchina"
    },
@@ -568,7 +568,7 @@
    },
    {
     "label": "Best AI at end of 2026: Claude",
-    "p": 0.639,
+    "p": 0.668,
     "ticker": "KXLLM1-26DEC31-A",
     "series": "kxllm1"
    }
