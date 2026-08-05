@@ -108,6 +108,38 @@ nav .btn{padding:9px 16px;margin-left:6px}
 .matrix td.on{background:var(--acc);color:#181204;font-weight:700}
 .matrix .foot{font-size:11px;color:var(--dim);margin-top:16px;line-height:1.7}
 
+/* ---------- dial extras ---------- */
+.dialread .yest{margin-top:9px;font-family:var(--mono);font-size:10.5px;letter-spacing:.08em;color:var(--dim);text-transform:uppercase}
+.fams5{margin-top:22px;border-top:1px solid var(--line);padding-top:16px}
+.fams5 .cap{display:block;font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--dim);margin-bottom:10px}
+.f5{display:flex;align-items:center;gap:10px;margin:7px 0;font-size:11.5px}
+.f5 .k{flex:0 0 112px;color:var(--mut)}
+.f5 .track{flex:1;height:5px;border-radius:3px;background:var(--line);position:relative}
+.f5 .track i{position:absolute;left:0;top:0;bottom:0;border-radius:3px;transition:width .9s cubic-bezier(.2,.8,.2,1)}
+.f5 .track .thr{position:absolute;top:-2px;bottom:-2px;width:1px;background:rgba(236,231,219,.22)}
+.f5 .v{flex:0 0 26px;font-family:var(--mono);font-weight:700;text-align:right}
+.mini .spk{flex:0 0 66px;height:20px;align-self:center}
+.mini .spk svg{display:block}
+
+/* ---------- verdict tape ---------- */
+.tape{margin-top:44px;border:1px solid var(--line);border-radius:12px;background:var(--panel);padding:24px 28px}
+.tape .cap{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--dim);margin-bottom:16px;display:block}
+.tape .cap b{color:var(--accT);letter-spacing:.06em}
+.tape .cells{display:flex;gap:2px;height:30px}
+.tape .cells span{flex:1;min-width:3px;border-radius:2px;opacity:.55}
+.tape .cells span.today{opacity:1;outline:1px solid var(--ink);outline-offset:1px}
+.tlegend{display:flex;flex-wrap:wrap;gap:6px 18px;margin-top:14px;font-size:10.5px;letter-spacing:.06em;color:var(--mut);text-transform:uppercase}
+.tlegend i{display:inline-block;width:9px;height:9px;border-radius:2px;margin-right:6px;vertical-align:-1px}
+.tape .foot,.cyclemap .foot{font-size:11px;color:var(--dim);margin-top:14px;line-height:1.7}
+
+/* ---------- cycle map ---------- */
+.cyclemap{margin-top:24px;border:1px solid var(--line);border-radius:12px;background:var(--panel);padding:24px 28px}
+.cyclemap .cap{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--dim);margin-bottom:14px;display:block}
+.cyclemap .cap b{color:var(--accT)}
+.mapwrap svg{display:block;width:100%;height:auto}
+@keyframes mapPulse{50%{opacity:.12}}
+.mapwrap .halo{animation:mapPulse 2.2s infinite}
+
 /* ---------- explore cards ---------- */
 .steps{display:grid;grid-template-columns:repeat(3,1fr);gap:22px}
 @media(max-width:900px){.steps{grid-template-columns:1fr}}
@@ -171,6 +203,14 @@ footer{border-top:1px solid var(--line);padding:64px 0 40px;position:relative;z-
   .mini .th{order:3;flex:0 0 100%;white-space:normal;overflow:visible;text-overflow:clip;
     font-size:12.5px;line-height:1.5;margin-top:5px}
   .mini .chg{width:auto;min-width:52px}
+  .mini .spk{flex:0 0 58px;height:18px}
+  .f5 .k{flex-basis:96px;font-size:11px}
+
+  /* history panels */
+  .tape{padding:18px 14px;margin-top:32px}
+  .tape .cells{gap:1px;height:26px}
+  .tlegend{gap:5px 12px;font-size:9.5px}
+  .cyclemap{padding:18px 14px;margin-top:16px}
 
   /* why today */
   .shead{margin-bottom:34px;padding-top:26px}
@@ -253,24 +293,28 @@ footer{border-top:1px solid var(--line);padding:64px 0 40px;position:relative;z-
 
     <aside class="dialpanel rv in">
       <div class="kick">Crash pressure · today</div>
-      <svg class="dial" viewBox="0 0 220 122">
-        <defs>
-          <linearGradient id="gDial" x1="0" y1="0" x2="1" y2="0">
-            <stop offset="0" stop-color="#79c99a"/><stop offset=".55" stop-color="#e3a63c"/><stop offset="1" stop-color="#e2685a"/>
-          </linearGradient>
-        </defs>
-        <path d="M20 110 A 90 90 0 0 1 200 110" fill="none" stroke="#262117" stroke-width="9" stroke-linecap="round"/>
-        <path id="dialFill" d="M20 110 A 90 90 0 0 1 200 110" fill="none" stroke="url(#gDial)" stroke-width="9" stroke-linecap="round"
-          stroke-dasharray="283" stroke-dashoffset="283" style="transition:stroke-dashoffset 1.2s cubic-bezier(.2,.8,.2,1)"/>
-        <g id="ticks"></g>
+      <!-- The arc is banded at the actual regime thresholds (35 / 55) rather than swept by
+           a green→red gradient: the model is banded, and the only question the dial exists
+           to answer is how close the score sits to the next band edge. -->
+      <svg class="dial" id="dialSvg" viewBox="0 0 220 124" role="img" aria-label="Crash pressure dial">
+        <path d="M20 110 A 90 90 0 0 1 200 110" fill="none" stroke="#1c1811" stroke-width="9"/>
+        <g id="dialScale"></g>
+        <path id="dialFill" d="M20 110 A 90 90 0 0 1 200 110" fill="none" stroke="var(--bull)" stroke-width="9" stroke-linecap="round"
+          stroke-dasharray="283" stroke-dashoffset="283" style="transition:stroke-dashoffset 1.2s cubic-bezier(.2,.8,.2,1),stroke .4s"/>
+        <g id="dialGhost"></g>
       </svg>
       <div class="dialread">
         <div class="n" id="dialNum">0<small>/100</small></div>
         <div><span class="regime">Regime · Calm</span></div>
+        <div class="yest" id="dialYest" hidden></div>
+      </div>
+      <div class="fams5" id="dialFams" hidden>
+        <span class="cap">Five signal families · 0–100 · marks at 35 / 55</span>
+        <div id="dialFamRows"></div>
       </div>
       <div class="minirows">
-        <div class="mini"><span class="nm" style="color:var(--bull)">BULL</span><span class="th">Up and to the right</span><span class="px" id="hx-bull">$0.698</span><span class="chg up" id="hd-bull">+2.2¢</span></div>
-        <div class="mini"><span class="nm" style="color:var(--bear)">BEAR</span><span class="th">The music stops – or Washington stops it</span><span class="px" id="hx-bear">$0.302</span><span class="chg down" id="hd-bear">−2.2¢</span></div>
+        <div class="mini"><span class="nm" style="color:var(--bull)">BULL</span><span class="th" title="Up and to the right">Up and to the right</span><span class="spk" id="hspark-bull"></span><span class="px" id="hx-bull">$0.698</span><span class="chg up" id="hd-bull">+2.2¢</span></div>
+        <div class="mini"><span class="nm" style="color:var(--bear)">BEAR</span><span class="th" title="The music stops – or Washington stops it">The music stops – or Washington stops it</span><span class="spk" id="hspark-bear"></span><span class="px" id="hx-bear">$0.302</span><span class="chg down" id="hd-bear">−2.2¢</span></div>
       </div>
     </aside>
   </div>
@@ -287,6 +331,21 @@ footer{border-top:1px solid var(--line);padding:64px 0 40px;position:relative;z-
     <div class="driver rv">
       <div class="q">SOXX 25Δ risk reversal – 9.2 vol pts of downside skew</div>
       <div class="meta">Highest-pressure family · <b>Options skew 32 / 100</b> · Puts over calls on the semis complex · As of 2026-07-10</div>
+    </div>
+
+    <!-- Both panels below are history: they render only once snapshots.csv arrives, and
+         stay hidden (file://, fetch failure) rather than showing empty frames. -->
+    <div class="tape rv" id="tapePanel" hidden>
+      <span class="cap">The verdict, day by day · <b id="tapeRange">–</b></span>
+      <div class="cells" id="tapeCells"></div>
+      <div class="tlegend" id="tapeLegend"></div>
+      <div class="foot" id="tapeFoot">One cell per day, colored by that day's verdict – reconstructed from the daily snapshot (bull share, gauge, crash basket) plus the bubble market's daily close.</div>
+    </div>
+
+    <div class="cyclemap rv" id="mapPanel" hidden>
+      <span class="cap">The cycle map · <b>direction × stress</b> · <span id="mapTrail">–</span></span>
+      <div class="mapwrap"><svg id="mapSvg" viewBox="0 0 640 400" role="img" aria-label="Cycle map: bull share versus crash pressure"></svg></div>
+      <div class="foot">Every day is a point in the verdict plane – <b>x</b> the crash-pressure gauge (band edges 35 / 55), <b>y</b> the Bull side's share of the pair (direction edges 45% / 55%). The five shaded regions are the five verdict states; the trail is where the trade has been, the bright point is today.</div>
     </div>
 
     <div class="matrix rv">
@@ -508,21 +567,55 @@ function renderDriver(regime,score,at,fam){
 }
 
 /* ================= dial ================= */
-function drawDialTicks(){
-  const g=$("ticks"); if(!g) return;
-  let h="";
-  for(let k=0;k<=4;k++){
-    const a=(-90+k*45)*Math.PI/180;
-    const x1=110+Math.sin(a)*78, y1=110-Math.cos(a)*78;
-    const x2=110+Math.sin(a)*72, y2=110-Math.cos(a)*72;
-    h+=`<line x1="${x1.toFixed(1)}" y1="${y1.toFixed(1)}" x2="${x2.toFixed(1)}" y2="${y2.toFixed(1)}" stroke="#3a3222" stroke-width="1.5"/>`;
+// Geometry: semicircle centered (110,110), r 90 — score 0 at (20,110), 100 at (200,110).
+function dialPt(score,r){ const a=Math.PI*score/100; return [110-r*Math.cos(a), 110-r*Math.sin(a)]; }
+function dialArc(s0,s1,r){
+  const [x0,y0]=dialPt(s0,r),[x1,y1]=dialPt(s1,r);
+  return `M${x0.toFixed(2)} ${y0.toFixed(2)} A ${r} ${r} 0 0 1 ${x1.toFixed(2)} ${y1.toFixed(2)}`;
+}
+// The three regime bands the score is read against, in wash + solid form. Elevated is
+// amber here (the band vocabulary the monitor's charts use), not REGIME_META's blue:
+// the blue styles the *word* Elevated site-wide; the amber styles the 35–55 band.
+const BANDS=[
+  {hi:OMEN.REGIME.GAUGE_ELEVATED, wash:"rgba(121,201,154,.30)", solid:"var(--bull)"},
+  {hi:OMEN.REGIME.GAUGE_STRESSED, wash:"rgba(227,166,60,.30)",  solid:"var(--acc)"},
+  {hi:100,                        wash:"rgba(226,104,90,.30)",  solid:"var(--crash)"},
+];
+const bandOf=(score)=>BANDS.find(b=>score<b.hi)||BANDS[BANDS.length-1];
+function drawDialScale(){
+  const g=$("dialScale"); if(!g) return;
+  let h="", lo=0;
+  for(const b of BANDS){ h+=`<path d="${dialArc(lo,b.hi,90)}" fill="none" stroke="${b.wash}" stroke-width="9"/>`; lo=b.hi; }
+  // threshold ticks + numbers at the band edges — the dial's whole job is showing how
+  // close today sits to one of these
+  for(const s of [OMEN.REGIME.GAUGE_ELEVATED,OMEN.REGIME.GAUGE_STRESSED]){
+    const [x1,y1]=dialPt(s,98),[x2,y2]=dialPt(s,82),[lx,ly]=dialPt(s,107);
+    h+=`<line x1="${x1.toFixed(1)}" y1="${y1.toFixed(1)}" x2="${x2.toFixed(1)}" y2="${y2.toFixed(1)}" stroke="rgba(236,231,219,.35)" stroke-width="1.2"/>`;
+    h+=`<text x="${lx.toFixed(1)}" y="${(ly+3).toFixed(1)}" text-anchor="middle" font-size="9" fill="var(--dim)" font-family="var(--mono)">${s}</text>`;
   }
+  h+=`<text x="20" y="123" text-anchor="middle" font-size="8.5" fill="var(--dim)" font-family="var(--mono)">0</text>`;
+  h+=`<text x="200" y="123" text-anchor="middle" font-size="8.5" fill="var(--dim)" font-family="var(--mono)">100</text>`;
   g.innerHTML=h;
+}
+// Yesterday's close as a ghost tick across the arc — the reference point that turns
+// "21.1" into "21.1 and falling".
+function drawDialGhost(score,dateLabel){
+  const g=$("dialGhost"); if(!g||score==null) return;
+  const [x1,y1]=dialPt(score,99),[x2,y2]=dialPt(score,81);
+  g.innerHTML=`<line x1="${x1.toFixed(1)}" y1="${y1.toFixed(1)}" x2="${x2.toFixed(1)}" y2="${y2.toFixed(1)}" stroke="var(--ink)" stroke-width="1.5" opacity=".5"><title>Yesterday · ${score.toFixed(1)}/100</title></line>`;
+  const cap=$("dialYest");
+  if(cap){ cap.hidden=false; cap.textContent=`Yesterday${dateLabel?" · "+dateLabel:""} · ${score.toFixed(1)}/100`; }
 }
 let dialSeq=0; // a newer setDial call cancels any counter animation still running
 function setDial(score,animateFrom){
   const seq=++dialSeq;
-  const fill=$("dialFill"); if(fill) fill.style.strokeDashoffset=(283*(1-score/100)).toFixed(1);
+  const fill=$("dialFill");
+  if(fill){
+    fill.style.strokeDashoffset=(283*(1-score/100)).toFixed(1);
+    fill.setAttribute("stroke",bandOf(score).solid);
+  }
+  const svg=$("dialSvg");
+  if(svg) svg.setAttribute("aria-label",`Crash pressure ${score.toFixed(1)} of 100 — calm below 35, elevated from 35, stressed from 55`);
   const el=$("dialNum"); if(!el) return;
   if(animateFrom==null){ el.innerHTML=score.toFixed(1)+"<small>/100</small>"; return; }
   const t0=performance.now();
@@ -533,6 +626,184 @@ function setDial(score,animateFrom){
     if(k<1) requestAnimationFrame(tick);
   })(t0);
 }
+// Five micro-bars under the dial: the gauge's provenance at a glance, colored by the
+// same band the family's own score sits in. Full breakdown stays on gauge.html.
+function renderDialFams(fam){
+  const host=$("dialFamRows"), box=$("dialFams");
+  if(!host||!box||!fam) return;
+  const thr=(s)=>`<span class="thr" style="left:${s}%"></span>`;
+  let h="";
+  for(const k of ["pred","opt","credit","vol","equity"]){
+    const v=fam[k]; if(v==null) continue;
+    h+=`<div class="f5"><span class="k">${FAM_LABELS[k]||k}</span><span class="track">${thr(OMEN.REGIME.GAUGE_ELEVATED)+thr(OMEN.REGIME.GAUGE_STRESSED)}<i style="width:${Math.max(0,Math.min(100,v))}%;background:${bandOf(v).solid}"></i></span><span class="v">${v.toFixed(0)}</span></div>`;
+  }
+  if(h){ host.innerHTML=h; box.hidden=false; }
+}
+
+/* ================= history (snapshots.csv + CLOB) ================= */
+// The daily record behind the tape, the cycle map and the ghost needle. snapshots.csv is
+// appended by the data cron and served live from R2; the bubble market's daily closes come
+// from the CLOB so historical regimes can honor the single-market Elevated trip. Both are
+// best-effort: the panels stay hidden rather than rendering empty frames.
+const CLOB="https://clob.polymarket.com";
+const BUBBLE_ID="691340";
+const VERDICT_INK={riskon:"#79c99a",constructive:"#e3a63c",mixed:"#8fa8d8",caution:"#e08a4f",riskoff:"#e2685a"};
+const VERDICT_WASH={riskon:"rgba(121,201,154,.09)",constructive:"rgba(227,166,60,.09)",mixed:"rgba(143,168,216,.07)",caution:"rgba(224,138,79,.10)",riskoff:"rgba(226,104,90,.10)"};
+let HIST=null, BUBBLE_BY_DATE=null;
+
+// A snapshot row's regime, by the same rule as today's: blended gauge, crash basket,
+// bubble market. Rows predating the bubble history default that term to 0, which can
+// only miss a single-market Elevated trip — never invent one.
+function histRegime(row){
+  const bubble=BUBBLE_BY_DATE?(BUBBLE_BY_DATE[row.date]??0)*100:0;
+  return regimeOf(row.gauge??0,row.crash,bubble);
+}
+function todayUTC(){ return new Date().toISOString().slice(0,10); }
+// The tape and map end on live numbers: today's CSV row (if the cron already wrote one)
+// is replaced by the live read so the last cell always agrees with the hero.
+function histDays(){
+  if(!HIST||!HIST.length) return null;
+  const rows=HIST.filter(r=>r.date!==todayUTC()).map(r=>({...r,regime:histRegime(r)}));
+  rows.push({date:todayUTC(),share:pairShare("bull"),gauge:GAUGE,crash:indexOf("bear","mkt"),
+             regime:regimeOf(GAUGE,indexOf("bear","mkt"),bubblePct()),live:true});
+  for(const r of rows) r.verdict=verdictOf(r.share,r.regime);
+  return rows;
+}
+
+function renderTape(days){
+  const panel=$("tapePanel"); if(!panel) return;
+  const cells=days.map(d=>{
+    const V=VERDICTS[d.verdict], R=REGIME_META[d.regime];
+    const tip=`${d.date}${d.live?" · live":""} · ${V.label} · bull share ${(d.share*100).toFixed(1)}% · gauge ${d.gauge==null?"–":d.gauge.toFixed(1)} (${R.word})`;
+    return `<span class="${d.live?"today":""}" style="background:${VERDICT_INK[d.verdict]}" title="${esc(tip)}"></span>`;
+  }).join("");
+  $("tapeCells").innerHTML=cells;
+  $("tapeRange").textContent=`${days[0].date} → today`;
+  const seen=[...new Set(days.map(d=>d.verdict))];
+  $("tapeLegend").innerHTML=["riskon","constructive","mixed","caution","riskoff"]
+    .filter(k=>seen.includes(k))
+    .map(k=>`<span><i style="background:${VERDICT_INK[k]}"></i>${VERDICTS[k].label}</span>`).join("");
+  panel.hidden=false;
+}
+
+/* ================= cycle map ================= */
+// The verdict matrix as a phase diagram: x the crash-pressure gauge, y the Bull share,
+// the five verdict states as shaded regions, and the last weeks as a trail ending on
+// today's live point. The table below it stays the published rule; this is the same rule
+// with time on it.
+function renderCycleMap(days){
+  const panel=$("mapPanel"), svg=$("mapSvg"); if(!panel||!svg) return;
+  const W=640,H=400,mL=56,mR=16,mT=30,mB=42,iw=W-mL-mR,ih=H-mT-mB;
+  const E=OMEN.REGIME.GAUGE_ELEVATED, S=OMEN.REGIME.GAUGE_STRESSED;
+  const pts=days.filter(d=>d.gauge!=null);
+  if(pts.length<2) return;
+  const gMax=Math.max(...pts.map(d=>d.gauge)), xHi=Math.max(70,Math.ceil((gMax+8)/10)*10);
+  const shMin=Math.min(...pts.map(d=>d.share)), shMax=Math.max(...pts.map(d=>d.share));
+  const yLo=Math.max(0,Math.min(.40,shMin-.05)), yHi=Math.min(1,Math.max(.62,shMax+.05));
+  const x=g=>mL+g/xHi*iw, y=s=>mT+ih-(s-yLo)/(yHi-yLo)*ih;
+  // region grid: 3 stress bands × 3 direction bands → the five verdict states
+  const cols=[[0,E,"calm"],[E,S,"elevated"],[S,xHi,"stressed"]];
+  const rows=[[.55,yHi,.7],[.45,.55,.5],[yLo,.45,.3]]; // [loShare, hiShare, representative share]
+  let g="";
+  for(const [g0,g1,reg] of cols) for(const [s0,s1,rep] of rows){
+    const v=verdictOf(rep,reg);
+    g+=`<rect x="${x(g0)}" y="${y(s1)}" width="${x(g1)-x(g0)}" height="${y(s0)-y(s1)}" fill="${VERDICT_WASH[v]}"/>`;
+  }
+  // region labels, one per verdict state — the bullish row's labels hug the top edge and
+  // Risk-off hugs the bottom so the middle of the plane stays clear for the trail
+  const label=(gm,py,key)=>`<text x="${x(gm)}" y="${py.toFixed(1)}" text-anchor="middle" font-size="10" letter-spacing="1.5" font-weight="700" fill="${VERDICT_INK[key]}" opacity=".75">${VERDICTS[key].label.toUpperCase()}</text>`;
+  g+=label(E/2,mT+17,"riskon");
+  g+=label((E+S)/2,mT+17,"constructive");
+  g+=label((S+xHi)/2,mT+17,"caution");
+  g+=label(S/2,y(.5)+3.5,"mixed");
+  if(yLo<.43) g+=label(xHi/2,y(yLo)-9,"riskoff");
+  // band edges
+  for(const gv of [E,S]) g+=`<line x1="${x(gv)}" y1="${mT}" x2="${x(gv)}" y2="${mT+ih}" stroke="var(--line2)" stroke-dasharray="3,4"/>`;
+  for(const sv of [.45,.55]) if(sv>yLo&&sv<yHi) g+=`<line x1="${mL}" y1="${y(sv)}" x2="${W-mR}" y2="${y(sv)}" stroke="var(--line2)" stroke-dasharray="3,4"/>`;
+  // axes
+  g+=`<line x1="${mL}" y1="${mT+ih}" x2="${W-mR}" y2="${mT+ih}" stroke="var(--line2)"/>`;
+  for(const tv of [0,E,S,xHi]) g+=`<text x="${x(tv)}" y="${mT+ih+16}" text-anchor="middle" font-size="10" fill="var(--dim)" font-family="var(--mono)">${tv}</text>`;
+  g+=`<text x="${mL+iw/2}" y="${H-6}" text-anchor="middle" font-size="9.5" letter-spacing="2" fill="var(--dim)">CRASH PRESSURE · THE GAUGE →</text>`;
+  const yTicks=[.45,.55]; if(yLo<=.40) yTicks.unshift(Math.ceil(yLo*20)/20); if(yHi>=.62) yTicks.push(Math.floor(yHi*20)/20);
+  for(const tv of yTicks) g+=`<text x="${mL-8}" y="${y(tv)+3.5}" text-anchor="end" font-size="10" fill="var(--dim)" font-family="var(--mono)">${(tv*100).toFixed(0)}%</text>`;
+  g+=`<text x="${mL}" y="${mT-12}" font-size="9.5" letter-spacing="2" fill="var(--dim)">BULL SHARE ↑</text>`;
+  // trail: oldest→today, dots fading in, today as a pulsing point in its verdict color
+  const clampY=s=>Math.max(yLo,Math.min(yHi,s));
+  const path=pts.map((d,i)=>`${i?"L":"M"}${x(d.gauge).toFixed(1)},${y(clampY(d.share)).toFixed(1)}`).join("");
+  g+=`<path d="${path}" fill="none" stroke="rgba(236,231,219,.32)" stroke-width="1.5" stroke-linejoin="round"/>`;
+  pts.forEach((d,i)=>{
+    if(d.live) return;
+    const op=.25+.55*(i/Math.max(1,pts.length-1));
+    g+=`<circle cx="${x(d.gauge)}" cy="${y(clampY(d.share))}" r="2.4" fill="var(--ink)" opacity="${op.toFixed(2)}"><title>${esc(`${d.date} · bull share ${(d.share*100).toFixed(1)}% · gauge ${d.gauge.toFixed(1)} · ${VERDICTS[d.verdict].label}`)}</title></circle>`;
+  });
+  const first=pts[0];
+  g+=`<text x="${x(first.gauge)+6}" y="${y(clampY(first.share))-6}" font-size="9" fill="var(--dim)" font-family="var(--mono)">${first.date.slice(5)}</text>`;
+  const now=pts[pts.length-1];
+  if(now.live){
+    const nx=x(now.gauge), ny=y(clampY(now.share)), c=VERDICT_INK[now.verdict];
+    const side=now.gauge>xHi/2?-1:1;
+    g+=`<circle class="halo" cx="${nx}" cy="${ny}" r="11" fill="${c}" opacity=".3"/>`;
+    g+=`<circle cx="${nx}" cy="${ny}" r="5" fill="${c}" stroke="var(--bg)" stroke-width="2"><title>${esc(`Today · bull share ${(now.share*100).toFixed(1)}% · gauge ${now.gauge.toFixed(1)} · ${VERDICTS[now.verdict].label}`)}</title></circle>`;
+    g+=`<text x="${nx+side*16}" y="${ny+3.5}" text-anchor="${side>0?"start":"end"}" font-size="10" font-weight="700" letter-spacing="1.5" fill="${c}">TODAY</text>`;
+  }
+  svg.innerHTML=g;
+  svg.setAttribute("aria-label",`Cycle map: today bull share ${(now.share*100).toFixed(1)} percent, crash pressure ${now.gauge.toFixed(1)} of 100 — ${VERDICTS[now.verdict].label}`);
+  $("mapTrail").textContent=`${pts.length-1}-day trail`;
+  panel.hidden=false;
+}
+
+function renderHistoryViz(){
+  const days=histDays(); if(!days||days.length<3) return;
+  renderTape(days);
+  renderCycleMap(days);
+  // yesterday = the last snapshot row that isn't today's live point
+  const prev=days[days.length-2];
+  if(prev&&prev.gauge!=null) drawDialGhost(prev.gauge,prev.date.slice(5));
+}
+
+async function loadHistory(bubbleTok){
+  const [snapRes,clobRes]=await Promise.all([
+    fetch("snapshots.csv",{cache:"no-store"}).catch(()=>null),
+    bubbleTok?fetch(`${CLOB}/prices-history?market=${bubbleTok}&interval=max&fidelity=1440`).catch(()=>null):Promise.resolve(null),
+  ]);
+  if(snapRes&&snapRes.ok){ try{ HIST=OMEN.parseSnapshots(await snapRes.text()); }catch(e){} }
+  if(clobRes&&clobRes.ok){
+    try{
+      const j=await clobRes.json();
+      if(j.history&&j.history.length){
+        BUBBLE_BY_DATE={};
+        for(const pt of j.history) BUBBLE_BY_DATE[new Date(pt.t*1000).toISOString().slice(0,10)]=pt.p;
+      }
+    }catch(e){}
+  }
+  if(HIST) renderHistoryViz();
+}
+
+/* ================= hero sparklines ================= */
+// The 7-day pair-share shape next to each price — same construction as indexes.html:
+// every constituent resampled onto shared buckets, each side priced as its share of the
+// pair. The 2¢ domain floor keeps a quiet week from rendering as a mountain range.
+async function fetchHeroSparks(){
+  const hist={};
+  await Promise.all(MARKETS.filter(m=>m.tok&&!m.closed).map(async m=>{
+    try{
+      const r=await fetch(`${CLOB}/prices-history?market=${m.tok}&interval=1w&fidelity=60`);
+      if(!r.ok) return;
+      const j=await r.json();
+      if(j.history&&j.history.length>3) hist[m.id]=j.history;
+    }catch(e){}
+  }));
+  const sideIds={
+    bull:MARKETS.filter(m=>m.side==="bull"&&hist[m.id]).map(m=>m.id),
+    bear:MARKETS.filter(m=>m.side==="bear"&&hist[m.id]).map(m=>m.id),
+  };
+  const r=OMEN.pairShareSeries(hist,sideIds,60); if(!r) return;
+  const color={bull:"#79c99a",bear:"#e2685a"};
+  for(const s of ["bull","bear"]){
+    const el=$("hspark-"+s); if(!el) continue;
+    el.innerHTML=OMEN.sparkSvg(r.share[s],148,40,color[s],false,{minSpan:.02});
+  }
+}
 
 /* ================= live layer (Polymarket + fetcher data) ================= */
 function applyServerData(mkt){
@@ -540,10 +811,13 @@ function applyServerData(mkt){
   if(!sg||sg.score==null) return;
   GAUGE=sg.score;
   setDial(GAUGE);
+  renderDialFams(sg.fam);
   const regime=renderVerdict();
   renderDriver(regime,GAUGE,(sg.at||mkt.updated||"").slice(0,10),sg.fam);
+  if(HIST) renderHistoryViz(); // re-anchor today's tape cell and map point to the fresher gauge
 }
 async function goLive(){
+  let bubbleTok=null;
   try{
     const qs=MARKETS.map(m=>"id="+m.id).join("&");
     const [res,mktRes]=await Promise.all([
@@ -561,13 +835,17 @@ async function goLive(){
       if(!m.closed){
         m.yes=OMEN.outcomeYes(g);
         m.d1=g.oneDayPriceChange??m.d1;
+        m.tok=OMEN.jsonList(g.clobTokenIds)[0]||null;
+        if(m.id===BUBBLE_ID) bubbleTok=m.tok;
       }
     }
     renderHero(); renderVerdict();
     const chip=$("livechip"); chip.classList.add("on");
     $("livetxt").textContent="LIVE · POLYMARKET GAMMA · "+new Date().toISOString().slice(0,16).replace("T"," ")+" UTC";
     try{ applyServerData(mktData); }catch(e){ /* baked gauge stays */ }
+    fetchHeroSparks();
   }catch(e){ /* baked snapshot stays */ }
+  loadHistory(bubbleTok); // history panels render from the CSV even when Gamma is down
 }
 
 /* ================= reveal-on-scroll ================= */
@@ -576,7 +854,7 @@ function reveal(){
   document.querySelectorAll(".rv:not(.in)").forEach(el=>io.observe(el));
 }
 
-drawDialTicks();
+drawDialScale();
 renderHero();
 const regime0=renderVerdict();
 renderDriver(regime0,GAUGE,"2026-07-11",null);
