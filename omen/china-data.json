@@ -1,5 +1,5 @@
 {
- "updated": "2026-08-05T19:04:12Z",
+ "updated": "2026-08-05T20:45:20Z",
  "snapshot_date": "2026-08-05",
  "artificial_analysis": {
   "cn_best": "GLM-5.2",
@@ -148,40 +148,40 @@
  },
  "openrouter_week": {
   "week": "2026-08-03",
-  "cn_share": 0.5073,
-  "us_share": 0.3576,
-  "spi": 1.419,
-  "total_tokens": 27642847805398
+  "cn_share": 0.5051,
+  "us_share": 0.3597,
+  "spi": 1.404,
+  "total_tokens": 28598054255487
  },
  "vercel_gateway": {
   "asof": "2026-08-05",
-  "cn_share": 48.81,
-  "us_share": 50.87,
-  "spi": 0.96,
+  "cn_share": 48.25,
+  "us_share": 51.45,
+  "spi": 0.938,
   "top_cn": [
    {
     "lab": "deepseek",
-    "share": 25.94
+    "share": 25.76
    },
    {
     "lab": "zai",
-    "share": 6.47
+    "share": 6.26
    },
    {
     "lab": "stepfun",
-    "share": 5.52
+    "share": 5.31
    },
    {
     "lab": "moonshotai",
-    "share": 4.55
+    "share": 4.7
    },
    {
     "lab": "inclusionai",
-    "share": 3.89
+    "share": 3.82
    },
    {
     "lab": "minimax",
-    "share": 1.32
+    "share": 1.29
    }
   ],
   "series": [
@@ -487,15 +487,15 @@
    },
    {
     "d": "2026-08-05",
-    "cn": 48.81,
-    "us": 50.87
+    "cn": 48.25,
+    "us": 51.45
    }
   ],
   "license": "AI Gateway Leaderboard Data (c) Vercel, CC BY 4.0"
  },
  "ollama": {
-  "cn": 277810600,
-  "us": 451311205,
+  "cn": 277811800,
+  "us": 451312309,
   "cn_top": [
    {
     "name": "deepseek-r1",
@@ -544,13 +544,13 @@
   "markets": [
    {
     "label": "Will a Chinese AI model be #1 this year?",
-    "p": 0.12,
+    "p": 0.15,
     "ticker": "KXBESTLLMCHINA-27",
     "series": "kxbestllmchina"
    },
    {
     "label": "Best AI at end of 2026: Kimi",
-    "p": 0.03,
+    "p": 0.01,
     "ticker": "KXLLM1-26DEC31-MOON",
     "series": "kxllm1"
    },
@@ -562,13 +562,13 @@
    },
    {
     "label": "Best AI at end of 2026: Qwen",
-    "p": 0.015,
+    "p": 0.008,
     "ticker": "KXLLM1-26DEC31-ALI",
     "series": "kxllm1"
    },
    {
     "label": "Best AI at end of 2026: Claude",
-    "p": 0.655,
+    "p": 0.691,
     "ticker": "KXLLM1-26DEC31-A",
     "series": "kxllm1"
    }
@@ -620,13 +620,17 @@
    {
     "pkg": "dashscope",
     "wk": 808587
-   },
-   {
-    "pkg": "zai-sdk",
-    "wk": 29942
    }
   ],
   "us": [
+   {
+    "pkg": "openai",
+    "wk": 109106201
+   },
+   {
+    "pkg": "anthropic",
+    "wk": 47752156
+   },
    {
     "pkg": "google-genai",
     "wk": 67106147
