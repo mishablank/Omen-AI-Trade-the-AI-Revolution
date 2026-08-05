@@ -1,5 +1,5 @@
 {
- "updated": "2026-08-05T06:36:16Z",
+ "updated": "2026-08-05T09:42:42Z",
  "snapshot_date": "2026-08-05",
  "artificial_analysis": {
   "cn_best": "GLM-5.2",
@@ -86,15 +86,15 @@
   "cnOrgs": [
    {
     "org": "Qwen",
-    "dl": 275578184
+    "dl": 275702187
    },
    {
     "org": "deepseek-ai",
-    "dl": 34623445
+    "dl": 34627116
    },
    {
     "org": "zai-org",
-    "dl": 15535985
+    "dl": 15532803
    },
    {
     "org": "moonshotai",
@@ -120,11 +120,11 @@
   "usOrgs": [
    {
     "org": "google",
-    "dl": 63024078
+    "dl": 63286052
    },
    {
     "org": "meta-llama",
-    "dl": 37750882
+    "dl": 37735380
    },
    {
     "org": "nvidia",
@@ -136,52 +136,52 @@
    },
    {
     "org": "microsoft",
-    "dl": 6991178
+    "dl": 7016387
    },
    {
     "org": "allenai",
-    "dl": 3997257
+    "dl": 3997533
    }
   ],
-  "cn": 337096351,
-  "us": 148016889
+  "cn": 337220843,
+  "us": 148288846
  },
  "openrouter_week": {
   "week": "2026-08-03",
-  "cn_share": 0.5176,
-  "us_share": 0.3472,
-  "spi": 1.491,
-  "total_tokens": 21713731391780
+  "cn_share": 0.5174,
+  "us_share": 0.3484,
+  "spi": 1.485,
+  "total_tokens": 22795990414563
  },
  "vercel_gateway": {
   "asof": "2026-08-05",
-  "cn_share": 43.43,
-  "us_share": 55.93,
-  "spi": 0.777,
+  "cn_share": 46.22,
+  "us_share": 53.14,
+  "spi": 0.87,
   "top_cn": [
    {
     "lab": "deepseek",
-    "share": 24.95
+    "share": 24.81
    },
    {
     "lab": "zai",
-    "share": 5.2
+    "share": 6.06
    },
    {
     "lab": "stepfun",
-    "share": 4.81
+    "share": 5.5
    },
    {
     "lab": "moonshotai",
-    "share": 3.91
+    "share": 3.96
    },
    {
     "lab": "inclusionai",
-    "share": 2.01
+    "share": 3.28
    },
    {
     "lab": "minimax",
-    "share": 1.49
+    "share": 1.44
    }
   ],
   "series": [
@@ -487,19 +487,19 @@
    },
    {
     "d": "2026-08-05",
-    "cn": 43.43,
-    "us": 55.93
+    "cn": 46.22,
+    "us": 53.14
    }
   ],
   "license": "AI Gateway Leaderboard Data (c) Vercel, CC BY 4.0"
  },
  "ollama": {
-  "cn": 277399400,
-  "us": 450895443,
+  "cn": 277502400,
+  "us": 451098246,
   "cn_top": [
    {
     "name": "deepseek-r1",
-    "pulls": 90900000
+    "pulls": 91000000
    },
    {
     "name": "qwen2.5",
@@ -533,13 +533,11 @@
    },
    {
     "name": "gemma3",
-    "pulls": 39200000
+    "pulls": 39300000
    }
   ],
   "n_models": 231,
-  "asof": "2026-08-05",
-  "cn_per_day": 594544,
-  "us_per_day": 603979
+  "asof": "2026-08-05"
  },
  "kalshi": {
   "asof": "2026-08-05",
@@ -552,7 +550,7 @@
    },
    {
     "label": "Best AI at end of 2026: Kimi",
-    "p": 0.04,
+    "p": 0.05,
     "ticker": "KXLLM1-26DEC31-MOON",
     "series": "kxllm1"
    },
@@ -564,7 +562,7 @@
    },
    {
     "label": "Best AI at end of 2026: Qwen",
-    "p": 0.015,
+    "p": 0.016,
     "ticker": "KXLLM1-26DEC31-ALI",
     "series": "kxllm1"
    },
@@ -619,6 +617,10 @@
  },
  "sdk": {
   "cn": [
+   {
+    "pkg": "dashscope",
+    "wk": 808587
+   },
    {
     "pkg": "zhipuai",
     "wk": 112295
