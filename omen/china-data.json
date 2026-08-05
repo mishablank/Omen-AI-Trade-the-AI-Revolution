@@ -1,5 +1,5 @@
 {
- "updated": "2026-08-05T15:17:07Z",
+ "updated": "2026-08-05T17:04:25Z",
  "snapshot_date": "2026-08-05",
  "artificial_analysis": {
   "cn_best": "GLM-5.2",
@@ -148,40 +148,40 @@
  },
  "openrouter_week": {
   "week": "2026-08-03",
-  "cn_share": 0.511,
-  "us_share": 0.3541,
-  "spi": 1.443,
-  "total_tokens": 25917925412745
+  "cn_share": 0.5093,
+  "us_share": 0.3559,
+  "spi": 1.431,
+  "total_tokens": 26836406589575
  },
  "vercel_gateway": {
   "asof": "2026-08-05",
-  "cn_share": 49.08,
-  "us_share": 50.52,
-  "spi": 0.971,
+  "cn_share": 49.27,
+  "us_share": 50.38,
+  "spi": 0.978,
   "top_cn": [
    {
     "lab": "deepseek",
-    "share": 26.23
+    "share": 26.18
    },
    {
     "lab": "zai",
-    "share": 6.64
+    "share": 6.69
    },
    {
     "lab": "stepfun",
-    "share": 5.86
+    "share": 5.84
    },
    {
     "lab": "moonshotai",
-    "share": 3.95
+    "share": 4.19
    },
    {
     "lab": "inclusionai",
-    "share": 3.84
+    "share": 3.87
    },
    {
     "lab": "minimax",
-    "share": 1.38
+    "share": 1.36
    }
   ],
   "series": [
@@ -327,13 +327,13 @@
    },
    {
     "d": "2026-07-04",
-    "cn": 43.09,
+    "cn": 43.1,
     "us": 56.8
    },
    {
     "d": "2026-07-05",
     "cn": 46.64,
-    "us": 53.23
+    "us": 53.22
    },
    {
     "d": "2026-07-06",
@@ -363,7 +363,7 @@
    {
     "d": "2026-07-11",
     "cn": 50.73,
-    "us": 49.19
+    "us": 49.18
    },
    {
     "d": "2026-07-12",
@@ -487,15 +487,15 @@
    },
    {
     "d": "2026-08-05",
-    "cn": 49.08,
-    "us": 50.52
+    "cn": 49.27,
+    "us": 50.38
    }
   ],
   "license": "AI Gateway Leaderboard Data (c) Vercel, CC BY 4.0"
  },
  "ollama": {
-  "cn": 277707400,
-  "us": 451206681,
+  "cn": 277808900,
+  "us": 451308085,
   "cn_top": [
    {
     "name": "deepseek-r1",
@@ -511,7 +511,7 @@
    },
    {
     "name": "qwen2.5-coder",
-    "pulls": 20000000
+    "pulls": 20100000
    },
    {
     "name": "qwen3.5",
@@ -568,7 +568,7 @@
    },
    {
     "label": "Best AI at end of 2026: Claude",
-    "p": 0.668,
+    "p": 0.654,
     "ticker": "KXLLM1-26DEC31-A",
     "series": "kxllm1"
    }
@@ -582,7 +582,7 @@
    },
    {
     "base": "deepseek-ai/DeepSeek-R1",
-    "n": 324
+    "n": 326
    },
    {
     "base": "zai-org/GLM-4.5-Air",
@@ -596,7 +596,7 @@
   "us": [
    {
     "base": "meta-llama/Llama-3.1-8B",
-    "n": 1468
+    "n": 1471
    },
    {
     "base": "google/gemma-3-12b-it",
@@ -604,15 +604,15 @@
    },
    {
     "base": "openai/gpt-oss-20b",
-    "n": 541
+    "n": 542
    },
    {
     "base": "microsoft/phi-4",
-    "n": 104
+    "n": 108
    }
   ],
-  "cn_total": 2377,
-  "us_total": 2491,
+  "cn_total": 2379,
+  "us_total": 2499,
   "asof": "2026-08-05"
  },
  "sdk": {
@@ -627,10 +627,6 @@
    }
   ],
   "us": [
-   {
-    "pkg": "openai",
-    "wk": 109106201
-   },
    {
     "pkg": "anthropic",
     "wk": 47752156
