@@ -24,6 +24,7 @@ ROSTER = [
     {"name": "Marc Andreessen",      "org": "a16z",                "cat": "tech",  "handle": "pmarca",        "url": "https://x.com/pmarca"},
     {"name": "Dan Ives",             "org": "Wedbush Securities",  "cat": "tech",  "handle": "DivesTech",     "url": "https://x.com/DivesTech"},
     {"name": "Tom Lee",              "org": "Fundstrat",           "cat": "macro", "handle": "fundstrat",     "url": "https://x.com/fundstrat"},
+    {"name": "Gavin Baker",          "org": "Atreides Management", "cat": "tech",  "handle": "GavinSBaker",   "url": "https://x.com/GavinSBaker"},
     {"name": "Raoul Pal",            "org": "Real Vision",         "cat": "macro", "handle": "RaoulGMI",      "url": "https://x.com/RaoulGMI"},
     {"name": "David Sacks",          "org": "Craft / AI & crypto czar", "cat": "tech", "handle": "DavidSacks", "url": "https://x.com/DavidSacks"},
     {"name": "Chamath Palihapitiya", "org": "Social Capital",      "cat": "tech",  "handle": "chamath",       "url": "https://x.com/chamath"},
