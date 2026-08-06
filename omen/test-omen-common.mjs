@@ -222,5 +222,66 @@ console.log("omen-common — esc / safeUrl / Polymarket shapes / regime / index 
   console.log("  pairShareSeries");
 }
 
+/* ---------- capex live-tape derivations ---------- */
+{
+  const { ocfGrowth, tokenDemand, repricingGap, serveFloorPerM, impliedMargin, newestPriced } = OMEN;
+
+  // ocfGrowth: YoY over complete cohorts only, partial quarter named not quoted
+  const fund = {
+    quarters: ["2025Q1", "2025Q2", "2025Q3", "2025Q4", "2026Q1", "2026Q2"],
+    ocf_b:    [100,      110,      120,      130,      131,      99],
+    n_firms:  [5,        5,        5,        5,        5,        4],
+  };
+  const og = ocfGrowth(fund);
+  ok("ocfGrowth/returns a result", !!og);
+  eq("ocfGrowth/latest complete quarter", og.latest.q, "2026Q1");
+  eq("ocfGrowth/latest yoy", +og.latest.yoy.toFixed(1), 31);
+  eq("ocfGrowth/partial quarter named", og.partial_q, "2026Q2");
+  eq("ocfGrowth/partial cohort size", og.partial_n, 4);
+  ok("ocfGrowth/no prior complete pair yet", og.prior === null && og.accel_pp === null);
+  const fund2 = { quarters: ["2024Q4", "2025Q1", "2025Q4", "2026Q1"],
+                  ocf_b: [90, 100, 117, 131], n_firms: [5, 5, 5, 5] };
+  const og2 = ocfGrowth(fund2);
+  eq("ocfGrowth/acceleration in pp", +og2.accel_pp.toFixed(1), 1);
+  eq("ocfGrowth/needs a year-ago quarter", ocfGrowth({ quarters: ["2026Q1"], ocf_b: [1], n_firms: [5] }), null);
+  eq("ocfGrowth/null fund is null", ocfGrowth(null), null);
+  console.log("  ocfGrowth");
+
+  // tokenDemand: growth windows appear only when the series can support them
+  const wk = (n) => Array.from({ length: n }, (_, i) => ({ x: "w" + i, tot: 100 * Math.pow(1.1, i) }));
+  const td = tokenDemand(wk(6));
+  eq("tokenDemand/latest week", td.week, "w5");
+  eq("tokenDemand/wow pct", +td.wow_pct.toFixed(1), 10);
+  eq("tokenDemand/4w pct", +td.w4_pct.toFixed(1), 46.4);
+  eq("tokenDemand/yoy needs 53 weeks", td.yoy_pct, null);
+  ok("tokenDemand/53 weeks yields yoy", tokenDemand(wk(53)).yoy_pct > 0);
+  eq("tokenDemand/zero-token weeks dropped", tokenDemand([{ x: "a", tot: 0 }, { x: "b", tot: 5 }]), null);
+  console.log("  tokenDemand");
+
+  // repricingGap / serveFloorPerM / impliedMargin: the one-line economics
+  eq("repricingGap/spot above contract", +repricingGap(3.9, 2.5).toFixed(0), 56);
+  eq("repricingGap/spot below contract", +repricingGap(2.2, 4.4).toFixed(0), -50);
+  eq("repricingGap/zero contract is null", repricingGap(2.2, 0), null);
+  eq("serveFloorPerM/$2.20 at 1M tok/hr", serveFloorPerM(2.2, 1), 2.2);
+  eq("serveFloorPerM/zero throughput is null", serveFloorPerM(2.2, 0), null);
+  eq("impliedMargin/frontier", +impliedMargin(25, 2.2).toFixed(1), 91.2);
+  ok("impliedMargin/cost above price goes negative", impliedMargin(0.18, 2.2) < 0);
+  eq("impliedMargin/zero price is null", impliedMargin(0, 2.2), null);
+  console.log("  repricingGap / serveFloorPerM / impliedMargin");
+
+  // newestPriced: newest live match wins; :free and unpriced entries are ignored
+  const models = [
+    { id: "anthropic/claude-opus-4", created: 1, pricing: { prompt: "0.000015", completion: "0.000075" } },
+    { id: "anthropic/claude-opus-5", created: 9, pricing: { prompt: "0.000005", completion: "0.000025" } },
+    { id: "anthropic/claude-opus-5:free", created: 99, pricing: { prompt: "0", completion: "0" } },
+    { id: "deepseek/deepseek-v4-pro", created: 5, pricing: { prompt: "0.00000043", completion: "0.00000087" } },
+  ];
+  const np = newestPriced(models, /^anthropic\/claude-opus/);
+  eq("newestPriced/newest live match", np.id, "anthropic/claude-opus-5");
+  eq("newestPriced/output $ per M", np.outP, 25);
+  eq("newestPriced/no match is null", newestPriced(models, /^openai\//), null);
+  console.log("  newestPriced");
+}
+
 console.log(failures ? `\n${failures} failure(s)` : "\nall omen-common tests passed");
 process.exit(failures ? 1 : 0);

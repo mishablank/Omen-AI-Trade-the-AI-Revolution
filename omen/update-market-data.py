@@ -13,6 +13,8 @@ Sources (all free / unauthenticated unless noted):
   - Cross-venue (Kalshi public API + Manifold public API + Metaculus, token optional)
   - Insider activity (SEC EDGAR Form 4): NVDA, AVGO, ORCL, CRWV
   - Realized GPU spot rent (vast.ai public bundles API): H100 SXM $/GPU-hr
+  - NVDA trailing-P/E percentile (SEC XBRL diluted EPS x Yahoo monthly closes):
+    the "decade-low multiple" claim as an auditable 10-year percentile
   - Kalshi GPU compute markets (H100/H200/B200/A100): second venue on the same
     rents, settled on the Ornn index — the cross-venue basis check for vast.ai
 
@@ -296,6 +298,103 @@ def yahoo_series(sym, rng="6mo"):
     ts, cl = res["timestamp"], res["indicators"]["quote"][0]["close"]
     return [{"d": datetime.datetime.utcfromtimestamp(t).strftime("%Y-%m-%d"), "c": round(c, 2)}
             for t, c in zip(ts, cl) if c is not None]
+
+
+def yahoo_monthly(sym, rng="10y"):
+    """Monthly closes as [(YYYY-MM, close)] – the long-horizon leg of the P/E percentile.
+    Yahoo appends a same-month row for the latest trading day next to the partial month;
+    the dict dedupe keeps the newest print per month."""
+    j = json.loads(get(f"https://query1.finance.yahoo.com/v8/finance/chart/{sym}?range={rng}&interval=1mo"))
+    res = j["chart"]["result"][0]
+    ts, cl = res["timestamp"], res["indicators"]["quote"][0]["close"]
+    months = {datetime.datetime.utcfromtimestamp(t).strftime("%Y-%m"): round(c, 2)
+              for t, c in zip(ts, cl) if c is not None}
+    return sorted(months.items())
+
+
+# ---------- NVDA trailing-P/E percentile ----------
+# Baker's "lowest multiple in a decade" claim, rebuilt from primary sources. Trailing
+# (not forward) on purpose – consensus forward EPS has no free public API, and a trailing
+# series is auditable end to end. The EPS proxy is TTM net income over TODAY's diluted
+# share count, not as-reported EPS: XBRL EPS facts are never split-restated while Yahoo
+# closes are split-adjusted, so raw EPS vs adjusted price breaks across NVDA's 2021 and
+# 2024 splits (and its EPS frames stop printing in 2020 anyway). Net income is
+# split-invariant, and a fixed share count keeps the series consistent with adjusted
+# prices – at the cost of ignoring buyback/dilution drift, which the srcline owns.
+NVDA_CIK = "0001045810"
+
+
+def ni_ttm_series(quarters):
+    """sec_concept() quarters ({'YYYYQn': net_income}) -> [(YYYY-MM, ttm)] ascending,
+    dated to the calendar quarter's end month. A gap in the quarter history breaks the
+    4-quarter window rather than summing across it."""
+    def qnum(q):
+        y, n = q.split("Q")
+        return int(y) * 4 + int(n) - 1
+    qs = sorted(quarters or {})
+    out = []
+    for i in range(3, len(qs)):
+        w = qs[i - 3:i + 1]
+        if qnum(w[-1]) - qnum(w[0]) == 3:
+            y, n = w[-1].split("Q")
+            out.append((f"{y}-{int(n) * 3:02d}", sum(quarters[q] for q in w)))
+    return out
+
+
+def latest_share_count(entries):
+    """Newest diluted weighted-average share count from a companyconcept 'shares' unit
+    list – the fixed denominator of the EPS proxy."""
+    best = None
+    for e in entries or []:
+        if e.get("val") and e.get("end") and (best is None or e["end"] > best[0]):
+            best = (e["end"], e["val"])
+    return best[1] if best else None
+
+
+def pe_series(monthly_close, ttm_eps):
+    """Trailing P/E per month: each close over the newest TTM EPS known by then.
+    Months before the first TTM window, and months where TTM EPS <= 0, are skipped."""
+    out = []
+    for ym, c in monthly_close or []:
+        eps = None
+        for end, v in ttm_eps or []:
+            if end[:7] <= ym:
+                eps = v
+            else:
+                break
+        if eps and eps > 0 and c:
+            out.append([ym, round(c / eps, 1)])
+    return out
+
+
+def percentile_of_last(vals, min_n=12):
+    """Share of the series at or below the latest value, 0-100. None until the series
+    is a year long – a percentile of six points is noise wearing a suit."""
+    if not vals or len(vals) < min_n:
+        return None
+    cur = vals[-1]
+    return round(100.0 * sum(1 for v in vals if v <= cur) / len(vals), 1)
+
+
+def nvda_valuation():
+    ttm_ni = ni_ttm_series(sec_concept(NVDA_CIK, ["NetIncomeLoss"]))
+    j = json.loads(get(f"https://data.sec.gov/api/xbrl/companyconcept/CIK{NVDA_CIK}"
+                       "/us-gaap/WeightedAverageNumberOfDilutedSharesOutstanding.json",
+                       headers=SEC_UA))
+    shares = latest_share_count((j.get("units") or {}).get("shares"))
+    if not ttm_ni or not shares:
+        return None
+    ttm_eps = [(ym, ni / shares) for ym, ni in ttm_ni]
+    series = pe_series(yahoo_monthly("NVDA"), ttm_eps)
+    if not series:
+        return None
+    vals = [p for _, p in series]
+    return {"sym": "NVDA", "pe_ttm": vals[-1], "asof": series[-1][0],
+            "pct_10y": percentile_of_last(vals),
+            "lo_10y": min(vals), "hi_10y": max(vals),
+            "eps_ttm": round(ttm_eps[-1][1], 2), "eps_asof": ttm_eps[-1][0],
+            "shares_b": round(shares / 1e9, 3),
+            "n_months": len(vals), "series": series[-121:]}
 
 
 # ---------- FRED (keyless CSV endpoint) ----------
@@ -1645,6 +1744,15 @@ def build():
             print(f"gpu: H100 median ${data['gpu']['median_dph']}/hr ({data['gpu']['n_offers']} offers)")
     except Exception as e:
         carry(data, prev, "gpu", e)
+
+    try:
+        data["valuation"] = nvda_valuation() or prev.get("valuation")
+        if data.get("valuation"):
+            v = data["valuation"]
+            print(f"valuation: NVDA trailing P/E {v['pe_ttm']} = p{v['pct_10y']} "
+                  f"of 10y ({v['n_months']} months, EPS ttm {v['eps_ttm']})")
+    except Exception as e:
+        carry(data, prev, "valuation", e)
 
     try:
         data["insiders"] = edgar_insiders()

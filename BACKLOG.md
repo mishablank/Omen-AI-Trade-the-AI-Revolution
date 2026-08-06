@@ -94,3 +94,72 @@ monitor use a bare `th.onclick` with no `role`, `tabindex` or keyboard handler.
 - [ ] Pair the up/down colour with a non-colour cue (arrow or sign glyph).
 - [ ] Make the sortable headers real `<button>`s, or add `role="button"`, `tabindex="0"` and
       Enter/Space handling, plus `aria-sort` reflecting the current state.
+
+## AI CapEx – Memory price index (DRAM/HBM spot + contract, LTA coverage)
+
+**Status:** Open
+**Component:** `omen/ai-capex.html`, `omen/update-capex-data.py`
+**Priority:** Medium
+
+### Problem
+
+Gavin Baker's ILTB episode (Aug 2026) makes the memory market – LTA game theory, soaring
+DRAM/HBM spot – a core leg of the AI-cycle read, and the site's only memory signals today are
+MU's equity drawdown and the hand-updated Korea 20-day export line (`MANUAL["korea"]`, still
+`None`). Daily DRAM spot (DRAMeXchange/TrendForce) is paywalled, so this was never wired to a
+live source alongside TSMC/vast.ai/XBRL.
+
+### Acceptance Criteria
+
+- [ ] Add a memory-price family to the capex live tape: DRAM spot trend, HBM contract
+      direction, and Korea 20-day semiconductor exports as the keyless pulse.
+- [ ] Automate what is public: Korea customs 20-day release (scrape the press-release page or
+      hand-update on its ~1st/11th/21st cadence with the asof enforced), TrendForce free press
+      releases for the quarterly contract-price direction.
+- [ ] Document the paywall boundary in the srcline: spot levels are curated until a licensed
+      feed exists; trends and YoY direction are the tracked metric.
+- [ ] Wire the values through `capex-data.json` (updater + carry-forward + tests), not page JS.
+
+## AI CapEx – AI spend per FTE / token spend as share of compensation
+
+**Status:** Open
+**Component:** `omen/ai-capex.html`
+**Priority:** Low
+
+### Problem
+
+Baker's demand-side claim – AI-native firms spending 20–25% (up to 50%) of total compensation
+on tokens – has no public dataset. Ramp's public AI Index (already on the tape) gives adoption
+share, not spend-per-employee; the per-FTE figures exist only as disclosures and anecdotes.
+
+### Acceptance Criteria
+
+- [ ] Add a curated watchlist panel in the ai-capex.html style (like the equity-events table):
+      company, disclosed AI/token spend share of comp or per-FTE spend, date, source link.
+- [ ] Seed with the ILTB data points (20–25% typical, 30% one case, 50% max reported) clearly
+      marked as podcast-sourced, replaceable as filings/reports name real numbers.
+- [ ] Watch Ramp for a spend-level (not adoption-share) series; wire it into
+      `update-capex-data.py` if one ships – that upgrade retires the curated table.
+
+## AI CapEx – Lab economics tracker (EV/ARR for OpenAI, Anthropic, xAI)
+
+**Status:** Open
+**Component:** `omen/ai-capex.html`, `omen/polymarket-ai-index.html`
+**Priority:** Medium
+
+### Problem
+
+The monitor's "AI valuation brackets" card prices OpenAI/Anthropic valuation odds with no
+revenue anchor, so the euphoria gauge cannot say whether multiples are expanding or the
+denominator is catching up. Disclosed ARR run-rates (e.g. Baker cites Grok 4.5 + Cursor at
+~$10B) appear only in press reports – public, but not API-fed.
+
+### Acceptance Criteria
+
+- [ ] Curated table: lab, latest disclosed ARR run-rate (date + source), latest valuation
+      (round or Polymarket bracket midpoint), implied EV/ARR, with the time series kept as
+      rows rather than overwritten.
+- [ ] Join against the existing valuation-bracket markets so the implied multiple updates
+      live as the bracket odds move, even between ARR disclosures.
+- [ ] Honesty note: press-reported ARR is unaudited, often annualized from a single month,
+      and labs choose when to leak it – the series is directional, not accounting.

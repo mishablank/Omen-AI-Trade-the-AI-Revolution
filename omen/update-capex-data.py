@@ -13,6 +13,8 @@ section of the otherwise hand-curated fundamentals page:
     construction vs canceled nameplate GW; keyless
   - Census C30 + FRED (keyless)                   : data-center construction and
     computer-equipment investment as a share of nominal GDP
+  - Agent-stack installs (npm + pypistats, keyless): weekly downloads of the agent
+    CLIs and SDKs - the closest public proxy for agentic adoption
 
 Not automated, kept in MANUAL below (no free machine-readable source):
   - Korea 20-day semiconductor exports (customs.go.kr press releases)
@@ -129,6 +131,67 @@ def rnd(x, nd=1):
         return round(float(x), nd)
     except (TypeError, ValueError):
         return None
+
+
+# ---------- agent-stack installs (npm + pypistats) ----------
+# The agentic-adoption proxy: weekly downloads of the three agent CLIs (npm) and the
+# two lab agent SDKs (PyPI). Direct user counts don't exist publicly; package managers
+# are the tape that does. The PyPI side is a hard undercount (OpenAI-compatible APIs
+# ride the `openai` package), so the npm total is the headline and PyPI is context.
+NPM_POINT = "https://api.npmjs.org/downloads/point/last-week/"
+NPM_AGENT_PKGS = ["@anthropic-ai/claude-code", "@openai/codex", "@google/gemini-cli"]
+PYPI_RECENT = "https://pypistats.org/api/packages/{}/recent"
+PYPI_AGENT_PKGS = ["claude-agent-sdk", "openai-agents"]
+AGENT_SERIES_CAP = 26   # rolling last-week points, one per refresh day
+
+
+def parse_npm_point(j):
+    """npm point API -> weekly download count, or None on any malformed payload."""
+    try:
+        v = int(j["downloads"])
+    except (TypeError, KeyError, ValueError):
+        return None
+    return v if v >= 0 else None
+
+
+def parse_pypi_recent(j):
+    """pypistats /recent -> last_week count, or None on any malformed payload."""
+    try:
+        v = int(j["data"]["last_week"])
+    except (TypeError, KeyError, ValueError):
+        return None
+    return v if v >= 0 else None
+
+
+def merge_agent_series(prev_series, asof, total, cap=AGENT_SERIES_CAP):
+    """Append today's npm total to the durable series, replacing any same-day point
+    (refreshes run several times a day) and capping the tail."""
+    series = [r for r in (prev_series or [])
+              if isinstance(r, list) and len(r) == 2 and r[0] != asof]
+    series.append([asof, total])
+    series.sort(key=lambda r: r[0])
+    return series[-cap:]
+
+
+def fetch_agents(prev=None):
+    npm, pypi = {}, {}
+    for pkg in NPM_AGENT_PKGS:
+        try:
+            npm[pkg] = parse_npm_point(jget(NPM_POINT + urllib.parse.quote(pkg, safe="@/")))
+        except Exception:
+            npm[pkg] = None
+    for pkg in PYPI_AGENT_PKGS:
+        try:
+            pypi[pkg] = parse_pypi_recent(jget(PYPI_RECENT.format(pkg)))
+        except Exception:
+            pypi[pkg] = None
+    vals = [v for v in npm.values() if v is not None]
+    if not vals:
+        return None   # headline is the npm total; without it, carry the last good block
+    total = sum(vals)
+    asof = datetime.date.today().isoformat()
+    return {"asof": asof, "npm": npm, "pypi": pypi, "npm_total_wk": total,
+            "series": merge_agent_series((prev or {}).get("series"), asof, total)}
 
 
 # ---------- TSMC (TWSE OpenAPI) ----------
@@ -544,7 +607,8 @@ def refresh():
     live_ok = False
     for name, fn in (("tsmc", fetch_tsmc), ("issuance", fetch_issuance),
                      ("ramp", fetch_ramp), ("aei", fetch_aei),
-                     ("eia", fetch_860m), ("capex_gdp", fetch_capex_gdp)):
+                     ("eia", fetch_860m), ("capex_gdp", fetch_capex_gdp),
+                     ("agents", lambda: fetch_agents(prev.get("agents")))):
         try:
             payload[name] = fn()
         except Exception as e:
@@ -563,7 +627,7 @@ def refresh():
     print(f"wrote {OUT.name}: tsmc={bool(payload['tsmc'])} "
           f"issuance={bool(payload['issuance'])} ramp={bool(payload['ramp'])} "
           f"aei={bool(payload['aei'])} eia={bool(payload['eia'])} "
-          f"capex_gdp={bool(payload['capex_gdp'])} "
+          f"capex_gdp={bool(payload['capex_gdp'])} agents={bool(payload['agents'])} "
           f"snapshot={'appended' if live_ok else 'skipped (all feeds down)'}")
 
 

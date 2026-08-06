@@ -157,6 +157,7 @@ def test_refresh_survives_failing_fetchers_and_writes_json(tmp_path, monkeypatch
     monkeypatch.setattr(ucd, "fetch_aei", lambda: {"latest_release": "2026-06-26"})
     monkeypatch.setattr(ucd, "fetch_860m", lambda: None)
     monkeypatch.setattr(ucd, "fetch_capex_gdp", lambda: None)
+    monkeypatch.setattr(ucd, "fetch_agents", lambda prev=None: None)
     ucd.refresh()
     import json
     d = json.loads((tmp_path / "capex-data.json").read_text())
@@ -199,6 +200,7 @@ def test_refresh_eia_failure_is_null_not_a_crash(tmp_path, monkeypatch, capsys):
     for n in ("fetch_tsmc", "fetch_issuance", "fetch_ramp", "fetch_aei",
               "fetch_capex_gdp"):
         monkeypatch.setattr(ucd, n, lambda: None)
+    monkeypatch.setattr(ucd, "fetch_agents", lambda prev=None: None)
     monkeypatch.setattr(ucd, "fetch_860m", lambda: (_ for _ in ()).throw(OSError("down")))
     ucd.refresh()
     import json
@@ -222,6 +224,7 @@ def test_refresh_carries_forward_prev_on_failure(tmp_path, monkeypatch):
     monkeypatch.setattr(ucd, "fetch_aei", lambda: None)
     monkeypatch.setattr(ucd, "fetch_860m", lambda: None)
     monkeypatch.setattr(ucd, "fetch_capex_gdp", lambda: None)
+    monkeypatch.setattr(ucd, "fetch_agents", lambda prev=None: None)
     ucd.refresh()
     d = json.loads(out.read_text())
     assert d["tsmc"]["rev_ntd_b"] == 442.7          # live value wins
@@ -236,6 +239,7 @@ def test_refresh_skips_snapshot_when_all_feeds_down(tmp_path, monkeypatch):
     for n in ("fetch_tsmc", "fetch_issuance", "fetch_ramp", "fetch_aei",
               "fetch_860m", "fetch_capex_gdp"):
         monkeypatch.setattr(ucd, n, lambda: None)
+    monkeypatch.setattr(ucd, "fetch_agents", lambda prev=None: None)
     ucd.refresh()
     assert not (tmp_path / "capex-snapshots.csv").exists()  # no blank history row
 
@@ -582,3 +586,50 @@ def test_parse_fred_last_skips_missing_observations():
 
 def test_parse_fred_last_empty_is_none():
     assert ucd.parse_fred_last("observation_date,X\n") is None
+
+
+# ---------- agent-stack installs ----------
+
+def test_parse_npm_point_reads_downloads():
+    assert ucd.parse_npm_point({"downloads": 412345, "package": "x"}) == 412345
+    assert ucd.parse_npm_point({"downloads": "9"}) == 9
+    assert ucd.parse_npm_point({"downloads": -1}) is None
+    assert ucd.parse_npm_point({"error": "not found"}) is None
+    assert ucd.parse_npm_point(None) is None
+
+
+def test_parse_pypi_recent_reads_last_week():
+    assert ucd.parse_pypi_recent({"data": {"last_week": 71234}}) == 71234
+    assert ucd.parse_pypi_recent({"data": {}}) is None
+    assert ucd.parse_pypi_recent({}) is None
+    assert ucd.parse_pypi_recent(None) is None
+
+
+def test_merge_agent_series_dedupes_same_day_and_caps():
+    prev = [["2026-08-01", 100], ["2026-08-02", 110]]
+    out = ucd.merge_agent_series(prev, "2026-08-02", 115)
+    assert out == [["2026-08-01", 100], ["2026-08-02", 115]]  # same-day point replaced
+    out = ucd.merge_agent_series(prev, "2026-08-03", 120, cap=2)
+    assert out == [["2026-08-02", 110], ["2026-08-03", 120]]  # capped, oldest dropped
+    assert ucd.merge_agent_series(None, "2026-08-03", 120) == [["2026-08-03", 120]]
+    # malformed rows in a hand-edited file are dropped, not crashed on
+    assert ucd.merge_agent_series([["2026-08-01"], "junk", ["2026-08-02", 5]],
+                                  "2026-08-03", 6) == [["2026-08-02", 5], ["2026-08-03", 6]]
+
+
+def test_fetch_agents_none_when_npm_is_down(monkeypatch):
+    monkeypatch.setattr(ucd, "jget", lambda url, *a, **k: (_ for _ in ()).throw(OSError("down")))
+    assert ucd.fetch_agents({"series": [["2026-08-01", 100]]}) is None
+
+
+def test_fetch_agents_totals_npm_and_extends_series(monkeypatch):
+    def fake_jget(url, *a, **k):
+        if url.startswith(ucd.NPM_POINT):
+            return {"downloads": 100}
+        return {"data": {"last_week": 7}}
+    monkeypatch.setattr(ucd, "jget", fake_jget)
+    out = ucd.fetch_agents({"series": [["2000-01-01", 1]]})
+    assert out["npm_total_wk"] == 100 * len(ucd.NPM_AGENT_PKGS)
+    assert all(v == 7 for v in out["pypi"].values())
+    assert out["series"][0] == ["2000-01-01", 1]           # prior history kept
+    assert out["series"][-1][1] == out["npm_total_wk"]     # today appended

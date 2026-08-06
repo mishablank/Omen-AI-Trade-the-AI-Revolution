@@ -228,10 +228,93 @@
     return { share, t0, t1 };
   }
 
+  /* ================= capex live-tape derivations ================= */
+  // Pure helpers behind ai-capex.html's Baker-tape panels (cash-flow acceleration,
+  // token demand, GPU repricing gap, inference-margin floor). Kept here so the math
+  // is testable without a browser – same reason indexMath lives in this file.
+
+  // Combined operating-cash-flow growth from market-data.json's fundamentals block.
+  // YoY is only quoted when both quarters aggregate the full filer cohort
+  // (n_firms == max): the newest quarter usually has a laggard fiscal-year filer,
+  // and a 4-of-5 vs 5-of-5 comparison would read as a collapse that never happened.
+  function ocfGrowth(fund) {
+    if (!fund || !Array.isArray(fund.quarters) || !Array.isArray(fund.ocf_b)
+        || !Array.isArray(fund.n_firms) || !fund.quarters.length) return null;
+    const N = Math.max.apply(null, fund.n_firms);
+    const idx = {};
+    fund.quarters.forEach((q, i) => { idx[q] = i; });
+    const yearAgo = (q) => (+q.slice(0, 4) - 1) + q.slice(4);
+    const rows = [];
+    for (const q of fund.quarters) {
+      const i = idx[q], j = idx[yearAgo(q)];
+      if (j == null) continue;
+      const cur = fund.ocf_b[i], base = fund.ocf_b[j];
+      if (cur == null || base == null || base <= 0) continue;
+      rows.push({ q, yoy: (cur / base - 1) * 100,
+                  complete: fund.n_firms[i] === N && fund.n_firms[j] === N });
+    }
+    const full = rows.filter((r) => r.complete);
+    if (!full.length) return null;
+    const latest = full[full.length - 1];
+    const prior = full.length > 1 ? full[full.length - 2] : null;
+    const tail = rows[rows.length - 1];
+    return {
+      latest, prior,
+      accel_pp: prior ? latest.yoy - prior.yoy : null,
+      // a newer quarter exists but its cohort is short – name it, never quote it
+      partial_q: tail.complete ? null : tail.q,
+      partial_n: tail.complete ? null : fund.n_firms[idx[tail.q]],
+      n_firms: N,
+    };
+  }
+
+  // Platform-wide token demand from OpenRouter's weekly market-share series
+  // ([{x: "YYYY-MM-DD", tot: tokens}] ascending). Growth is null until the series
+  // is long enough for that window – never extrapolated.
+  function tokenDemand(series) {
+    const s = (series || []).filter((w) => w && w.tot > 0 && w.x);
+    if (s.length < 2) return null;
+    const last = s[s.length - 1];
+    const at = (k) => (s.length > k ? s[s.length - 1 - k] : null);
+    const g = (a, b) => (a && b && b.tot > 0 ? (a.tot / b.tot - 1) * 100 : null);
+    return { week: last.x, tot: last.tot, weeks: s.length,
+             wow_pct: g(last, at(1)), w4_pct: g(last, at(4)), yoy_pct: g(last, at(52)) };
+  }
+
+  // Spot vs contracted $/GPU-hr, as the % the spot tape sits above (+) or below (−)
+  // the vintage contract. Positive = the installed base is underearning vs market.
+  function repricingGap(spot, contract) {
+    return spot > 0 && contract > 0 ? (spot / contract - 1) * 100 : null;
+  }
+
+  // Serving-cost floor in $ per million output tokens: rent per GPU-hour divided by
+  // throughput in millions of output tokens per GPU-hour. The throughput assumption
+  // is the caller's to state on the page.
+  function serveFloorPerM(dph, mtokPerGpuHr) {
+    return dph > 0 && mtokPerGpuHr > 0 ? dph / mtokPerGpuHr : null;
+  }
+
+  // Implied gross margin (%) of a $/M-token price over a $/M-token serving cost.
+  function impliedMargin(pricePerM, costPerM) {
+    return pricePerM > 0 && costPerM != null && costPerM >= 0
+      ? (1 - costPerM / pricePerM) * 100 : null;
+  }
+
+  // Newest priced model in OpenRouter's /api/v1/models catalogue matching re –
+  // same selection rule as the China page's resolveFamilies, reduced to one line.
+  function newestPriced(models, re) {
+    const live = (models || []).filter((m) => m && m.id && re.test(m.id)
+      && !m.id.endsWith(":free") && +((m.pricing || {}).completion) > 0);
+    if (!live.length) return null;
+    const m = live.reduce((a, b) => ((b.created || 0) > (a.created || 0) ? b : a));
+    return { id: m.id, outP: +m.pricing.completion * 1e6, inP: +m.pricing.prompt * 1e6 };
+  }
+
   root.OMEN = {
     $, esc, safeUrl,
     outcomeYes, jsonList, isClosed, bookSpread,
     REGIME, regimeOf, REGIME_META,
     indexMath, sparkSvg, parseSnapshots, pairShareSeries,
+    ocfGrowth, tokenDemand, repricingGap, serveFloorPerM, impliedMargin, newestPriced,
   };
 })(typeof globalThis !== "undefined" ? globalThis : this);
