@@ -1,5 +1,5 @@
 {
- "updated": "2026-08-06T03:22:28Z",
+ "updated": "2026-08-06T06:38:51Z",
  "snapshot_date": "2026-08-06",
  "artificial_analysis": {
   "cn_best": "GLM-5.2",
@@ -148,40 +148,40 @@
  },
  "openrouter_week": {
   "week": "2026-08-03",
-  "cn_share": 0.5016,
-  "us_share": 0.3634,
-  "spi": 1.38,
-  "total_tokens": 31357191844734
+  "cn_share": 0.5014,
+  "us_share": 0.364,
+  "spi": 1.377,
+  "total_tokens": 32709665260179
  },
  "vercel_gateway": {
   "asof": "2026-08-06",
-  "cn_share": 51.2,
-  "us_share": 48.73,
-  "spi": 1.051,
+  "cn_share": 51.05,
+  "us_share": 48.87,
+  "spi": 1.045,
   "top_cn": [
    {
     "lab": "deepseek",
-    "share": 27.45
+    "share": 26.51
    },
    {
     "lab": "zai",
-    "share": 7.2
-   },
-   {
-    "lab": "inclusionai",
-    "share": 4.85
-   },
-   {
-    "lab": "moonshotai",
-    "share": 4.83
+    "share": 6.65
    },
    {
     "lab": "stepfun",
-    "share": 4.8
+    "share": 5.56
+   },
+   {
+    "lab": "inclusionai",
+    "share": 5.19
+   },
+   {
+    "lab": "moonshotai",
+    "share": 4.86
    },
    {
     "lab": "minimax",
-    "share": 1.16
+    "share": 1.26
    }
   ],
   "series": [
@@ -487,15 +487,15 @@
    },
    {
     "d": "2026-08-06",
-    "cn": 51.2,
-    "us": 48.73
+    "cn": 51.05,
+    "us": 48.87
    }
   ],
   "license": "AI Gateway Leaderboard Data (c) Vercel, CC BY 4.0"
  },
  "ollama": {
-  "cn": 278116100,
-  "us": 451418647,
+  "cn": 278219000,
+  "us": 451423205,
   "cn_top": [
    {
     "name": "deepseek-r1",
@@ -537,9 +537,7 @@
    }
   ],
   "n_models": 231,
-  "asof": "2026-08-06",
-  "cn_per_day": 828158,
-  "us_per_day": 604571
+  "asof": "2026-08-06"
  },
  "kalshi": {
   "asof": "2026-08-06",
@@ -570,7 +568,7 @@
    },
    {
     "label": "Best AI at end of 2026: Claude",
-    "p": 0.678,
+    "p": 0.672,
     "ticker": "KXLLM1-26DEC31-A",
     "series": "kxllm1"
    }
@@ -580,7 +578,7 @@
   "cn": [
    {
     "base": "Qwen/Qwen3-8B",
-    "n": 1998
+    "n": 1999
    },
    {
     "base": "deepseek-ai/DeepSeek-R1",
@@ -602,7 +600,7 @@
    },
    {
     "base": "google/gemma-3-12b-it",
-    "n": 378
+    "n": 379
    },
    {
     "base": "openai/gpt-oss-20b",
@@ -613,39 +611,31 @@
     "n": 108
    }
   ],
-  "cn_total": 2380,
-  "us_total": 2501,
+  "cn_total": 2381,
+  "us_total": 2502,
   "asof": "2026-08-06"
  },
  "sdk": {
   "cn": [
    {
     "pkg": "dashscope",
-    "wk": 808587
-   },
-   {
-    "pkg": "zhipuai",
-    "wk": 112295
+    "wk": 805212
    },
    {
     "pkg": "zai-sdk",
-    "wk": 29942
+    "wk": 30530
    }
   ],
   "us": [
    {
-    "pkg": "openai",
-    "wk": 109106201
-   },
-   {
     "pkg": "anthropic",
-    "wk": 47752156
+    "wk": 47806240
    },
    {
     "pkg": "google-genai",
-    "wk": 67106147
+    "wk": 67549263
    }
   ],
-  "asof": "2026-08-05"
+  "asof": "2026-08-06"
  }
 }
