@@ -1,5 +1,5 @@
 {
- "updated": "2026-08-06T09:45:16Z",
+ "updated": "2026-08-06T12:08:02Z",
  "snapshot_date": "2026-08-06",
  "artificial_analysis": {
   "cn_best": "GLM-5.2",
@@ -510,40 +510,40 @@
  },
  "openrouter_week": {
   "week": "2026-08-03",
-  "cn_share": 0.5019,
-  "us_share": 0.3642,
-  "spi": 1.378,
-  "total_tokens": 34208658530177
+  "cn_share": 0.5011,
+  "us_share": 0.3652,
+  "spi": 1.372,
+  "total_tokens": 35383313854407
  },
  "vercel_gateway": {
   "asof": "2026-08-06",
-  "cn_share": 52.08,
-  "us_share": 47.81,
-  "spi": 1.089,
+  "cn_share": 53.94,
+  "us_share": 45.94,
+  "spi": 1.174,
   "top_cn": [
    {
     "lab": "deepseek",
-    "share": 26.7
+    "share": 27.82
    },
    {
     "lab": "stepfun",
-    "share": 6.69
+    "share": 7.17
    },
    {
     "lab": "inclusionai",
-    "share": 5.79
+    "share": 5.76
    },
    {
     "lab": "zai",
-    "share": 5.56
+    "share": 5.55
    },
    {
     "lab": "moonshotai",
-    "share": 4.61
+    "share": 4.72
    },
    {
     "lab": "minimax",
-    "share": 1.71
+    "share": 1.89
    }
   ],
   "series": [
@@ -849,15 +849,15 @@
    },
    {
     "d": "2026-08-06",
-    "cn": 52.08,
-    "us": 47.81
+    "cn": 53.94,
+    "us": 45.94
    }
   ],
   "license": "AI Gateway Leaderboard Data (c) Vercel, CC BY 4.0"
  },
  "ollama": {
-  "cn": 278222500,
-  "us": 451427563,
+  "cn": 278224900,
+  "us": 451732216,
   "cn_top": [
    {
     "name": "deepseek-r1",
@@ -887,11 +887,11 @@
   "us_top": [
    {
     "name": "llama3.1",
-    "pulls": 118100000
+    "pulls": 118200000
    },
    {
     "name": "llama3.2",
-    "pulls": 79100000
+    "pulls": 79200000
    },
    {
     "name": "gemma3",
@@ -906,7 +906,7 @@
   "markets": [
    {
     "label": "Will a Chinese AI model be #1 this year?",
-    "p": 0.15,
+    "p": 0.12,
     "ticker": "KXBESTLLMCHINA-27",
     "series": "kxbestllmchina"
    },
@@ -930,7 +930,7 @@
    },
    {
     "label": "Best AI at end of 2026: Claude",
-    "p": 0.672,
+    "p": 0.684,
     "ticker": "KXLLM1-26DEC31-A",
     "series": "kxllm1"
    }
@@ -979,10 +979,6 @@
  },
  "sdk": {
   "cn": [
-   {
-    "pkg": "dashscope",
-    "wk": 805212
-   },
    {
     "pkg": "zhipuai",
     "wk": 122753
