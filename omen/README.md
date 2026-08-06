@@ -85,6 +85,7 @@ the pages' inline code.
 | Realized H100 spot rent | vast.ai public bundles API |
 | Cross-venue | Kalshi public API, Manifold public API, Metaculus (needs free `METACULUS_TOKEN`) |
 | AI CapEx live tape (`ai-capex.html`) | `update-capex-data.py` → `capex-data.json`: TSMC monthly revenue (TWSE OpenAPI), EDGAR full-text issuance counts, Ramp AI Index CSV, Anthropic Economic Index freshness (HF API); EIA-860M generator pipeline needs free `EIA_API_KEY`. Korea 20-day exports, LBNL queues, PJM auction clears stay hand-updated in its `MANUAL` dict |
+| China monitor supply-side (`china-ai-monitor.html`) | `update-china-data.py` → `china-data.json`: Epoch AI CC-BY CSVs (GPU clusters, chip sales by designer, notable models; refetched weekly, not per-run); the AA frontier-gap series rides the existing `ARTIFICIAL_ANALYSIS_API_KEY` call and stays hidden without it |
 
 ## Hosting: Cloudflare Worker + R2
 

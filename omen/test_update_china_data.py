@@ -583,3 +583,171 @@ def test_arena_summary_emits_per_model_elo_list():
     assert out["models"] == [
         {"model": "claude-fable-5", "org": "Anthropic", "elo": 1509, "cn": False},
         {"model": "qwen3.8-max", "org": "Alibaba", "elo": 1496, "cn": True}]
+
+
+# ---- AA frontier gap --------------------------------------------------------------
+
+def aa_model(name, creator, idx, d, blended=None, inp=None, outp=None):
+    p = {}
+    if blended is not None:
+        p["price_1m_blended_3_to_1"] = blended
+    if inp is not None:
+        p.update(price_1m_input_tokens=inp, price_1m_output_tokens=outp)
+    return {"name": name, "model_creator": {"name": creator},
+            "evaluations": {"artificial_analysis_intelligence_index": idx},
+            "release_date": d, "pricing": p}
+
+
+AA_FIXTURE = [
+    aa_model("gpt-a", "OpenAI", 45, "2024-06-15", blended=5.0),
+    aa_model("gpt-b", "OpenAI", 50, "2025-06-01", blended=6.0),
+    aa_model("claude-c", "Anthropic", 60, "2026-03-10", blended=9.0),
+    aa_model("claude-cheap", "Anthropic", 58, "2026-05-10", blended=4.0),
+    aa_model("qwen-x", "Alibaba", 40, "2024-09-01", blended=1.0),
+    aa_model("deepseek-y", "DeepSeek", 50, "2026-01-05", inp=0.4, outp=1.2),
+    aa_model("kimi-z", "Moonshot", 57, "2026-07-20", blended=1.5),
+    aa_model("undated", "OpenAI", 70, ""),
+    aa_model("unsided", "Mistral", 55, "2026-01-01", blended=2.0),
+]
+
+
+def test_month_math_rolls_years():
+    assert ucd.month_add("2025-12") == "2026-01"
+    assert ucd.month_add("2026-01", 14) == "2027-03"
+    assert ucd.months_between("2025-06", "2026-01") == 7
+    assert ucd.months_between("2026-03", "2026-03") == 0
+
+
+def test_aa_points_blends_pricing_and_drops_undated_or_unsided():
+    pts = {p["name"]: p for p in ucd.aa_points(AA_FIXTURE)}
+    assert "undated" not in pts and "unsided" not in pts
+    # blended fallback: (3*0.4 + 1.2) / 4
+    assert pts["deepseek-y"]["usd"] == 0.6
+    assert pts["gpt-a"]["usd"] == 5.0 and pts["gpt-a"]["d"] == "2024-06"
+
+
+def test_aa_frontier_series_gap_lag_and_value():
+    af = ucd.aa_frontier(AA_FIXTURE, today="2026-08")
+    assert af["gap_points"] == 3.0                     # 60 US vs 57 CN
+    # US first matched today's CN level (57) in 2026-03; CN got there 2026-07
+    assert af["lag_months"] == 4
+    assert af["cn_now"] == {"name": "kimi-z", "idx": 57.0}
+    assert af["series"][0]["m"] == "2024-06" and af["series"][-1]["m"] == "2026-08"
+    assert af["series"][-1] == {"m": "2026-08", "cn": 57.0, "us": 60.0}
+    # near-frontier value: cheapest within 3 pts of each side's frontier
+    assert af["value"]["us"]["name"] == "claude-cheap"
+    assert af["value"]["cn"]["name"] == "kimi-z"
+    assert af["value"]["ratio"] == round(4.0 / 1.5, 1)
+
+
+def test_aa_frontier_rejects_one_sided_dated_data():
+    with pytest.raises(ValueError):
+        ucd.aa_frontier([aa_model(f"gpt-{i}", "OpenAI", 50 + i, f"2025-0{i}-01")
+                         for i in range(1, 5)], today="2026-08")
+
+
+def test_aa_value_excludes_free_tiers():
+    pts = [{"side": "us", "d": "2026-01", "idx": 60.0, "name": "paid", "usd": 8.0},
+           {"side": "us", "d": "2026-02", "idx": 60.0, "name": "free", "usd": 0},
+           {"side": "cn", "d": "2026-03", "idx": 58.0, "name": "cn", "usd": 2.0}]
+    val = ucd.aa_value(pts, {"us": 60.0, "cn": 58.0})
+    assert val["us"]["name"] == "paid" and val["ratio"] == 4.0
+
+
+# ---- Epoch supply-side ------------------------------------------------------------
+
+def test_country_side_is_exclusive_membership():
+    assert ucd.country_side("United States of America") == "us"
+    assert ucd.country_side("China,China") == "cn"
+    assert ucd.country_side("China,Hong Kong") == "cn"
+    assert ucd.country_side("United States of America,China") is None   # joint work
+    assert ucd.country_side("Hong Kong") is None
+    assert ucd.country_side("") is None and ucd.country_side(None) is None
+
+
+def test_quarter_of_maps_months_to_quarters():
+    assert ucd.quarter_of("2026-01-15") == "2026Q1"
+    assert ucd.quarter_of("2026-12-31") == "2026Q4"
+
+
+def gpu_row(country, h100e):
+    return {"Country": country, "H100 equivalents": h100e}
+
+
+def test_parse_gpu_clusters_splits_h100e_by_country():
+    got = ucd.parse_gpu_clusters([
+        gpu_row("United States of America", "700"), gpu_row("United States of America", "100"),
+        gpu_row("China", "150"), gpu_row("Japan", "50"),
+        gpu_row("China", ""),            # unspecced cluster: ignored entirely
+        gpu_row("China", "not-a-number"),
+    ])
+    assert (got["us_share"], got["cn_share"]) == (80.0, 15.0)
+    assert got["total_h100e"] == 1000 and got["n"] == 4
+    assert (got["us_n"], got["cn_n"]) == (2, 1)
+
+
+def test_parse_gpu_clusters_rejects_one_sided_data():
+    with pytest.raises(ValueError):
+        ucd.parse_gpu_clusters([gpu_row("United States of America", "700")])
+
+
+def test_chip_side_known_designers_only():
+    assert ucd.chip_side("Huawei") == "cn"
+    assert ucd.chip_side("Nvidia") == "us"
+    assert ucd.chip_side("TSMC") is None and ucd.chip_side(None) is None
+
+
+def chip_row(mfg, start, h100e, chip="X1"):
+    return {"Chip manufacturer": mfg, "Start date": start,
+            "Compute estimate in H100e (median)": h100e, "Chip type": chip}
+
+
+def test_parse_chip_sales_trims_to_the_cn_covered_window():
+    got = ucd.parse_chip_sales([
+        chip_row("Nvidia", "2023-01-01", "1000"),           # before CN coverage: dropped
+        chip_row("Nvidia", "2023-04-01", "1000"),
+        chip_row("Nvidia", "2024-01-01", "900"), chip_row("Huawei", "2024-01-01", "100", "Ascend"),
+        chip_row("Nvidia", "2024-04-01", "800"), chip_row("Huawei", "2024-04-01", "200", "Ascend"),
+        chip_row("Nvidia", "2024-07-01", "1000"),           # after CN coverage: dropped
+        chip_row("TSMC", "2024-04-01", "9999"),             # unknown designer: skipped
+    ])
+    assert [r["q"] for r in got["series"]] == ["2024Q1", "2024Q2"]
+    assert got["latest_q"] == "2024Q2" and got["cn_share_latest"] == 20.0
+    assert got["cn_top"] == [{"chip": "Ascend", "h100e": 200}]
+
+
+def test_parse_chip_sales_rejects_data_without_cn_quarters():
+    with pytest.raises(ValueError):
+        ucd.parse_chip_sales([chip_row("Nvidia", f"2023-{m:02d}-01", "1000")
+                              for m in (1, 4, 7, 10)])
+
+
+def model_row(country, pub):
+    return {"Country (of organization)": country, "Publication date": pub}
+
+
+def test_parse_notable_models_counts_quarters_and_trailing_year():
+    got = ucd.parse_notable_models([
+        model_row("United States of America", "2025-02-10"),
+        model_row("United States of America", "2025-11-01"),
+        model_row("China", "2025-02-20"),
+        model_row("China,China", "2026-03-05"),
+        model_row("United States of America,China", "2026-03-06"),  # joint: dropped
+        model_row("China", "2026-04-01"),
+        model_row("United States of America", "2026-05-01"),
+        model_row("China", "2026-08-01"),        # current quarter: 12mo yes, series no
+        model_row("China", "2022-06-01"),        # pre-window: dropped everywhere
+    ], today="2026-08-06")
+    assert {r["q"]: (r["us"], r["cn"]) for r in got["series"]} == {
+        "2025Q1": (1, 1), "2025Q4": (1, 0), "2026Q1": (0, 1), "2026Q2": (1, 1)}
+    assert got["latest_q"] == "2026Q2"
+    assert (got["us_12mo"], got["cn_12mo"]) == (2, 3)
+
+
+def test_epoch_fresh_requires_a_value_and_a_recent_stamp():
+    now = time.time()
+    fam = {"asof": "2026-08-01"}
+    assert ucd.epoch_fresh(fam, {"t": now - 3600})
+    assert not ucd.epoch_fresh(fam, {"t": now - 10 * 86400})   # stale stamp
+    assert not ucd.epoch_fresh(fam, None)                      # never stamped
+    assert not ucd.epoch_fresh(None, {"t": now - 3600})        # stamp but no value

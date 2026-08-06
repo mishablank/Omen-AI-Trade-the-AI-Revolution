@@ -33,6 +33,12 @@ CORS-open API:
   - Cloudflare Radar gen-AI ranks  : consumer traffic by 1.1.1.1 DNS volume when
                                      CF_RADAR_TOKEN is set (needs Radar read scope);
                                      skipped cleanly without it
+  - AA frontier gap                : monthly US-vs-CN frontier intelligence series,
+                                     lag-in-months and near-frontier price ratio,
+                                     derived from the same AA Data API call (key only)
+  - Epoch AI supply-side           : GPU-cluster capacity share, quarterly accelerator
+                                     output by designer, notable-model release cadence
+                                     (keyless CC-BY CSVs, refetched weekly not per-run)
 
 Consumer-app figures fall back to MANUAL below when no live source is reachable.
 
@@ -41,7 +47,7 @@ Usage:
   python3 update-china-data.py --watch 86400  # daily loop
 After running, redeploy the site folder so the deployed china-data.json updates.
 """
-import json, os, re, csv, html, sys, time, calendar, urllib.request, urllib.parse, urllib.error, http.cookiejar
+import io, json, os, re, csv, html, sys, time, calendar, urllib.request, urllib.parse, urllib.error, http.cookiejar
 from datetime import datetime, timezone
 from pathlib import Path
 
@@ -772,6 +778,11 @@ AA_CN_CREATORS = re.compile(r"deepseek|alibaba|qwen|z\.?ai|zhipu|moonshot|minima
 AA_US_CREATORS = re.compile(r"openai|anthropic|google|xai|meta|amazon|nvidia|microsoft", re.I)
 
 
+def aa_side(creator):
+    """AA creator name -> 'cn' | 'us' | None."""
+    return "cn" if AA_CN_CREATORS.search(creator) else "us" if AA_US_CREATORS.search(creator) else None
+
+
 def aa_best(models):
     """AA model list -> best CN + best US by intelligence index."""
     best = {"cn": None, "us": None}
@@ -780,7 +791,7 @@ def aa_best(models):
         idx = (m.get("evaluations") or {}).get("artificial_analysis_intelligence_index")
         if idx is None:
             continue
-        side = "cn" if AA_CN_CREATORS.search(creator) else "us" if AA_US_CREATORS.search(creator) else None
+        side = aa_side(creator)
         if side and (best[side] is None or idx > best[side][1]):
             best[side] = (m.get("name") or m.get("id"), idx)
     if not best["cn"] or not best["us"]:
@@ -791,12 +802,132 @@ def aa_best(models):
             "attribution": "Source: Artificial Analysis (artificialanalysis.ai)"}
 
 
+# ---- AA frontier gap: the same API call, cut by country over time -----------------
+# The gap SNAPSHOT above says where the race is today; the series below says which way
+# it is moving, which is the actual thesis variable. Series start pinned to the modern
+# index era - AA re-bases its index every major version, so pre-2024 scores are not
+# comparable and a longer window would fabricate a trend.
+AA_FRONTIER_SINCE = "2024-01"
+AA_VALUE_BAND = 3   # "near-frontier" = within this many index points of a side's frontier
+
+
+def month_add(m, n=1):
+    """'2026-01' + n months -> 'YYYY-MM'."""
+    y, mo = int(m[:4]), int(m[5:7]) - 1 + n
+    return f"{y + mo // 12:04d}-{mo % 12 + 1:02d}"
+
+
+def months_between(a, b):
+    """Whole months from month a to month b (positive when b is later)."""
+    return (int(b[:4]) - int(a[:4])) * 12 + (int(b[5:7]) - int(a[5:7]))
+
+
+def aa_points(models):
+    """AA model list -> [{side, d:'YYYY-MM', idx, name, usd}] for dated, scored models.
+
+    usd is the blended $/1M tokens: the API's 3:1 blend when present, else recomputed
+    from input/output prices, else None (the model still counts for the frontier, just
+    not for the price pick)."""
+    pts = []
+    for m in models:
+        creator = ((m.get("model_creator") or {}).get("name")) or ""
+        side = aa_side(creator)
+        idx = (m.get("evaluations") or {}).get("artificial_analysis_intelligence_index")
+        d = (m.get("release_date") or m.get("first_release_date") or "")[:7]
+        if not side or idx is None or len(d) != 7:
+            continue
+        p = m.get("pricing") or {}
+        usd = p.get("price_1m_blended_3_to_1")
+        if usd is None and p.get("price_1m_input_tokens") is not None \
+                and p.get("price_1m_output_tokens") is not None:
+            usd = (3 * float(p["price_1m_input_tokens"]) + float(p["price_1m_output_tokens"])) / 4
+        pts.append({"side": side, "d": d, "idx": float(idx),
+                    "name": m.get("name") or m.get("id"),
+                    "usd": round(float(usd), 2) if usd is not None else None})
+    return pts
+
+
+def aa_value(pts, last):
+    """Cheapest blended $/M within AA_VALUE_BAND points of each side's frontier.
+
+    The headline price gap panel compares flagship list prices; this is the
+    quality-adjusted version - what near-frontier intelligence actually costs on each
+    side. Zero-priced (free-tier) entries are excluded: a $0 denominator is a promo,
+    not an economy."""
+    pick = {}
+    for side in ("cn", "us"):
+        cands = [p for p in pts
+                 if p["side"] == side and p["usd"] and p["idx"] >= last[side] - AA_VALUE_BAND]
+        if not cands:
+            return None
+        p = min(cands, key=lambda c: c["usd"])
+        pick[side] = {"name": p["name"], "idx": round(p["idx"], 1), "usd": p["usd"]}
+    return {**pick, "ratio": round(pick["us"]["usd"] / pick["cn"]["usd"], 1),
+            "band": AA_VALUE_BAND}
+
+
+def aa_frontier(models, today=None):
+    """Monthly frontier intelligence by side + the lag/value stats the page renders.
+
+    Reconstructed from the CURRENT catalogue's release dates, so a model AA delists
+    drops out of history - fine for the gap trend, and stated in the page note. Lag is
+    Epoch's us-vs-china-eci statistic computed on AA's index: months between a US model
+    first reaching today's best Chinese score and the Chinese frontier getting there.
+    If the US frontier was already past that level when the window opens, the lag is
+    clipped to the window and understates - conservative in the right direction."""
+    pts = aa_points(models)
+    for side in ("cn", "us"):
+        if sum(1 for p in pts if p["side"] == side) < 3:
+            raise ValueError(f"too few dated {side} models for a frontier series")
+    today = today or datetime.now(timezone.utc).strftime("%Y-%m")
+    series, cur = [], max(AA_FRONTIER_SINCE, min(p["d"] for p in pts))
+    while cur <= today:
+        row = {"m": cur}
+        for side in ("cn", "us"):
+            best = max((p["idx"] for p in pts if p["side"] == side and p["d"] <= cur),
+                       default=None)
+            row[side] = round(best, 1) if best is not None else None
+        series.append(row)
+        cur = month_add(cur)
+    if not series:
+        raise ValueError("no frontier months in window")
+    last = series[-1]
+    if last["cn"] is None or last["us"] is None:
+        raise ValueError("frontier series empty on one side")
+    cn_reach = next(r["m"] for r in series if r["cn"] is not None and r["cn"] >= last["cn"])
+    us_reach = next((r["m"] for r in series if r["us"] is not None and r["us"] >= last["cn"]), None)
+    lag = max(0, months_between(us_reach, cn_reach)) if us_reach else 0
+    now = {s: max((p for p in pts if p["side"] == s), key=lambda p: p["idx"]) for s in ("cn", "us")}
+    out = {"asof": datetime.now(timezone.utc).strftime("%Y-%m-%d"), "source": "aa-api",
+           "attribution": "Source: Artificial Analysis (artificialanalysis.ai)",
+           "series": series, "gap_points": round(last["us"] - last["cn"], 1),
+           "lag_months": lag,
+           "cn_now": {"name": now["cn"]["name"], "idx": round(now["cn"]["idx"], 1)},
+           "us_now": {"name": now["us"]["name"], "idx": round(now["us"]["idx"], 1)}}
+    val = aa_value(pts, last)
+    if val:
+        out["value"] = val
+    return out
+
+
 def artificial_analysis():
+    """-> (best, frontier|None) when the key is set, else None.
+
+    One API call feeds both: the best-model snapshot the leaderboard panel has always
+    shown, and the frontier series. The series needs release_date and pricing fields
+    the snapshot never used, so it degrades separately - a schema drift there must not
+    take down the score snapshot."""
     key = os.environ.get("ARTIFICIAL_ANALYSIS_API_KEY")
     if not key:
         return None
-    d = jget(AA_URL, timeout=60, headers={"x-api-key": key})
-    return aa_best(d.get("data") or [])
+    models = jget(AA_URL, timeout=60, headers={"x-api-key": key}).get("data") or []
+    best = aa_best(models)
+    try:
+        frontier = aa_frontier(models)
+    except Exception as e:
+        print(f"  aa frontier skipped ({e})", file=sys.stderr)
+        frontier = None
+    return best, frontier
 
 
 def pick_aa(fresh, prev, manual):
@@ -982,6 +1113,174 @@ def metrics_row(out, price_gap):
             "price_gap": price_gap["gap"] if price_gap else None}
 
 
+# ---- Epoch AI supply-side datasets (CC BY 4.0) ------------------------------------
+# The demand panels say who is WINNING adoption; these say who CAN scale it. Three
+# keyless CSV downloads: GPU-cluster capacity (compute stock), quarterly accelerator
+# output by designer (compute flow), notable-model releases by country (output flow).
+# They update monthly-to-quarterly upstream and the biggest file is ~2 MB, so they are
+# refetched at most every EPOCH_REFRESH_DAYS rather than on every 30-minute run - the
+# last parsed value is carried in china-data.json between refetches, same as every
+# other family.
+EPOCH_GPU_CLUSTERS_CSV = "https://epoch.ai/data/gpu_clusters.csv"
+EPOCH_CHIP_SALES_CSV = "https://epoch.ai/data/ai_chip_sales_timelines_by_chip.csv"
+EPOCH_NOTABLE_MODELS_CSV = "https://epoch.ai/data/notable_ai_models.csv"
+EPOCH_REFRESH_DAYS = 6
+EPOCH_ATTRIBUTION = "Epoch AI (epoch.ai/data), CC BY 4.0"
+# Epoch writes full country names, comma-joined when a model has several orgs
+# ("United States of America,China"). Substring membership is safe here: Taiwan and
+# Hong Kong appear as their own exact names, not as "..., Province of China" variants
+# (verified against both CSVs 2026-08); Hong Kong-only entries deliberately count for
+# neither side.
+EPOCH_US = "United States"
+EPOCH_CN = "China"
+EPOCH_MODELS_SINCE = "2023-01"   # release-cadence window: the post-ChatGPT race
+CHIP_DESIGNERS_CN = {"huawei", "cambricon", "biren", "moore threads", "hygon", "enflame"}
+CHIP_DESIGNERS_US = {"nvidia", "amd", "google", "amazon", "intel", "microsoft", "meta", "cerebras"}
+
+
+def epoch_csv(url):
+    return list(csv.DictReader(io.StringIO(get(url, timeout=120).decode("utf-8", "replace"))))
+
+
+def country_side(field):
+    """Epoch country field -> 'cn' | 'us' | None. Joint US-CN work fits neither side -
+    for a race chart, splitting one model between both lines is worse than dropping
+    the handful of genuinely joint releases."""
+    has_us, has_cn = EPOCH_US in (field or ""), EPOCH_CN in (field or "")
+    if has_cn and not has_us:
+        return "cn"
+    if has_us and not has_cn:
+        return "us"
+    return None
+
+
+def quarter_of(date):
+    """'2026-01-15' -> '2026Q1'."""
+    return f"{date[:4]}Q{(int(date[5:7]) - 1) // 3 + 1}"
+
+
+def parse_gpu_clusters(rows):
+    """Cluster rows -> country split of tracked H100-equivalent capacity."""
+    us = cn = tot = 0.0
+    us_n = cn_n = n = 0
+    for r in rows:
+        try:
+            h = float(r.get("H100 equivalents") or 0)
+        except ValueError:
+            continue
+        if h <= 0:
+            continue
+        n += 1
+        tot += h
+        side = country_side(r.get("Country"))
+        if side == "us":
+            us += h
+            us_n += 1
+        elif side == "cn":
+            cn += h
+            cn_n += 1
+    if not us or not cn:
+        raise ValueError("no tracked capacity on one side - column drift?")
+    return {"us_share": round(us / tot * 100, 1), "cn_share": round(cn / tot * 100, 1),
+            "us_h100e": round(us), "cn_h100e": round(cn), "total_h100e": round(tot),
+            "us_n": us_n, "cn_n": cn_n, "n": n,
+            "asof": datetime.now(timezone.utc).strftime("%Y-%m-%d"),
+            "attribution": EPOCH_ATTRIBUTION}
+
+
+def epoch_gpu_clusters():
+    return parse_gpu_clusters(epoch_csv(EPOCH_GPU_CLUSTERS_CSV))
+
+
+def chip_side(mfg):
+    """Chip designer -> 'cn' | 'us' | None (unknown designers are skipped, not guessed)."""
+    m = (mfg or "").lower()
+    return "cn" if m in CHIP_DESIGNERS_CN else "us" if m in CHIP_DESIGNERS_US else None
+
+
+def parse_chip_sales(rows):
+    """Quarterly accelerator output in H100e (median estimates), US- vs CN-designed.
+
+    The chart the page draws from this is the CN *share* line, not two absolute lines:
+    US-designed output runs ~20x Chinese on a linear axis, which would just flatten the
+    Chinese line onto zero and hide the only movement that matters here."""
+    qs, cn_chips = {}, {}
+    for r in rows:
+        side = chip_side(r.get("Chip manufacturer"))
+        d = r.get("Start date") or ""
+        try:
+            h = float(r.get("Compute estimate in H100e (median)") or 0)
+        except ValueError:
+            continue
+        if not side or len(d) < 7 or h <= 0:
+            continue
+        q = quarter_of(d)
+        qs.setdefault(q, {"us": 0.0, "cn": 0.0})[side] += h
+        if side == "cn":
+            cn_chips.setdefault(q, []).append(
+                {"chip": r.get("Chip type") or r.get("Name"), "h100e": round(h)})
+    if len(qs) < 4:
+        raise ValueError("too few quarters parsed - column drift?")
+    full = [{"q": q, "us": round(v["us"]), "cn": round(v["cn"])}
+            for q, v in sorted(qs.items())]
+    # Chinese estimates start later and lag ~2 quarters behind Nvidia's (estimates for
+    # Huawei/Cambricon are generated in batches upstream). A quarter with cn=0 outside
+    # the covered window means "no estimate yet", not "no chips" - showing it would
+    # plot a fake collapse to zero. Keep only the both-sides-covered window.
+    covered = [i for i, r in enumerate(full) if r["cn"] > 0]
+    if not covered:
+        raise ValueError("no Chinese-designer quarters parsed - column drift?")
+    series = full[covered[0]:covered[-1] + 1][-16:]
+    last = series[-1]
+    return {"series": series, "latest_q": last["q"],
+            "cn_share_latest": round(last["cn"] / (last["cn"] + last["us"]) * 100, 1),
+            "cn_top": sorted(cn_chips.get(last["q"], []), key=lambda c: -c["h100e"])[:4],
+            "asof": datetime.now(timezone.utc).strftime("%Y-%m-%d"),
+            "attribution": EPOCH_ATTRIBUTION}
+
+
+def epoch_chip_sales():
+    return parse_chip_sales(epoch_csv(EPOCH_CHIP_SALES_CSV))
+
+
+def parse_notable_models(rows, today=None):
+    """Notable-model releases per quarter by side + trailing-12-month totals.
+
+    The current quarter is excluded from the SERIES (a 5-week quarter plots as a fake
+    collapse next to 13-week ones) but its releases still count in the trailing-12-month
+    totals, which are calendar-day-bounded and don't have that artefact."""
+    today = today or datetime.now(timezone.utc).strftime("%Y-%m-%d")
+    cutoff = f"{int(today[:4]) - 1}{today[4:]}"
+    cur_q = quarter_of(today)
+    qs, tot12 = {}, {"us": 0, "cn": 0}
+    for r in rows:
+        d = r.get("Publication date") or ""
+        side = country_side(r.get("Country (of organization)"))
+        if len(d) < 7 or d[:7] < EPOCH_MODELS_SINCE or not side:
+            continue
+        q = quarter_of(d)
+        if q < cur_q:
+            qs.setdefault(q, {"us": 0, "cn": 0})[side] += 1
+        if d >= cutoff:
+            tot12[side] += 1
+    if len(qs) < 4:
+        raise ValueError("too few quarters parsed - column drift?")
+    series = [{"q": q, **v} for q, v in sorted(qs.items())]
+    return {"series": series, "us_12mo": tot12["us"], "cn_12mo": tot12["cn"],
+            "latest_q": series[-1]["q"], "asof": today,
+            "attribution": EPOCH_ATTRIBUTION}
+
+
+def epoch_notable_models():
+    return parse_notable_models(epoch_csv(EPOCH_NOTABLE_MODELS_CSV))
+
+
+def epoch_fresh(prev_fam, stamp, days=EPOCH_REFRESH_DAYS):
+    """True when the previous run's parsed value is recent enough to skip a refetch.
+    Both halves must exist: a stamp without a carried value (or vice versa) refetches."""
+    return bool(prev_fam) and bool(stamp) and (time.time() - stamp["t"]) < days * 86400
+
+
 def run():
     hist_path = HERE / "china-history.json"
     hist = json.loads(hist_path.read_text()) if hist_path.exists() else {}
@@ -1121,16 +1420,23 @@ def run():
             out["sdk"] = prev["sdk"]
 
     print("artificial analysis (Data API if key set) ...")
-    fresh_aa = None
+    fresh_aa = fresh_frontier = None
     try:
-        fresh_aa = artificial_analysis()
-        if fresh_aa:
+        got = artificial_analysis()
+        if got:
+            fresh_aa, fresh_frontier = got
             print(f"  CN {fresh_aa['cn_best']} {fresh_aa['cn_score']} vs US {fresh_aa['us_best']} {fresh_aa['us_score']}")
+            if fresh_frontier:
+                print(f"  frontier gap {fresh_frontier['gap_points']} pts, CN lag {fresh_frontier['lag_months']} mo")
         else:
             print("  ARTIFICIAL_ANALYSIS_API_KEY not set - carrying previous API value or manual snapshot")
     except Exception as e:
         print(f"  FAILED ({e}) - carrying previous API value or manual snapshot", file=sys.stderr)
     out["artificial_analysis"] = pick_aa(fresh_aa, prev, MANUAL["artificial_analysis"])
+    if fresh_frontier:
+        out["aa_frontier"] = fresh_frontier
+    elif prev.get("aa_frontier"):
+        out["aa_frontier"] = prev["aa_frontier"]
 
     print("cloudflare radar gen-AI service ranks (if token set) ...")
     try:
@@ -1146,6 +1452,23 @@ def run():
         print(f"  FAILED ({e}) - carrying previous value", file=sys.stderr)
         if prev.get("radar_ai"):
             out["radar_ai"] = prev["radar_ai"]
+
+    print(f"epoch supply-side datasets (refetched every {EPOCH_REFRESH_DAYS}d) ...")
+    for key, label, fn in (("epoch_compute", "gpu clusters", epoch_gpu_clusters),
+                           ("epoch_chips", "chip sales", epoch_chip_sales),
+                           ("epoch_models", "notable models", epoch_notable_models)):
+        if epoch_fresh(prev.get(key), hist.get(key)):
+            out[key] = prev[key]
+            print(f"  {label}: carried (fetched <{EPOCH_REFRESH_DAYS}d ago)")
+            continue
+        try:
+            out[key] = fn()
+            hist[key] = {"t": time.time()}
+            print(f"  {label}: ok ({out[key]['asof']})")
+        except Exception as e:
+            print(f"  {label} FAILED ({e}) - carrying previous value", file=sys.stderr)
+            if prev.get(key):
+                out[key] = prev[key]
 
     print("frontier price gap (OpenRouter catalogue) ...")
     price_gap = None
