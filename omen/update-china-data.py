@@ -14,6 +14,10 @@ CORS-open API:
                                      as github.repos, because a pinned list decays into
                                      last generation's abandoned repos
   - OpenRouter weekly share        : appended to china-snapshots.csv (durable history)
+  - Daily metrics history          : composite index, SPI, per-family shares and the
+                                     frontier price gap appended to china-metrics.csv
+                                     (one row per UTC day) so the page can chart
+                                     trajectories, not just snapshots
   - Vercel AI Gateway lab share    : leaderboard-export endpoint (CC BY 4.0, 24h cache)
                                      - the second router, de-biases the OpenRouter SPI
   - Ollama pull counts             : ollama.com/library scrape; local/self-hosted
@@ -116,7 +120,11 @@ def arena_summary(rows):
     best, leader = cn[0], rows[0]
     return {"best_model": best["model"], "best_org": best["org"], "best_rank": best["rank"],
             "best_score": best["elo"], "us_leader": leader["model"], "us_leader_score": leader["elo"],
-            "top10": sum(1 for r in cn if r["rank"] <= 10), "top20": sum(1 for r in cn if r["rank"] <= 20)}
+            "top10": sum(1 for r in cn if r["rank"] <= 10), "top20": sum(1 for r in cn if r["rank"] <= 20),
+            # Per-model Elo feeds the page's price-vs-quality scatter, which joins
+            # these names against OpenRouter's flagship price lines client-side.
+            "models": [{"model": r["model"], "org": r["org"], "elo": r["elo"], "cn": is_cn(r["org"])}
+                       for r in rows[:60]]}
 
 
 def lmarena_dataset():
@@ -217,7 +225,10 @@ def github_basket(now=None):
 
 
 def github_velocity(hist, repos=None):
-    """Stars now vs last run -> stars/day across the basket."""
+    """Stars now vs last run -> (stars/day across the basket, stars, per-repo stars/day).
+
+    The per-repo rates are published in china-data.json so the page's Δ/day column
+    works on a first visit instead of waiting for a browser-local baseline to age."""
     now = time.time()
     stars = {}
     for repo in (GH_SEED if repos is None else repos):
@@ -231,24 +242,27 @@ def github_velocity(hist, repos=None):
         # did: it stored 0 stars, and because the reseed below only fired when the
         # key was *absent*, nothing could ever overwrite it - the page reported
         # -282,777 stars/day for five days straight.
-        return None, stars
+        return None, stars, None
     prev = hist.get("github")
     base = (prev or {}).get("stars")
     per_day = None
+    vel = None
     if base and now - prev["t"] >= 20 * 3600:
         # Only repos in both snapshots: when a fetch fails the basket has not lost
         # every star that repo held, we just cannot see it this run. Undercounting
         # a rate by one small repo is survivable; sign-flipping it is not.
         shared = [r for r in stars if r in base]
+        days = (now - prev["t"]) / 86400
         if shared:
-            per_day = sum(stars[r] - base[r] for r in shared) / ((now - prev["t"]) / 86400)
+            per_day = sum(stars[r] - base[r] for r in shared) / days
+            vel = {r: round((stars[r] - base[r]) / days, 1) for r in shared}
         hist["github"] = {"t": now, "stars": stars}
     elif not base:
         # seed, or reseed a baseline an all-failed run left empty; keep it until it
         # ages past 20h so frequent CI runs don't reset it to "now" every time and
         # never produce a velocity
         hist["github"] = {"t": now, "stars": stars}
-    return per_day, stars
+    return per_day, stars, vel
 
 
 def pick_github_velocity(per_day, prev, stars):
@@ -833,6 +847,141 @@ def radar_ai():
             "asof": datetime.now(timezone.utc).strftime("%Y-%m-%d")}
 
 
+# ---------------------------------------------------------------------------
+# Daily metrics history (china-metrics.csv)
+#
+# Everything below exists so the page can show *trajectories*, not snapshots:
+# the composite adoption index, the frontier price gap and the per-family
+# shares are all recomputed each run and appended (one row per UTC day, the
+# day's last run wins). The index math mirrors the page's renderGauge() and
+# the documented methodology in china-ai-monitor.html - if one changes, change
+# both, and test_update_china_data.py pins the shared reference values.
+# ---------------------------------------------------------------------------
+
+# Python port of the page's PRICE_FAMILIES_CN/US (see china-ai-monitor.html for
+# why lines are pinned and versions resolved: exact slugs rot, price-ranking is
+# circular). Kept in (label, regex) pairs so tests can compare against the JS.
+PRICE_LINES_CN = [
+    ("DeepSeek (pro)",   re.compile(r"^deepseek/deepseek-v[\d.]+-pro$")),
+    ("DeepSeek (flash)", re.compile(r"^deepseek/deepseek-v[\d.]+-flash(-\d+)?$")),
+    ("GLM (Z.ai)",       re.compile(r"^z-ai/glm-[\d.]+$")),
+    ("Kimi (Moonshot)",  re.compile(r"^moonshotai/kimi-k[\d.]+$")),
+    ("Kimi Code",        re.compile(r"^moonshotai/kimi-k[\d.]+-code$")),
+    ("MiniMax",          re.compile(r"^minimax/minimax-m[\d.]+$")),
+    ("Qwen Max",         re.compile(r"^qwen/qwen[\d.]+-max(-preview)?$")),
+]
+PRICE_LINES_US = [
+    ("GPT (top)",        re.compile(r"^openai/gpt-[\d.]+-sol$")),
+    ("GPT (mid)",        re.compile(r"^openai/gpt-[\d.]+-terra$")),
+    ("Claude Opus",      re.compile(r"^anthropic/claude-opus-[\d.]+$")),
+    ("Claude Sonnet",    re.compile(r"^anthropic/claude-sonnet-[\d.]+$")),
+    ("Gemini Pro",       re.compile(r"^google/gemini-[\d.]+-pro(-preview)?$")),
+    ("Gemini Flash",     re.compile(r"^google/gemini-[\d.]+-flash$")),
+]
+
+
+def resolve_price_lines(models, lines):
+    """Newest live model per line -> [output $/M]; mirrors the page's resolveFamilies()."""
+    live = [m for m in (models or [])
+            if m.get("id") and not m["id"].endswith(":free")
+            and float((m.get("pricing") or {}).get("completion") or 0) > 0]
+    out = []
+    for _label, rx in lines:
+        hits = [m for m in live if rx.match(m["id"])]
+        if not hits:
+            continue
+        newest = max(hits, key=lambda m: m.get("created") or 0)
+        out.append(float(newest["pricing"]["completion"]) * 1e6)
+    return out
+
+
+def _median(vals):
+    v = sorted(vals)
+    return v[len(v) // 2] if v else None
+
+
+def openrouter_price_gap():
+    """Median US flagship output $/M divided by median Chinese - the '5x gap'."""
+    models = jget("https://openrouter.ai/api/v1/models", timeout=60)["data"]
+    us = _median(resolve_price_lines(models, PRICE_LINES_US))
+    cn = _median(resolve_price_lines(models, PRICE_LINES_CN))
+    if not us or not cn:
+        raise ValueError("price lines unresolved")
+    return {"us_med": round(us, 2), "cn_med": round(cn, 2), "gap": round(us / cn, 2)}
+
+
+def _clamp01(x):
+    return max(0.0, min(1.0, x))
+
+
+def compute_index(out):
+    """The page's Chinese AI Adoption Index, computed from this run's data.
+
+    Same normalization ranges and weights as renderGauge()/the methodology
+    footer; families with no value are excluded and the weights renormalize.
+    Returns (index or None, {family: normalized 0-100 score}).
+    """
+    fams = {}
+    wk, vg = out.get("openrouter_week"), out.get("vercel_gateway")
+    if wk and wk.get("cn_share") is not None:
+        orn = _clamp01(wk["cn_share"] / 0.70) * 100
+        if vg and vg.get("cn_share") is not None:
+            fams["router"] = (30, (orn + _clamp01(vg["cn_share"] / 100 / 0.70) * 100) / 2)
+        else:
+            fams["router"] = (30, orn)
+    hf = out.get("hf")
+    if hf and hf.get("cn") and hf.get("us"):
+        fams["hf"] = (20, _clamp01(hf["cn"] / (hf["cn"] + hf["us"]) / 0.90) * 100)
+    if out.get("github_stars_per_day") is not None:
+        fams["github"] = (15, _clamp01(out["github_stars_per_day"] / 300) * 100)
+    ol = out.get("ollama")
+    if ol and ol.get("cn") and ol.get("us"):
+        fams["ollama"] = (10, _clamp01(ol["cn"] / (ol["cn"] + ol["us"]) / 0.70) * 100)
+    sc = out.get("search_consumer")
+    if sc and sc.get("western_share_pct") is not None:
+        fams["search"] = (10, _clamp01(sc["western_share_pct"] / 100 / 0.50) * 100)
+    ap = out.get("apps")
+    if ap and ap.get("score") is not None:
+        fams["apps"] = (10, float(ap["score"]))
+    lb = out.get("lmarena")
+    if lb and lb.get("us_leader_score") and lb.get("best_score"):
+        gap = lb["us_leader_score"] - lb["best_score"]
+        fams["arena"] = (5, _clamp01(1 - gap / 100) * 100)
+    wsum = sum(w for w, _ in fams.values())
+    if not wsum:
+        return None, {}
+    idx = sum(w * v for w, v in fams.values()) / wsum
+    return round(idx, 1), {k: round(v, 1) for k, (_, v) in fams.items()}
+
+
+METRICS_COLS = ["date", "adoption_index", "spi", "router_cn_share", "vercel_cn_share",
+                "hf_cn_share", "ollama_cn_share", "gh_stars_per_day", "price_gap"]
+
+
+def append_metrics(path, row):
+    """Append one row per UTC day; a rerun on the same day replaces that day's row."""
+    lines = path.read_text().rstrip("\n").split("\n") if path.exists() else []
+    if not lines or lines[0] != ",".join(METRICS_COLS):
+        lines = [",".join(METRICS_COLS)]
+    body = [l for l in lines[1:] if l and not l.startswith(row["date"] + ",")]
+    body.append(",".join("" if row.get(c) is None else str(row[c]) for c in METRICS_COLS))
+    path.write_text("\n".join(lines[:1] + body) + "\n")
+
+
+def metrics_row(out, price_gap):
+    idx, _fams = compute_index(out)
+    wk, vg = out.get("openrouter_week") or {}, out.get("vercel_gateway") or {}
+    hf, ol = out.get("hf") or {}, out.get("ollama") or {}
+    share = lambda d: (round(d["cn"] / (d["cn"] + d["us"]), 4)
+                       if d.get("cn") and d.get("us") else None)
+    return {"date": out["snapshot_date"], "adoption_index": idx, "spi": wk.get("spi"),
+            "router_cn_share": wk.get("cn_share"),
+            "vercel_cn_share": round(vg["cn_share"] / 100, 4) if vg.get("cn_share") is not None else None,
+            "hf_cn_share": share(hf), "ollama_cn_share": share(ol),
+            "gh_stars_per_day": out.get("github_stars_per_day"),
+            "price_gap": price_gap["gap"] if price_gap else None}
+
+
 def run():
     hist_path = HERE / "china-history.json"
     hist = json.loads(hist_path.read_text()) if hist_path.exists() else {}
@@ -860,10 +1009,16 @@ def run():
                      "asof": datetime.now(timezone.utc).strftime("%Y-%m-%d")}
 
     print("github velocity ...")
-    per_day, stars = github_velocity(hist, gh_repos)
+    per_day, stars, repo_vel = github_velocity(hist, gh_repos)
     vel = pick_github_velocity(per_day, prev, stars)
     if vel is not None:
         out["github_stars_per_day"] = vel
+    # per-repo rates: fresh measurement wins, else carry the previous run's so the
+    # page's Δ/day column never regresses to "…" between measurable runs
+    if repo_vel:
+        out["github"]["vel"] = repo_vel
+    elif (prev.get("github") or {}).get("vel"):
+        out["github"]["vel"] = prev["github"]["vel"]
     if per_day is not None:
         print(f"  +{per_day:.0f} stars/day across basket")
     elif vel is not None:
@@ -991,6 +1146,22 @@ def run():
         print(f"  FAILED ({e}) - carrying previous value", file=sys.stderr)
         if prev.get("radar_ai"):
             out["radar_ai"] = prev["radar_ai"]
+
+    print("frontier price gap (OpenRouter catalogue) ...")
+    price_gap = None
+    try:
+        price_gap = openrouter_price_gap()
+        print(f"  US ${price_gap['us_med']}/M vs CN ${price_gap['cn_med']}/M = {price_gap['gap']}x")
+    except Exception as e:
+        print(f"  FAILED ({e}) - metrics row logs no gap today", file=sys.stderr)
+
+    print("daily metrics history ...")
+    try:
+        row = metrics_row(out, price_gap)
+        append_metrics(HERE / "china-metrics.csv", row)
+        print(f"  index {row['adoption_index']} / SPI {row['spi']} appended for {row['date']}")
+    except Exception as e:
+        print(f"  FAILED ({e}) - history row skipped this run", file=sys.stderr)
 
     hist_path.write_text(json.dumps(hist))
     data_path.write_text(json.dumps(out, indent=1))

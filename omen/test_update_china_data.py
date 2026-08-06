@@ -209,7 +209,7 @@ def test_gh_headers_authorize_only_when_a_token_is_set(monkeypatch):
 def test_github_velocity_seeds_the_baseline_on_a_first_run(monkeypatch):
     stub_github(BASKET, monkeypatch)
     hist = {}
-    per_day, stars = ucd.github_velocity(hist, ucd.GH_SEED)
+    per_day, stars, _vel = ucd.github_velocity(hist, ucd.GH_SEED)
     assert per_day is None and stars == BASKET
     assert hist["github"]["stars"] == BASKET
 
@@ -219,7 +219,7 @@ def test_github_velocity_never_seeds_a_baseline_when_every_repo_fails(monkeypatc
     # reseed only fired when the key was absent, so the baseline was poisoned for good
     stub_github({}, monkeypatch)
     hist = {}
-    per_day, stars = ucd.github_velocity(hist, ucd.GH_SEED)
+    per_day, stars, _vel = ucd.github_velocity(hist, ucd.GH_SEED)
     assert per_day is None and stars == {}
     assert "github" not in hist
 
@@ -227,7 +227,7 @@ def test_github_velocity_never_seeds_a_baseline_when_every_repo_fails(monkeypatc
 def test_github_velocity_reseeds_a_baseline_left_empty_by_a_failed_run(monkeypatch):
     stub_github(BASKET, monkeypatch)
     hist = {"github": {"t": time.time() - 5 * 86400, "total": 0, "stars": {}}}
-    per_day, _ = ucd.github_velocity(hist, ucd.GH_SEED)
+    per_day, _, _vel = ucd.github_velocity(hist, ucd.GH_SEED)
     assert per_day is None
     assert hist["github"]["stars"] == BASKET
 
@@ -238,7 +238,7 @@ def test_github_velocity_measures_only_repos_present_in_both_snapshots(monkeypat
     seen = {r: 35100 for r in ucd.GH_SEED[:-2]}
     stub_github(seen, monkeypatch)
     hist = {"github": {"t": time.time() - 2 * 86400, "stars": dict(BASKET)}}
-    per_day, _ = ucd.github_velocity(hist, ucd.GH_SEED)
+    per_day, _, _vel = ucd.github_velocity(hist, ucd.GH_SEED)
     assert per_day == pytest.approx(len(seen) * 100 / 2, rel=1e-3)
     assert hist["github"]["stars"] == seen
 
@@ -247,7 +247,7 @@ def test_github_velocity_keeps_a_fresh_baseline_until_it_ages_past_20h(monkeypat
     stub_github({r: 99000 for r in ucd.GH_SEED}, monkeypatch)
     t0 = time.time() - 3600
     hist = {"github": {"t": t0, "stars": dict(BASKET)}}
-    per_day, _ = ucd.github_velocity(hist, ucd.GH_SEED)
+    per_day, _, _vel = ucd.github_velocity(hist, ucd.GH_SEED)
     assert per_day is None
     assert hist["github"] == {"t": t0, "stars": BASKET}
 
@@ -322,7 +322,7 @@ def test_github_velocity_rebaselines_when_the_basket_has_no_overlap(monkeypatch)
     # must still be written down or the velocity can never recover
     stub_github({"new/A": 500, "new/B": 700}, monkeypatch)
     hist = {"github": {"t": time.time() - 2 * 86400, "stars": {"old/X": 1000}}}
-    per_day, stars = ucd.github_velocity(hist, ["new/A", "new/B"])
+    per_day, stars, _vel = ucd.github_velocity(hist, ["new/A", "new/B"])
     assert per_day is None
     assert hist["github"]["stars"] == {"new/A": 500, "new/B": 700}
 
@@ -469,3 +469,117 @@ def test_radar_rows_marks_cn_services_and_tolerates_shapes():
     assert got2[0]["cn"] is True and got2[0]["rank"] == 1
     with pytest.raises(ValueError):
         ucd.radar_rows({})
+
+
+# ---------------------------------------------------------------------------
+# Daily metrics history: compute_index / resolve_price_lines / append_metrics
+# ---------------------------------------------------------------------------
+
+def full_out():
+    """One synthetic run with every family live, at easy round numbers."""
+    return {
+        "snapshot_date": "2026-08-05",
+        "openrouter_week": {"cn_share": 0.35, "us_share": 0.35, "spi": 1.0},
+        "vercel_gateway": {"cn_share": 35.0},          # percent, like the fetcher emits
+        "hf": {"cn": 45, "us": 55},
+        "github_stars_per_day": 150,
+        "ollama": {"cn": 35, "us": 65},
+        "search_consumer": {"western_share_pct": 25},
+        "apps": {"score": 40},
+        "lmarena": {"us_leader_score": 1509, "best_score": 1459},
+    }
+
+
+def test_compute_index_matches_documented_normalizations():
+    idx, fams = ucd.compute_index(full_out())
+    # each family sits exactly halfway up its documented reference range
+    assert fams == {"router": 50.0, "hf": 50.0, "github": 50.0, "ollama": 50.0,
+                    "search": 50.0, "apps": 40.0, "arena": 50.0}
+    # full weight sum = 100; hand-computed weighted mean
+    want = (30 * 50 + 20 * 50 + 15 * 50 + 10 * 50 + 10 * 50 + 10 * 40 + 5 * 50) / 100
+    assert abs(idx - want) < 0.1
+
+
+def test_compute_index_renormalizes_when_families_are_missing():
+    out = full_out()
+    del out["hf"], out["ollama"], out["apps"]
+    out["github_stars_per_day"] = None
+    idx, fams = ucd.compute_index(out)
+    assert set(fams) == {"router", "search", "arena"}
+    assert abs(idx - (30 * 50 + 10 * 50 + 5 * 50) / 45) < 0.1
+
+
+def test_compute_index_router_blends_vercel_when_present():
+    out = full_out()
+    out["vercel_gateway"] = {"cn_share": 70.0}   # normalizes to 100
+    _, fams = ucd.compute_index(out)
+    assert fams["router"] == 75.0                # mean of 50 and 100
+    del out["vercel_gateway"]
+    _, fams = ucd.compute_index(out)
+    assert fams["router"] == 50.0
+
+
+def test_compute_index_zero_score_is_a_value_not_an_exclusion():
+    out = full_out()
+    out["apps"]["score"] = 0
+    idx_with_zero, fams = ucd.compute_index(out)
+    assert fams["apps"] == 0.0                   # present, scored zero
+    out["apps"] = None
+    idx_excluded, fams2 = ucd.compute_index(out)
+    assert "apps" not in fams2
+    assert idx_excluded > idx_with_zero          # excluding renormalizes upward
+
+
+def test_resolve_price_lines_newest_wins_and_free_excluded():
+    models = [
+        {"id": "anthropic/claude-opus-4.8", "created": 100, "pricing": {"completion": "0.000025"}},
+        {"id": "anthropic/claude-opus-5", "created": 200, "pricing": {"completion": "0.000025"}},
+        {"id": "moonshotai/kimi-k3:free", "created": 900, "pricing": {"completion": "0.000015"}},
+        {"id": "moonshotai/kimi-k3", "created": 100, "pricing": {"completion": "0.000015"}},
+        {"id": "z-ai/glm-5.2", "created": 100, "pricing": {"completion": "0"}},
+    ]
+    got = ucd.resolve_price_lines(models, ucd.PRICE_LINES_US)
+    assert got == [25.0]                          # opus 5, once, at $25/M output
+    got_cn = ucd.resolve_price_lines(models, ucd.PRICE_LINES_CN)
+    assert got_cn == [15.0]                       # paid kimi only; zero-priced glm dropped
+
+
+def test_price_lines_mirror_the_pages_families():
+    """The JS PRICE_FAMILIES_* and this port must not drift apart."""
+    src = (Path(__file__).parent / "china-ai-monitor.html").read_text()
+    for label, rx in ucd.PRICE_LINES_CN + ucd.PRICE_LINES_US:
+        js = rx.pattern.replace("/", r"\/")
+        assert f"re:/{js}/" in src, f"{label}: /{rx.pattern}/ not found in page JS"
+
+
+def test_append_metrics_one_row_per_day_last_run_wins(tmp_path):
+    p = tmp_path / "china-metrics.csv"
+    r1 = {c: None for c in ucd.METRICS_COLS} | {"date": "2026-08-04", "adoption_index": 58.0}
+    r2 = {c: None for c in ucd.METRICS_COLS} | {"date": "2026-08-05", "adoption_index": 59.5}
+    r3 = {c: None for c in ucd.METRICS_COLS} | {"date": "2026-08-05", "adoption_index": 60.1}
+    for r in (r1, r2, r3):
+        ucd.append_metrics(p, r)
+    lines = p.read_text().strip().split("\n")
+    assert lines[0].split(",") == ucd.METRICS_COLS
+    assert len(lines) == 3                        # header + one row per day
+    assert lines[2].startswith("2026-08-05,60.1,")
+
+
+def test_metrics_row_carries_shares_and_gap():
+    row = ucd.metrics_row(full_out(), {"gap": 5.2, "us_med": 12.0, "cn_med": 2.3})
+    assert row["router_cn_share"] == 0.35
+    assert row["vercel_cn_share"] == 0.35
+    assert row["hf_cn_share"] == 0.45
+    assert row["price_gap"] == 5.2
+    assert row["adoption_index"] is not None
+    row2 = ucd.metrics_row(full_out(), None)
+    assert row2["price_gap"] is None
+
+
+def test_arena_summary_emits_per_model_elo_list():
+    rows = [{"model": "claude-fable-5", "org": "Anthropic", "rank": 1, "elo": 1509},
+            {"model": "qwen3.8-max", "org": "Alibaba", "rank": 5, "elo": 1496}]
+    out = ucd.arena_summary(rows)
+    assert out["models"] == [
+        {"model": "claude-fable-5", "org": "Anthropic", "elo": 1509, "cn": False},
+        {"model": "qwen3.8-max", "org": "Alibaba", "elo": 1496, "cn": True}]
