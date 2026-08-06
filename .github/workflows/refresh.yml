@@ -152,6 +152,7 @@ jobs:
           put influencers.json "application/json"
           put capex-data.json  "application/json"
           put china-data.json  "application/json"
+          put china-metrics.csv "text/csv"
 
       - name: Commit refreshed data
         run: |
@@ -197,6 +198,7 @@ jobs:
           # fallback for an R2 miss (china-data now, like influencers). All 1–10 KB.
           for f in omen/snapshots.csv omen/alert-state.json omen/influencers.json \
                    omen/china-data.json omen/china-history.json omen/china-snapshots.csv \
+                   omen/china-metrics.csv \
                    omen/app-charts.json omen/capex-data.json omen/capex-snapshots.csv; do
             [ -f "$f" ] && git add -f "$f"
           done

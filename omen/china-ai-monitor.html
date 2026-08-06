@@ -69,6 +69,30 @@
   .hbar .k { color: var(--text-secondary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
   .chartwrap { position: relative; margin-top: 8px; }
   .chartwrap svg { width: 100%; height: auto; display: block; }
+  /* hover layer: one tooltip per chartwrap, crosshair snaps to the nearest data x */
+  .tip { position: absolute; display: none; pointer-events: none; z-index: 5; background: var(--surface-1);
+    border: 1px solid var(--border); border-radius: 8px; padding: 7px 10px; font-size: 11.5px; line-height: 1.5;
+    box-shadow: 0 4px 14px rgba(0,0,0,.35); white-space: nowrap; }
+  .tip .td { color: var(--muted); font-size: 10.5px; margin-bottom: 2px; }
+  .tip .tr { display: flex; align-items: center; gap: 6px; }
+  .tip .tr i { width: 10px; height: 0; border-top: 2.4px solid; flex: none; }
+  .tip .tr b { font-variant-numeric: tabular-nums; }
+  .tip .tr span { color: var(--text-secondary); }
+  .tip .tev { color: var(--accT); margin-top: 2px; max-width: 260px; white-space: normal; }
+  /* event flags on the trend chart */
+  .evline { stroke: var(--muted); stroke-width: 1; opacity: .45; }
+  .evdot  { fill: var(--acc); }
+  /* index-history sparkline in the gauge block */
+  .idxsparkwrap { position: relative; margin-top: 12px; }
+  .idxsparkwrap svg { width: 100%; height: auto; display: block; }
+  /* scatter */
+  .scatterwrap { position: relative; margin-top: 8px; }
+  .scatterwrap svg { width: 100%; height: auto; display: block; }
+  /* prediction-market odds sparklines */
+  td svg.pmspark { width: 84px; height: 22px; display: inline-block; vertical-align: middle; }
+  /* equity sparklines: red stays reserved for "Chinese labs" on this page, so
+     drawdown wears the status orange and at-high wears the status green */
+  .eq .dd.down { color: var(--serious); }
   .legend { display: flex; gap: 16px; flex-wrap: wrap; font-size: 12px; color: var(--text-secondary); margin-top: 8px; }
   .legend span { display: inline-flex; align-items: center; gap: 6px; }
   .legend i.line { width: 14px; height: 2.5px; border-radius: 2px; display: inline-block; }
@@ -182,6 +206,8 @@
       <div class="gaugeNum"><span id="gaugeVal">&ndash;</span><small>/100</small></div>
       <div class="meter"><span class="mk" id="gaugeMk" style="left:0%"></span></div>
       <div class="meterlab"><span>Contained</span><span>Building</span><span>Displacing</span></div>
+      <div class="idxsparkwrap"><svg id="idxSpark" style="display:none"></svg></div>
+      <div class="note" id="idxSparkNote"></div>
       <div class="note" id="gaugeNote"></div>
     </div>
     <div class="cats" id="cats"></div>
@@ -197,12 +223,14 @@
 <!-- ============ SPI / SHARE TREND ============ -->
 <div class="card">
   <h2>Substitution pressure trend <span class="sub">&ndash; weekly Chinese vs US lab share of OpenRouter routed tokens (named authors; the platform's "others" bucket is excluded, so Chinese share is a lower bound)</span></h2>
-  <div class="chartwrap"><svg id="trendChart" viewBox="0 0 960 300" preserveAspectRatio="none"></svg></div>
+  <div class="chartwrap"><svg id="trendChart"></svg></div>
   <div class="legend">
     <span><i class="line" style="background:var(--cn)"></i>Chinese labs share</span>
     <span><i class="line" style="background:var(--us)"></i>US labs share</span>
-    <span><i class="line" style="background:var(--violet)"></i>SPI (CN&divide;US, right scale)</span>
+    <span><i class="line" style="background:var(--cn); opacity:.55; height:0; border-top:2px dashed var(--cn); background:none"></i>Chinese share on Vercel AI Gateway (daily)</span>
+    <span><i class="line" style="background:var(--violet)"></i>SPI = CN&divide;US tokens (lower panel)</span>
   </div>
+  <div class="note" id="trendEvents"></div>
   <div class="note" id="trendNote"></div>
 </div>
 
@@ -228,6 +256,8 @@
   <div class="card">
     <h2>Inference price compression <span class="sub">&ndash; flagship $/1M tokens, newest model in each line, live from OpenRouter</span></h2>
     <table id="priceTable"><thead><tr><th>Model</th><th></th><th class="num">Input</th><th class="num">Output</th></tr></thead><tbody></tbody></table>
+    <div class="idxsparkwrap"><svg id="gapSpark" style="display:none"></svg></div>
+    <div class="note" id="gapSparkNote"></div>
     <div class="note" id="priceNote"></div>
   </div>
 
@@ -237,8 +267,21 @@
     <div class="splitbar" id="hfSplit"></div>
     <div class="splitlab"><span id="hfSplitL"></span><span id="hfSplitR"></span></div>
     <div id="hfLabs"></div>
-    <div class="note">Chinese labs vs US open-weight families (Llama, Gemma, GPT-OSS, Phi, Nemotron, OLMo). Sum of each org's top-50 repos; community quantizations/finetunes not attributed, so both sides are undercounts.</div>
+    <div class="idxsparkwrap"><svg id="hfSpark" style="display:none"></svg></div>
+    <div class="note" id="hfSparkNote"></div>
+    <div class="note">Chinese labs vs US open-weight families (Llama, Gemma, GPT-OSS, Phi, Nemotron, OLMo). Sum of each org's top-50 repos; community quantizations/finetunes not attributed, so both sides are undercounts. Bar length is log-scaled &ndash; Qwen's totals would otherwise reduce every other lab to a sliver.</div>
   </div>
+</div>
+
+<!-- ============ PRICE VS QUALITY SCATTER ============ -->
+<div class="card" id="scatterCard" style="display:none">
+  <h2>The substitution frontier &ndash; price vs quality <span class="sub" id="scAsof">&ndash; flagship lines: output $/M (log scale) against LMArena Elo</span></h2>
+  <div class="scatterwrap"><svg id="scatterChart"></svg></div>
+  <div class="legend">
+    <span><i class="line" style="width:9px;height:9px;border-radius:50%;background:var(--cn)"></i>Chinese flagship</span>
+    <span><i class="line" style="width:9px;height:9px;border-radius:50%;background:var(--us)"></i>US flagship</span>
+  </div>
+  <div class="note" id="scatterNote">The thesis in one picture: up and to the left is better. Each dot is a flagship line from the price table joined to its LMArena Elo; lines without a current arena entry are omitted.</div>
 </div>
 
 <div class="grid2">
@@ -246,7 +289,7 @@
   <div class="card">
     <h2>GitHub developer engagement <span class="sub" id="ghAsof">&ndash; active flagship repos, live</span></h2>
     <table id="ghTable"><thead><tr><th>Repo</th><th class="num">Stars</th><th class="num">Forks</th><th class="num">&Delta;/day</th></tr></thead><tbody></tbody></table>
-    <div class="note" id="ghNote">Star velocity is measured against this browser's first visit (stored locally), so it reads "calibrating" until a later visit. Fork counts are the stronger adoption signal.</div>
+    <div class="note" id="ghNote">&Delta;/day is measured server-side between the updater's daily runs (a browser-local baseline fills in for dev use). Fork counts are the stronger adoption signal.</div>
   </div>
 
   <!-- ============ LEADERBOARDS (snapshot) ============ -->
@@ -279,6 +322,8 @@
     <div class="splitbar" id="olSplit"></div>
     <div class="splitlab"><span id="olSplitL"></span><span id="olSplitR"></span></div>
     <div id="olModels"></div>
+    <div class="idxsparkwrap"><svg id="olSpark" style="display:none"></svg></div>
+    <div class="note" id="olSparkNote"></div>
     <div class="note" id="olNote">Pull counts from the <a href="https://ollama.com/library" target="_blank" rel="noopener">Ollama library</a> &ndash; the self-hosted segment that no router or HF download counter sees, and where Chinese open-weight models are disproportionately run. Lifetime totals (a stock, not a flow); the daily rate appears once two refreshes are &gt;20h apart.</div>
   </div>
 </div>
@@ -309,7 +354,7 @@
 <!-- ============ PREDICTION MARKETS ============ -->
 <div class="card">
   <h2>Prediction markets &ndash; Chinese AI leadership <span class="sub">&ndash; live Polymarket odds + Kalshi (batch, daily)</span></h2>
-  <table id="pmTable"><thead><tr><th>Market</th><th class="num">YES</th><th class="num">24h &Delta;</th></tr></thead><tbody></tbody></table>
+  <table id="pmTable"><thead><tr><th>Market</th><th class="num">History</th><th class="num">YES</th><th class="num">24h &Delta;</th></tr></thead><tbody></tbody></table>
   <div class="note">Polymarket leadership markets resolve on <a href="https://arena.ai/leaderboard/text" target="_blank" rel="noopener">arena.ai</a> rankings; <a href="https://kalshi.com/markets/kxbestllmchina/chinese-llm-best" target="_blank" rel="noopener">Kalshi</a> is a CFTC-regulated exchange with deeper AI books, fetched by the daily updater (no CORS API). These are the market's own probabilities that Chinese labs take or hold the frontier &ndash; the cleanest forward-looking read in this monitor. Rows tagged <span class="tag src">AUTO</span> were found by searching Polymarket's active markets rather than pinned by id, so the monthly "best Chinese AI model" cohort keeps refreshing as each one resolves; only markets above $5k volume are admitted, which excludes the unnamed placeholder outcomes that sit at 50&cent;.</div>
 </div>
 
@@ -317,7 +362,7 @@
 <div class="card">
   <h2>US AI equity check <span class="sub" id="eqAsof">&ndash; the stocks this pressure would show up in</span></h2>
   <div class="eqgrid" id="eqGrid"></div>
-  <div class="note" id="eqNote">Prices from the site's shared feed (<code>market-data.json</code>, auto-refreshed server-side). Drawdown is vs the 6-month high. Correlation caveat: the <a href="polymarket-ai-index.html">AI Crash Monitor</a>'s lead-lag study finds no statistically significant lead from prediction-market signals to NVDA/SOXX yet &ndash; treat this page as a market-pricing monitor, not a validated forecast.</div>
+  <div class="note" id="eqNote">Prices from the site's shared feed (<code>market-data.json</code>, auto-refreshed server-side). Drawdown is vs the 6-month high; orange sparklines are below it, green at it &ndash; red stays reserved for "Chinese labs" everywhere else on this page. Correlation caveat: the <a href="polymarket-ai-index.html">AI Crash Monitor</a>'s lead-lag study finds no statistically significant lead from prediction-market signals to NVDA/SOXX yet &ndash; treat this page as a market-pricing monitor, not a validated forecast.</div>
 </div>
 
 <!-- ============ THESIS ============ -->
@@ -334,6 +379,7 @@
   <h3>Methodology</h3>
   <b>Chinese AI Adoption Index</b> = &Sigma;(w<sub>i</sub>&middot;s<sub>i</sub>)/&Sigma;w<sub>i</sub> over available signal families, each normalized 0&ndash;100 against fixed reference ranges: router Chinese token share 0&rarr;70% (w=30; mean of the OpenRouter and Vercel-AI-Gateway normalized shares when both are available, OpenRouter alone otherwise), Hugging Face Chinese share of open-weight downloads 0&rarr;90% (w=20), GitHub star velocity across the flagship basket 0&rarr;300/day (w=15; the basket is rediscovered each run as the two most-starred repos per lab still pushed to within 180 days, so a new release enters it the week it lands), Ollama Chinese share of named-family pulls 0&rarr;70% (w=10), Western search/consumer interest share 0&rarr;50% (w=10), consumer-app Western top-chart presence 0&rarr;100 (basket-mean best top-100 rank, w=10), LMArena proximity 100&minus;Elo-gap, floored at 0 (w=5). Weights follow the source note's suggested scheme, extended with the local-adoption family; excluded families renormalize.
   <b>SPI</b> = Chinese-lab &divide; US-lab routed tokens (named authors) on OpenRouter, trailing week.
+  <b>Histories</b>: the updater appends one row per UTC day to <code>china-metrics.csv</code> (composite index, SPI, router/HF/Ollama Chinese shares, GitHub star velocity, frontier price gap) &ndash; the small history lines across the page read from it, so they are server-durable rather than per-browser; Polymarket odds histories come live from the public CLOB <code>prices-history</code> endpoint.
   <b>Frontier price gap</b> = median output $/M of US flagship <i>lines</i> (GPT top/mid, Claude Opus/Sonnet, Gemini Pro/Flash) &divide; median of Chinese lines (DeepSeek pro/flash, GLM, Kimi and Kimi Code, MiniMax, Qwen Max). Each line resolves to its newest live model in OpenRouter's catalogue at page load rather than to a pinned version, so a launch or a price cut moves the gap the day it ships and a retired slug surfaces as a named warning instead of quietly leaving the median. Lines are matched on name, never on price: Chinese labs deliberately price their newest flagship <i>below</i> their previous one, so ranking by cost would pick the older model.
   <h3>Caveats</h3>
   OpenRouter sees only routed traffic &ndash; it overstates Chinese share of the total market (first-party US API traffic is invisible) but is the best public real-time proxy for the substitutable segment; the Vercel AI Gateway cross-check (production apps, export cached 24h) partially corrects that bias and currently reads much lower. HF download totals mix model generations and exclude derivative quantizations. Ollama pulls are lifetime cumulative, so they lag shifts; the derived daily rate is the leading part. Fine-tune-tree counts depend on authors declaring <code>base_model</code> metadata. PyPI SDK installs undercount the Chinese side badly (OpenAI-compatible APIs ride the <code>openai</code> package). Leaderboard (LMArena official dataset, arena.ai scrape fallback), search interest (Google Trends), consumer-app chart presence (Apple RSS + Google Play), Vercel, Ollama, Kalshi, fine-tune trees and SDK installs are all refreshed by <code>update-china-data.py</code>; Artificial-Analysis scores refresh live when the updater has an <code>ARTIFICIAL_ANALYSIS_API_KEY</code>, else they remain a dated snapshot, and the Cloudflare-Radar consumer-traffic panel appears only when a <code>CF_RADAR_TOKEN</code> is configured (see freshness strip). Prediction-market prices are thin in places; Kalshi quotes are daily-batch, not live, and the discovered (<span class="tag src">AUTO</span>) leadership rows rotate as each monthly cohort resolves, so that block is not a fixed panel across visits. Nothing here is a validated forecast of equity returns &ndash; the companion monitor's own lead-lag test is honest about that.
@@ -441,6 +487,104 @@ const PRICE_FAMILIES_US = [
   { label:"Gemini Flash",     re:/^google\/gemini-[\d.]+-flash$/ }
 ];
 const EQ_SYMS = ["NVDA","SOXX","AVGO","MU","ANET","CRWV","ORCL","SMCI","VST","MSFT","META","SPY"];
+
+/* ---- trend-chart event flags ----
+ * Curated news events only; model launches are derived at render time from the
+ * dated slugs already in the week's top models (deepseek-v4-flash-20260731 et al),
+ * so the flags refresh themselves as new models enter the ranking. */
+const EVENTS_NEWS = [
+  { d:"2026-07-07", label:"CNBC: Coinbase, Lindy, Citi shift spend to Chinese models" }
+];
+function slugEvents(models){
+  const out = [], seen = new Set();
+  for(const m of (models||[]).slice(0, 12)){
+    const mm = /-(20\d{2})(\d{2})(\d{2})$/.exec(m.slug||"");
+    if(!mm) continue;
+    const d = `${mm[1]}-${mm[2]}-${mm[3]}`, lab = (m.slug||"").split("/")[0];
+    const key = lab+"|"+d.slice(0,7);          // one flag per lab per month
+    if(seen.has(key)) continue;
+    seen.add(key);
+    out.push({ d, label: (m.variant||m.slug).replace(/:free$/,"").replace(/-20\d{6}$/,"") + " ships" });
+  }
+  return out;
+}
+
+/* ---------------- chart helpers ---------------- */
+// Dates -> ms since epoch; every multi-series chart on this page shares one
+// time-based x scale so differently-sampled series (weekly OpenRouter, daily
+// Vercel) can overlay without lying about spacing.
+const dnum = d => Date.parse(d + "T00:00:00Z");
+// Measured-width render: each chart draws at its container's real pixel width and
+// re-draws on resize, so axis text is never stretched (the old preserveAspectRatio=
+// "none" distorted labels and stroke widths at any viewport that wasn't 960 wide).
+const REDRAW = [];
+function chartW(svg, fallback=960){
+  const w = svg.parentElement ? svg.parentElement.clientWidth : 0;
+  return Math.max(320, Math.round(w || fallback));
+}
+let _rzT = null;
+window.addEventListener("resize", () => { clearTimeout(_rzT); _rzT = setTimeout(()=>REDRAW.forEach(f=>{ try{f();}catch(e){} }), 160); });
+
+// One tooltip div per .chartwrap; rows are [{k:label, v:value, c:color, dash}].
+// Labels and values land via textContent - series names are untrusted data.
+function tipOf(wrap){
+  let t = wrap.querySelector(".tip");
+  if(!t){ t = document.createElement("div"); t.className = "tip"; wrap.appendChild(t); }
+  return t;
+}
+function tipFill(tip, date, rows, evs){
+  tip.replaceChildren();
+  const d = document.createElement("div"); d.className = "td"; d.textContent = date; tip.appendChild(d);
+  for(const r of rows){
+    if(r.v == null) continue;
+    const line = document.createElement("div"); line.className = "tr";
+    const key = document.createElement("i");
+    key.style.borderTopColor = r.c; if(r.dash) key.style.borderTopStyle = "dashed";
+    const val = document.createElement("b"); val.textContent = r.v;
+    const lab = document.createElement("span"); lab.textContent = r.k;
+    line.append(key, val, lab); tip.appendChild(line);
+  }
+  for(const e of (evs||[])){
+    const line = document.createElement("div"); line.className = "tev";
+    line.textContent = "◆ " + e.label; tip.appendChild(line);
+  }
+}
+// Crosshair: a vertical hairline that snaps to the nearest data x. The whole SVG is
+// the hit target; opts = {svg, wrap, xs:[px…], x2t(i)->iso, rowsAt(i), evsAt(i), yTop, yBot, W}.
+function attachCrosshair(o){
+  const tip = tipOf(o.wrap);
+  const NS = "http://www.w3.org/2000/svg";
+  let hair = document.createElementNS(NS, "line");
+  hair.setAttribute("y1", o.yTop); hair.setAttribute("y2", o.yBot);
+  hair.setAttribute("stroke", "var(--muted)"); hair.setAttribute("stroke-width", "1");
+  hair.style.display = "none"; hair.style.pointerEvents = "none";
+  o.svg.appendChild(hair);
+  const pxPerUnit = () => o.svg.getBoundingClientRect().width / o.W;
+  o.svg.onpointermove = ev => {
+    const box = o.svg.getBoundingClientRect();
+    const x = (ev.clientX - box.left) / pxPerUnit();
+    let best = 0, bd = Infinity;
+    o.xs.forEach((px,i) => { const d = Math.abs(px-x); if(d<bd){ bd=d; best=i; } });
+    hair.setAttribute("x1", o.xs[best]); hair.setAttribute("x2", o.xs[best]);
+    hair.style.display = "";
+    tipFill(tip, o.x2t(best), o.rowsAt(best), o.evsAt ? o.evsAt(best) : null);
+    tip.style.display = "block";
+    const wb = o.wrap.getBoundingClientRect();
+    const px = o.xs[best]*pxPerUnit(), flip = px > wb.width*0.62;
+    tip.style.left = flip ? "" : Math.round(px+12)+"px";
+    tip.style.right = flip ? Math.round(wb.width-px+12)+"px" : "";
+    tip.style.top = Math.round((ev.clientY - wb.top) - 12)+"px";
+  };
+  o.svg.onpointerleave = () => { hair.style.display = "none"; tip.style.display = "none"; };
+}
+// Log-scaled bar width for panels whose values span orders of magnitude (HF
+// downloads, SDK installs): linear length would render every non-leader invisible.
+// The numeric label stays the source of truth; the note says the scale is log.
+function logW(v, min, max){
+  if(!(v>0) || !(max>min*1.0001)) return v>0 ? 100 : 0;
+  const lo = Math.log(min*0.7);
+  return Math.max(6, (Math.log(v)-lo)/(Math.log(max)-lo)*100);
+}
 /* ---------------- helpers ---------------- */
 // This page's own esc() had lost the null guard the other five carried, so a null field
 // from OpenRouter/HF/GitHub/Polymarket threw instead of rendering blank. Shared now.
@@ -453,7 +597,7 @@ async function jget(url, opt){ const r = await fetch(url, opt); if(!r.ok) throw 
 const store = { get(k){ try{ return JSON.parse(localStorage.getItem("cnmon:"+k)); }catch(e){ return null; } }, set(k,v){ try{ localStorage.setItem("cnmon:"+k, JSON.stringify(v)); }catch(e){} } };
 /* ---------------- state ---------------- */
 let snap = SNAP;
-const S = { or:null, orShare:null, hf:null, gh:null, pm:null, eq:null, prices:null };
+const S = { or:null, orShare:null, hf:null, gh:null, pm:null, eq:null, prices:null, metrics:null };
 const IDX = {};   // family -> {w, val|null, detail}
 
 /* ---------------- OpenRouter: weekly model rankings + market share ---------------- */
@@ -576,7 +720,8 @@ function pmAccept(spec, ev, m, have){
   const vol = +(m.volumeNum ?? m.volume ?? 0);
   if(!(vol >= PM_MIN_VOL)) return null;
   return { id:String(m.id), label:q, p:pmPrice(m), d24:pmDelta(m),
-           slug: ev.slug || m.slug || null, vol, found:true };
+           slug: ev.slug || m.slug || null, vol, found:true,
+           tok: OMEN.jsonList(m.clobTokenIds)[0] ?? null };
 }
 async function loadPM(){
   const out = new Map();
@@ -588,7 +733,8 @@ async function loadPM(){
       const m = byId.get(spec.id);
       if(!m || m.closed) continue;
       out.set(spec.id, { ...spec, p:pmPrice(m), d24:pmDelta(m),
-                         slug: m.slug ? (m.events?.[0]?.slug || m.slug) : null, found:false });
+                         slug: m.slug ? (m.events?.[0]?.slug || m.slug) : null, found:false,
+                         tok: OMEN.jsonList(m.clobTokenIds)[0] ?? null });
     }
     ok = true;
   }catch(e){}
@@ -620,6 +766,80 @@ async function loadEQ(){
     if(age>36){ const b=$("dataAge"); b.textContent="Equity feed is "+age.toFixed(0)+"h old - the site's server-side refresher may be stalled."; b.classList.add("show"); }
   }catch(e){ dot("eq","warn","feed not reachable"); }
 }
+/* ---------------- daily metrics history (china-metrics.csv) ---------------- */
+// Server-logged trajectories: composite index, SPI, per-family shares, price gap -
+// one row per UTC day, appended by update-china-data.py. Turns the snapshot panels
+// into time series without depending on any one browser's localStorage.
+async function loadMetrics(){
+  try{
+    const txt = await (await fetch("china-metrics.csv", {cache:"no-store"})).text();
+    const [head, ...rows] = txt.trim().split("\n").map(l=>l.split(","));
+    if(!head || head[0]!=="date") return;
+    S.metrics = rows.map(r => Object.fromEntries(head.map((k,i)=>[k, i===0? r[i] : (r[i]===""||r[i]==null? null : +r[i])])))
+                    .filter(r=>r.date);
+  }catch(e){ /* absent until the first updater run after deploy - panels degrade to snapshots */ }
+}
+// Tiny single-series history line used by the gauge and the share/price panels.
+function sparkline(el, pts, {color="var(--acc)", fmt=v=>String(v), label=""}={}){
+  if(!el || !pts || pts.length<2){ if(el) el.style.display="none"; return false; }
+  const W = chartW(el, 400), H = 44, L = 4, R = 40, T = 6, B = 6;
+  const vs = pts.map(p=>p.v);
+  let lo = Math.min(...vs), hi = Math.max(...vs);
+  // y-domain floor (same rationale as omen-common's sparkSvg): min→max scaling turns
+  // a ±0.5% drift into a full-height mountain range, reading as volatility that isn't there
+  const avg = vs.reduce((a,b)=>a+b,0)/vs.length;
+  const floor = Math.abs(avg)*0.04 || 1;
+  if(hi-lo < floor){ const mid=(hi+lo)/2; hi = mid+floor/2; lo = mid-floor/2; }
+  const t0 = dnum(pts[0].d), t1 = dnum(pts.at(-1).d);
+  const X = t => L + (W-L-R)*((t-t0)/Math.max(1,t1-t0));
+  const Y = v => T + (H-T-B)*(1-(v-lo)/(hi-lo));
+  const path = pts.map((p,i)=>`${i?"L":"M"}${X(dnum(p.d)).toFixed(1)},${Y(p.v).toFixed(1)}`).join("");
+  const last = pts.at(-1);
+  el.setAttribute("viewBox", `0 0 ${W} ${H}`);
+  el.removeAttribute("preserveAspectRatio");
+  el.style.display = "block";
+  el.innerHTML = `<path d="${path}" fill="none" stroke="${color}" stroke-width="1.8"/>`
+    + `<circle cx="${X(dnum(last.d))}" cy="${Y(last.v)}" r="2.6" fill="${color}"/>`
+    + `<text x="${W}" y="${Y(last.v)+4}" text-anchor="end" font-size="11" fill="var(--text-secondary)">${esc(fmt(last.v))}</text>`;
+  // per-point hover on the mini line
+  attachCrosshair({ svg: el, wrap: el.parentElement, W,
+    xs: pts.map(p=>X(dnum(p.d))), x2t: i=>pts[i].d, yTop: T, yBot: H-B,
+    rowsAt: i => [{k:label, v:fmt(pts[i].v), c:color}] });
+  return true;
+}
+function metricSeries(col){
+  return (S.metrics||[]).filter(r=>r[col]!=null).map(r=>({d:r.date, v:r[col]}));
+}
+function renderIdxSpark(){
+  // server history first, this browser's own daily log as a fallback seed
+  const server = metricSeries("adoption_index");
+  const local = (store.get("hist")||[]).map(h=>({d:h.d, v:h.v}));
+  const seen = new Set(server.map(p=>p.d));
+  const pts = [...server, ...local.filter(p=>!seen.has(p.d))].sort((a,b)=>a.d<b.d?-1:1).slice(-180);
+  const ok = sparkline($("idxSpark"), pts, {fmt:v=>v.toFixed(0), label:"adoption index"});
+  $("idxSparkNote").textContent = ok
+    ? `Index history, daily since ${pts[0].d}` + (server.length? " (server-logged)." : " (this browser only - server history accrues from 2026-08-05).")
+    : "Index history starts accruing once the daily updater has run twice.";
+  if(ok && !REDRAW.includes(renderIdxSpark)) REDRAW.push(renderIdxSpark);
+}
+// Family trajectories: HF share, Ollama share and the frontier price gap get a
+// small history line each once the server log has at least two days in it.
+function renderShareSparks(){
+  const one = (svgId, noteId, col, opt, noteTxt) => {
+    const el = $(svgId); if(!el) return;
+    if(sparkline(el, metricSeries(col).slice(-180), opt)) $(noteId).textContent = noteTxt;
+  };
+  one("hfSpark", "hfSparkNote", "hf_cn_share",
+      {color:"var(--cn)", fmt:v=>pct(v), label:"Chinese share of open-weight downloads"},
+      "Chinese download share, daily server log.");
+  one("olSpark", "olSparkNote", "ollama_cn_share",
+      {color:"var(--cn)", fmt:v=>pct(v), label:"Chinese share of named-family pulls"},
+      "Chinese pull share, daily server log.");
+  one("gapSpark", "gapSparkNote", "price_gap",
+      {color:"var(--violet)", fmt:v=>v.toFixed(1)+"x", label:"US ÷ CN flagship output price"},
+      "Frontier price gap, daily server log - falling means US pricing power holding, rising means compression biting.");
+  if(!REDRAW.includes(renderShareSparks)) REDRAW.push(renderShareSparks);
+}
 /* ---------------- china-data.json override ---------------- */
 async function loadSnap(){
   try{ const d = await jget("china-data.json", {cache:"no-store"}); snap = { ...SNAP, ...d }; }catch(e){}
@@ -628,27 +848,69 @@ async function loadSnap(){
   dot("sn", "warn", parts.join(" · ") || "embedded snapshot");
 }
 /* ---------------- renderers ---------------- */
+/* The share chart and the SPI ratio are one degree of freedom plotted twice, so they
+ * get two stacked panels on a shared time axis instead of the old dual-axis overlay:
+ * shares (with the Vercel cross-check series superimposed) on top, SPI below with an
+ * explicit 1.0x parity threshold - the line whose crossing is this page's whole story. */
 function renderTrend(){
-  const el = $("trendChart"); if(!S.orShare || S.orShare.length<4){ el.outerHTML='<div class="note">OpenRouter share series unavailable.</div>'; return; }
-  const W=960, H=300, L=46, R=52, T=14, B=30;
+  const el = $("trendChart"); if(!el) return;
+  if(!S.orShare || S.orShare.length<4){ el.outerHTML='<div class="note">OpenRouter share series unavailable.</div>'; return; }
   const s = S.orShare;
-  const xs = i => L + (W-L-R) * (i/(s.length-1));
-  const yPct = v => T + (H-T-B) * (1 - v);
-  const maxSpi = Math.max(2, ...s.map(w=>w.us>0? w.cn/w.us : 0)) * 1.08;
-  const ySpi = v => T + (H-T-B) * (1 - v/maxSpi);
-  let g = "";
+  const vgs = (snap.vercel_gateway?.series||[]).filter(p=>p.cn!=null);
+  const W = chartW(el), H = 400, L = 46, R = 66, B = 26;
+  const shT = 12, shB = 262, spT = 296, spB = H - B;      // share panel / SPI panel bands
+  const t0 = dnum(s[0].x), t1 = Math.max(dnum(s.at(-1).x), vgs.length? dnum(vgs.at(-1).d) : 0);
+  const X = t => L + (W-L-R) * ((t-t0)/(t1-t0));
+  const yPct = v => shT + (shB-shT) * (1 - v);
+  const spiOf = w => w.us>0 ? w.cn/w.us : 0;
+  const maxSpi = Math.max(1.6, ...s.map(spiOf)) * 1.1;
+  const ySpi = v => spT + (spB-spT) * (1 - v/maxSpi);
+  let g = `<rect x="${L}" y="${shT}" width="${W-L-R}" height="${shB-shT}" fill="none"/>`;
   for(const f of [0,.25,.5,.75,1]) g += `<line x1="${L}" y1="${yPct(f)}" x2="${W-R}" y2="${yPct(f)}" stroke="var(--grid)" stroke-width="1"/><text x="${L-6}" y="${yPct(f)+4}" text-anchor="end" font-size="11" fill="var(--muted)">${f*100}%</text>`;
-  for(const f of [0,.5,1]) g += `<text x="${W-R+6}" y="${ySpi(f*maxSpi)+4}" font-size="11" fill="var(--violet)">${(f*maxSpi).toFixed(1)}x</text>`;
-  const path = (fn, key) => s.map((w,i)=>`${i?"L":"M"}${xs(i).toFixed(1)},${fn(w).toFixed(1)}`).join("");
-  const cnP = path(w=>yPct(w.cn/w.tot)), usP = path(w=>yPct(w.us/w.tot)), spiP = path(w=>ySpi(w.us>0?w.cn/w.us:0));
-  const ticks = [0, Math.floor(s.length/3), Math.floor(2*s.length/3), s.length-1];
-  for(const i of ticks) g += `<text x="${xs(i)}" y="${H-8}" text-anchor="middle" font-size="11" fill="var(--muted)">${s[i].x}</text>`;
-  el.innerHTML = g
-    + `<path d="${cnP}" fill="none" stroke="var(--cn)" stroke-width="2.4"/>`
-    + `<path d="${usP}" fill="none" stroke="var(--us)" stroke-width="2.4"/>`
-    + `<path d="${spiP}" fill="none" stroke="var(--violet)" stroke-width="2" stroke-dasharray="5 4"/>`;
-  const last = s.at(-1), yearAgo = s[0];
-  $("trendNote").innerHTML = `Named-Chinese share ${pct(yearAgo.cn/yearAgo.tot)} (wk of ${esc(yearAgo.x)}) &rarr; <b>${pct(last.cn/last.tot)}</b> (wk of ${esc(last.x)}). Platform weekly volume ${fmtT(yearAgo.tot)} &rarr; ${fmtT(last.tot)} tokens. SPI ${ (yearAgo.cn/Math.max(1,yearAgo.us)).toFixed(2) }x &rarr; <b>${(last.cn/Math.max(1,last.us)).toFixed(2)}x</b>.`;
+  // SPI panel: solid hairlines for the scale, a dashed amber threshold at parity
+  const spiTicks = [0, 1, maxSpi>2.4 ? 2 : 0.5].filter((v,i,a)=>a.indexOf(v)===i && v<maxSpi);
+  for(const v of spiTicks) if(v!==1) g += `<line x1="${L}" y1="${ySpi(v)}" x2="${W-R}" y2="${ySpi(v)}" stroke="var(--grid)" stroke-width="1"/><text x="${L-6}" y="${ySpi(v)+4}" text-anchor="end" font-size="11" fill="var(--muted)">${v}x</text>`;
+  g += `<line x1="${L}" y1="${ySpi(1)}" x2="${W-R}" y2="${ySpi(1)}" stroke="var(--violet)" stroke-width="1" stroke-dasharray="5 4" opacity=".8"/><text x="${L-6}" y="${ySpi(1)+4}" text-anchor="end" font-size="11" fill="var(--violet)">1.0x</text><text x="${W-R-4}" y="${ySpi(1)-5}" text-anchor="end" font-size="10" fill="var(--violet)" opacity=".85">parity &mdash; CN routes more tokens than US above this line</text>`;
+  const path = (pts, xf, yf) => pts.map((p,i)=>`${i?"L":"M"}${xf(p).toFixed(1)},${yf(p).toFixed(1)}`).join("");
+  const cnP  = path(s, w=>X(dnum(w.x)), w=>yPct(w.cn/w.tot));
+  const usP  = path(s, w=>X(dnum(w.x)), w=>yPct(w.us/w.tot));
+  const spiP = path(s, w=>X(dnum(w.x)), w=>ySpi(spiOf(w)));
+  const vgP  = vgs.length>3 ? path(vgs, p=>X(dnum(p.d)), p=>yPct(p.cn/100)) : "";
+  // x ticks: ~5 evenly spaced weeks
+  const ti = [0, .25, .5, .75, 1].map(f=>Math.round(f*(s.length-1)));
+  for(const i of ti) g += `<text x="${X(dnum(s[i].x))}" y="${H-8}" text-anchor="middle" font-size="11" fill="var(--muted)">${s[i].x}</text>`;
+  // event flags: derived model-launch dates + curated news, clipped to the x domain
+  const evs = [...EVENTS_NEWS, ...slugEvents(S.or?.models)].filter(e=>{ const t=dnum(e.d); return t>=t0 && t<=t1; })
+    .sort((a,b)=>dnum(a.d)-dnum(b.d)).slice(0,9);
+  for(const e of evs){ const x=X(dnum(e.d)); g += `<line class="evline" x1="${x}" y1="${shT+8}" x2="${x}" y2="${shB}"/><circle class="evdot" cx="${x}" cy="${shT+5}" r="3.2"><title>${esc(e.d+" – "+e.label)}</title></circle>`; }
+  const last = s.at(-1);
+  g += `<path d="${cnP}" fill="none" stroke="var(--cn)" stroke-width="2.4"/>`
+     + `<path d="${usP}" fill="none" stroke="var(--us)" stroke-width="2"/>`
+     + (vgP ? `<path d="${vgP}" fill="none" stroke="var(--cn)" stroke-width="1.6" stroke-dasharray="3 4" opacity=".6"/>` : "")
+     + `<path d="${spiP}" fill="none" stroke="var(--violet)" stroke-width="2"/>`;
+  // selective direct labels: the endpoints only - the legend and tooltip carry the rest
+  g += `<text x="${W-R+6}" y="${yPct(last.cn/last.tot)+4}" font-size="11.5" font-weight="600" fill="var(--cn)">CN ${pct(last.cn/last.tot)}</text>`
+     + `<text x="${W-R+6}" y="${yPct(last.us/last.tot)+4}" font-size="11.5" fill="var(--us)">US ${pct(last.us/last.tot)}</text>`
+     + `<text x="${W-R+6}" y="${ySpi(spiOf(last))+4}" font-size="11.5" font-weight="600" fill="var(--violet)">${spiOf(last).toFixed(2)}x</text>`;
+  el.setAttribute("viewBox", `0 0 ${W} ${H}`);
+  el.removeAttribute("preserveAspectRatio");
+  el.innerHTML = g;
+  // hover: one tooltip, every series at the snapped week (+ Vercel's nearest day)
+  const vgNear = t => { if(!vgs.length) return null; let b=null,bd=Infinity; for(const p of vgs){ const d=Math.abs(dnum(p.d)-t); if(d<bd){bd=d;b=p;} } return bd<=4*86400e3 ? b : null; };
+  attachCrosshair({ svg: el, wrap: el.closest(".chartwrap"), W,
+    xs: s.map(w=>X(dnum(w.x))), x2t: i=>"week of "+s[i].x, yTop: shT, yBot: spB,
+    rowsAt: i => { const w=s[i], vn=vgNear(dnum(w.x));
+      return [ {k:"Chinese labs share", v:pct(w.cn/w.tot), c:"var(--cn)"},
+               {k:"US labs share", v:pct(w.us/w.tot), c:"var(--us)"},
+               vn ? {k:"Vercel gateway CN ("+vn.d+")", v:vn.cn.toFixed(1)+"%", c:"var(--cn)", dash:1} : {k:"",v:null},
+               {k:"SPI (CN÷US)", v:spiOf(w).toFixed(2)+"x", c:"var(--violet)"},
+               {k:"routed tokens", v:fmtT(w.tot), c:"var(--other)"} ]; },
+    evsAt: i => { const t=dnum(s[i].x); return evs.filter(e=>Math.abs(dnum(e.d)-t)<3.5*86400e3).map(e=>({label:e.d+" "+e.label})); }
+  });
+  if(!REDRAW.includes(renderTrend)) REDRAW.push(renderTrend);
+  $("trendEvents").innerHTML = evs.length ? "◆ " + evs.map(e=>`<b>${esc(e.d)}</b> ${esc(e.label)}`).join(" &nbsp;·&nbsp; ") : "";
+  const yearAgo = s[0];
+  $("trendNote").innerHTML = `Named-Chinese share ${pct(yearAgo.cn/yearAgo.tot)} (wk of ${esc(yearAgo.x)}) &rarr; <b>${pct(last.cn/last.tot)}</b> (wk of ${esc(last.x)}). Platform weekly volume ${fmtT(yearAgo.tot)} &rarr; ${fmtT(last.tot)} tokens. SPI ${ (yearAgo.cn/Math.max(1,yearAgo.us)).toFixed(2) }x &rarr; <b>${(last.cn/Math.max(1,last.us)).toFixed(2)}x</b> &ndash; ${spiOf(last)>=1 ? "above" : "below"} parity.`;
 }
 function renderOR(){
   if(!S.or){ $("orSplit").outerHTML = '<div class="note">OpenRouter unavailable right now.</div>'; return; }
@@ -706,15 +968,93 @@ function renderPrices(){
     $("priceNote").innerHTML = `Median US flagship output <b>$${mu.toFixed(2)}/M</b> vs Chinese <b>$${mc.toFixed(2)}/M</b> &ndash; a <b>${ratio.toFixed(0)}x</b> gap. Each row is the newest live model in that line, resolved from OpenRouter's catalogue at load, so a launch moves this number the day it ships. Falling ratios mean US pricing power is holding, rising means compression is biting.${miss}`;
   }
 }
+/* Price vs quality: output $/M on a log x against LMArena Elo. Joins the resolved
+ * flagship price lines to the per-model Elo list the updater publishes; both sides
+ * are normalized (date suffixes stripped) before matching, and lines with no arena
+ * entry are listed in the note rather than silently dropped. */
+const modelKey = s => String(s||"").toLowerCase().replace(/\s+/g,"-").replace(/-(20\d{6})$/,"")
+                        .replace(/-preview$/,"").replace(/\./g,"-");
+// Arena publishes effort/variant entries ("claude-opus-5-high", "gpt-5.6-sol-xhigh"),
+// so a price line matches any arena name that IS its key or extends it at a "-"
+// boundary; the lab's best-scoring variant of that model represents the line.
+function arenaElo(arena, key){
+  let best = null;
+  for(const m of arena){
+    const k = modelKey(m.model);
+    if(k===key || k.startsWith(key+"-")) best = Math.max(best??-1, m.elo);
+  }
+  return best;
+}
+function renderScatter(){
+  const arena = snap.lmarena?.models;
+  if(!S.prices || !arena?.length) return;                 // card stays hidden until both exist
+  const pts = [], unmatched = [];
+  for(const [side, list] of [["us", S.prices.us], ["cn", S.prices.cn]])
+    for(const m of list){
+      const e = arenaElo(arena, modelKey(m.id.split("/")[1]));
+      if(e) pts.push({ label:m.label, id:m.id, side, x:m.outP, y:e });
+      else unmatched.push(m.label);
+    }
+  if(pts.length < 4) return;
+  $("scatterCard").style.display = "";
+  if(snap.lmarena.asof) $("scAsof").textContent = "– flagship lines: output $/M (log scale) against LMArena Elo, arena " + snap.lmarena.asof;
+  const el = $("scatterChart");
+  const W = chartW(el), H = 330, L = 52, R = 20, T = 16, B = 34;
+  const xs = pts.map(p=>p.x);
+  const lx0 = Math.log10(Math.min(...xs)*0.75), lx1 = Math.log10(Math.max(...xs)*1.35);
+  const ys = pts.map(p=>p.y);
+  const y0 = Math.min(...ys)-12, y1 = Math.max(...ys)+12;
+  const X = v => L + (W-L-R)*((Math.log10(v)-lx0)/(lx1-lx0));
+  const Y = v => T + (H-T-B)*(1-(v-y0)/(y1-y0));
+  let g = "";
+  for(const d of [0.1,0.2,0.5,1,2,5,10,20,50].filter(d=>Math.log10(d)>=lx0 && Math.log10(d)<=lx1))
+    g += `<line x1="${X(d)}" y1="${T}" x2="${X(d)}" y2="${H-B}" stroke="var(--grid)"/><text x="${X(d)}" y="${H-B+16}" text-anchor="middle" font-size="11" fill="var(--muted)">$${d}</text>`;
+  for(let v = Math.ceil(y0/25)*25; v <= y1; v += 25)
+    g += `<line x1="${L}" y1="${Y(v)}" x2="${W-R}" y2="${Y(v)}" stroke="var(--grid)"/><text x="${L-6}" y="${Y(v)+4}" text-anchor="end" font-size="11" fill="var(--muted)">${v}</text>`;
+  g += `<text x="${W-R}" y="${H-4}" text-anchor="end" font-size="10.5" fill="var(--muted)">output $/M, log scale &rarr;</text>`
+     + `<text x="${L-38}" y="${T-4}" font-size="10.5" fill="var(--muted)">Elo &uarr;</text>`;
+  // marks: 2px surface ring so overlapping dots stay separable; labels alternate sides
+  pts.sort((a,b)=>a.y-b.y);
+  pts.forEach((p,i)=>{
+    const c = p.side==="cn" ? "var(--cn)" : "var(--us)";
+    const above = i%2===0;
+    g += `<circle cx="${X(p.x)}" cy="${Y(p.y)}" r="5" fill="${c}" stroke="var(--surface-1)" stroke-width="2"/>`
+       + `<text x="${X(p.x)+(above?8:-8)}" y="${Y(p.y)+(above?-7:13)}" text-anchor="${above?"start":"end"}" font-size="10.5" fill="var(--text-secondary)">${esc(p.label)}</text>`
+       + `<circle cx="${X(p.x)}" cy="${Y(p.y)}" r="14" fill="transparent" data-i="${i}"/>`;
+  });
+  el.setAttribute("viewBox", `0 0 ${W} ${H}`);
+  el.innerHTML = g;
+  // per-point hover (24px+ hit area): value leads, name follows
+  const wrap = el.closest(".scatterwrap"), tip = tipOf(wrap);
+  el.onpointermove = ev => {
+    const t = ev.target.closest("circle[data-i]");
+    if(!t){ tip.style.display = "none"; return; }
+    const p = pts[+t.dataset.i];
+    tipFill(tip, p.id, [ {k:"output $/M", v:"$"+p.x.toFixed(2), c:p.side==="cn"?"var(--cn)":"var(--us)"},
+                         {k:"LMArena Elo", v:String(p.y), c:"var(--other)"} ]);
+    tip.style.display = "block";
+    const wb = wrap.getBoundingClientRect(), sb = el.getBoundingClientRect();
+    const px = sb.left - wb.left + (X(p.x)/W)*sb.width, flip = px > wb.width*0.6;
+    tip.style.left = flip ? "" : Math.round(px+14)+"px";
+    tip.style.right = flip ? Math.round(wb.width-px+14)+"px" : "";
+    tip.style.top = Math.round((Y(p.y)/H)*sb.height - 10)+"px";
+  };
+  el.onpointerleave = () => { tip.style.display = "none"; };
+  const base = "The thesis in one picture: up and to the left is better. Each dot is a flagship line from the price table joined to its LMArena Elo.";
+  $("scatterNote").textContent = base + (unmatched.length ? " No current arena entry for: "+unmatched.join(", ")+"." : "");
+  if(!REDRAW.includes(renderScatter)) REDRAW.push(renderScatter);
+}
 function renderHF(){
   if(!S.hf){ $("hfSplit").outerHTML = '<div class="note">Hugging Face unavailable right now.</div>'; return; }
   const {cnOrgs, cn, us} = S.hf, tot = cn+us;
   $("hfSplit").innerHTML = `<i style="width:${cn/tot*100}%;background:var(--cn)"></i><i style="width:${us/tot*100}%;background:var(--us)"></i>`;
   $("hfSplitL").innerHTML = `<b style="color:var(--cn)">Chinese ${pct(cn/tot)}</b> · ${fmtT(cn)}/30d`;
   $("hfSplitR").innerHTML = `<b style="color:var(--us)">US open ${pct(us/tot)}</b> · ${fmtT(us)}/30d`;
-  const mx = cnOrgs[0]?.dl||1;
-  $("hfLabs").innerHTML = cnOrgs.slice(0,6).map(o =>
-    `<div class="hbar"><span class="k"><a href="https://huggingface.co/${esc(o.org)}" target="_blank" rel="noopener">${esc(o.org)}</a></span><span class="track"><i style="width:${o.dl/mx*100}%"></i></span><span class="v">${fmtT(o.dl)}/30d</span></div>`).join("");
+  // log-scaled: Qwen outruns the sixth org ~200:1, and a linear track renders
+  // everyone but the leader as an unreadable sliver (the labels stay exact)
+  const shown = cnOrgs.slice(0,6), mn = Math.min(...shown.map(o=>o.dl)), mx = Math.max(...shown.map(o=>o.dl));
+  $("hfLabs").innerHTML = shown.map(o =>
+    `<div class="hbar"><span class="k"><a href="https://huggingface.co/${esc(o.org)}" target="_blank" rel="noopener">${esc(o.org)}</a></span><span class="track"><i style="width:${logW(o.dl,mn,mx).toFixed(1)}%"></i></span><span class="v">${fmtT(o.dl)}/30d</span></div>`).join("");
   // 0->90%: CN share already sits near 70%, so a 70% ceiling kept this family pinned
   // at ~100 with no headroom to signal further gains (unlike router/Ollama shares,
   // which still trade well below their 70% reference ceiling).
@@ -723,8 +1063,13 @@ function renderHF(){
 function renderGH(){
   const tb = $("ghTable").querySelector("tbody");
   if(!S.gh){ tb.innerHTML = '<tr><td colspan="4" class="sub">GitHub API unavailable (unauthenticated rate limit is 60/hr - retry later).</td></tr>'; return; }
-  tb.innerHTML = S.gh.rows.map(r =>
-    `<tr><td><a href="https://github.com/${esc(r.repo)}" target="_blank" rel="noopener">${esc(r.repo)}</a></td><td class="num">${fmtT(r.stars)}</td><td class="num">${fmtT(r.forks)}</td><td class="num">${r.vel!=null? "+"+r.vel.toFixed(0) : "…"}</td></tr>`).join("");
+  // Δ/day: the updater's server-side measurement first (works on a first visit),
+  // this browser's local baseline as the fallback for dev/offline use
+  const srvVel = snap.github?.vel || {};
+  tb.innerHTML = S.gh.rows.map(r => {
+    const v = r.vel ?? srvVel[r.repo];
+    return `<tr><td><a href="https://github.com/${esc(r.repo)}" target="_blank" rel="noopener">${esc(r.repo)}</a></td><td class="num">${fmtT(r.stars)}</td><td class="num">${fmtT(r.forks)}</td><td class="num">${v!=null? (v>=0?"+":"")+(+v).toFixed(0) : "…"}</td></tr>`;
+  }).join("");
   $("ghAsof").textContent = S.gh.source === "search"
     ? `– ${S.gh.rows.length} active repos, rediscovered ${S.gh.asof||"daily"}`
     : "– static seed basket (repo discovery unavailable)";
@@ -741,12 +1086,43 @@ function renderPM(){
   if(S.pm) for(const m of S.pm){
     const d = m.d24!=null ? `<span class="${m.d24>=0?'down':'up'}">${m.d24>=0?"+":""}${(m.d24*100).toFixed(1)}pt</span>` : "–";
     const src = `<span class="tag src">PM</span>${m.found?' <span class="tag src">AUTO</span>':""}`;
-    rows.push(`<tr><td>${src} ${m.slug?`<a href="https://polymarket.com/event/${esc(m.slug)}" target="_blank" rel="noopener">${esc(m.label)}</a>`:esc(m.label)}</td><td class="num"><b>${m.p!=null? (m.p*100).toFixed(1)+"%":"–"}</b></td><td class="num">${d}</td></tr>`);
+    const spark = m.tok ? `<svg class="pmspark" id="pmspark-${esc(String(m.id))}" viewBox="0 0 84 22"></svg>` : "–";
+    rows.push(`<tr><td>${src} ${m.slug?`<a href="https://polymarket.com/event/${esc(m.slug)}" target="_blank" rel="noopener">${esc(m.label)}</a>`:esc(m.label)}</td><td class="num">${spark}</td><td class="num"><b>${m.p!=null? (m.p*100).toFixed(1)+"%":"–"}</b></td><td class="num">${d}</td></tr>`);
   }
   if(snap.kalshi?.markets) for(const m of snap.kalshi.markets){
-    rows.push(`<tr><td><span class="tag src">KALSHI</span> <a href="https://kalshi.com/markets/${esc(m.series)}" target="_blank" rel="noopener">${esc(m.label)}</a></td><td class="num"><b>${m.p!=null? (m.p*100).toFixed(1)+"%":"–"}</b></td><td class="num">–</td></tr>`);
+    rows.push(`<tr><td><span class="tag src">KALSHI</span> <a href="https://kalshi.com/markets/${esc(m.series)}" target="_blank" rel="noopener">${esc(m.label)}</a></td><td class="num">–</td><td class="num"><b>${m.p!=null? (m.p*100).toFixed(1)+"%":"–"}</b></td><td class="num">–</td></tr>`);
   }
-  tb.innerHTML = rows.length ? rows.join("") : '<tr><td colspan="3" class="sub">Prediction markets unavailable right now.</td></tr>';
+  tb.innerHTML = rows.length ? rows.join("") : '<tr><td colspan="4" class="sub">Prediction markets unavailable right now.</td></tr>';
+  loadPMSparks();
+}
+/* Lifetime odds history per Polymarket row, from the public CLOB endpoint (the
+ * same one the site's Codex evaluation established as free: interval=max). Kalshi
+ * has no CORS API, so those rows stay spark-less. Failures degrade to a dash. */
+const PM_HIST = new Map();   // market id -> downsampled [{t,p}]; fetched once, redrawn every render
+function drawPMSpark(m, pts){
+  const el = $("pmspark-"+m.id);
+  if(!el || !pts || pts.length<3) return;
+  const t0 = pts[0].t, t1 = pts.at(-1).t;
+  const X = t => 2 + 76*((t-t0)/Math.max(1,t1-t0));
+  const Y = p => 19 - 16*p;
+  el.innerHTML = `<line x1="2" y1="${Y(0.5)}" x2="78" y2="${Y(0.5)}" stroke="var(--grid)"/>`
+    + `<path d="${pts.map((p,i)=>`${i?"L":"M"}${X(p.t).toFixed(1)},${Y(p.p).toFixed(1)}`).join("")}" fill="none" stroke="var(--text-secondary)" stroke-width="1.4"/>`
+    + `<circle cx="${X(t1)}" cy="${Y(pts.at(-1).p)}" r="2" fill="var(--acc)"/>`
+    + `<title>${esc(m.label)} – lifetime odds, gridline at 50%</title>`;
+}
+async function loadPMSparks(){
+  for(const m of (S.pm||[])){
+    if(!m.tok) continue;
+    if(PM_HIST.has(m.id)){ drawPMSpark(m, PM_HIST.get(m.id)); continue; }
+    PM_HIST.set(m.id, null);   // claim before await so the refresh interval can't double-fetch
+    try{
+      const h = (await jget("https://clob.polymarket.com/prices-history?market="+encodeURIComponent(m.tok)+"&interval=max&fidelity=720")).history||[];
+      const step = Math.max(1, Math.floor(h.length/90));
+      const pts = h.filter((_,i)=>i%step===0 || i===h.length-1);
+      PM_HIST.set(m.id, pts);
+      drawPMSpark(m, pts);
+    }catch(e){ /* row keeps its empty spark cell; odds and Δ still render */ }
+  }
 }
 /* ---------------- batch-fed panels (china-data.json) ---------------- */
 function renderVercel(){
@@ -760,18 +1136,31 @@ function renderVercel(){
   const mx = vg.top_cn?.[0]?.share || 1;
   $("vgLabs").innerHTML = (vg.top_cn||[]).map(l =>
     `<div class="hbar"><span class="k">${esc(l.lab)}</span><span class="track"><i style="width:${l.share/mx*100}%"></i></span><span class="v">${l.share.toFixed(1)}%</span></div>`).join("");
-  if(vg.series?.length > 6){
-    const s = vg.series, W=960, H=120, L=46, R=10, T=8, B=22;
-    const mxv = Math.max(...s.map(p=>Math.max(p.cn,p.us)))*1.08;
-    const xs = i => L + (W-L-R)*(i/(s.length-1)), ys = v => T + (H-T-B)*(1 - v/mxv);
-    const path = key => s.map((p,i)=>`${i?"L":"M"}${xs(i).toFixed(1)},${ys(p[key]).toFixed(1)}`).join("");
-    let g = "";
-    for(const f of [0,.5,1]) g += `<line x1="${L}" y1="${ys(f*mxv)}" x2="${W-R}" y2="${ys(f*mxv)}" stroke="var(--grid)"/><text x="${L-6}" y="${ys(f*mxv)+4}" text-anchor="end" font-size="11" fill="var(--muted)">${(f*mxv).toFixed(0)}%</text>`;
-    g += `<text x="${xs(0)}" y="${H-6}" font-size="11" fill="var(--muted)">${s[0].d}</text><text x="${xs(s.length-1)}" y="${H-6}" text-anchor="end" font-size="11" fill="var(--muted)">${s.at(-1).d}</text>`;
-    const el = $("vgSpark");
-    el.style.display = "block";
-    el.innerHTML = g + `<path d="${path("cn")}" fill="none" stroke="var(--cn)" stroke-width="2"/><path d="${path("us")}" fill="none" stroke="var(--us)" stroke-width="2"/>`;
-  }
+  if(vg.series?.length > 6) renderVgSpark(vg.series);
+}
+function renderVgSpark(s){
+  const el = $("vgSpark"); if(!el || el.tagName!=="svg" && el.tagName!=="SVG") return;
+  const W = chartW(el, 520), H = 130, L = 46, R = 46, T = 8, B = 22;
+  const mxv = Math.max(...s.map(p=>Math.max(p.cn,p.us)))*1.12;
+  const t0 = dnum(s[0].d), t1 = dnum(s.at(-1).d);
+  const X = t => L + (W-L-R)*((t-t0)/Math.max(1,t1-t0));
+  const Y = v => T + (H-T-B)*(1 - v/mxv);
+  const path = key => s.map((p,i)=>`${i?"L":"M"}${X(dnum(p.d)).toFixed(1)},${Y(p[key]).toFixed(1)}`).join("");
+  let g = "";
+  for(const f of [0,.5,1]) g += `<line x1="${L}" y1="${Y(f*mxv)}" x2="${W-R}" y2="${Y(f*mxv)}" stroke="var(--grid)"/><text x="${L-6}" y="${Y(f*mxv)+4}" text-anchor="end" font-size="11" fill="var(--muted)">${(f*mxv).toFixed(0)}%</text>`;
+  g += `<text x="${X(t0)}" y="${H-6}" font-size="11" fill="var(--muted)">${s[0].d}</text><text x="${X(t1)}" y="${H-6}" text-anchor="end" font-size="11" fill="var(--muted)">${s.at(-1).d}</text>`;
+  const last = s.at(-1);
+  el.setAttribute("viewBox", `0 0 ${W} ${H}`);
+  el.removeAttribute("preserveAspectRatio");
+  el.style.display = "block";
+  el.innerHTML = g + `<path d="${path("cn")}" fill="none" stroke="var(--cn)" stroke-width="2"/><path d="${path("us")}" fill="none" stroke="var(--us)" stroke-width="2"/>`
+    + `<text x="${W-R+5}" y="${Y(last.cn)+4}" font-size="11" font-weight="600" fill="var(--cn)">${last.cn.toFixed(0)}%</text>`
+    + `<text x="${W-R+5}" y="${Y(last.us)+4}" font-size="11" fill="var(--us)">${last.us.toFixed(0)}%</text>`;
+  attachCrosshair({ svg: el, wrap: el.closest(".chartwrap"), W,
+    xs: s.map(p=>X(dnum(p.d))), x2t: i=>s[i].d, yTop: T, yBot: H-B,
+    rowsAt: i => [ {k:"Chinese labs", v:s[i].cn.toFixed(1)+"%", c:"var(--cn)"},
+                   {k:"US labs", v:s[i].us.toFixed(1)+"%", c:"var(--us)"} ] });
+  if(!REDRAW.includes(renderVercel)) REDRAW.push(renderVercel);
 }
 function renderOllama(){
   const o = snap.ollama;
@@ -803,9 +1192,11 @@ function renderSDK(){
   if(!sdk){ $("sdkBars").innerHTML = '<div class="note">No SDK data yet &ndash; appears after the next server-side refresh.</div>'; return; }
   $("sdkAsof").textContent = "– pypistats, "+sdk.asof;
   const rows = [...sdk.cn.map(x=>({...x,s:"cn"})), ...sdk.us.map(x=>({...x,s:"us"}))].sort((a,b)=>b.wk-a.wk);
-  const mx = rows[0]?.wk || 1;
+  // 67M/wk vs 30k/wk is a 2,200x range - linear bars here were pure decoration
+  const mn = Math.min(...rows.map(x=>x.wk)), mx = Math.max(...rows.map(x=>x.wk));
   $("sdkBars").innerHTML = rows.map(x =>
-    `<div class="hbar"><span class="k"><span class="tag ${x.s}">${x.s.toUpperCase()}</span> <a href="https://pypistats.org/packages/${esc(x.pkg)}" target="_blank" rel="noopener">${esc(x.pkg)}</a></span><span class="track"><i style="width:${Math.max(0.5,x.wk/mx*100)}%;${x.s==="us"?"background:var(--us)":""}"></i></span><span class="v">${fmtT(x.wk)}/wk</span></div>`).join("");
+    `<div class="hbar"><span class="k"><span class="tag ${x.s}">${x.s.toUpperCase()}</span> <a href="https://pypistats.org/packages/${esc(x.pkg)}" target="_blank" rel="noopener">${esc(x.pkg)}</a></span><span class="track"><i style="width:${logW(x.wk,mn,mx).toFixed(1)}%;${x.s==="us"?"background:var(--us)":""}"></i></span><span class="v">${fmtT(x.wk)}/wk</span></div>`).join("")
+    + `<div class="note">Bar length is log-scaled; the weekly counts differ by orders of magnitude.</div>`;
 }
 function renderRadar(){
   const rd = snap.radar_ai;
@@ -825,7 +1216,9 @@ function renderEQ(){
     const dd = last/hi - 1;
     const min = Math.min(...ser.map(p=>p.c)), rng = hi-min || 1;
     const pts = ser.map((p,i)=>`${(i/(ser.length-1)*100).toFixed(1)},${(28-(p.c-min)/rng*26).toFixed(1)}`).join(" ");
-    return `<div class="eq"><span class="sym">${sym}</span><span class="dd ${dd<0?'down':''}">${(dd*100).toFixed(1)}%</span><div class="px">$${last.toFixed(2)}</div><svg viewBox="0 0 100 30" preserveAspectRatio="none"><polyline points="${pts}" fill="none" stroke="${dd<0?'var(--crit)':'var(--us)'}" stroke-width="1.6"/></svg></div>`;
+    // status colors, not series colors: on this page red is "Chinese labs" and blue
+    // is "US labs", so a drawdown wears the status orange and an at-high the green
+    return `<div class="eq"><span class="sym">${sym}</span><span class="dd ${dd<0?'down':''}">${(dd*100).toFixed(1)}%</span><div class="px">$${last.toFixed(2)}</div><svg viewBox="0 0 100 30" preserveAspectRatio="none"><polyline points="${pts}" fill="none" stroke="${dd<0?'var(--serious)':'var(--good)'}" stroke-width="1.6" vector-effect="non-scaling-stroke"/></svg></div>`;
   };
   const syms = EQ_SYMS.filter(s => S.eq.equity[s]);
   g.innerHTML = syms.map(sym => card(sym, S.eq.equity[sym])).join("");
@@ -862,19 +1255,34 @@ function renderGauge(){
     if(!hist.length || hist.at(-1).d!==today){ hist.push({d:today, v:+idx.toFixed(1)}); store.set("hist", hist.slice(-365)); }
     else { hist[hist.length-1].v = +idx.toFixed(1); store.set("hist", hist); }
   }
-  $("cats").innerHTML = fams.map(([k,f]) =>
-    `<div class="cat"><span>${FAMILY_LABEL[k]} <span class="sub">${esc(f.detail||"")}</span></span><span class="track"><i style="width:${f.val??0}%; ${f.val==null?"background:var(--grid)":""}"></i></span><span class="cv">${f.val!=null? f.val.toFixed(0) : "–"}</span><span class="cw">weight: ${f.w}%</span></div>`).join("");
+  // Component bars carry three encodings: length = normalized score, thickness =
+  // weight (a 30%-weight family should not look like a 5% one), color = the same
+  // band the headline gauge uses. A true zero renders as a visible notch - "scored
+  // zero by a live source" and "no source, excluded" must not look identical.
+  const band = v => v>=55 ? "var(--crit)" : v>=30 ? "var(--warn)" : "var(--good)";
+  $("cats").innerHTML = fams.map(([k,f]) => {
+    const h = Math.round(4 + f.w*0.4);
+    const pts = f.val!=null && wsum ? f.w*f.val/wsum : null;
+    const bar = f.val==null ? ""
+      : f.val===0 ? `<i style="width:3px;background:${band(0)}"></i>`
+      : `<i style="width:${f.val}%;background:${band(f.val)}"></i>`;
+    return `<div class="cat"><span>${FAMILY_LABEL[k]} <span class="sub">${esc(f.detail||"")}</span></span><span class="track" style="height:${h}px">${bar}</span><span class="cv">${f.val!=null? f.val.toFixed(0) : "–"}</span><span class="cw">${f.val!=null? "w "+f.w+"% · +"+pts.toFixed(1)+"pt" : "w "+f.w+"% · excl."}</span></div>`;
+  }).join("");
   const totw = fams.reduce((s,[,f])=>s+f.w,0);
-  $("gaugeNote").textContent = wsum<totw ? "Computed over "+wsum+" of "+totw+" weight - excluded families shown greyed." : "";
+  $("gaugeNote").textContent = (wsum<totw ? "Computed over "+wsum+" of "+totw+" weight - excluded families renormalize. " : "")
+    + "Bar thickness = weight; the +pt figures are each family's contribution and sum to the index.";
+  renderIdxSpark();
 }
 /* ---------------- boot ---------------- */
 async function boot(){
-  await Promise.all([ loadSnap() ]);
+  await Promise.all([ loadSnap(), loadMetrics() ]);
   renderSnapshotPanels();
   renderVercel(); renderOllama(); renderFinetunes(); renderSDK(); renderRadar();
   renderPM();   // Kalshi rows render immediately; Polymarket rows join once live
+  renderShareSparks();
   await Promise.all([ loadOpenRouter().then(()=>{renderOR();renderTopModels();renderTrend();}), loadPrices().then(renderPrices), loadHF().then(renderHF), loadGH().then(renderGH), loadPM().then(renderPM), loadEQ().then(renderEQ) ]);
   renderGauge();
+  renderScatter();   // needs both the resolved price lines and the arena Elo list
 }
 boot();
 setInterval(()=>{ loadOpenRouter().then(()=>{renderOR();renderTopModels();renderTrend();renderGauge();}); loadPM().then(renderPM); }, 5*60e3);

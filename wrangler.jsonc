@@ -16,7 +16,8 @@
       "/snapshots.csv",
       "/influencers.json",
       "/capex-data.json",
-      "/china-data.json"
+      "/china-data.json",
+      "/china-metrics.csv"
     ]
   },
   "r2_buckets": [
