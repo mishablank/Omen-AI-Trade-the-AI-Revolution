@@ -163,3 +163,151 @@ denominator is catching up. Disclosed ARR run-rates (e.g. Baker cites Grok 4.5 +
       live as the bracket odds move, even between ARR disclosures.
 - [ ] Honesty note: press-reported ARR is unaudited, often annualized from a single month,
       and labs choose when to leak it – the series is directional, not accounting.
+
+## China AI Monitor — media-generation arenas (video/image)
+
+**Status:** Open
+**Component:** `china-ai-monitor.html`, `update-china-data.py`
+**Priority:** Medium
+
+### Problem
+
+The monitor is text-LLM-only, but media generation is a second substitution front and the
+one where Chinese labs already hold podium positions: on Arena's text-to-video board,
+Chinese models (Seedance, MiniMax, HappyHorse) hold 3 of the top 5 slots, and on Artificial
+Analysis 8 of the top 10 — at roughly 1/4 to 1/2 of Veo's $/minute. Image is still US-led
+(Chinese entries at #5–8). None of that reaches the page, so a Chinese video-model
+breakthrough — the Kling/Seedance dynamic — would be invisible to the adoption index and
+to the leaderboard-proximity card. Remaining gap #4 of 10 from the Aug-2026 peer-dashboard
+survey (see `UPDATES-2026-08-06-supply-side.md` for the first five).
+
+### Acceptance Criteria
+
+- [ ] Extend the updater's arena family: try the official `lmarena-ai/leaderboard-dataset`
+      configs for text-to-video / text-to-image first (same datasets-server call as text),
+      fall back to scraping the server-rendered `arena.ai/leaderboard/<category>` tables —
+      the existing `arena()` parser pattern.
+- [ ] Store per modality: best CN model + rank + score, Elo gap to the leader, CN count in
+      the top 10. Reuse `arena_summary()` — it is already org-driven, not model-driven.
+- [ ] Optionally join $/min or $/1k-images from Artificial Analysis' server-rendered media
+      leaderboards for a media price-gap stat; label the source and keep it batch.
+- [ ] Render as one "Media arenas" panel next to Leaderboard proximity, one row per
+      modality; note in-panel that Elo scales are not comparable across sites or boards.
+- [ ] Decide index treatment explicitly: either keep it context-only (like the supply-side
+      panels) or give it a small weight with a documented reference range — do not let it
+      silently ride the existing LMArena family.
+
+## China AI Monitor — coding and agentic leaderboards
+
+**Status:** Open
+**Component:** `china-ai-monitor.html`, `update-china-data.py`
+**Priority:** Medium
+
+### Problem
+
+The leaderboard-proximity card reads the overall text arena, but the enterprise-switching
+evidence in the thesis section (Coinbase → GLM/Kimi, Lindy → DeepSeek) is coding-agent
+workloads. On Arena's WebDev board Chinese models sit at #2 and #4 (Kimi K3-Max, Qwen
+3.8-Max) — materially stronger than their overall-text standings — and the new Agent Arena
+scores behavioural task success. Overall Elo under-measures exactly the segment where the
+substitution money moves first. Remaining gap #5 of 10 from the Aug-2026 survey.
+
+### Acceptance Criteria
+
+- [ ] Fetch the WebDev (and, when stable, Agent) boards in the updater: official dataset
+      config first, `arena.ai/leaderboard/webdev` scrape fallback, same dual-source shape
+      as the text family.
+- [ ] Store best CN rank/score and gap-to-leader per board; surface as extra stats on the
+      Leaderboard-proximity card (or a small sibling card if it crowds the statrow).
+- [ ] Check whether the AA free Data API exposes the Coding Agent Index alongside the
+      intelligence index; if yes, add a coding cut to the `aa_frontier` value stats — if
+      not, skip rather than scrape a JS-only page.
+- [ ] Note in the caveats that agentic boards are young and their scoring (%-success, not
+      Elo) is not comparable to the arena numbers beside them.
+
+## China AI Monitor — live capex asymmetry (US vs CN platforms)
+
+**Status:** Open
+**Component:** `update-capex-data.py`, `china-ai-monitor.html`, `ai-capex.html`
+**Priority:** Medium
+
+### Problem
+
+The capex asymmetry is the monitor's stated equity exposure, but it lives as prose with
+hand-typed numbers ("~$400B in 2025 ... vs ~$57B for China's major platforms (UBS)").
+Meanwhile `update-capex-data.py` already pulls SEC XBRL fundamentals for the US
+hyperscalers — the US half of the comparison exists as a live series on the capex tape.
+The China half doesn't: Alibaba and Baidu file XBRL on EDGAR as foreign private issuers
+(free, same `companyconcept` API already used), Tencent files HKEX PDFs only.
+Remaining gap #7 of 10 from the Aug-2026 survey.
+
+### Acceptance Criteria
+
+- [ ] Extend `update-capex-data.py` with BABA and BIDU capex pulls via the existing EDGAR
+      `companyconcept` path (purchases of property/equipment; 20-F/6-K facts are annual
+      or semiannual — store what exists, do not interpolate).
+- [ ] Add Tencent as a hand-updated `MANUAL` entry (quarterly capex from its HKEX results
+      PDFs), dated, same convention as the Korea-exports/LBNL rows.
+- [ ] Emit a `capex_asymmetry` block into `capex-data.json`: trailing-4-quarter US
+      hyperscaler capex, CN platform capex, and the ratio.
+- [ ] Replace the hand-typed numbers in the china monitor's thesis section with a small
+      stat row reading from the shared `capex-data.json` feed (same cross-page pattern as
+      `market-data.json`), keeping the UBS figure only as a citation for the framing.
+- [ ] Caveat in-panel: CN platform disclosures lag a quarter or more and Tencent is
+      hand-keyed, so the ratio is directional.
+
+## China AI Monitor — private AI investment gap (annual context stat)
+
+**Status:** Open
+**Component:** `update-china-data.py`, `china-ai-monitor.html`
+**Priority:** Low
+
+### Problem
+
+The capital-input gap explains *why* Chinese labs play the open-weights game the whole
+monitor measures, and it appears nowhere: AI Index 2026 puts 2025 private AI investment at
+US $285.9B vs China $12.4B (23x), with the standing caveat that China's state guidance
+funds (~$184B deployed 2000–2023) sit outside private-investment data. The sources are
+annual and public (AI Index raw-data drive; ETO's Crunchbase-derived Country Activity
+Metrics on Zenodo) — this is a once-a-year hand refresh, not a feed. Remaining gap #9 of
+10 from the Aug-2026 survey.
+
+### Acceptance Criteria
+
+- [ ] Add an `investment` entry to the updater's `MANUAL` dict: US and CN private AI
+      investment (USD B), year, source string, and the guidance-fund caveat — surfaced
+      as-is into `china-data.json` like the other MANUAL families.
+- [ ] Render as a small context stat inside the supply-side block (statrow, no chart);
+      link the AI Index and ETO CAT sources in the note.
+- [ ] Document the annual refresh (each April, when the AI Index ships) in the caveats
+      footer, and date the stat in its label so staleness is visible on the page.
+
+## China AI Monitor — Chinese frontier-model safety/risk scores
+
+**Status:** Open
+**Component:** `update-china-data.py`, `china-ai-monitor.html`
+**Priority:** Low
+
+### Problem
+
+The page already trades on regulatory tail risk — the Polymarket "US government removes
+public access to a major Chinese AI model in 2026" row — but carries no data on the
+safety profile that would trigger it. Concordia AI's airiskmonitor.net scores ~50 CN+US
+frontier models quarterly on capability/safety/risk across cyber, bio, chem and
+loss-of-control; FLI's AI Safety Index grades labs semiannually (Z.ai D-, Alibaba Cloud
+D-, DeepSeek F vs Anthropic C+). A DeepSeek F-grade next to a 20% ban-market price is the
+pairing this monitor exists to show. Remaining gap #10 of 10 from the Aug-2026 survey.
+
+### Acceptance Criteria
+
+- [ ] Treat both sources as batch, low-cadence: airiskmonitor.net bot-shields plain
+      fetchers, so start as a hand-keyed `MANUAL` entry (~8 numbers per quarter: risk
+      index per domain for the top CN models + a US reference model) and only attempt a
+      fetcher (honest UA, their `/doc/en/report/<q>` pages) if it proves stable.
+- [ ] Add FLI's per-lab letter grades for the Chinese labs + 2 US anchors, semiannual,
+      with edition date.
+- [ ] Render as compact rows adjacent to the prediction-markets card so the grade sits
+      next to the ban-market probability it contextualizes; date both sources in the
+      label.
+- [ ] Caveats: quarterly/semiannual cadence, methodology churn between editions, and no
+      index weight — context only.
