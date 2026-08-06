@@ -892,3 +892,47 @@ def test_latest_period_fact_takes_the_latest_restatement():
 def test_latest_period_fact_empty_is_none():
     assert umd.latest_period_fact([]) is None
     assert umd.latest_period_fact([{"end": "2026-06-30", "val": 1.0}]) is None
+
+
+# ---------- NVDA trailing-P/E percentile ----------
+
+def test_ni_ttm_series_requires_four_consecutive_quarters():
+    q = {"2024Q4": 8.0, "2025Q1": 9.0, "2025Q2": 10.0, "2025Q3": 11.0, "2025Q4": 12.0}
+    out = umd.ni_ttm_series(q)
+    assert out == [("2025-09", 38.0), ("2025-12", 42.0)]
+    # a hole in the quarter history breaks the window instead of summing across it
+    gappy = {"2024Q4": 8.0, "2025Q1": 9.0, "2025Q3": 11.0, "2025Q4": 12.0}
+    assert umd.ni_ttm_series(gappy) == []
+    assert umd.ni_ttm_series({}) == []
+    assert umd.ni_ttm_series(None) == []
+
+
+def test_latest_share_count_picks_newest_end():
+    entries = [{"end": "2025-10-26", "val": 24_600_000_000},
+               {"end": "2026-04-26", "val": 24_400_000_000},
+               {"end": "2026-01-25", "val": 24_500_000_000},
+               {"end": "2026-07-26", "val": None}]          # null val never wins
+    assert umd.latest_share_count(entries) == 24_400_000_000
+    assert umd.latest_share_count([]) is None
+    assert umd.latest_share_count(None) is None
+
+
+def test_pe_series_uses_newest_ttm_known_by_each_month():
+    ttm = [("2025-10", 2.0), ("2026-01", 4.0)]
+    months = [("2025-09", 100.0),   # before any TTM window: skipped
+              ("2025-10", 100.0),
+              ("2025-12", 110.0),   # still the 2.0 EPS
+              ("2026-02", 120.0)]   # the 4.0 EPS
+    out = umd.pe_series(months, ttm)
+    assert out == [["2025-10", 50.0], ["2025-12", 55.0], ["2026-02", 30.0]]
+    # non-positive TTM EPS never becomes a P/E print
+    assert umd.pe_series([("2025-12", 110.0)], [("2025-10", -0.5)]) == []
+    assert umd.pe_series(None, ttm) == []
+
+
+def test_percentile_of_last_needs_a_year_of_points():
+    vals = list(range(1, 25))          # 24 ascending months, latest is the max
+    assert umd.percentile_of_last(vals) == 100.0
+    assert umd.percentile_of_last(vals[::-1]) == round(100.0 / 24, 1)  # latest is the min
+    assert umd.percentile_of_last(vals[:6]) is None
+    assert umd.percentile_of_last([]) is None

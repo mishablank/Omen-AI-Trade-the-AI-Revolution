@@ -241,7 +241,7 @@ footer{border-top:1px solid var(--line);padding:56px 0 40px;background:var(--bg2
     <h1>The bill for the buildout arrives <em>before</em> the crash tape does.</h1>
     <p class="sub">OMEN's indexes and gauge read what markets are <b>pricing</b>. This page reads the <b>plumbing</b>: who is lending, who is quietly switching to equity, how much of the economy the capex has eaten, and how many announced gigawatts actually get energized. Eight theses, each with the metric that would confirm or kill it – five from Paul Kedrosky's ROI teardown, three from Jim Chanos's telecom-collapse analogy. The structural risk underneath them is the same one: <b>deflating token prices funding 10–15-year fixed-payment debt</b> – a classic duration mismatch.</p>
     <div class="snapline"><span class="dot"></span>Curated theses · 2026-07-18 · <span id="ltUpdated">live tape loading…</span></div>
-    <p class="credit">Frameworks: Paul Kedrosky on <a href="https://www.youtube.com/watch?v=wGZboZcSGDY" target="_blank" rel="noopener">Better Offline – "Why AI Has No ROI"</a> (Jun 2026) and Jim Chanos, <a href="https://www.youtube.com/watch?v=oM7VevsftrY" target="_blank" rel="noopener">"The AI Bubble Is Much Worse Than Dot-Com"</a> (2026), plus the reference series cited under each panel.</p>
+    <p class="credit">Frameworks: Paul Kedrosky on <a href="https://www.youtube.com/watch?v=wGZboZcSGDY" target="_blank" rel="noopener">Better Offline – "Why AI Has No ROI"</a> (Jun 2026) and Jim Chanos, <a href="https://www.youtube.com/watch?v=oM7VevsftrY" target="_blank" rel="noopener">"The AI Bubble Is Much Worse Than Dot-Com"</a> (2026); the bull-side tape rows follow Gavin Baker on <a href="https://www.youtube.com/watch?v=NGsi2PC4y68" target="_blank" rel="noopener">Invest Like The Best – "The AI Selloff Doesn't Match the Data"</a> (Aug 2026), plus the reference series cited under each panel.</p>
   </div>
 </header>
 
@@ -252,12 +252,15 @@ footer{border-top:1px solid var(--line);padding:56px 0 40px;background:var(--bg2
       <div class="toprow"><span class="rom">0.</span><span class="kick" style="color:var(--dim)">Live tape · auto-refreshed</span></div>
       <h2>The live tape.</h2>
       <div class="claim">The rest of this page is a hand-curated snapshot. This section is not: it refreshes from primary sources on the data cadence, and each row says when its number was printed.</div>
-      <p class="exp">Four feeds the eight theses kept pointing at but never measured: <b>realized hardware demand</b> (TSMC's monthly tape, upstream of every hyperscaler press release), <b>issuance velocity</b> (EDGAR full-text counts of the actual debt and equity paperwork), <b>paid adoption</b> (Ramp's transaction data – the revenue-side answer to "does the capex earn its cost"), and the <b>generator pipeline</b> behind the stranded-GW thesis.</p>
+      <p class="exp">Four feeds the eight theses kept pointing at but never measured: <b>realized hardware demand</b> (TSMC's monthly tape, upstream of every hyperscaler press release), <b>issuance velocity</b> (EDGAR full-text counts of the actual debt and equity paperwork), <b>paid adoption</b> (Ramp's transaction data – the revenue-side answer to "does the capex earn its cost"), and the <b>generator pipeline</b> behind the stranded-GW thesis. Four more carry the bull case in the same auditable form – the counters Gavin Baker put on the record after the July selloff: <b>cash-flow acceleration</b> (hyperscaler OCF growth, XBRL), <b>token demand</b> (OpenRouter's platform-wide weekly tape), the <b>GPU repricing gap</b> (spot vs contract vintages), and the <b>inference-margin floor</b> (flagship token prices vs compute cost at spot rents).</p>
     </div>
     <div class="tiles rv">
       <div class="tile"><div class="v" id="ltTsmcYoy">–</div><div class="t">TSMC revenue, YoY</div><p>Monthly revenue growth (TWSE filing, <span id="ltTsmcAsof">–</span>). The buildout is real only while this number is.</p></div>
       <div class="tile"><div class="v" id="ltRampAdopt">–</div><div class="t">US businesses paying for AI</div><p>Ramp AI Index (<span id="ltRampAsof">–</span>) – share of ~70k firms with a paid AI transaction that month.</p></div>
       <div class="tile"><div class="v" id="ltDebt">–</div><div class="t">Debt-issuance events, 90d</div><p>FWP + 424B filings by the six AI-capex issuers, trailing 90 days vs the 90 before (<span id="ltDebtPrev">–</span>).</p></div>
+      <div class="tile"><div class="v" id="ltOcfYoy">–</div><div class="t">Big-5 OCF growth, YoY</div><p>Operating cash flow across the AI-capex filers, latest complete quarter (<span id="ltOcfQ">–</span>) – audited XBRL, not guidance. <span id="ltOcfAccelNote">Acceleration pending prior-quarter data.</span></p></div>
+      <div class="tile"><div class="v" id="ltTokWk">–</div><div class="t">Routed tokens, weekly</div><p>OpenRouter platform-wide (wk of <span id="ltTokWkAsof">–</span>) – the demand tape behind the capex. <span id="ltTokGNote">Growth loads with the live series.</span></p></div>
+      <div class="tile"><div class="v" id="ltPe">–</div><div class="t">NVDA trailing P/E</div><p>Vs its own 10-year monthly range (<span id="ltPePct">percentile loading</span>) – SEC XBRL EPS × Yahoo closes. The "decade-low multiple" claim, audited.</p></div>
     </div>
     <div class="panel rv">
       <h3>Hardware demand pulse</h3>
@@ -289,8 +292,54 @@ footer{border-top:1px solid var(--line);padding:56px 0 40px;background:var(--bg2
         <tr><td>Ramp AI Index (<span id="ltRampAsof2">–</span>)</td><td data-l="Reads on">Share of US businesses with paid AI subscriptions – transaction data, not surveys</td><td data-l="Latest" class="num" id="ltRamp2">–</td><td data-l="Δ" class="num" id="ltRampDelta">–</td></tr>
         <tr><td>Census BTOS estimate (contrast)</td><td data-l="Reads on">The survey number Ramp's transaction data corrects</td><td data-l="Latest" class="num" id="ltBtos">–</td><td data-l="Δ" class="num"></td></tr>
         <tr><td>Anthropic Economic Index, latest release</td><td data-l="Reads on">Usage composition (augmentation <span id="ltAeiSplit">57/43</span> automation, hand-updated) – freshness tracked live</td><td data-l="Latest" class="num" id="ltAei">–</td><td data-l="Δ" class="num"></td></tr>
+        <tr><td>Agent-stack installs, npm weekly (<span id="ltAgAsof">–</span>)</td><td data-l="Reads on">Claude Code + Codex + Gemini CLI downloads – the agentic S-curve, read in package managers</td><td data-l="Latest" class="num" id="ltAgNpm">–</td><td data-l="Δ" class="num" id="ltAgNpmD">–</td></tr>
+        <tr><td>Agent SDK installs, PyPI weekly</td><td data-l="Reads on">claude-agent-sdk + openai-agents – a hard undercount (OpenAI-compatible traffic rides the <code>openai</code> package)</td><td data-l="Latest" class="num" id="ltAgPypi">–</td><td data-l="Δ" class="num"></td></tr>
       </table>
-      <div class="srcline"><b>METRIC</b> – adoption level and momentum; a stall here while capex accelerates is the ROI thesis confirming in the one dataset that can't be talked up. &nbsp;<b>SOURCE</b> – <a href="https://ramp.com/data/ai-index" target="_blank" rel="noopener">Ramp AI Index CSV</a> (live) · <a href="https://huggingface.co/datasets/Anthropic/EconomicIndex" target="_blank" rel="noopener">Anthropic Economic Index</a> (freshness live, split manual)</div>
+      <div class="srcline"><b>METRIC</b> – adoption level and momentum; a stall here while capex accelerates is the ROI thesis confirming in the one dataset that can't be talked up. The agent-install rows are the closest public proxy for Baker's 500k→500M agentic-user trajectory. &nbsp;<b>SOURCE</b> – <a href="https://ramp.com/data/ai-index" target="_blank" rel="noopener">Ramp AI Index CSV</a> (live) · <a href="https://huggingface.co/datasets/Anthropic/EconomicIndex" target="_blank" rel="noopener">Anthropic Economic Index</a> (freshness live, split manual) · <a href="https://api.npmjs.org/downloads/point/last-week/@anthropic-ai/claude-code" target="_blank" rel="noopener">npm downloads API</a> + <a href="https://pypistats.org" target="_blank" rel="noopener">pypistats</a> (live via updater)</div>
+    </div>
+    <div class="panel rv">
+      <h3>Cash-flow acceleration</h3>
+      <span class="cap">The bull case's load-bearing number · hyperscaler OCF growth, audited XBRL</span>
+      <table class="dt">
+        <tr><th>Series</th><th>Reads on</th><th class="num">Latest</th><th class="num">Prior</th></tr>
+        <tr><td>Big-5 OCF, YoY (<span id="cfQ">–</span>)</td><td data-l="Reads on">Baker's master loop – contracts roll to spot, cash flow accelerates, ≈$700B of credit demand disappears</td><td data-l="Latest" class="num" id="cfYoy">–</td><td data-l="Prior" class="num" id="cfYoyPrev">–</td></tr>
+        <tr><td>Acceleration, quarter over quarter</td><td data-l="Reads on">The second derivative is the claim: decelerating growth breaks the loop before levels do</td><td data-l="Latest" class="num" id="cfAccel">–</td><td data-l="Prior" class="num"></td></tr>
+        <tr><td>Newest quarter, cohort status</td><td data-l="Reads on">A 4-of-5 cohort never gets quoted against a 5-of-5 baseline – it would read as a collapse that never happened</td><td data-l="Latest" class="num" id="cfPartial">–</td><td data-l="Prior" class="num"></td></tr>
+      </table>
+      <div class="srcline"><b>METRIC</b> – combined operating-cash-flow growth YoY across MSFT · GOOGL · AMZN · META · ORCL, and its quarter-over-quarter change; Baker's falsifier is this number failing to persist through contract repricing. &nbsp;<b>SOURCE</b> – <a href="https://www.sec.gov/edgar/sec-api-documentation" target="_blank" rel="noopener">SEC XBRL companyconcept</a> (live, same feed as the capex/OCF panel) · framing per Gavin Baker, <a href="https://www.youtube.com/watch?v=NGsi2PC4y68" target="_blank" rel="noopener">ILTB (Aug 2026)</a></div>
+    </div>
+    <div class="panel rv">
+      <h3>Token demand</h3>
+      <span class="cap">The demand tape behind the capex · OpenRouter platform-wide weekly tokens</span>
+      <table class="dt">
+        <tr><th>Series</th><th>Reads on</th><th class="num">Latest</th><th class="num">Δ</th></tr>
+        <tr><td>Routed tokens, weekly (wk of <span id="tdWk">–</span>)</td><td data-l="Reads on">Aggregate inference demand in the price-sensitive routed segment – the mix-shift-vs-demand-shift test</td><td data-l="Latest" class="num" id="tdTot">–</td><td data-l="Δ" class="num" id="tdWow">–</td></tr>
+        <tr><td>4-week growth</td><td data-l="Reads on">Momentum – Baker's "token growth is accelerating" claim, checkable weekly</td><td data-l="Latest" class="num" id="tdW4">–</td><td data-l="Δ" class="num"></td></tr>
+        <tr><td>~1-year growth</td><td data-l="Reads on">The scale of the demand curve the buildout is racing</td><td data-l="Latest" class="num" id="tdYoy">–</td><td data-l="Δ" class="num"></td></tr>
+        <tr><td>Chinese-lab share of the week</td><td data-l="Reads on">Open-weight substitution inside the same demand curve – margin dollars migrating, not demand leaving</td><td data-l="Latest" class="num" id="tdCn">–</td><td data-l="Δ" class="num"></td></tr>
+      </table>
+      <div class="srcline"><b>METRIC</b> – platform-wide routed tokens per week and its growth; first-party OpenAI/Anthropic/Gemini API traffic is invisible here, so this is the substitutable segment's floor, not the market total. &nbsp;<b>SOURCE</b> – <a href="https://openrouter.ai/rankings" target="_blank" rel="noopener">OpenRouter market-share series</a> (live, in-browser) · <a href="china-ai-monitor.html">China Watch</a> (share snapshot fallback)</div>
+    </div>
+    <div class="panel rv">
+      <h3>GPU repricing gap</h3>
+      <span class="cap">Spot vs contract vintages · the mechanism behind the ≈$700B credit-demand claim</span>
+      <table class="dt">
+        <tr><th>Generation</th><th>Reads on</th><th class="num">Spot</th><th class="num">Contract vintage</th><th class="num">Gap</th></tr>
+        <tr><td>H100 (<span id="rgH100Asof">–</span>)</td><td data-l="Reads on">Legacy fleets – 2023-vintage LTAs sit far above today's spot; the renters' churn risk, the owners' cushion</td><td data-l="Spot" class="num" id="rgH100Spot">–</td><td data-l="Contract vintage" class="num">≈$4.40/hr <small>2023 LTA</small></td><td data-l="Gap" class="num" id="rgH100Gap">–</td></tr>
+        <tr><td>B200 <small>curated</small></td><td data-l="Reads on">Current generation – Dec-2025-vintage contracts sit under spot; the installed base is underearning, repricing upside on roll</td><td data-l="Spot" class="num">≈$3.90/hr <small>Aug 2026</small></td><td data-l="Contract vintage" class="num">≈$2.50/hr <small>Dec 2025</small></td><td data-l="Gap" class="num" id="rgB200Gap">–</td></tr>
+      </table>
+      <div class="srcline"><b>METRIC</b> – spot $/GPU-hr vs the contracted rate of each generation's dominant LTA vintage; a sustained spot contraction is Baker's own falsifier #1, and the B200 gap closing from above is the repricing loop completing. &nbsp;<b>SOURCE</b> – <a href="https://vast.ai" target="_blank" rel="noopener">vast.ai H100 asks</a> (live) · B200 spot and both contract anchors curated from CRWV filings, deal press and <a href="https://www.youtube.com/watch?v=NGsi2PC4y68" target="_blank" rel="noopener">ILTB (Aug 2026)</a> ("mid-$2 seven months ago, just under $4 now")</div>
+    </div>
+    <div class="panel rv">
+      <h3>Inference-margin floor</h3>
+      <span class="cap">Flagship token prices vs compute cost at spot rents · where the margin dollars migrate</span>
+      <table class="dt">
+        <tr><th>Line</th><th>Reads on</th><th class="num">Output $/M</th><th class="num">Implied margin</th></tr>
+        <tr><td>Serving-cost floor at spot</td><td data-l="Reads on">H100 spot rent ÷ throughput, at 0.5–2.0M output tok/GPU-hr – the denominator every model shares</td><td data-l="Output $/M" class="num" id="imFloor">–</td><td data-l="Implied margin" class="num"></td></tr>
+        <tr><td>US flagship (<span id="imUsId">Claude Opus</span>)</td><td data-l="Reads on">Frontier pricing power – Baker puts frontier token margins at 80–95%</td><td data-l="Output $/M" class="num" id="imUsP">–</td><td data-l="Implied margin" class="num" id="imUsM">–</td></tr>
+        <tr><td>CN flagship (<span id="imCnId">DeepSeek pro</span>)</td><td data-l="Reads on">Open-weight serving economics – Baker puts these near 30%; compression biting shows up here first</td><td data-l="Output $/M" class="num" id="imCnP">–</td><td data-l="Implied margin" class="num" id="imCnM">–</td></tr>
+      </table>
+      <div class="srcline"><b>METRIC</b> – implied gross margin = 1 − serving-cost floor ÷ price, with margins quoted at the 1.0M tok/GPU-hr midpoint; a bounding exercise, not a P&amp;L – batch efficiency, MoE routing and first-party hardware all move the true number. &nbsp;<b>SOURCE</b> – <a href="https://openrouter.ai/api/v1/models" target="_blank" rel="noopener">OpenRouter models API</a> (live, newest priced model per line) · <a href="https://vast.ai" target="_blank" rel="noopener">vast.ai</a> (live, via market-data.json)</div>
     </div>
     <div class="panel rv">
       <h3>Generator pipeline</h3>
@@ -463,12 +512,14 @@ footer{border-top:1px solid var(--line);padding:56px 0 40px;background:var(--bg2
         <tr><td>Fairwater, Mt Pleasant, WI</td><td data-l="Sponsor">Microsoft</td><td data-l="Target" class="num">≈1 GW</td><td data-l="Status"><span class="chip uc">Under construction</span></td></tr>
         <tr><td>Wonder Valley, AB (Canada)</td><td data-l="Sponsor">O'Leary / Greenview</td><td data-l="Target" class="num">7.5 GW</td><td data-l="Status"><span class="chip ann">Announced</span></td></tr>
         <tr><td>Utah / New Mexico mega-sites</td><td data-l="Sponsor">Various</td><td data-l="Target" class="num">1–10 GW</td><td data-l="Status"><span class="chip risk">Speculative</span></td></tr>
+        <tr><td>Orbital constellation (LEO)</td><td data-l="Sponsor">SpaceX / Starlink</td><td data-l="Target" class="num">1–2 GW <small>(8 GW rumored)</small></td><td data-l="Status"><span class="chip risk">Speculative</span></td></tr>
+        <tr><td>Starcloud orbital DC</td><td data-l="Sponsor">Starcloud (NVIDIA-backed)</td><td data-l="Target" class="num">5 GW target</td><td data-l="Status"><span class="chip ann">Announced</span></td></tr>
       </table>
       <div class="pull">
         <div class="q">"Counties pre-budget the tax revenue – new playgrounds, water, schools. When the data center doesn't get finished, they're worse off than before it was announced."</div>
         <div class="who">The second-order casualty · <b>regional fiscal exposure</b> · watch county bond issuance against unfinished sites</div>
       </div>
-      <div class="srcline"><b>METRIC</b> – announced vs under-construction vs energized GW; cancellations and pauses; gas-turbine order backlog (sold out through ≈2029); state moratorium odds (already a Bear-index constituent). &nbsp;<b>SOURCE</b> – <a href="https://www.eia.gov/electricity/data/eia860m/" target="_blank" rel="noopener">EIA 860M</a> · <a href="https://emp.lbl.gov/queues" target="_blank" rel="noopener">LBNL interconnection queues</a> · <a href="https://kalshi.com" target="_blank" rel="noopener">Kalshi</a> · <a href="indexes.html">OMEN Bear index (moratorium market)</a> · live generator pipeline in <a href="#tape">the tape</a></div>
+      <div class="srcline"><b>METRIC</b> – announced vs under-construction vs energized GW; cancellations and pauses; gas-turbine order backlog (sold out through ≈2029); state moratorium odds (already a Bear-index constituent). Orbital rows: company statements + FCC filings – Baker (ILTB, Aug 2026) puts orbital monetization at ≈$50B/GW and calls the 8 GW figure "near-implausible" on launch cadence; orbital is also the regulatory-arbitrage hedge against the moratorium risk the Bear index prices. &nbsp;<b>SOURCE</b> – <a href="https://www.eia.gov/electricity/data/eia860m/" target="_blank" rel="noopener">EIA 860M</a> · <a href="https://emp.lbl.gov/queues" target="_blank" rel="noopener">LBNL interconnection queues</a> · <a href="https://kalshi.com" target="_blank" rel="noopener">Kalshi</a> · <a href="indexes.html">OMEN Bear index (moratorium market)</a> · live generator pipeline in <a href="#tape">the tape</a></div>
     </div>
   </div>
 </section>
@@ -712,7 +763,72 @@ async function liveTape(){
     put("gdComp","$"+g.computers_saar_b+"B");
     if(g.dc_yoy_pct!=null) put("tkGdpNote",sn(g.dc_yoy_pct,0,"% DC BUILD YOY"));
   }
+  const ag=d.agents;
+  if(ag){
+    const k=v=>v==null?null:(v>=1e6?(v/1e6).toFixed(2)+"M":Math.round(v/1e3)+"k");
+    if(ag.npm_total_wk!=null){ put("ltAgNpm",k(ag.npm_total_wk)+"/wk"); put("ltAgAsof",ag.asof); }
+    const ser=ag.series||[];
+    if(ser.length>1){
+      const cur=ser[ser.length-1][1], prevv=ser[ser.length-2][1];
+      if(cur!=null&&prevv>0) put("ltAgNpmD",sn((cur/prevv-1)*100,1,"%"),cur>=prevv?"up":"down");
+    }
+    const pv=Object.values(ag.pypi||{}).filter(v=>v!=null);
+    if(pv.length) put("ltAgPypi",k(pv.reduce((a,b)=>a+b,0))+"/wk");
+  }
   const upd=$("ltUpdated"); if(upd&&d.updated) upd.textContent="live tape "+d.updated.slice(0,16).replace("T"," ")+"Z";
+}
+
+// ---- token demand: OpenRouter's platform-wide weekly series, in-browser ----
+// Falls back to the China Watch snapshot (china-data.json) for the level and the
+// Chinese share when the live endpoint is unreachable; growth needs the live series.
+function fmtT(v){ return v>=1e12?(v/1e12).toFixed(1)+"T":v>=1e9?(v/1e9).toFixed(0)+"B":Math.round(v/1e6)+"M"; }
+async function liveTokens(){
+  let snap=null;
+  try{ const r=await fetch("china-data.json",{cache:"no-store"}); if(r.ok) snap=(await r.json()).openrouter_week; }
+  catch(e){}
+  if(snap&&snap.cn_share!=null) put("tdCn",(snap.cn_share*100).toFixed(1)+"% (snapshot)");
+  try{
+    const r=await fetch("https://openrouter.ai/api/frontend/v1/rankings/market-share");
+    if(!r.ok) throw new Error(r.status);
+    const ms=await r.json();
+    const series=(ms.data||[]).map(w=>{let t=0;for(const v of Object.values(w.ys||{}))t+=v;return {x:w.x,tot:t};});
+    const td=OMEN.tokenDemand(series);
+    if(!td) throw new Error("series too short");
+    put("ltTokWk",fmtT(td.tot)); put("ltTokWkAsof",td.week); put("tdWk",td.week); put("tdTot",fmtT(td.tot));
+    if(td.wow_pct!=null) put("tdWow",sn(td.wow_pct,1,"% WoW"),td.wow_pct>=0?"up":"down");
+    if(td.w4_pct!=null) put("tdW4",sn(td.w4_pct,1,"%"),td.w4_pct>=0?"up":"down");
+    if(td.yoy_pct!=null){ put("tdYoy",sn(td.yoy_pct,0,"%"),td.yoy_pct>=0?"up":"down"); put("ltTokGNote","~1y growth "+sn(td.yoy_pct,0,"%")+"."); }
+    else if(td.w4_pct!=null) put("ltTokGNote","4-week growth "+sn(td.w4_pct,1,"%")+".");
+  }catch(e){
+    if(snap&&snap.total_tokens!=null){
+      put("ltTokWk",fmtT(snap.total_tokens)); put("ltTokWkAsof",snap.week+" (snapshot)");
+      put("tdWk",snap.week+" (snapshot)"); put("tdTot",fmtT(snap.total_tokens));
+      put("ltTokGNote","Live series unreachable – snapshot level shown.");
+    }
+  }
+}
+
+// ---- inference-margin floor: OpenRouter flagship prices vs compute cost at spot ----
+// Margins are quoted at the 1.0M output-tok/GPU-hr midpoint of the 0.5–2.0M band the
+// floor row shows; the srcline owns the caveats. dph arrives from market-data.json.
+async function liveMargin(dph){
+  if(!(dph>0)) return;
+  const lo=OMEN.serveFloorPerM(dph,2), mid=OMEN.serveFloorPerM(dph,1), hi=OMEN.serveFloorPerM(dph,0.5);
+  put("imFloor","$"+lo.toFixed(2)+"–$"+hi.toFixed(2)+"/M");
+  try{
+    const r=await fetch("https://openrouter.ai/api/v1/models");
+    if(!r.ok) return;
+    const models=(await r.json()).data;
+    const us=OMEN.newestPriced(models,/^anthropic\/claude-opus/);
+    const cn=OMEN.newestPriced(models,/^deepseek\/.*-pro/)||OMEN.newestPriced(models,/^deepseek\//);
+    for(const [side,m] of [["Us",us],["Cn",cn]]){
+      if(!m) continue;
+      put("im"+side+"Id",m.id.split("/")[1]);
+      put("im"+side+"P","$"+m.outP.toFixed(2)+"/M");
+      const mg=OMEN.impliedMargin(m.outP,mid);
+      if(mg!=null) put("im"+side+"M",sn(mg,0,"%"),mg>=50?"up":mg<0?"down":null);
+    }
+  }catch(e){}
 }
 
 // ---- theses i, iii, iv, vi, vii: the audited series behind the curated prose ----
@@ -808,6 +924,43 @@ async function liveFundamentals(){
     if(gpu.p10_dph!=null) put("dfGpuP10","$"+gpu.p10_dph.toFixed(2)+"/hr");
   }
 
+  // GPU repricing gap: H100 leg live from the vast.ai feed above; the B200 leg and
+  // both contract anchors are curated (see the panel's srcline for provenance)
+  const H100_CONTRACT_2023=4.40, B200_SPOT_CUR=3.90, B200_CONTRACT_2025=2.50;
+  if(gpu&&gpu.median_dph!=null){
+    put("rgH100Spot","$"+gpu.median_dph.toFixed(2)+"/hr");
+    put("rgH100Asof",gpu.date);
+    const g=OMEN.repricingGap(gpu.median_dph,H100_CONTRACT_2023);
+    if(g!=null) put("rgH100Gap",sn(g,0,"%"),g<0?"down":"up");
+  }
+  const gb=OMEN.repricingGap(B200_SPOT_CUR,B200_CONTRACT_2025);
+  if(gb!=null) put("rgB200Gap",sn(gb,0,"%"),"up");
+
+  // cash-flow acceleration: complete-cohort OCF growth from the fundamentals block
+  const og=OMEN.ocfGrowth(d.fundamentals);
+  if(og&&og.latest){
+    put("ltOcfYoy",sn(og.latest.yoy,1,"%"),og.latest.yoy>=0?"up":"down");
+    put("ltOcfQ",og.latest.q);
+    put("cfQ",og.latest.q);
+    put("cfYoy",sn(og.latest.yoy,1,"%"),og.latest.yoy>=0?"up":"down");
+    if(og.prior){
+      put("cfYoyPrev",sn(og.prior.yoy,1,"% ("+og.prior.q+")"));
+      put("cfAccel",sn(og.accel_pp,1,"pp"),og.accel_pp>=0?"up":"down");
+      put("ltOcfAccelNote",(og.accel_pp>=0?"Accelerating ":"Decelerating ")+sn(og.accel_pp,1,"pp")+" vs "+og.prior.q+".");
+    }
+    put("cfPartial",og.partial_q?og.partial_q+" – "+og.partial_n+" of "+og.n_firms+" filed":"cohort complete");
+  }
+
+  // NVDA trailing-P/E percentile, computed server-side by update-market-data.py
+  const v=d.valuation;
+  if(v&&v.pe_ttm!=null){
+    put("ltPe",v.pe_ttm.toFixed(1)+"×");
+    if(v.pct_10y!=null)
+      put("ltPePct","p"+Math.round(v.pct_10y)+" of its 10y range, "+v.lo_10y.toFixed(0)+"–"+v.hi_10y.toFixed(0)+"×, as of "+v.asof);
+  }
+
+  liveMargin(gpu?gpu.median_dph:null);
+
   const oas=(d.fred||{}).HY_OAS;
   if(oas&&oas.last!=null){
     put("crHyOas","≈+"+Math.round(oas.last*100)+"bp");
@@ -823,6 +976,7 @@ async function liveFundamentals(){
 }
 liveTape();
 liveFundamentals();
+liveTokens();
 </script>
 
 <script src="omen-nav.js" defer></script>
