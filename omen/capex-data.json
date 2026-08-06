@@ -1,5 +1,5 @@
 {
- "updated": "2026-08-06T06:40:13Z",
+ "updated": "2026-08-06T09:46:19Z",
  "tsmc": {
   "asof": "2026-06",
   "rev_ntd_b": 442.7,
@@ -151,6 +151,25 @@
   "gdp_saar_b": 32475.2,
   "gdp_asof": "2026-04-01",
   "pct_gdp": 1.46
+ },
+ "agents": {
+  "asof": "2026-08-06",
+  "npm": {
+   "@anthropic-ai/claude-code": 11145008,
+   "@openai/codex": 17206375,
+   "@google/gemini-cli": 395583
+  },
+  "pypi": {
+   "claude-agent-sdk": null,
+   "openai-agents": 8879901
+  },
+  "npm_total_wk": 28746966,
+  "series": [
+   [
+    "2026-08-06",
+    28746966
+   ]
+  ]
  },
  "manual": {
   "korea": {
