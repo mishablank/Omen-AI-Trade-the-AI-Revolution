@@ -19,6 +19,11 @@ import { dirname, join } from "node:path";
 const HERE = dirname(fileURLToPath(import.meta.url));
 const SRC = readFileSync(join(HERE, "polymarket-ai-index.html"), "utf8");
 const FIX = JSON.parse(readFileSync(join(HERE, "fixtures", "gauge-parity.json"), "utf8"));
+// The real shared module, loaded the way the pages load it. computeGauge normalizes every
+// component through OMEN.gaugeScore against OMEN.GAUGE_REFS, so the slice is evaluated
+// against the actual ranges table rather than a copy of it.
+const OMEN = new Function(
+  readFileSync(join(HERE, "omen-common.js"), "utf8") + "\nreturn OMEN;")();
 
 // Slice [start, end) out of the source. Fails loudly if a marker moves, rather than
 // silently testing nothing.
@@ -59,11 +64,12 @@ const clamp = (x, a, b) => Math.max(a, Math.min(b, x)); // page line: const clam
 // bubble market - pred's other two components and all of macro enter through their
 // accessor functions, which is exactly how the page wires them.
 const J = FIX.js_inputs;
-function gaugeFor(weighting) {
+function gaugeFor(weighting, omen = OMEN) {
   return build(
     slice("// blended crash-pressure gauge", "const GAUGE_BANDS"),
     ["computeGauge"],
     {
+      OMEN: omen,
       clamp,
       drawdown,
       markets: new Map([["691340", { closed: false, yes: FIX.prices["691340"] }]]),
@@ -112,13 +118,45 @@ const g = gaugeFor("equal");
   console.log("  score / weighting / lead-conf");
 }
 
+/* ---------- every component is scored through the shared ranges table ---------- */
+{
+  // OMEN.gaugeScore closes over the module's own GAUGE_REFS - a component can only be
+  // scored against a range that is written down there, and an unknown key throws rather
+  // than scoring silently. Record what computeGauge asks for: this is what stops the page
+  // drifting back to typing its own numbers, which is how the ranges came to exist in
+  // five copies and how gauge.html ended up publishing ranges the gauge no longer used.
+  const asked = [];
+  const spy = { ...OMEN, gaugeScore: (x, k) => { asked.push(k); return OMEN.gaugeScore(x, k); } };
+  gaugeFor("equal", spy);
+  const want = [
+    "pred_bubble", "pred_nvda_tail", "pred_h100_sub2",
+    "opt_nvda_rr", "opt_soxx_rr",
+    "vol_term", "vol_vxn", "vol_skew", "vol_vvix",
+    "credit_hyg_dd", "credit_hyig_dd", "credit_hy_oas", "credit_ccc_oas",
+    "equity_nvda_dd", "equity_soxx_dd",
+    "macro_recession", "macro_fed_cuts", "macro_china_top3",
+  ];
+  ok("refs/every component is scored through OMEN.gaugeScore",
+    asked.length === want.length && [...asked].sort().join() === [...want].sort().join(),
+    `got [${asked.join(", ")}]`);
+  ok("refs/every key it asks for is a row in the table",
+    asked.every((k) => OMEN.GAUGE_REFS[k]));
+  // The server gauge mirrors exactly the `server: true` rows; test_gauge_refs.py holds the
+  // Python side of that. Here: the rows the monitor adds are the documented divergences.
+  ok("refs/the monitor-only rows are pred's extra components plus macro",
+    Object.keys(OMEN.GAUGE_REFS).filter((k) => !OMEN.GAUGE_REFS[k].server).sort().join() ===
+      ["macro_china_top3", "macro_fed_cuts", "macro_recession",
+        "pred_h100_sub2", "pred_nvda_tail"].join());
+  console.log("  reference ranges (single-sourced from OMEN.GAUGE_REFS)");
+}
+
 /* ---------- degradation: a dark family drops out of the mean ---------- */
 {
   const dark = build(
     slice("// blended crash-pressure gauge", "const GAUGE_BANDS"),
     ["computeGauge"],
     {
-      clamp, drawdown,
+      OMEN, clamp, drawdown,
       markets: new Map(),               // bubble market gone
       BUBBLE_ID: "691340",
       mkt: { ...FIX.mkt, vol: {} },     // vol complex gone too

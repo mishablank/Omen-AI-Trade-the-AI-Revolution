@@ -263,7 +263,9 @@ def test_gauge_families_and_regime():
         "skew": {"NVDA": {"rr": 0.055}, "SOXX": {"rr": 0.095}},
         "vol": {"VIX": {"last": 20.0}, "VIX3M": {"last": 20.0},
                 "VXN": {"last": 29.0}, "SKEW": {"last": 137.5}, "VVIX": {"last": 110.0}},
-        "credit": {"HYG": [{"c": 100}, {"c": 96}], "LQD": [{"c": 100}, {"c": 100}]},
+        # dated exactly as yahoo_series() emits them - the HY/IG ratio is joined on "d"
+        "credit": {"HYG": [{"d": "2026-08-05", "c": 100}, {"d": "2026-08-06", "c": 96}],
+                   "LQD": [{"d": "2026-08-05", "c": 100}, {"d": "2026-08-06", "c": 100}]},
         "fred": {"HY_OAS": {"last": 3.75}, "CCC_OAS": {"last": 11.25}},
         "equity": {"NVDA": [{"c": 100}, {"c": 75}], "SOXX": [{"c": 100}, {"c": 80}]},
     }
@@ -284,6 +286,44 @@ def test_gauge_families_and_regime():
     assert umd.compute_regime(10, dict(cold, **{umd.BUBBLE_ID: 0.50})) == "elevated"
     # a cold single market with a calm gauge and cold sleeve stays calm
     assert umd.compute_regime(10, dict(cold, **{umd.BUBBLE_ID: 0.10})) == "calm"
+
+
+def _credit_only(hyg, lqd):
+    """compute_gauge with credit as the only live family, so fam['credit'] is readable."""
+    _, fam = umd.compute_gauge({"credit": {"HYG": hyg, "LQD": lqd}}, {})
+    return fam["credit"]
+
+
+def test_hy_ig_ratio_joins_on_date_not_array_position():
+    """The HY/IG ratio pairs HYG with LQD by trading date.
+
+    It used to zip() the two series, pairing them by array position. The carry-forward
+    policy makes a length mismatch a real state - either leg can be a session behind when
+    its fetch fails - and a one-row offset silently divides one day's HYG by another day's
+    LQD. Here LQD is missing the first session: by position the ratio reads perfectly flat
+    and the credit family sees no stress at all, while the dated join sees the 20% ratio
+    drawdown that is actually on the tape.
+    """
+    hyg = [{"d": "2026-08-04", "c": 100}, {"d": "2026-08-05", "c": 100},
+           {"d": "2026-08-06", "c": 80}]
+    lqd = [{"d": "2026-08-05", "c": 100}, {"d": "2026-08-06", "c": 100}]
+    # HYG drawdown alone is -20% (past its 0->-8% range, so 100); the ratio drawdown is
+    # -20% too (past 0->-6%, so 100). Position-pairing would have scored the ratio leg 0
+    # and halved the family to 50.
+    assert _credit_only(hyg, lqd) == 100.0
+
+
+def test_hy_ig_ratio_ignores_dates_the_other_leg_does_not_have():
+    """Unmatched dates are dropped, never guessed at or interpolated."""
+    hyg = [{"d": "2026-08-04", "c": 100}, {"d": "2026-08-05", "c": 50}]
+    lqd = [{"d": "2026-08-04", "c": 100}, {"d": "2026-08-05", "c": 0}]   # 0 is unusable
+    # 08-05 drops (a zero LQD print would divide by zero), leaving a single flat ratio day
+    # and so no ratio drawdown: that leg scores 0 against the HYG leg's -50% (100), for 50.
+    assert _credit_only(hyg, lqd) == 50.0
+    # No overlap at all, so the ratio is not computable rather than wrong. A dark component
+    # leaves the mean instead of scoring 0 - the family is then the HYG leg alone, the same
+    # degradation rule every other family follows.
+    assert _credit_only(hyg, [{"d": "2025-01-02", "c": 100}]) == 100.0
 
 
 def test_bear_basket_is_the_union_of_its_sleeves():

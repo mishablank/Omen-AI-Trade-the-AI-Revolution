@@ -58,7 +58,7 @@ def post(url, payload, headers, timeout=90):
 def score_one(person, key):
     who = f'{person["name"]} ({person["org"]})'
     src = f'their recent X/Twitter posts from @{person["handle"]}' if person["handle"] else \
-          f'their recent public commentary and interviews'
+          'their recent public commentary and interviews'
     payload = {
         "model": MODEL,
         "messages": [

@@ -303,7 +303,11 @@ def yahoo_series(sym, rng="6mo"):
     j = json.loads(get(f"https://query1.finance.yahoo.com/v8/finance/chart/{sym}?range={rng}&interval=1d"))
     res = j["chart"]["result"][0]
     ts, cl = res["timestamp"], res["indicators"]["quote"][0]["close"]
-    return [{"d": datetime.datetime.utcfromtimestamp(t).strftime("%Y-%m-%d"), "c": round(c, 2)}
+    # Yahoo's timestamps are epoch seconds; read them as UTC explicitly. utcfromtimestamp()
+    # is deprecated in 3.12 (the CI interpreter) and returns a naive datetime that claims
+    # nothing about its zone. strftime output is unchanged.
+    return [{"d": datetime.datetime.fromtimestamp(t, datetime.timezone.utc).strftime("%Y-%m-%d"),
+             "c": round(c, 2)}
             for t, c in zip(ts, cl) if c is not None]
 
 
@@ -314,7 +318,7 @@ def yahoo_monthly(sym, rng="10y"):
     j = json.loads(get(f"https://query1.finance.yahoo.com/v8/finance/chart/{sym}?range={rng}&interval=1mo"))
     res = j["chart"]["result"][0]
     ts, cl = res["timestamp"], res["indicators"]["quote"][0]["close"]
-    months = {datetime.datetime.utcfromtimestamp(t).strftime("%Y-%m"): round(c, 2)
+    months = {datetime.datetime.fromtimestamp(t, datetime.timezone.utc).strftime("%Y-%m"): round(c, 2)
               for t, c in zip(ts, cl) if c is not None}
     return sorted(months.items())
 
@@ -488,7 +492,9 @@ def nasdaq_options(sym, days_from, days_to):
         if not r.get("strike") or not group:
             continue
         try:
-            exp = datetime.datetime.strptime(group, "%B %d, %Y").date()
+            # noqa DTZ007: this is a calendar expiry ("June 17, 2027"), not an instant —
+            # it is reduced to a date on the same line and never compared across zones.
+            exp = datetime.datetime.strptime(group, "%B %d, %Y").date()  # noqa: DTZ007
         except ValueError:
             continue
         strike = _num(r.get("strike"))
@@ -1353,7 +1359,32 @@ def gpu_spot(prev):
 
 
 # ---------- server-side gauge (mirrors the dashboard; pred family = bubble only) ----------
-def sc(x, lo, hi):
+# The calm→stress range every component is normalized against. This is a mirror of the
+# `server: true` rows of GAUGE_REFS in omen/omen-common.js, which the two browser
+# implementations (the monitor's live gauge and its 90-day reconstruction) and the
+# published reference-range prose all read. test_gauge_refs.py parses that file and fails
+# if a number here disagrees, or if either side gains or loses a component — so the ranges
+# can be edited in one place and the copy is checked, never trusted.
+GAUGE_REFS = {
+    "pred_bubble": (0, 40),
+    "opt_nvda_rr": (1, 10),
+    "opt_soxx_rr": (4, 15),
+    "vol_term": (0.82, 1.05),
+    "vol_vxn": (18, 40),
+    "vol_skew": (115, 160),
+    "vol_vvix": (90, 130),
+    "credit_hyg_dd": (0, 8),
+    "credit_hyig_dd": (0, 6),
+    "credit_hy_oas": (2.5, 5),
+    "credit_ccc_oas": (8.5, 14),
+    "equity_nvda_dd": (0, 50),
+    "equity_soxx_dd": (0, 40),
+}
+
+
+def sc(x, ref):
+    """Normalize x onto 0-100 against the named GAUGE_REFS range."""
+    lo, hi = GAUGE_REFS[ref]
     if x is None:
         return None
     return max(0.0, min(100.0, (x - lo) / (hi - lo) * 100))
@@ -1388,32 +1419,38 @@ def compute_gauge(data, price):
     nrr = (data.get("skew", {}).get("NVDA") or {}).get("rr")
     srr = (data.get("skew", {}).get("SOXX") or {}).get("rr")
     fam = {
-        "pred": mean_or_none([sc(bubble * 100 if bubble is not None else None, 0, 40)]),
-        "opt": mean_or_none([sc(nrr * 100 if nrr is not None else None, 1, 10),
-                             sc(srr * 100 if srr is not None else None, 4, 15)]),
+        "pred": mean_or_none([sc(bubble * 100 if bubble is not None else None, "pred_bubble")]),
+        "opt": mean_or_none([sc(nrr * 100 if nrr is not None else None, "opt_nvda_rr"),
+                             sc(srr * 100 if srr is not None else None, "opt_soxx_rr")]),
     }
     V = data.get("vol", {})
     ts = (V["VIX"]["last"] / V["VIX3M"]["last"]) if V.get("VIX") and V.get("VIX3M") else None
-    fam["vol"] = mean_or_none([sc(ts, 0.82, 1.05), sc((V.get("VXN") or {}).get("last"), 18, 40),
-                               sc((V.get("SKEW") or {}).get("last"), 115, 160),
-                               sc((V.get("VVIX") or {}).get("last"), 90, 130)])
+    fam["vol"] = mean_or_none([sc(ts, "vol_term"),
+                               sc((V.get("VXN") or {}).get("last"), "vol_vxn"),
+                               sc((V.get("SKEW") or {}).get("last"), "vol_skew"),
+                               sc((V.get("VVIX") or {}).get("last"), "vol_vvix")])
     C, F = data.get("credit", {}), data.get("fred", {})
     hyig = None
     if C.get("HYG") and C.get("LQD"):
-        r = [p["c"] / q["c"] for p, q in zip(C["HYG"], C["LQD"])]
+        # Join on the trading date, not on array position. Both series are carried forward
+        # independently when a fetch fails, so one can be a session (or a whole run) behind
+        # the other; zip() then paired Monday's HYG against Friday's LQD and read the step
+        # as a move in the HY/IG ratio. Extra dates on either side are dropped, not guessed.
+        lqd = {q["d"]: q["c"] for q in C["LQD"]}
+        r = [p["c"] / lqd[p["d"]] for p in C["HYG"] if p["d"] in lqd and lqd[p["d"]]]
         if r:
             hyig = (r[-1] / max(r) - 1) * 100
     hyg_dd = drawdown(C.get("HYG"))
     oas = (F.get("HY_OAS") or {}).get("last")
     ccc = (F.get("CCC_OAS") or {}).get("last")
-    fam["credit"] = mean_or_none([sc(-hyg_dd if hyg_dd is not None else None, 0, 8),
-                                  sc(-hyig if hyig is not None else None, 0, 6),
-                                  sc(oas, 2.5, 5.0), sc(ccc, 8.5, 14.0)])
+    fam["credit"] = mean_or_none([sc(-hyg_dd if hyg_dd is not None else None, "credit_hyg_dd"),
+                                  sc(-hyig if hyig is not None else None, "credit_hyig_dd"),
+                                  sc(oas, "credit_hy_oas"), sc(ccc, "credit_ccc_oas")])
     E = data.get("equity", {})
     ndd = drawdown(E.get("NVDA")) if E.get("NVDA") else None
     sdd = drawdown(E.get("SOXX")) if E.get("SOXX") else None
-    fam["equity"] = mean_or_none([sc(-ndd if ndd is not None else None, 0, 50),
-                                  sc(-sdd if sdd is not None else None, 0, 40)])
+    fam["equity"] = mean_or_none([sc(-ndd if ndd is not None else None, "equity_nvda_dd"),
+                                  sc(-sdd if sdd is not None else None, "equity_soxx_dd")])
     score = mean_or_none(list(fam.values()))
     return score, fam
 
@@ -1709,8 +1746,11 @@ def check_alert(data, price=None):
                    f"Gauge {gtxt}/100 (leading {lead and round(lead)} / confirming {conf and round(conf)}) "
                    f"· bubble market {bubble:.1f}% · families: "
                    + ", ".join(f"{k} {v:.0f}" for k, v in fam.items() if v is not None))
-    json.dump({"regime": regime, "gauge": gauge, "at": datetime.datetime.utcnow().isoformat() + "Z"},
-              open(ALERT_STATE, "w"))
+    # The stamp is written as naive-UTC + "Z", the format alert-state.json has always used
+    # and the pages parse. now(timezone.utc) is the non-deprecated read; dropping tzinfo
+    # again before isoformat() keeps the trailing "Z" rather than emitting "+00:00".
+    at = datetime.datetime.now(datetime.timezone.utc).replace(tzinfo=None).isoformat() + "Z"
+    json.dump({"regime": regime, "gauge": gauge, "at": at}, open(ALERT_STATE, "w"))
     print(f"regime: {regime} (gauge {gauge and round(gauge, 1)})")
 
 
@@ -1753,7 +1793,7 @@ def build():
                 prev = json.load(f)
         except Exception:
             prev = {}
-    now = datetime.datetime.utcnow()
+    now = datetime.datetime.now(datetime.timezone.utc)
     data = {"updated": now.strftime("%Y-%m-%dT%H:%M:%SZ"),
             "updated_date": now.strftime("%Y-%m-%d"),
             "basket": BASKET, "bench": "SPY",

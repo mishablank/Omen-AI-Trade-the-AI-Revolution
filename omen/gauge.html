@@ -182,8 +182,12 @@ footer{border-top:1px solid var(--line);padding:40px 0;background:var(--bg2)}
 
     <div class="eqgrid" id="eqgrid"></div>
 
+    <!-- Filled from OMEN.GAUGE_REFS at load: this page shows the five-family server gauge,
+         so it lists exactly the rows that gauge is scored against. Typed by hand until
+         2026-08 it had drifted both ways — it advertised the monitor-only NVDA-tail and
+         H100 components, and omitted the HY and CCC spreads the server gauge does read. -->
     <div class="ranges">
-      <b>REFERENCE RANGES (CALM → STRESS)</b> – prediction markets: bubble-burst 0–40% · NVDA deep tail 0–25% · H100&lt;$2 0–30% &nbsp;/&nbsp; options skew: NVDA 25Δ RR 1–10 pt · SOXX 4–15 pt &nbsp;/&nbsp; volatility: VIX/VIX3M 0.82–1.05 · VXN 18–40 · SKEW 115–160 · VVIX 90–130 &nbsp;/&nbsp; credit: HYG drawdown 0 to −8% · HY/IG 0 to −6% &nbsp;/&nbsp; equity: NVDA 0 → −50% · SOXX 0 → −40%
+      <b>REFERENCE RANGES (CALM → STRESS)</b> <span id="refRanges"></span>
     </div>
   </div>
 </section>
@@ -384,6 +388,7 @@ async function goLive(){
   }catch(e){ /* baked snapshot stays */ }
 }
 
+$("refRanges").innerHTML="– "+OMEN.gaugeRefsProse("server");
 renderFams(true); renderEquity(); animateGauge();
 requestAnimationFrame(()=>{ $("needle").style.left=GAUGE+"%"; });
 goLive();
