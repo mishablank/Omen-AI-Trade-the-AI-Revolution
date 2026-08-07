@@ -20,7 +20,7 @@ Every AI-bubble take you've read is somebody's opinion. OMEN is a price.
 
 It blends what prediction markets *think* will happen with what options, credit, volatility and equity markets are *actually charging* for protection — plus the one non-market anchor that matters, hyperscaler capex against operating cash flow, straight out of SEC XBRL. Out comes a single 0–100 crash-pressure gauge, a stated regime, and one of five verdicts.
 
-No database. No framework. No build step. No server-side rendering. Static HTML, a handful of stdlib-only Python fetchers, and a 78-line Cloudflare Worker — the whole thing is about 11,000 lines, and every number on it comes from a free, mostly keyless endpoint.
+No database. No framework. No build step. No server-side rendering. Static HTML, a handful of stdlib-only Python fetchers, and a small Cloudflare Worker — the whole thing is about 11,000 lines, and every number on it comes from a free, mostly keyless endpoint.
 
 **Not investment advice.** This is a measurement instrument, not a recommendation.
 
@@ -55,6 +55,8 @@ Five equally-weighted families, each normalized 0–100 against a fixed calm→s
 | | `EQUITY` | NVDA and SOXX drawdown from the running high |
 
 **Only the leading side can warn.** That split is the entire point: a gauge that goes red because equities already fell is a thermometer, not a warning.
+
+**One headline, stated once.** The regime everywhere – the landing dial, the monitor's chip, the escalation alert – reads the *server-side* gauge above, computed once per run and embedded in `market-data.json`, so the three can never disagree. The monitor's gauge card additionally shows an **exploratory six-family read**: the prediction leg widened to the NVDA-tail and H100 components, plus a macro family (recession, Fed cuts, China top-3) and a weighting toggle. It is labelled as exploratory and does not drive the regime; only when the fetcher payload is missing or more than 2h stale does the chip fall back to it, and it says so on the card.
 
 ### Regime bands
 
