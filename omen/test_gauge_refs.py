@@ -88,14 +88,27 @@ def test_an_unknown_range_name_fails_loudly():
         umd.sc(1.0, "no_such_range")
 
 
+PROSE_PAGES = ["gauge.html", "methodology.html", "polymarket-ai-index.html"]
+
+
 def test_the_published_ranges_are_rendered_not_typed():
-    """Both prose sites read the table. gauge.html used to advertise two components the
-    server gauge does not score and omit the two spread rows it does; the monitor's footer
-    called the set five families while the code computed six."""
-    gauge_html = (HERE / "gauge.html").read_text()
-    monitor = (HERE / "polymarket-ai-index.html").read_text()
-    assert "gaugeRefsProse" in gauge_html
-    assert "gaugeRefsProse" in monitor
-    # the exact literals that used to be hand-typed next to the wrong family
-    assert "NVDA deep tail 0–25%" not in gauge_html
-    assert "VXN 18–40 · SKEW 115–160" not in gauge_html
+    """Every page that publishes the ranges reads the table.
+
+    gauge.html and methodology.html each carried a hand-typed copy of the same block, and
+    both had drifted the same two ways: they advertised the monitor-only NVDA-tail and
+    H100 components and omitted the two spread rows the server gauge does read. The
+    monitor's footer called the set five families while the code computed six.
+    """
+    for page in PROSE_PAGES:
+        assert "gaugeRefsProse" in (HERE / page).read_text(), (
+            f"{page} publishes reference ranges without rendering them from the table")
+
+
+def test_no_page_still_hand_types_a_range():
+    """The copies are gone, not just outnumbered - a stale sixth copy on a page nobody
+    edits is exactly how this started. Checks the literals that were actually typed."""
+    stale = ["NVDA deep tail 0–25%", "VXN 18–40 · SKEW 115–160", "HYG drawdown 0 to −8%"]
+    for page in PROSE_PAGES + ["index.html", "indexes.html"]:
+        text = (HERE / page).read_text()
+        found = [s for s in stale if s in text]
+        assert not found, f"{page} still hand-types reference ranges: {found}"
