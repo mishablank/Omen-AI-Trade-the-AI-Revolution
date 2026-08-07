@@ -6,6 +6,15 @@
   "name": "omen-ai",
   "compatibility_date": "2026-07-11",
   "main": "worker.js",
+  // wrangler runs this before every upload. Its only job is to veto a Cloudflare
+  // Workers Builds deploy of a branch other than main — the integration builds every
+  // branch push straight into production, which is not how this repo deploys (see
+  // .github/workflows/deploy.yml). Fail-open: it allows anything it cannot positively
+  // identify as a non-main Workers Build, so deploy.yml and local deploys are
+  // unaffected. Details and escape hatch: ci-branch-guard.mjs.
+  "build": {
+    "command": "node ci-branch-guard.mjs"
+  },
   "assets": {
     "directory": "./omen",
     "binding": "ASSETS",

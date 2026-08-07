@@ -9,6 +9,13 @@
 # constant. Workers Builds must be disconnected when this lands, or the two race and the
 # older mechanism silently wins.
 #
+# It was NOT disconnected when this landed. Re-verified 2026-08-05: pushing the branch
+# `dataviz-upgrades` served an unreviewed landing page from production for ~2 minutes,
+# until the data cron's next push to main rebuilt over it. ci-branch-guard.mjs (wired in
+# as wrangler.jsonc's build.command) now vetoes a Workers Build of any branch but main,
+# so that path fails closed instead of shipping. The guard is insurance, not the fix —
+# disconnect the integration in the Cloudflare dashboard.
+#
 # Data refreshes deliberately do NOT deploy. refresh.yml commits with the default
 # GITHUB_TOKEN, and GitHub does not raise workflow events for GITHUB_TOKEN pushes, so
 # this runs on human merges only — roughly once a day instead of ~48 times. That is

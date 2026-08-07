@@ -56,6 +56,7 @@ jobs:
         # error in a suite is reported as such rather than as a suite failure.
         run: |
           node --check worker.js
+          node --check ci-branch-guard.mjs
           node --check omen/update-app-charts.mjs
           for f in omen/test-*.mjs; do
             node --check "$f"
