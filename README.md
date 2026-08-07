@@ -56,6 +56,8 @@ Five equally-weighted families, each normalized 0–100 against a fixed calm→s
 
 **Only the leading side can warn.** That split is the entire point: a gauge that goes red because equities already fell is a thermometer, not a warning.
 
+**One headline, stated once.** The regime everywhere – the landing dial, the monitor's chip, the escalation alert – reads the *server-side* gauge above, computed once per run and embedded in `market-data.json`, so the three can never disagree. The monitor's gauge card additionally shows an **exploratory six-family read**: the prediction leg widened to the NVDA-tail and H100 components, plus a macro family (recession, Fed cuts, China top-3) and a weighting toggle. It is labelled as exploratory and does not drive the regime; only when the fetcher payload is missing or more than 2h stale does the chip fall back to it, and it says so on the card.
+
 ### Regime bands
 
 ```
