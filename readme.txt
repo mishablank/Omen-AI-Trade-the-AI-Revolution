@@ -482,12 +482,6 @@ Tracked with acceptance criteria in BACKLOG.md:
        and X have no public, key-free, CORS-accessible API for this.
     ·  Android chart presence depends on a reverse-engineered scrape that
        breaks every year or two; a SerpApi fallback is specced.
-    ·  The CSS tokens still carry two parallel *names* for one palette
-       (--bg/--ink vs --page/--text-primary). Converging them means rewriting
-       every var() call site in three large files.
-    ·  Chart accessibility: the SVG charts have no text alternative, direction
-       is encoded by colour alone, and the sortable table headers are not
-       keyboard-reachable.
 
 Honest about the rest, too: some fundamentals fields are hand-updated (§6),
 and the capex aggregate sums whichever hyperscalers reported in a given
