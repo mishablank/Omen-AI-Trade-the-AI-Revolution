@@ -101,7 +101,7 @@ All free. All keyless unless marked.
 | Short interest · market caps | FINRA via api.nasdaq.com · Nasdaq screener |
 | Cross-venue | Kalshi, Manifold *(Metaculus: free token)* |
 | TSMC monthly revenue · issuance velocity · paid adoption | TWSE OpenAPI · EDGAR full-text search · Ramp AI Index CSV |
-| Generator pipeline | EIA-860M *(free `EIA_API_KEY`)* |
+| Generator pipeline | EIA-860M monthly workbook |
 | Chinese-model demand | OpenRouter, HuggingFace, GitHub, LMArena, Vercel AI Gateway, Ollama, PyPI, Play/App Store |
 
 A handful of fields have no free machine-readable source and are **labelled as hand-updated** rather than quietly faked: Korea 20-day semiconductor exports, PJM capacity auction clears, LBNL interconnection-queue totals, per-CUSIP TRACE spreads.
@@ -203,7 +203,6 @@ Every secret is optional. Without it the relevant panel degrades to a dated snap
 | `XAI_API_KEY` | Auto-scored KOL board |
 | `ARTIFICIAL_ANALYSIS_API_KEY` | AA scores on the China monitor |
 | `CF_RADAR_TOKEN` | Cloudflare Radar panel |
-| `EIA_API_KEY` | EIA-860M generator pipeline (free) |
 
 Secrets are scoped to the individual workflow steps that need them — the step that runs third-party scraper code deliberately runs with **none** in scope.
 

@@ -1,5 +1,5 @@
 {
- "updated": "2026-08-07T18:23:03Z",
+ "updated": "2026-08-07T20:45:35Z",
  "snapshot_date": "2026-08-07",
  "artificial_analysis": {
   "cn_best": "GLM-5.2",
@@ -38,7 +38,7 @@
   "best": [
    {
     "label": "Qwen",
-    "rank": 174,
+    "rank": 179,
     "store": "android",
     "country": "br"
    }
@@ -55,7 +55,7 @@
    "au",
    "kr"
   ],
-  "detail": "no Chinese AI app in any iOS or Play top-100 (nearest: Qwen #174 (BR Play)); basket-mean Western top-100 presence 0/100 across 10 markets",
+  "detail": "no Chinese AI app in any iOS or Play top-100 (nearest: Qwen #179 (BR Play)); basket-mean Western top-100 presence 0/100 across 10 markets",
   "note": "iOS Apple RSS top-100 + Android Play top-200 across 10 markets; presence = basket-mean of best top-100 chart rank (DeepSeek/Qwen/Doubao/Kimi/MiniMax), #1=100 #100=1; ranks past top-100 score 0."
  },
  "lmarena": {
@@ -450,21 +450,21 @@
   "source": "search",
   "asof": "2026-08-07",
   "vel": {
-   "MiniMax-AI/Mini-Agent": 4.5,
-   "MiniMax-AI/skills": 16.9,
-   "MoonshotAI/Kimi-K3": 48.4,
-   "MoonshotAI/kimi-cli": 7.9,
-   "QwenLM/Qwen": 9.0,
-   "QwenLM/qwen-code": 46.1,
-   "XiaomiMiMo/MiMo-Audio": 0.0,
-   "XiaomiMiMo/MiMo-Code": 10.1,
-   "deepseek-ai/3FS": 2.2,
-   "deepseek-ai/FlashMLA": 2.2,
-   "zai-org/GLM-OCR": 0.0,
-   "zai-org/Open-AutoGLM": 5.6
+   "MiniMax-AI/Mini-Agent": 3.6,
+   "MiniMax-AI/skills": 21.6,
+   "MoonshotAI/Kimi-K3": 46.7,
+   "MoonshotAI/kimi-cli": 21.6,
+   "QwenLM/Qwen": 1.2,
+   "QwenLM/qwen-code": 33.5,
+   "XiaomiMiMo/MiMo-Audio": 1.2,
+   "XiaomiMiMo/MiMo-Code": 15.6,
+   "deepseek-ai/3FS": 1.2,
+   "deepseek-ai/FlashMLA": 3.6,
+   "zai-org/GLM-OCR": 2.4,
+   "zai-org/Open-AutoGLM": 4.8
   }
  },
- "github_stars_per_day": 153.0,
+ "github_stars_per_day": 156.8,
  "hf": {
   "cnOrgs": [
    {
@@ -531,40 +531,40 @@
  },
  "openrouter_week": {
   "week": "2026-08-03",
-  "cn_share": 0.4993,
-  "us_share": 0.3729,
-  "spi": 1.339,
-  "total_tokens": 49071620352914
+  "cn_share": 0.499,
+  "us_share": 0.3732,
+  "spi": 1.337,
+  "total_tokens": 50076591828414
  },
  "vercel_gateway": {
   "asof": "2026-08-07",
-  "cn_share": 56.86,
-  "us_share": 42.37,
-  "spi": 1.342,
+  "cn_share": 56.55,
+  "us_share": 42.78,
+  "spi": 1.322,
   "top_cn": [
    {
     "lab": "deepseek",
-    "share": 30.55
+    "share": 30.34
    },
    {
     "lab": "stepfun",
-    "share": 11.35
+    "share": 11.17
    },
    {
     "lab": "zai",
-    "share": 6.83
+    "share": 6.88
    },
    {
     "lab": "moonshotai",
-    "share": 5.59
+    "share": 5.67
    },
    {
     "lab": "minimax",
-    "share": 0.99
+    "share": 0.97
    },
    {
     "lab": "alibaba",
-    "share": 0.65
+    "share": 0.64
    }
   ],
   "series": [
@@ -870,15 +870,15 @@
    },
    {
     "d": "2026-08-07",
-    "cn": 56.86,
-    "us": 42.37
+    "cn": 56.55,
+    "us": 42.78
    }
   ],
   "license": "AI Gateway Leaderboard Data (c) Vercel, CC BY 4.0"
  },
  "ollama": {
-  "cn": 279153600,
-  "us": 452467845,
+  "cn": 279255400,
+  "us": 452470466,
   "cn_top": [
    {
     "name": "deepseek-r1",
@@ -920,7 +920,9 @@
    }
   ],
   "n_models": 231,
-  "asof": "2026-08-07"
+  "asof": "2026-08-07",
+  "cn_per_day": 981383,
+  "us_per_day": 744544
  },
  "kalshi": {
   "asof": "2026-08-07",
@@ -933,7 +935,7 @@
    },
    {
     "label": "Best AI at end of 2026: Kimi",
-    "p": 0.02,
+    "p": 0.03,
     "ticker": "KXLLM1-26DEC31-MOON",
     "series": "kxllm1"
    },
@@ -945,13 +947,13 @@
    },
    {
     "label": "Best AI at end of 2026: Qwen",
-    "p": 0.013,
+    "p": 0.016,
     "ticker": "KXLLM1-26DEC31-ALI",
     "series": "kxllm1"
    },
    {
     "label": "Best AI at end of 2026: Claude",
-    "p": 0.646,
+    "p": 0.651,
     "ticker": "KXLLM1-26DEC31-A",
     "series": "kxllm1"
    }
@@ -961,7 +963,7 @@
   "cn": [
    {
     "base": "Qwen/Qwen3-8B",
-    "n": 1991
+    "n": 1990
    },
    {
     "base": "deepseek-ai/DeepSeek-R1",
@@ -991,11 +993,11 @@
    },
    {
     "base": "microsoft/phi-4",
-    "n": 110
+    "n": 111
    }
   ],
-  "cn_total": 2373,
-  "us_total": 2509,
+  "cn_total": 2372,
+  "us_total": 2510,
   "asof": "2026-08-07"
  },
  "sdk": {
