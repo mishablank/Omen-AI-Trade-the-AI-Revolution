@@ -217,7 +217,7 @@ All free. All keyless unless marked.
     TSMC monthly revenue           TWSE OpenAPI
     Issuance velocity              SEC EDGAR full-text search
     Paid AI adoption               Ramp AI Index CSV
-    Generator pipeline             EIA-860M          (free EIA_API_KEY)
+    Generator pipeline             EIA-860M monthly workbook
     Chinese-model demand           OpenRouter, HuggingFace, GitHub, LMArena,
                                    Vercel AI Gateway, Ollama, PyPI, Play/App
                                    Store charts
@@ -430,7 +430,6 @@ dated snapshot or hides itself — nothing breaks.
     XAI_API_KEY                   auto-scored KOL board
     ARTIFICIAL_ANALYSIS_API_KEY   AA scores on the China monitor
     CF_RADAR_TOKEN                Cloudflare Radar panel
-    EIA_API_KEY                   EIA-860M generator pipeline (free)
 
 Secrets are scoped to the individual workflow steps that need them — the step
 that runs third-party scraper code deliberately runs with none in scope.
