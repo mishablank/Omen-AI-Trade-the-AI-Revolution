@@ -74,7 +74,10 @@ that created `omen.css`.
 
 ## Front end — chart accessibility
 
-**Status:** Open
+**Status:** Done (2026-08-07) — labels composed from live data in `lineChart`/`multiPanelChart`,
+the verdict tape and dial; decorative sparklines `aria-hidden`; monitor headers tabbable with
+`aria-sort` and Enter/Space; the sign-not-colour rule pinned in `test-a11y.mjs` (direction was
+already signed everywhere via `deltaSpan`/`sn`/`chgTxt`).
 **Component:** `polymarket-ai-index.html`, `index.html`, `gauge.html`, `indexes.html`
 **Priority:** Medium
 

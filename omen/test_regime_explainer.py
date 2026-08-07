@@ -12,7 +12,7 @@ import pytest
 HERE = Path(__file__).parent
 SUITES = ["test-regime-explainer.mjs", "test-pure-helpers.mjs", "test-verdict.mjs",
           "test-omen-common.mjs", "test-china-helpers.mjs", "test-ci-branch-guard.mjs",
-          "test-gauge-parity.mjs", "test-worker.mjs"]
+          "test-gauge-parity.mjs", "test-worker.mjs", "test-a11y.mjs"]
 # Keep this list and omen/package.json's `test` script identical: npm test used to
 # run five of six suites, a silent false-green for anyone testing the Node side alone.
 
