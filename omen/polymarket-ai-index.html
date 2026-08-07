@@ -10,7 +10,7 @@
   /* the view switcher hides with [hidden]; author display rules (.grid2, .tiles, .seg …)
      out-specify the UA [hidden] rule, so state it once here and win */
   [hidden] { display: none !important; }
-  body { font-family: system-ui, -apple-system, "Segoe UI", sans-serif; background: var(--page); color: var(--text-primary); padding: 22px 20px 48px; max-width: 1160px; margin: 0 auto;
+  body { font-family: system-ui, -apple-system, "Segoe UI", sans-serif; background: var(--bg); color: var(--ink); padding: 22px 20px 48px; max-width: 1160px; margin: 0 auto;
     background-image: radial-gradient(900px 380px at 78% -120px, rgba(227,166,60,.06), transparent 70%); }
   a { color: inherit; }
   ::selection { background: var(--acc); color: #141005; }
@@ -26,110 +26,110 @@
   .chip.hollow { background: transparent; border: 1px solid currentColor; }
   .chip.hollow.elevated { color: var(--warn); }
   .chip.hollow.stressed { color: var(--crit); }
-  header p.sub { color: var(--text-secondary); font-size: 13.5px; margin-top: 4px; flex-basis: 100%; line-height: 1.5; }
+  header p.sub { color: var(--mut); font-size: 13.5px; margin-top: 4px; flex-basis: 100%; line-height: 1.5; }
   /* verdict block: the first thing a reader sees, three plain-English lines */
-  .verdict { background: var(--surface-1); border: 1px solid var(--grid); border-radius: 12px; padding: 15px 17px; margin-top: 14px; }
+  .verdict { background: var(--panel); border: 1px solid var(--line); border-radius: 12px; padding: 15px 17px; margin-top: 14px; }
   .verdict .vhead { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
   .verdict .vsay { font-size: 15px; font-weight: 600; }
   .verdict .vtrigger { font-size: 13.5px; margin-top: 8px; line-height: 1.5; }
-  .verdict .vctx { font-size: 13px; color: var(--text-secondary); margin-top: 5px; line-height: 1.55; }
-  .verdict .vsince { color: var(--muted); }
+  .verdict .vctx { font-size: 13px; color: var(--mut); margin-top: 5px; line-height: 1.55; }
+  .verdict .vsince { color: var(--dim); }
   .toolbar { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin: 16px 0 10px; }
-  .seg { display: inline-flex; border: 1px solid var(--border); border-radius: 8px; overflow: hidden; background: var(--surface-1); }
-  .seg button { font: inherit; font-size: 12.5px; padding: 6px 11px; border: none; background: transparent; color: var(--text-secondary); cursor: pointer; }
-  .seg button.active { background: var(--bull-wash); color: var(--text-primary); font-weight: 600; }
+  .seg { display: inline-flex; border: 1px solid var(--border); border-radius: 8px; overflow: hidden; background: var(--panel); }
+  .seg button { font: inherit; font-size: 12.5px; padding: 6px 11px; border: none; background: transparent; color: var(--mut); cursor: pointer; }
+  .seg button.active { background: var(--bull-wash); color: var(--ink); font-weight: 600; }
   .toolbar .grow { margin-left: auto; display: flex; align-items: center; gap: 10px; }
-  .status { font-size: 12px; color: var(--muted); }
-  .btn { font: inherit; font-size: 12px; color: var(--text-secondary); background: var(--surface-1); border: 1px solid var(--border); border-radius: 7px; padding: 6px 10px; cursor: pointer; }
-  .btn:hover { color: var(--text-primary); }
+  .status { font-size: 12px; color: var(--dim); }
+  .btn { font: inherit; font-size: 12px; color: var(--mut); background: var(--panel); border: 1px solid var(--border); border-radius: 7px; padding: 6px 10px; cursor: pointer; }
+  .btn:hover { color: var(--ink); }
   /* consolidated data-freshness strip */
-  .fresh { display: flex; gap: 14px; flex-wrap: wrap; align-items: center; font-size: 11.5px; color: var(--text-secondary); background: var(--surface-1); border: 1px solid var(--border); border-radius: 9px; padding: 7px 12px; margin-bottom: 14px; }
+  .fresh { display: flex; gap: 14px; flex-wrap: wrap; align-items: center; font-size: 11.5px; color: var(--mut); background: var(--panel); border: 1px solid var(--border); border-radius: 9px; padding: 7px 12px; margin-bottom: 14px; }
   .fresh span { display: inline-flex; align-items: center; gap: 5px; white-space: nowrap; }
   .fresh i { width: 7px; height: 7px; border-radius: 50%; display: inline-block; flex: none; }
   /* 200px floors to one column at 375px and stacks five tiles into a wall; 148px keeps two up */
   .tiles { display: grid; grid-template-columns: repeat(auto-fit, minmax(148px, 1fr)); gap: 12px; }
   @media (min-width: 700px) { .tiles { grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); } }
-  .tile { background: var(--surface-1); border: 1px solid var(--border); border-radius: 12px; padding: 15px 17px 12px; }
-  .tile .label { font-size: 12.5px; color: var(--text-secondary); display: flex; align-items: center; gap: 7px; }
+  .tile { background: var(--panel); border: 1px solid var(--border); border-radius: 12px; padding: 15px 17px 12px; }
+  .tile .label { font-size: 12.5px; color: var(--mut); display: flex; align-items: center; gap: 7px; }
   .tile .key { width: 10px; height: 10px; border-radius: 3px; display: inline-block; flex: none; }
   .tile .value { font-size: 36px; font-weight: 600; line-height: 1.15; margin-top: 4px; }
-  .tile .value small { font-size: 16px; font-weight: 500; color: var(--muted); }
-  .tile .delta { font-size: 12.5px; margin-top: 2px; color: var(--muted); }
+  .tile .value small { font-size: 16px; font-weight: 500; color: var(--dim); }
+  .tile .delta { font-size: 12.5px; margin-top: 2px; color: var(--dim); }
   .spark { width: 100%; height: 26px; display: block; margin-top: 8px; }
   .badge { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; background: var(--warn-wash); color: var(--accT); border: 1px solid rgba(227,166,60,0.35); border-radius: 4px; padding: 1px 5px; }
-  .card { background: var(--surface-1); border: 1px solid var(--grid); border-radius: 12px; padding: 18px; margin-top: 16px; }
+  .card { background: var(--panel); border: 1px solid var(--line); border-radius: 12px; padding: 18px; margin-top: 16px; }
   .card h2 { font-family: var(--serif); font-size: 17px; font-weight: 700; display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
-  .card .cap { font-size: 12px; color: var(--muted); margin-top: 3px; line-height: 1.5; }
+  .card .cap { font-size: 12px; color: var(--dim); margin-top: 3px; line-height: 1.5; }
   .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
   @media (max-width: 860px) { .grid2 { grid-template-columns: 1fr; } }
   .grid2 .card { margin-top: 16px; }
-  .up { color: var(--delta-up); } .down { color: var(--delta-down); } .dim { color: var(--muted); }
-  .legend { display: flex; gap: 16px; font-size: 12.5px; color: var(--text-secondary); margin-top: 10px; flex-wrap: wrap; }
+  .up { color: var(--pos); } .down { color: var(--neg); } .dim { color: var(--dim); }
+  .legend { display: flex; gap: 16px; font-size: 12.5px; color: var(--mut); margin-top: 10px; flex-wrap: wrap; }
   .legend span { display: inline-flex; align-items: center; gap: 6px; }
   .legend i.line { width: 14px; height: 2.5px; border-radius: 2px; display: inline-block; }
   .chartwrap { position: relative; margin-top: 8px; }
   .chartwrap svg { width: 100%; height: auto; display: block; }
-  .tip { position: absolute; pointer-events: none; display: none; background: var(--surface-1); border: 1px solid var(--border); border-radius: 8px; padding: 8px 10px; font-size: 12px; box-shadow: 0 4px 14px rgba(0,0,0,0.15); white-space: nowrap; z-index: 5; }
-  .tip .t { color: var(--muted); margin-bottom: 3px; }
+  .tip { position: absolute; pointer-events: none; display: none; background: var(--panel); border: 1px solid var(--border); border-radius: 8px; padding: 8px 10px; font-size: 12px; box-shadow: 0 4px 14px rgba(0,0,0,0.15); white-space: nowrap; z-index: 5; }
+  .tip .t { color: var(--dim); margin-bottom: 3px; }
   .tip .row { display: flex; align-items: center; gap: 6px; }
   .tip .row i { width: 8px; height: 8px; border-radius: 2px; flex: none; }
   .tscroll { overflow-x: auto; }
   table { width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 13px; }
-  th { text-align: left; font-size: 11px; text-transform: uppercase; letter-spacing: 0.04em; color: var(--muted); font-weight: 600; padding: 8px 8px 6px; border-bottom: 1px solid var(--grid); }
+  th { text-align: left; font-size: 11px; text-transform: uppercase; letter-spacing: 0.04em; color: var(--dim); font-weight: 600; padding: 8px 8px 6px; border-bottom: 1px solid var(--line); }
   th.sortable { cursor: pointer; user-select: none; }
-  th.sortable:hover { color: var(--text-primary); }
+  th.sortable:hover { color: var(--ink); }
   th .arrow { font-size: 9px; }
-  td { padding: 9px 8px; border-bottom: 1px solid var(--grid); vertical-align: top; }
+  td { padding: 9px 8px; border-bottom: 1px solid var(--line); vertical-align: top; }
   tr:last-child td { border-bottom: none; }
   td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; white-space: nowrap; }
   td a:hover { text-decoration: underline; }
   .flag { font-size: 11px; margin-left: 4px; cursor: help; }
-  .bar { height: 6px; border-radius: 3px; margin-top: 5px; background: var(--grid); overflow: hidden; }
+  .bar { height: 6px; border-radius: 3px; margin-top: 5px; background: var(--line); overflow: hidden; }
   .bar i { display: block; height: 100%; border-radius: 3px; }
   .hbar { display: grid; grid-template-columns: 118px 1fr 54px; gap: 8px; align-items: center; font-size: 12.5px; margin-top: 7px; }
-  .hbar .track { height: 10px; background: var(--grid); border-radius: 5px; overflow: hidden; }
+  .hbar .track { height: 10px; background: var(--line); border-radius: 5px; overflow: hidden; }
   .hbar .track i { display: block; height: 100%; border-radius: 5px; }
-  .hbar .v { text-align: right; font-variant-numeric: tabular-nums; color: var(--text-secondary); }
-  .hbar .k { color: var(--text-secondary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-  .stack .row { display: flex; align-items: center; gap: 9px; padding: 7px 0; border-bottom: 1px solid var(--grid); font-size: 13px; }
+  .hbar .v { text-align: right; font-variant-numeric: tabular-nums; color: var(--mut); }
+  .hbar .k { color: var(--mut); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .stack .row { display: flex; align-items: center; gap: 9px; padding: 7px 0; border-bottom: 1px solid var(--line); font-size: 13px; }
   .stack .row:last-child { border-bottom: none; }
   .stack .dot { width: 9px; height: 9px; border-radius: 50%; flex: none; }
-  .stack .name { flex: 1; color: var(--text-secondary); }
+  .stack .name { flex: 1; color: var(--mut); }
   .stack .val { font-variant-numeric: tabular-nums; font-weight: 600; }
-  .sub { font-size: 11.5px; color: var(--muted); }
+  .sub { font-size: 11.5px; color: var(--dim); }
   .statrow { display: flex; gap: 22px; flex-wrap: wrap; margin-top: 12px; }
-  .stat .l { font-size: 11.5px; color: var(--muted); }
+  .stat .l { font-size: 11.5px; color: var(--dim); }
   .stat .v { font-size: 19px; font-weight: 600; margin-top: 1px; font-variant-numeric: tabular-nums; }
-  .stat .v small { font-size: 12px; font-weight: 400; color: var(--muted); }
-  .note { font-size: 11.5px; color: var(--muted); margin-top: 9px; line-height: 1.55; }
+  .stat .v small { font-size: 12px; font-weight: 400; color: var(--dim); }
+  .note { font-size: 11.5px; color: var(--dim); margin-top: 9px; line-height: 1.55; }
   /* gauge */
   .gauge { display: grid; grid-template-columns: 220px 1fr; gap: 22px; align-items: center; margin-top: 6px; }
   @media (max-width: 700px) { .gauge { grid-template-columns: 1fr; } }
   .gaugeNum { font-size: 54px; font-weight: 600; line-height: 1; }
-  .gaugeNum small { font-size: 15px; color: var(--muted); font-weight: 400; }
+  .gaugeNum small { font-size: 15px; color: var(--dim); font-weight: 400; }
   /* meter bands match the regime thresholds: calm <35, elevated 35-55, stressed >=55 */
   .meter { height: 12px; border-radius: 6px; margin-top: 12px; background: linear-gradient(90deg, var(--good) 0%, var(--good) 32%, var(--warn) 38%, var(--warn) 52%, var(--crit) 58%, var(--crit) 100%); position: relative; opacity: 0.85; }
-  .meter .mk { position: absolute; top: -4px; width: 3px; height: 20px; background: var(--text-primary); border-radius: 2px; transform: translateX(-50%); }
-  .meterlab { position: relative; height: 14px; font-size: 11px; color: var(--muted); margin-top: 5px; }
+  .meter .mk { position: absolute; top: -4px; width: 3px; height: 20px; background: var(--ink); border-radius: 2px; transform: translateX(-50%); }
+  .meterlab { position: relative; height: 14px; font-size: 11px; color: var(--dim); margin-top: 5px; }
   .meterlab span { position: absolute; transform: translateX(-50%); }
   .cats { display: flex; flex-direction: column; gap: 0; }
   .cat { display: grid; grid-template-columns: 150px 1fr 40px; gap: 10px; align-items: center; font-size: 12.5px; padding: 2px 0; }
-  .cat .track { height: 8px; background: var(--grid); border-radius: 4px; overflow: hidden; }
+  .cat .track { height: 8px; background: var(--line); border-radius: 4px; overflow: hidden; }
   .cat .track i { display: block; height: 100%; border-radius: 4px; }
-  .cat .cv { text-align: right; font-variant-numeric: tabular-nums; color: var(--text-secondary); }
-  .err { color: var(--delta-down); font-size: 13px; margin-top: 10px; display: none; }
-  code { font-size: 11.5px; background: var(--grid); padding: 1px 5px; border-radius: 4px; }
+  .cat .cv { text-align: right; font-variant-numeric: tabular-nums; color: var(--mut); }
+  .err { color: var(--neg); font-size: 13px; margin-top: 10px; display: none; }
+  code { font-size: 11.5px; background: var(--line); padding: 1px 5px; border-radius: 4px; }
   details { margin-top: 8px; }
-  details summary { cursor: pointer; font-size: 12.5px; color: var(--text-secondary); }
-  details summary:hover { color: var(--text-primary); }
+  details summary { cursor: pointer; font-size: 12.5px; color: var(--mut); }
+  details summary:hover { color: var(--ink); }
   details[open] summary { margin-bottom: 6px; }
   /* ---- standard panel anatomy (§3) ---- */
   /* the takeaway, always visible. Everything methodological is one click away, never deleted. */
   .vline { font-size: 13.5px; line-height: 1.5; margin-top: 9px; padding-left: 11px; border-left: 2px solid var(--acc); }
   .vline:empty { display: none; }
   .howto { margin-top: 13px; }
-  .howto > summary { font-size: 11.5px; color: var(--muted); }
-  .howto > summary:hover { color: var(--text-secondary); }
+  .howto > summary { font-size: 11.5px; color: var(--dim); }
+  .howto > summary:hover { color: var(--mut); }
   .howto .cap:first-of-type { margin-top: 2px; }
   /* ---- panel status (§5.2): a panel that failed its own check must not look healthy ---- */
   .pstatus { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; border-radius: 4px; padding: 1px 6px; white-space: nowrap; }
@@ -141,26 +141,26 @@
   .card.is-unreliable .chartwrap, .card.is-unreliable .stack, .card.is-unreliable .bar { opacity: 0.5; }
   .card.is-unreliable .vline { border-left-color: var(--crit); }
   /* ---- top nav (§5.1) ---- */
-  .topnav { display: flex; align-items: center; gap: 4px; flex-wrap: wrap; margin: 14px 0 0; border-bottom: 1px solid var(--grid); padding-bottom: 0; }
-  .topnav > a { font-size: 13px; color: var(--text-secondary); text-decoration: none; padding: 7px 11px; border-bottom: 2px solid transparent; margin-bottom: -1px; white-space: nowrap; }
-  .topnav > a:hover { color: var(--text-primary); }
+  .topnav { display: flex; align-items: center; gap: 4px; flex-wrap: wrap; margin: 14px 0 0; border-bottom: 1px solid var(--line); padding-bottom: 0; }
+  .topnav > a { font-size: 13px; color: var(--mut); text-decoration: none; padding: 7px 11px; border-bottom: 2px solid transparent; margin-bottom: -1px; white-space: nowrap; }
+  .topnav > a:hover { color: var(--ink); }
   .topnav > a[aria-current="page"] { color: var(--accT); border-bottom-color: var(--acc); font-weight: 600; }
   .topnav .corner { margin-left: auto; display: flex; gap: 8px; }
   /* ---- Today: what-changed + nav cards (§1.2) ---- */
-  .chg { display: flex; align-items: baseline; gap: 9px; padding: 6px 0; border-bottom: 1px solid var(--grid); font-size: 13px; }
+  .chg { display: flex; align-items: baseline; gap: 9px; padding: 6px 0; border-bottom: 1px solid var(--line); font-size: 13px; }
   .chg:last-child { border-bottom: none; }
   .chg .m { font-variant-numeric: tabular-nums; font-weight: 600; white-space: nowrap; }
-  .chg .n { flex: 1; color: var(--text-secondary); }
-  .chg .w { font-size: 11.5px; color: var(--muted); white-space: nowrap; }
+  .chg .n { flex: 1; color: var(--mut); }
+  .chg .w { font-size: 11.5px; color: var(--dim); white-space: nowrap; }
   .navcards { display: grid; grid-template-columns: repeat(auto-fit, minmax(148px, 1fr)); gap: 12px; margin-top: 16px; }
   @media (min-width: 700px) { .navcards { grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); } }
-  .navcard { background: var(--surface-1); border: 1px solid var(--grid); border-radius: 12px; padding: 14px 16px; text-decoration: none; display: block; }
+  .navcard { background: var(--panel); border: 1px solid var(--line); border-radius: 12px; padding: 14px 16px; text-decoration: none; display: block; }
   .navcard:hover { border-color: var(--acc); }
-  .navcard .t { font-size: 13.5px; font-weight: 600; color: var(--text-primary); }
+  .navcard .t { font-size: 13.5px; font-weight: 600; color: var(--ink); }
   .navcard .v { font-size: 22px; font-weight: 600; margin-top: 6px; font-variant-numeric: tabular-nums; color: var(--accT); }
-  .navcard .l { font-size: 11.5px; color: var(--muted); margin-top: 2px; }
-  footer { margin-top: 22px; font-size: 12px; color: var(--muted); line-height: 1.6; }
-  .backlink { font-size: 12px; font-weight: 600; color: var(--text-secondary); text-decoration: none; border: 1px solid var(--border); border-radius: 999px; padding: 4px 12px; white-space: nowrap; }
+  .navcard .l { font-size: 11.5px; color: var(--dim); margin-top: 2px; }
+  footer { margin-top: 22px; font-size: 12px; color: var(--dim); line-height: 1.6; }
+  .backlink { font-size: 12px; font-weight: 600; color: var(--mut); text-decoration: none; border: 1px solid var(--border); border-radius: 999px; padding: 4px 12px; white-space: nowrap; }
   .backlink:hover { color: var(--accT); border-color: var(--acc); }
 
   /* ---------- mobile ----------
@@ -701,7 +701,7 @@ const fmtUsd = v => { const a=Math.abs(v), s=v<0?"−$":"$"; return a>=1e9?s+(a/
 const mnum = (v,d=0) => { const s=Math.abs(v).toFixed(d); return (v<0 && +s!==0 ? "−" : "")+s; };
 // §4.1 cross-link: a fact lives in exactly one panel; everywhere else points at it.
 const xlink = (label, view, panel) =>
-  `<a href="/polymarket-ai-index/${view}#${panel}" data-nav="${view}" data-anchor="${panel}" style="color:var(--text-secondary)">${label} <span style="color:var(--acc)">&#8599;</span></a>`;
+  `<a href="/polymarket-ai-index/${view}#${panel}" data-nav="${view}" data-anchor="${panel}" style="color:var(--mut)">${label} <span style="color:var(--acc)">&#8599;</span></a>`;
 
 /* ================= Fetching ================= */
 function parseMarket(m){
@@ -970,7 +970,7 @@ function renderClaims(){
   $("claimsTable").innerHTML=`<tr><th>Claim (Jul 2026)</th><th>Metric</th><th class="num">Reading</th><th>Tape says</th></tr>`+
     rows.map(r=>{
       const n=r.metrics.length;
-      return r.metrics.map((m,k)=>`<tr>${k===0?`<td rowspan="${n}" style="min-width:220px"><strong>${esc(r.claim)}</strong><div class="sub" style="margin-top:4px">${esc(r.verdict)}</div></td>`:""}<td>${esc(m.label)}</td><td class="num">${fmt(m)}</td>${k===0?`<td rowspan="${n}" style="white-space:nowrap"><span style="background:${r.band?dotc[r.band.cls]:"var(--muted)"};display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:6px"></span>${r.band?esc(r.band.label):"no data"}</td>`:""}</tr>`).join("");
+      return r.metrics.map((m,k)=>`<tr>${k===0?`<td rowspan="${n}" style="min-width:220px"><strong>${esc(r.claim)}</strong><div class="sub" style="margin-top:4px">${esc(r.verdict)}</div></td>`:""}<td>${esc(m.label)}</td><td class="num">${fmt(m)}</td>${k===0?`<td rowspan="${n}" style="white-space:nowrap"><span style="background:${r.band?dotc[r.band.cls]:"var(--dim)"};display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:6px"></span>${r.band?esc(r.band.label):"no data"}</td>`:""}</tr>`).join("");
     }).join("");
   const hot=rows.filter(r=>r.band&&r.band.cls==="crit"), wm=rows.filter(r=>r.band&&r.band.cls==="warn");
   $("claimsVerdict").innerHTML = hot.length?`The tape currently <strong>validates ${hot.length} of 5</strong> singularity claims &ndash; euphoria (or its backlash channel) moving past the narrative stage.`
@@ -1483,10 +1483,10 @@ function renderGauge(){
     ? `All ${tot} signal families loaded.`
     : `<span class="badge">Partial</span> ${n} of ${tot} signal families loaded &mdash; the other ${tot-n} are dark (market-data.json not fetched). Read this number as provisional: the missing families could move it in either direction.`;
   const catRow=k=>{ const f=g.fam[k]; const v=f?f.v:null;
-    if(!f||v==null) return `<div class="cat"><span style="color:var(--muted)">${(f&&f.label)||'?'}</span><span class="track"><i style="width:0%"></i></span><span class="cv">n/a</span></div>`;
+    if(!f||v==null) return `<div class="cat"><span style="color:var(--dim)">${(f&&f.label)||'?'}</span><span class="track"><i style="width:0%"></i></span><span class="cv">n/a</span></div>`;
     const col=v>=55?"var(--crit)":v>=35?"var(--warn)":"var(--good)";
     return `<div class="cat"><span>${f.label}</span><span class="track"><i style="width:${clamp(v,0,100)}%;background:${col}"></i></span><span class="cv">${v.toFixed(0)}</span></div>`; };
-  const groupHead=(name,sub,v)=>`<div class="cat" style="padding-top:9px"><span style="font-size:11px;text-transform:uppercase;letter-spacing:.05em;color:var(--muted)"><strong style="color:var(--text-secondary)">${name}</strong> &middot; ${sub}</span><span></span><span class="cv" style="font-weight:700">${v==null?"n/a":v.toFixed(0)}</span></div>`;
+  const groupHead=(name,sub,v)=>`<div class="cat" style="padding-top:9px"><span style="font-size:11px;text-transform:uppercase;letter-spacing:.05em;color:var(--dim)"><strong style="color:var(--mut)">${name}</strong> &middot; ${sub}</span><span></span><span class="cv" style="font-weight:700">${v==null?"n/a":v.toFixed(0)}</span></div>`;
   $("cats").innerHTML=
     groupHead("Leading","priced before the fact",g.lead)+
     ["pred","opt","credit","macro"].map(catRow).join("")+
@@ -1782,8 +1782,8 @@ function renderCrown(){
   const beating=names.filter(r=>r.sym!=="NVDA"&&r.sym!=="SPY"&&r.sym!=="SOXX"&&r.r3!=null&&nv.r3!=null&&r.r3>nv.r3);
   const nStack=names.filter(r=>r.sym!=="NVDA"&&r.sym!=="SPY"&&r.sym!=="SOXX"&&r.r3!=null).length;
   box.innerHTML=`<div style="display:flex;align-items:baseline;gap:16px;margin:16px 0 2px;flex-wrap:wrap">`+
-    `<div style="font-family:Georgia,'Times New Roman',serif;font-size:56px;font-weight:600;line-height:.85;color:var(--acc)">${beating.length}<span style="font-size:24px;color:var(--muted)">/${nStack}</span></div>`+
-    `<div style="font-size:13.5px;color:var(--text-secondary);max-width:440px">AI-stack names beating <strong>NVDA</strong> over the last 3 months${beating.length?`: ${beating.sort((a,b)=>b.r3-a.r3).map(r=>r.sym).join(", ")}.`:" &ndash; nothing in the stack is outrunning it."}</div></div>`;
+    `<div style="font-family:Georgia,'Times New Roman',serif;font-size:56px;font-weight:600;line-height:.85;color:var(--acc)">${beating.length}<span style="font-size:24px;color:var(--dim)">/${nStack}</span></div>`+
+    `<div style="font-size:13.5px;color:var(--mut);max-width:440px">AI-stack names beating <strong>NVDA</strong> over the last 3 months${beating.length?`: ${beating.sort((a,b)=>b.r3-a.r3).map(r=>r.sym).join(", ")}.`:" &ndash; nothing in the stack is outrunning it."}</div></div>`;
   const pf=(x,dp=1)=>x==null?"&ndash;":`<span style="color:${x>=0?"var(--good)":"var(--crash)"}">${x>0?"+":""}${x.toFixed(dp)}%</span>`;
   const pp=x=>x==null?"&ndash;":`<span style="color:${x>=0?"var(--good)":"var(--crash)"}">${x>0?"+":""}${x.toFixed(1)}pp</span>`;
   const hy=gRows.find(r=>r.g.role==="the customers"), neo=gRows.find(r=>r.g.role==="the levered landlords"), mu=names.find(r=>r.sym==="MU");
@@ -1827,7 +1827,7 @@ function renderCrown(){
     `<td class="num">${pf(r.r1)}</td><td class="num">${pf(r.r3)}</td><td class="num">${pf(r.r6)}</td>`+
     `<td class="num">${r.sym==="NVDA"?"&ndash;":pp(r.r3!=null&&nv.r3!=null?r.r3-nv.r3:null)}</td>`+
     `<td class="num">${r.corr==null?"&ndash;":r.corr.toFixed(2)}</td>`+
-    `<td class="num">${r.dd==null?"&ndash;":`<span style="color:${r.dd<=-15?"var(--crash)":"var(--text-secondary)"}">${r.dd.toFixed(1)}%</span>`}</td></tr>`;
+    `<td class="num">${r.dd==null?"&ndash;":`<span style="color:${r.dd<=-15?"var(--crash)":"var(--mut)"}">${r.dd.toFixed(1)}%</span>`}</td></tr>`;
   const nvRow=`<tr style="background:var(--warn-wash)"><td><strong>&#9819; NVDA</strong></td><td><span class="sub">the reference</span></td>`+
     `<td class="num">${fmtCap(capOf("NVDA"))}</td>`+
     `<td class="num">${pf(nv.r1)}</td><td class="num">${pf(nv.r3)}</td><td class="num">${pf(nv.r6)}</td><td class="num">&ndash;</td><td class="num">1.00</td>`+
@@ -2393,19 +2393,19 @@ function lineChart(svgId,tipId,wrapId,data,H,opts={}){
   if(opts.bands) for(const b of opts.bands){ const y1=y(clamp(b.hi,lo,hi)), y2=y(clamp(b.lo,lo,hi));
     g+=`<rect x="${mL}" y="${y1}" width="${iw}" height="${Math.max(y2-y1,0)}" fill="${b.color}"/>`; }
   const step=(hi-lo)<=15?5:(hi-lo)<=40?10:20;
-  for(let v=Math.ceil(lo/step)*step;v<=hi;v+=step) g+=`<line x1="${mL}" y1="${y(v)}" x2="${W-mR}" y2="${y(v)}" stroke="var(--grid)"/><text x="${mL-8}" y="${y(v)+4}" text-anchor="end" font-size="11" fill="var(--muted)" style="font-variant-numeric:tabular-nums">${v}</text>`;
+  for(let v=Math.ceil(lo/step)*step;v<=hi;v+=step) g+=`<line x1="${mL}" y1="${y(v)}" x2="${W-mR}" y2="${y(v)}" stroke="var(--line)"/><text x="${mL-8}" y="${y(v)+4}" text-anchor="end" font-size="11" fill="var(--dim)" style="font-variant-numeric:tabular-nums">${v}</text>`;
   for(let k=0;k<6;k++){ const i=Math.round((k/5)*(buckets.length-1)); const d=new Date(buckets[i]*1000);
-    g+=`<text x="${x(i)}" y="${H-8}" text-anchor="middle" font-size="11" fill="var(--muted)">${d.toLocaleDateString(undefined,{month:"short",day:"numeric"})}</text>`; }
-  g+=`<line x1="${mL}" y1="${mT+ih}" x2="${W-mR}" y2="${mT+ih}" stroke="var(--baseline)"/>`;
+    g+=`<text x="${x(i)}" y="${H-8}" text-anchor="middle" font-size="11" fill="var(--dim)">${d.toLocaleDateString(undefined,{month:"short",day:"numeric"})}</text>`; }
+  g+=`<line x1="${mL}" y1="${mT+ih}" x2="${W-mR}" y2="${mT+ih}" stroke="var(--line2)"/>`;
   if(opts.events) for(const ev of opts.events){
     const t=Math.floor(Date.parse(ev.d+"T12:00:00Z")/1000);
     if(t<buckets[0]||t>buckets[buckets.length-1]) continue;
     let bi=0; for(let i=0;i<buckets.length;i++) if(Math.abs(buckets[i]-t)<Math.abs(buckets[bi]-t)) bi=i;
-    g+=`<line x1="${x(bi)}" y1="${mT}" x2="${x(bi)}" y2="${mT+ih}" stroke="var(--baseline)" stroke-dasharray="3,3"><title>${esc(ev.label)}</title></line>`;
+    g+=`<line x1="${x(bi)}" y1="${mT}" x2="${x(bi)}" y2="${mT+ih}" stroke="var(--line2)" stroke-dasharray="3,3"><title>${esc(ev.label)}</title></line>`;
   }
   const path=arr=>arr.map((v,i)=>v==null?"":`${i===0||arr[i-1]==null?"M":"L"}${x(i).toFixed(1)},${y(v).toFixed(1)}`).join("");
   for(const s of series){ g+=`<path d="${path(s.vals)}" fill="none" stroke="${s.color}" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>`;
-    const last=s.vals.length-1; if(s.vals[last]!=null) g+=`<circle cx="${x(last)}" cy="${y(s.vals[last])}" r="4.5" fill="${s.color}" stroke="var(--surface-1)" stroke-width="2"/>`; }
+    const last=s.vals.length-1; if(s.vals[last]!=null) g+=`<circle cx="${x(last)}" cy="${y(s.vals[last])}" r="4.5" fill="${s.color}" stroke="var(--panel)" stroke-width="2"/>`; }
   g+=endLabels(series,y,W-mR+7);
   g+=`<g class="xh"></g><rect class="hit" x="${mL}" y="${mT}" width="${iw}" height="${ih}" fill="transparent" style="touch-action:pan-y"/>`;
   svg.innerHTML=g;
@@ -2420,9 +2420,9 @@ function lineChart(svgId,tipId,wrapId,data,H,opts={}){
   const hit=svg.querySelector(".hit"), xh=svg.querySelector(".xh");
   hit.onpointermove=ev=>{ const rect=svg.getBoundingClientRect();
     let i=Math.round((((ev.clientX-rect.left)/rect.width)*W-mL)/iw*(buckets.length-1)); i=clamp(i,0,buckets.length-1);
-    let xg=`<line x1="${x(i)}" y1="${mT}" x2="${x(i)}" y2="${mT+ih}" stroke="var(--baseline)"/>`, rows="";
+    let xg=`<line x1="${x(i)}" y1="${mT}" x2="${x(i)}" y2="${mT+ih}" stroke="var(--line2)"/>`, rows="";
     for(const s of series){ if(s.vals[i]==null) continue;
-      xg+=`<circle cx="${x(i)}" cy="${y(s.vals[i])}" r="4" fill="${s.color}" stroke="var(--surface-1)" stroke-width="2"/>`;
+      xg+=`<circle cx="${x(i)}" cy="${y(s.vals[i])}" r="4" fill="${s.color}" stroke="var(--panel)" stroke-width="2"/>`;
       rows+=`<div class="row"><i style="background:${s.color}"></i>${s.name} ${s.vals[i].toFixed(1)}</div>`; }
     xh.innerHTML=xg; tip.style.display="block";
     tip.innerHTML=`<div class="t">${new Date(buckets[i]*1000).toLocaleString(undefined,{month:"short",day:"numeric",hour:"numeric"})}</div>`+rows;
@@ -2452,22 +2452,22 @@ function multiPanelChart(svgId,tipId,wrapId,buckets,panels){
     geo.push({y,lo,hi,top,ih});
     const step=(hi-lo)<=8?2:(hi-lo)<=20?5:10;
     for(let v=Math.ceil(lo/step)*step;v<=hi;v+=step)
-      g+=`<line x1="${mL}" y1="${y(v)}" x2="${W-mR}" y2="${y(v)}" stroke="var(--grid)"/><text x="${mL-8}" y="${y(v)+4}" text-anchor="end" font-size="11" fill="var(--muted)" style="font-variant-numeric:tabular-nums">${v}</text>`;
+      g+=`<line x1="${mL}" y1="${y(v)}" x2="${W-mR}" y2="${y(v)}" stroke="var(--line)"/><text x="${mL-8}" y="${y(v)+4}" text-anchor="end" font-size="11" fill="var(--dim)" style="font-variant-numeric:tabular-nums">${v}</text>`;
     g+=`<text x="${mL+2}" y="${top+11}" font-size="12" font-weight="650" fill="${p.color}">${p.name}</text>`;
     const path=p.vals.map((v,i)=>v==null?"":`${i===0||p.vals[i-1]==null?"M":"L"}${x(i).toFixed(1)},${y(v).toFixed(1)}`).join("");
     g+=`<path d="${path}" fill="none" stroke="${p.color}" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>`;
     const last=p.vals.length-1;
-    if(p.vals[last]!=null){ g+=`<circle cx="${x(last)}" cy="${y(p.vals[last])}" r="4" fill="${p.color}" stroke="var(--surface-1)" stroke-width="2"/>`;
+    if(p.vals[last]!=null){ g+=`<circle cx="${x(last)}" cy="${y(p.vals[last])}" r="4" fill="${p.color}" stroke="var(--panel)" stroke-width="2"/>`;
       g+=`<text x="${W-mR+7}" y="${(y(p.vals[last])+4).toFixed(1)}" font-size="11" font-weight="700" fill="${p.color}" style="font-variant-numeric:tabular-nums">${p.vals[last].toFixed(1)}</text>`; }
     for(const ev of EVENTS){
       const t=Math.floor(Date.parse(ev.d+"T12:00:00Z")/1000);
       if(t<buckets[0]||t>buckets[buckets.length-1]) continue;
       let bi=0; for(let i2=0;i2<buckets.length;i2++) if(Math.abs(buckets[i2]-t)<Math.abs(buckets[bi]-t)) bi=i2;
-      g+=`<line x1="${x(bi)}" y1="${top}" x2="${x(bi)}" y2="${top+ih}" stroke="var(--baseline)" stroke-dasharray="3,3"><title>${esc(ev.label)}</title></line>`;
+      g+=`<line x1="${x(bi)}" y1="${top}" x2="${x(bi)}" y2="${top+ih}" stroke="var(--line2)" stroke-dasharray="3,3"><title>${esc(ev.label)}</title></line>`;
     }
   });
   for(let k=0;k<6;k++){ const i=Math.round((k/5)*(buckets.length-1)); const d=new Date(buckets[i]*1000);
-    g+=`<text x="${x(i)}" y="${H-6}" text-anchor="middle" font-size="11" fill="var(--muted)">${d.toLocaleDateString(undefined,{month:"short",day:"numeric"})}</text>`; }
+    g+=`<text x="${x(i)}" y="${H-6}" text-anchor="middle" font-size="11" fill="var(--dim)">${d.toLocaleDateString(undefined,{month:"short",day:"numeric"})}</text>`; }
   g+=`<g class="xh"></g><rect class="hit" x="${mL}" y="0" width="${iw}" height="${H-18}" fill="transparent" style="touch-action:pan-y"/>`;
   svg.innerHTML=g;
   // same text-alternative rule as lineChart: plotted series, span, latest values
@@ -2481,8 +2481,8 @@ function multiPanelChart(svgId,tipId,wrapId,buckets,panels){
     let i=Math.round((((ev.clientX-rect.left)/rect.width)*W-mL)/iw*(buckets.length-1)); i=clamp(i,0,buckets.length-1);
     let xg="", rows="";
     panels.forEach((p,pi)=>{ const ge=geo[pi]; if(!ge) return;
-      xg+=`<line x1="${x(i)}" y1="${ge.top}" x2="${x(i)}" y2="${ge.top+ge.ih}" stroke="var(--baseline)"/>`;
-      if(p.vals[i]!=null){ xg+=`<circle cx="${x(i)}" cy="${ge.y(p.vals[i])}" r="4" fill="${p.color}" stroke="var(--surface-1)" stroke-width="2"/>`;
+      xg+=`<line x1="${x(i)}" y1="${ge.top}" x2="${x(i)}" y2="${ge.top+ge.ih}" stroke="var(--line2)"/>`;
+      if(p.vals[i]!=null){ xg+=`<circle cx="${x(i)}" cy="${ge.y(p.vals[i])}" r="4" fill="${p.color}" stroke="var(--panel)" stroke-width="2"/>`;
         rows+=`<div class="row"><i style="background:${p.color}"></i>${p.name} ${p.vals[i].toFixed(1)}</div>`; } });
     xh.innerHTML=xg; tip.style.display="block";
     tip.innerHTML=`<div class="t">${new Date(buckets[i]*1000).toLocaleString(undefined,{month:"short",day:"numeric",hour:"numeric"})}</div>`+rows;
