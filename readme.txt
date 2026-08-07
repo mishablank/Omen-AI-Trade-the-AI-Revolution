@@ -114,7 +114,7 @@ calm→stress range, then averaged:
     ┌── LEADING (priced before the fact) ──────────────────────────┐
     │                                                              │
     │   PRED    Polymarket bubble-burst odds                       │
-    │   OPT     25Δ risk reversals, NVDA + SOXX (CBOE)             │
+    │   OPT     25Δ risk reversals, NVDA + SOXX (Nasdaq/OPRA)      │
     │   CREDIT  HY OAS, CCC OAS, HYG drawdown, HYG/LQD ratio       │
     │                                                              │
     ├── CONFIRMING (moves with or after prices) ───────────────────┤
@@ -161,7 +161,7 @@ prose. That explainer has its own 13-scenario test suite.
         · prediction-markets  Polymarket depth, Kalshi/Metaculus/Manifold
         · methodology         the rules, restated in situ
       LEAPS tail panel: risk-neutral P(NVDA −50% / SOXX −40% in ~1y) via N(−d2)
-      from long-dated CBOE puts — a deep-market cross-check on the thin
+      from long-dated puts — a deep-market cross-check on the thin
       Polymarket bubble book.
 
   gauge.html ................ THE GAUGE
@@ -203,8 +203,8 @@ All free. All keyless unless marked.
     ─────────────────────────────  ─────────────────────────────────────────
     Prediction markets, orderbook  Polymarket Gamma + CLOB
     Equity / vol / credit proxies  Yahoo Finance chart API
-    25Δ risk reversal, IV term     CBOE delayed quotes
-    LEAPS 1y tail — N(−d2)         CBOE delayed quotes (same chains)
+    25Δ risk reversal, IV term     Nasdaq chains (OPRA), IV/delta computed here
+    LEAPS 1y tail — BL digital     Nasdaq chains (same windows)
     HY OAS, CCC OAS, NFCI          FRED fredgraph.csv   (honest UA required)
     Hyperscaler capex / OCF        SEC XBRL companyconcept (honest UA)
     Contracted backlog / RPO       SEC XBRL instant facts

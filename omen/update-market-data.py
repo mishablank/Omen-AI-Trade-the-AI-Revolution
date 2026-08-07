@@ -4,8 +4,8 @@
 Sources (all free / unauthenticated unless noted):
   - Equity closes (Yahoo chart): NVDA, SOXX, AI-capex basket, SPY benchmark
   - Volatility complex (Yahoo chart): ^VXN, ^VIX, ^VIX3M, ^SKEW, ^VVIX
-  - Options skew + IV term structure (CBOE delayed quotes): NVDA, SOXX
-  - LEAPS-implied 1y tail probabilities (same CBOE chains, N(-d2)): NVDA, SOXX
+  - Options skew + IV term structure (Nasdaq OPRA-composite chains): NVDA, SOXX
+  - LEAPS-implied 1y tail probabilities (same chains, Breeden-Litzenberger): NVDA, SOXX
   - Credit proxies (Yahoo chart): HYG, LQD, JNK
   - Credit spreads (FRED, keyless CSV): HY OAS, CCC OAS, NFCI
   - Hyperscaler capex fundamentals (SEC XBRL companyconcept): MSFT, GOOGL, AMZN, META, ORCL
@@ -68,8 +68,15 @@ FRED = {"BAMLH0A0HYM2": "HY_OAS", "BAMLH0A3HYC": "CCC_OAS", "NFCI": "NFCI",
 SKEW_SYMS = ["NVDA", "SOXX"]
 # LEAPS tail: drawdown levels per symbol; the last one is the bubble-market trigger level
 TAIL_LEVELS = {"NVDA": [-30, -50], "SOXX": [-25, -40]}
-TAIL_RATE = 0.04          # risk-free rate for d2
+TAIL_RATE = 0.04          # risk-free rate for discounting / implied-vol inversion
 TAIL_MIN_DTE = 250        # only expiries at least this far out qualify as "1y"
+TAIL_MIN_SPREAD = 5.0     # absolute floor for the put-spread half-width; see digital_put
+TAIL_SPREAD_FRAC = 0.04   # ...and the same as a fraction of spot, whichever is larger
+# Expiry windows (days from today) requested per symbol: one near-dated for the 25d skew
+# and the IV term ratio, one ~1y out for the LEAPS tail. Two small calls beat pulling
+# every expiry, and Nasdaq's endpoint takes a date range directly.
+SKEW_WINDOW = (20, 130)
+TAIL_WINDOW = (TAIL_MIN_DTE, 430)
 INSIDER_TICKERS = ["NVDA", "AVGO", "ORCL", "CRWV"]
 # hyperscaler / AI-capex fundamentals via SEC XBRL (calendar-quarter aggregation)
 FUND_CIKS = {"MSFT": "0000789019", "GOOGL": "0001652044", "AMZN": "0001018724",
@@ -418,24 +425,152 @@ def fred_series(series_id):
     return parse_fred_csv(get(url, headers={"User-Agent": "ai-crash-monitor/1.0 (blank.mikhail@gmail.com)"}))
 
 
-# ---------- CBOE: 25d risk reversal + IV term structure ----------
-def cboe_options(sym):
-    j = json.loads(get(f"https://cdn.cboe.com/api/global/delayed_quotes/options/{sym}.json"))
-    d = j["data"]
+# ---------- Nasdaq: OPRA-composite option chains (keyless) ----------
+# Replaces Cboe's cdn.cboe.com delayed_quotes JSON. That endpoint carries an explicit
+# notice forbidding automated download and threatening to block the IP of anyone doing
+# it, which is exactly what this cron was doing every 30 minutes. Nasdaq's quote API is
+# the same OPRA composite tape - its own filter list labels excode "oprac" as
+# "Composite" - and returns identical bid/ask/open-interest for the same contracts
+# (verified on the 2027-06-17 NVDA puts: $100 strike 1.68/1.88 OI 18,730 on both).
+#
+# What Nasdaq does not return is implied vol or greeks, so both are computed below.
+# That is an improvement rather than a cost: the old code fed Cboe's `iv` (which Cboe
+# derives off the session close) and Cboe's `current_price` (an intraday quote, 198.98
+# against a 200.75 close) into the same formula. Inverting 2,416 contracts showed the
+# published IVs reproduce to 0.26 vol points off the close and only 1.34 off
+# current_price. Everything here is now priced off one spot.
+
+NASDAQ_ASSETCLASS = {"SOXX": "etf"}       # everything else is "stocks"
+NASDAQ_CHAIN = ("https://api.nasdaq.com/api/quote/{sym}/option-chain?assetclass={ac}"
+                "&limit=1000&fromdate={frm}&todate={to}&excode=oprac&callput=&money=all&type=all")
+
+
+def _num(x):
+    """Nasdaq renders absent values as '--' or ''; everything is a string."""
+    if x in (None, "", "--"):
+        return None
+    try:
+        return float(str(x).replace(",", ""))
+    except ValueError:
+        return None
+
+
+def nasdaq_options(sym, days_from, days_to):
+    """OPRA-composite chain rows for expiries in [today+days_from, today+days_to].
+
+    Returns (spot, rows) where each row is one strike carrying both sides:
+    {exp, dte, strike, c_bid, c_ask, p_bid, p_ask, c_oi, p_oi}.
+
+    Nasdaq groups the table by expiry: a header row carries `expirygroup` and the
+    strike rows that follow carry an empty one, so the current group is tracked while
+    walking the table in order.
+    """
     today = datetime.date.today()
-    rows = []
-    for o in d["options"]:
-        m = re.match(rf"{sym}(\d{{6}})([CP])(\d{{8}})", o["option"])
-        if not m or o.get("iv") in (None, 0) or o.get("delta") is None:
+    url = NASDAQ_CHAIN.format(sym=sym, ac=NASDAQ_ASSETCLASS.get(sym, "stocks"),
+                              frm=(today + datetime.timedelta(days=days_from)).isoformat(),
+                              to=(today + datetime.timedelta(days=days_to)).isoformat())
+    j = nasdaq_get(url)
+    if (j.get("status") or {}).get("rCode") != 200:
+        raise RuntimeError(f"nasdaq option-chain {sym}: {(j.get('status') or {}).get('bCodeMessage')}")
+    d = j["data"] or {}
+
+    # "LAST TRADE: $200.75 (AS OF JUL 30, 2026)" - the only spot the endpoint gives.
+    spot = None
+    m = re.search(r"\$\s*([\d,]+\.?\d*)", d.get("lastTrade") or "")
+    if m:
+        spot = _num(m.group(1))
+
+    rows, group = [], None
+    for r in (d.get("table") or {}).get("rows") or []:
+        if r.get("expirygroup"):
+            group = r["expirygroup"]
             continue
-        exp = datetime.datetime.strptime(m.group(1), "%y%m%d").date()
-        rows.append({"dte": (exp - today).days, "type": m.group(2), "iv": o["iv"],
-                     "delta": o["delta"], "strike": int(m.group(3)) / 1000.0})
-    return d.get("current_price"), rows
+        if not r.get("strike") or not group:
+            continue
+        try:
+            exp = datetime.datetime.strptime(group, "%B %d, %Y").date()
+        except ValueError:
+            continue
+        strike = _num(r.get("strike"))
+        if not strike:
+            continue
+        rows.append({"exp": exp, "dte": (exp - today).days, "strike": strike,
+                     "c_bid": _num(r.get("c_Bid")), "c_ask": _num(r.get("c_Ask")),
+                     "p_bid": _num(r.get("p_Bid")), "p_ask": _num(r.get("p_Ask")),
+                     "c_oi": _num(r.get("c_Openinterest")), "p_oi": _num(r.get("p_Openinterest"))})
+    return spot, rows
 
 
-def iv_at(exp_rows, typ, target):
-    pts = sorted((abs(r["delta"]), r["iv"]) for r in exp_rows if r["type"] == typ)
+# ---------- Black-Scholes: implied vol and delta, computed here rather than vendored ----------
+def norm_cdf(x):
+    return 0.5 * (1 + math.erf(x / math.sqrt(2)))
+
+
+def bs_price(spot, strike, iv, t, typ, r=TAIL_RATE):
+    if not (spot and strike and iv and iv > 0 and t > 0):
+        return None
+    d1 = (math.log(spot / strike) + (r + iv * iv / 2) * t) / (iv * math.sqrt(t))
+    d2 = d1 - iv * math.sqrt(t)
+    if typ == "C":
+        return spot * norm_cdf(d1) - strike * math.exp(-r * t) * norm_cdf(d2)
+    return strike * math.exp(-r * t) * norm_cdf(-d2) - spot * norm_cdf(-d1)
+
+
+def implied_vol(price, spot, strike, t, typ, r=TAIL_RATE):
+    """Invert Black-Scholes by bisection. None when the quote is below intrinsic or
+    outside the bracket - a wide deep-OTM quote is often both."""
+    if price is None or price <= 0 or not (spot and strike and t > 0):
+        return None
+    intrinsic = max(0.0, (spot - strike) if typ == "C" else (strike - spot)) * math.exp(-r * t)
+    if price < intrinsic - 1e-6:
+        return None
+    lo, hi = 1e-4, 5.0
+    if (bs_price(spot, strike, hi, t, typ, r) or 0) < price:
+        return None
+    for _ in range(100):
+        mid = (lo + hi) / 2
+        if (bs_price(spot, strike, mid, t, typ, r) or 0) < price:
+            lo = mid
+        else:
+            hi = mid
+    return (lo + hi) / 2
+
+
+def bs_delta(spot, strike, iv, t, typ, r=TAIL_RATE):
+    if not (spot and strike and iv and iv > 0 and t > 0):
+        return None
+    d1 = (math.log(spot / strike) + (r + iv * iv / 2) * t) / (iv * math.sqrt(t))
+    return norm_cdf(d1) if typ == "C" else norm_cdf(d1) - 1.0
+
+
+def _mid(row, typ):
+    b, a = (row["c_bid"], row["c_ask"]) if typ == "C" else (row["p_bid"], row["p_ask"])
+    if b is None or a is None or a <= 0:
+        return None
+    return (b + a) / 2
+
+
+def _quotes(rows, dte, typ, spot):
+    """[(strike, iv, delta)] for one expiry and side, priced off the bid-ask midpoint."""
+    t = dte / 365.0
+    out = []
+    for r in rows:
+        if r["dte"] != dte:
+            continue
+        px = _mid(r, typ)
+        iv = implied_vol(px, spot, r["strike"], t, typ)
+        if iv is None:
+            continue
+        dl = bs_delta(spot, r["strike"], iv, t, typ)
+        if dl is None:
+            continue
+        out.append((r["strike"], iv, dl))
+    return out
+
+
+def iv_at(quotes, target):
+    """IV interpolated to |delta| == target along one expiry's smile."""
+    pts = sorted((abs(dl), iv) for _, iv, dl in quotes)
     for i in range(len(pts) - 1):
         (d0, v0), (d1, v1) = pts[i], pts[i + 1]
         if d0 <= target <= d1 and d1 != d0:
@@ -443,15 +578,15 @@ def iv_at(exp_rows, typ, target):
     return None
 
 
-def cboe_skew_and_term(sym, preloaded=None):
-    spot, rows = preloaded if preloaded else cboe_options(sym)
+def skew_and_term(sym, spot, rows):
+    """25-delta risk reversal on the front expiry, plus the front/back ATM IV ratio."""
     today = datetime.date.today().isoformat()
     dtes = sorted(set(r["dte"] for r in rows if r["dte"] >= 25))
-    if not dtes:
+    if not dtes or not spot:
         return None, None
     front = dtes[0]
-    front_rows = [r for r in rows if r["dte"] == front]
-    p25, c25, atm_f = iv_at(front_rows, "P", 0.25), iv_at(front_rows, "C", 0.25), iv_at(front_rows, "P", 0.50)
+    fp, fc = _quotes(rows, front, "P", spot), _quotes(rows, front, "C", spot)
+    p25, c25, atm_f = iv_at(fp, 0.25), iv_at(fc, 0.25), iv_at(fp, 0.50)
     skew = {"spot": spot, "dte": front,
             "put25": round(p25, 4) if p25 else None,
             "call25": round(c25, 4) if c25 else None,
@@ -462,7 +597,7 @@ def cboe_skew_and_term(sym, preloaded=None):
     backs = [d for d in dtes if d >= 80]
     if backs and atm_f:
         back = backs[0]
-        atm_b = iv_at([r for r in rows if r["dte"] == back], "P", 0.50)
+        atm_b = iv_at(_quotes(rows, back, "P", spot), 0.50)
         if atm_b:
             term = {"front_dte": front, "back_dte": back,
                     "iv_front": round(atm_f, 4), "iv_back": round(atm_b, 4),
@@ -470,19 +605,40 @@ def cboe_skew_and_term(sym, preloaded=None):
     return skew, term
 
 
-# ---------- LEAPS-implied tail probabilities ----------
-def norm_cdf(x):
-    return 0.5 * (1 + math.erf(x / math.sqrt(2)))
+# ---------- LEAPS-implied tail probabilities (Breeden-Litzenberger) ----------
+def digital_put(puts_by_strike, strike, dte, spot=None, min_h=None, r=TAIL_RATE):
+    """Risk-neutral P(S_T < K) as a put-spread digital: e^{rT} * dPut/dK.
 
+    The old code used N(-d2) with the single strike's own implied vol. That ignores the
+    slope of the volatility smile, and the identity it omits is
+        Q(S_T <= K) = N(-d2) + e^{rT} * vega * dSigma/dK
+    With equity downside skew dSigma/dK is negative, so N(-d2) runs *high* - measured at
+    10.1% against ~7% for the 2027-06-17 NVDA $100 put, and ~2.1-2.4x too high in the
+    deep tail of the Dec-2026 chain. A centred difference over listed strikes is
+    model-free and prices the smile in automatically.
 
-def bs_prob_below(spot, strike, iv, dte, r=TAIL_RATE):
-    """Risk-neutral P(S_T < K) = N(-d2). Overstates real-world crash odds a bit
-    (risk premium), which makes it a conservative ceiling for comparison."""
-    if not spot or not strike or not iv or iv <= 0 or dte <= 0:
+    The half-width is deliberately not the adjacent strike: ~47% of $1-wide butterflies
+    on this chain violate convexity, which yields negative densities. It also has to
+    scale with the underlying, not be a flat dollar amount. SOXX trades near $505 with
+    $5 strikes, and a $5 floor there gave P(-25%) = 17.6% against P(-40%) = 16.6% - a
+    CDF running backwards, because a $10 window on a $505 name is pure quote noise (its
+    319d put mids are not even monotone: 270 -> 12.95 but 275 -> 12.85). At 4% of spot
+    both names are stable across a 2.5%-12.5% sweep: SOXX 32-34% / 18.5-21%, NVDA
+    21% / 6-7%.
+    """
+    if min_h is None:
+        min_h = max(TAIL_MIN_SPREAD, TAIL_SPREAD_FRAC * (spot or 0))
+    ks = sorted(puts_by_strike)
+    lo = [k for k in ks if k <= strike - min_h]
+    hi = [k for k in ks if k >= strike + min_h]
+    if not lo or not hi:
         return None
-    t = dte / 365.0
-    d2 = (math.log(spot / strike) + (r - iv * iv / 2) * t) / (iv * math.sqrt(t))
-    return norm_cdf(-d2)
+    k_lo, k_hi = lo[-1], hi[0]
+    p_lo, p_hi = puts_by_strike[k_lo], puts_by_strike[k_hi]
+    if p_lo is None or p_hi is None or k_hi <= k_lo:
+        return None
+    p = math.exp(r * dte / 365.0) * (p_hi - p_lo) / (k_hi - k_lo)
+    return min(1.0, max(0.0, p))
 
 
 def options_tail(sym, spot, rows, prev):
@@ -493,19 +649,23 @@ def options_tail(sym, spot, rows, prev):
     if not dtes:
         return None
     dte = min(dtes, key=lambda d: abs(d - 365))
-    puts = [r for r in rows if r["dte"] == dte and r["type"] == "P" and r.get("iv")]
-    if not puts:
+    puts = {r["strike"]: _mid(r, "P") for r in rows if r["dte"] == dte and _mid(r, "P") is not None}
+    if len(puts) < 3:
         return None
     today = datetime.date.today().isoformat()
+    t = dte / 365.0
     levels = []
     for pct in TAIL_LEVELS.get(sym, [-30, -50]):
         target = spot * (1 + pct / 100.0)
-        best = min(puts, key=lambda r: abs(r["strike"] - target))
-        if abs(best["strike"] - target) > 0.12 * target:
+        listed = sorted(puts, key=lambda k: abs(k - target))
+        best = listed[0] if listed else None
+        if best is None or abs(best - target) > 0.12 * target:
             levels.append({"pct": pct, "strike": None, "iv": None, "p": None})
             continue
-        p = bs_prob_below(spot, best["strike"], best["iv"], dte)
-        levels.append({"pct": pct, "strike": best["strike"], "iv": round(best["iv"], 4),
+        p = digital_put(puts, best, dte, spot)
+        iv = implied_vol(puts[best], spot, best, t, "P")
+        levels.append({"pct": pct, "strike": best,
+                       "iv": round(iv, 4) if iv is not None else None,
                        "p": round(p, 4) if p is not None else None})
     trig = levels[-1]["p"] if levels else None
     hist = [h for h in ((prev or {}).get("history") or []) if h["date"] != today]
@@ -1631,10 +1791,14 @@ def build():
 
     for sym in SKEW_SYMS:
         try:
-            chain = cboe_options(sym)          # one download per symbol, reused below
-            sk, term = cboe_skew_and_term(sym, chain)
+            # Two windows rather than one whole-chain download: the near expiries for
+            # skew/term, the ~1y ones for the tail. The tail window is fetched inside its
+            # own try so a LEAPS failure cannot take skew and term down with it.
+            spot, near = nasdaq_options(sym, *SKEW_WINDOW)
+            sk, term = skew_and_term(sym, spot, near)
             try:
-                tail = options_tail(sym, chain[0], chain[1], prev.get("tail", {}).get(sym))
+                _, far = nasdaq_options(sym, *TAIL_WINDOW)
+                tail = options_tail(sym, spot, far, prev.get("tail", {}).get(sym))
                 if tail:
                     data["tail"][sym] = tail
                     trig = tail["levels"][-1]
@@ -1657,7 +1821,8 @@ def build():
                 data["term"][sym] = term
                 print(f"term {sym}: {term['ratio']} ({term['front_dte']}d/{term['back_dte']}d)")
         except Exception as e:
-            # one chain download feeds all three, so a failure here loses all three
+            # the near-window download feeds skew and term; losing it loses the tail too,
+            # since the tail is priced off the same spot
             print(f"skew {sym}: FAIL {e}")
             for section in ("skew", "term", "tail"):
                 carry_sub(data, prev, section, sym)
