@@ -101,6 +101,81 @@
     stressed: { word: "Stressed", color: "var(--crashT)", border: "var(--crash)" },
   };
 
+  /* ================= gauge reference ranges ================= */
+  // The calm→stress range each gauge component is normalized against, written down once.
+  // They used to be re-typed in five places — compute_gauge() in update-market-data.py,
+  // computeGauge() and computeGaugeHistory() in the monitor, and the reference-range prose
+  // on gauge.html and in the monitor's methodology footer. The regime *thresholds* were
+  // centralized into REGIME above after they drifted; these ranges were the same accident
+  // waiting to happen, with a worse failure mode: a range that drifts changes the number
+  // without changing any wording, so nothing looks wrong.
+  //
+  // Each row carries its own prose, so the published range and the computed range cannot
+  // disagree: `name` and `fmt` render the phrasing, they do not restate the numbers.
+  //   fmt "pct"   → "bubble 0–40%"          fmt "pt"    → "NVDA RR 1–10pt"
+  //   fmt "level" → "VIX/VIX3M 0.82–1.05"   fmt "ddpct" → "NVDA 0→−50%"  (drawdown, negated)
+  // `server` marks the rows update-market-data.py's five-family gauge also reads; the rest
+  // are the monitor's exploratory-only components. test_gauge_refs.py parses this object
+  // out of this file and fails if the Python mirror disagrees on a number or on that split.
+  const GAUGE_REFS = {
+    pred_bubble:      { fam: "pred",   name: "bubble",         lo: 0,    hi: 40,   fmt: "pct",   server: true },
+    pred_nvda_tail:   { fam: "pred",   name: "NVDA tail",      lo: 0,    hi: 25,   fmt: "pct" },
+    pred_h100_sub2:   { fam: "pred",   name: "H100 < $2",      lo: 0,    hi: 30,   fmt: "pct" },
+    opt_nvda_rr:      { fam: "opt",    name: "NVDA RR",        lo: 1,    hi: 10,   fmt: "pt",    server: true },
+    opt_soxx_rr:      { fam: "opt",    name: "SOXX",           lo: 4,    hi: 15,   fmt: "pt",    server: true },
+    vol_term:         { fam: "vol",    name: "VIX/VIX3M",      lo: 0.82, hi: 1.05, fmt: "level", server: true },
+    vol_vxn:          { fam: "vol",    name: "VXN",            lo: 18,   hi: 40,   fmt: "level", server: true },
+    vol_skew:         { fam: "vol",    name: "SKEW",           lo: 115,  hi: 160,  fmt: "level", server: true },
+    vol_vvix:         { fam: "vol",    name: "VVIX",           lo: 90,   hi: 130,  fmt: "level", server: true },
+    credit_hyg_dd:    { fam: "credit", name: "HYG drawdown",   lo: 0,    hi: 8,    fmt: "ddpct", server: true },
+    credit_hyig_dd:   { fam: "credit", name: "HY/IG drawdown", lo: 0,    hi: 6,    fmt: "ddpct", server: true },
+    credit_hy_oas:    { fam: "credit", name: "HY OAS",         lo: 2.5,  hi: 5,    fmt: "pct",   server: true },
+    credit_ccc_oas:   { fam: "credit", name: "CCC OAS",        lo: 8.5,  hi: 14,   fmt: "pct",   server: true },
+    equity_nvda_dd:   { fam: "equity", name: "NVDA",           lo: 0,    hi: 50,   fmt: "ddpct", server: true },
+    equity_soxx_dd:   { fam: "equity", name: "SOXX",           lo: 0,    hi: 40,   fmt: "ddpct", server: true },
+    macro_recession:  { fam: "macro",  name: "recession",      lo: 5,    hi: 50,   fmt: "pct" },
+    macro_fed_cuts:   { fam: "macro",  name: "Fed cuts",       lo: 0,    hi: 60,   fmt: "pct" },
+    macro_china_top3: { fam: "macro",  name: "China top-3",    lo: 5,    hi: 50,   fmt: "pct" },
+  };
+
+  const GAUGE_FAM_NAMES = {
+    pred: "prediction markets", opt: "options skew", vol: "vol complex",
+    credit: "credit", equity: "equity drawdown", macro: "macro",
+  };
+
+  // Normalize x onto 0–100 against the named reference range. Every gauge component goes
+  // through this, so a component can only be scored against a range that is written down.
+  function gaugeScore(x, key) {
+    const r = GAUGE_REFS[key];
+    if (!r) throw new Error("unknown gauge ref: " + key);
+    if (x == null) return null;
+    return Math.max(0, Math.min(100, (x - r.lo) / (r.hi - r.lo) * 100));
+  }
+
+  // One component as published prose, e.g. "VXN 18–40". Numbers come from the row, never
+  // from a second copy in a sentence. Emits literal – − → (the pages are UTF-8) and escapes
+  // the name, which is the only part that could carry markup.
+  function gaugeRefText(key) {
+    const r = GAUGE_REFS[key], n = esc(r.name);
+    if (r.fmt === "ddpct") return `${n} ${r.lo}→−${r.hi}%`;
+    if (r.fmt === "pt") return `${n} ${r.lo}–${r.hi}pt`;
+    if (r.fmt === "pct") return `${n} ${r.lo}–${r.hi}%`;
+    return `${n} ${r.lo}–${r.hi}`;
+  }
+
+  // The reference ranges as one family-grouped sentence fragment:
+  //   "prediction markets (bubble 0–40%), options skew (NVDA RR 1–10pt, SOXX 4–15pt), …"
+  // scope "server" = the five-family headline gauge's rows; "extra" = the components only
+  // the monitor's exploratory card adds; "all" = everything.
+  function gaugeRefsProse(scope) {
+    const want = (r) => (scope === "server" ? !!r.server : scope === "extra" ? !r.server : true);
+    const order = ["pred", "opt", "vol", "credit", "equity", "macro"];
+    return order.map((f) => {
+      const keys = Object.keys(GAUGE_REFS).filter((k) => GAUGE_REFS[k].fam === f && want(GAUGE_REFS[k]));
+      return keys.length ? `${GAUGE_FAM_NAMES[f]} (${keys.map(gaugeRefText).join(", ")})` : "";
+    }).filter(Boolean).join(", ");
+  }
+
   /* ================= index math ================= */
   // Bound to a getter rather than a value so a page can keep mutating its own MARKETS
   // array in place, which is how the live refresh works:
@@ -314,6 +389,7 @@
     $, esc, safeUrl,
     outcomeYes, jsonList, isClosed, bookSpread,
     REGIME, regimeOf, REGIME_META,
+    GAUGE_REFS, GAUGE_FAM_NAMES, gaugeScore, gaugeRefText, gaugeRefsProse,
     indexMath, sparkSvg, parseSnapshots, pairShareSeries,
     ocfGrowth, tokenDemand, repricingGap, serveFloorPerM, impliedMargin, newestPriced,
   };

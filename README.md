@@ -75,7 +75,7 @@ The regime chip always states *which threshold fired*, in plain English, with th
 | Page | What it's for |
 | --- | --- |
 | [**index.html**](omen/index.html) | **The verdict.** The whole read in one viewport: pair price, gauge, regime, verdict, reasoning. |
-| [**polymarket-ai-index.html**](omen/polymarket-ai-index.html) | **The monitor** — the big one, ~2,700 lines. One document, five views at `/polymarket-ai-index/<view>`: `today`, `markets`, `gpu`, `prediction-markets`, `methodology`. Includes the LEAPS tail panel: risk-neutral P(NVDA −50% / SOXX −40% in ~1y) via N(−d2) from long-dated long-dated puts — a deep-market cross-check on the thin Polymarket bubble book. |
+| [**polymarket-ai-index.html**](omen/polymarket-ai-index.html) | **The monitor** — the big one, ~2,700 lines. One document, five views at `/polymarket-ai-index/<view>`: `today`, `markets`, `gpu`, `prediction-markets`, `methodology`. Includes the LEAPS tail panel: risk-neutral P(NVDA −50% / SOXX −40% in ~1y) as a put-spread digital (Breeden–Litzenberger) off long-dated puts — a deep-market cross-check on the thin Polymarket bubble book. |
 | [**gauge.html**](omen/gauge.html) | **The gauge.** Family-by-family breakdown, leading vs confirming, 90-day reconstruction with regime bands. |
 | [**indexes.html**](omen/indexes.html) | **The indexes.** Bull and Bear as one two-sided market that always sums to 1. Bull splits TECH vs CAP; Bear splits MKT vs GOV — because technology progress can survive a financial unwind, and a regulatory clampdown is not a crash. |
 | [**ai-capex.html**](omen/ai-capex.html) | **AI capex.** Eight fundamentals theses — debt saturation, credit stress, equity raises, capex vs GDP, stranded >1 GW projects, the dark-fiber overcapacity analogy, FCF erosion, reflexive treasury vehicles — plus a live tape. |
@@ -105,6 +105,78 @@ All free. All keyless unless marked.
 | Chinese-model demand | OpenRouter, HuggingFace, GitHub, LMArena, Vercel AI Gateway, Ollama, PyPI, Play/App Store |
 
 A handful of fields have no free machine-readable source and are **labelled as hand-updated** rather than quietly faked: Korea 20-day semiconductor exports, PJM capacity auction clears, LBNL interconnection-queue totals, per-CUSIP TRACE spreads.
+
+## 🗂️ Repository layout
+
+<!-- layout-tree: every path named here is asserted to exist by omen/test_docs_truth.py -->
+
+```
+omen-ai/
+├── worker.js ..................... Cloudflare Worker: static assets +
+│                                   live R2 streaming for the data paths
+├── wrangler.jsonc ................ Worker config, assets + R2 bindings
+├── ci-branch-guard.mjs ........... vetoes a Workers Builds deploy of any branch but main
+├── ruff.toml ..................... Python lint rules, and why each one is on
+├── BACKLOG.md .................... open work, with acceptance criteria
+├── docs/updates/ ................. dated change notes
+│
+├── .github/workflows/
+│   ├── refresh.yml ............... the ~30-minute data pipeline
+│   ├── test.yml .................. CI gate on push + pull request
+│   └── deploy.yml ................ production deploy, main only, behind test.yml
+│
+└── omen/
+    │  ── pages ──
+    ├── index.html                  the verdict
+    ├── polymarket-ai-index.html    the monitor (5 views, 1 document)
+    ├── gauge.html                  family-by-family gauge breakdown
+    ├── indexes.html                Bull/Bear as one two-sided market
+    ├── ai-capex.html               capex theses + the live tape
+    ├── china-ai-monitor.html       Chinese-model substitution demand
+    ├── influencers.html            the KOL board
+    ├── methodology.html            method, and what none of it can prove
+    │
+    │  ── shared front end ──
+    ├── omen-common.js ............. $ · esc · safeUrl · Polymarket shapes ·
+    │                                REGIME thresholds · GAUGE_REFS · index math
+    ├── omen.css ................... the design tokens
+    ├── omen-nav.js ................ the shared nav
+    │
+    │  ── fetchers (stdlib only) ──
+    ├── update-market-data.py ...... the main one; gauge, regime, alerts
+    ├── update-china-data.py ....... China substitution monitor
+    ├── update-capex-data.py ....... AI capex live tape
+    ├── update-influencers.py ...... KOL scoring (needs XAI_API_KEY)
+    ├── update-app-charts.mjs ...... Play charts (the only Node dep)
+    │
+    │  ── guards ──
+    ├── deploy-guard.py ............ refuses a hand-run deploy from a dirty tree
+    ├── seed-market-data.py ........ R2 baseline adoption rules
+    │
+    │  ── tests: python3 -m pytest omen/ ──
+    ├── test_update_market_data.py . parsers, gauge, retry, carry-forward
+    ├── test_update_china_data.py
+    ├── test_update_capex_data.py
+    ├── test_gauge_parity.py ....... server gauge vs the shared fixture
+    ├── test_gauge_refs.py ......... the Python range mirror vs OMEN.GAUGE_REFS
+    ├── test_docs_truth.py ......... this tree, and no unverifiable doc claims
+    ├── test_update_influencers.py .. the KOL scorer's containment rules
+    ├── test_deploy_guard.py, test_seed_market_data.py
+    ├── test_documented_secrets.py, test_mobile_nav.py
+    ├── test_regime_explainer.py ... runs every Node suite under pytest
+    ├── test-omen-common.mjs ....... the shared module, incl. safeUrl XSS
+    ├── test-regime-explainer.mjs .. 13 regime scenarios, prose assertions
+    ├── test-gauge-parity.mjs ...... the monitor's gauge vs the same fixture
+    ├── test-worker.mjs ............ routing, R2-first, etag/304, fallbacks
+    ├── test-verdict.mjs ........... all nine verdict cells
+    ├── test-pure-helpers.mjs, test-china-helpers.mjs, test-ci-branch-guard.mjs
+    │
+    │  ── data (committed; see below) ──
+    ├── market-data.json ........... full state — R2 seed, ~weekly
+    ├── snapshots.csv .............. append-only history, every run
+    ├── fixtures/gauge-parity.json . the one fixture both gauge suites read
+    └── alert-state.json ........... alert dedup
+```
 
 ## ⚡ Run it locally
 
@@ -138,11 +210,19 @@ cd omen && npm ci && node update-app-charts.mjs
 python3 -m pytest omen/
 ```
 
-One command, both languages, **141 tests**. `test_regime_explainer.py` shells out to the Node suites, so the browser JS is covered by the same invocation as the Python fetchers. There's no bundler, so those suites slice the functions they test out of the HTML by comment marker — and **fail loudly if a marker moves**, rather than silently testing nothing.
+One command, both languages. `test_regime_explainer.py` shells out to the Node suites, so the browser JS is covered by the same invocation as the Python fetchers. There's no bundler, so those suites slice the functions they test out of the HTML by comment marker — and **fail loudly if a marker moves**, rather than silently testing nothing.
 
-CI runs this on every push and pull request, plus `node --check` over the Worker and every `.mjs` file (there's no linter to lean on).
+```bash
+cd omen && npm test        # the Node suites alone; same list as the pytest bridge
+```
 
-What's covered: FRED and Form 4 parsing, the server-side gauge and regime, the fetch retry policy and its sleep budget, the carry-forward policy, COT and short-interest reducers, the verdict matrix, the regime explainer's prose across 13 scenarios, and the shared module — including `safeUrl`'s rejection of `javascript:`, `data:`, and control-character scheme smuggling.
+CI runs the pytest command on every push and pull request, plus `ruff check .` over the Python (rules and rationale in [`ruff.toml`](ruff.toml)) and `node --check` over the Worker and every `.mjs` file.
+
+What's covered: FRED and Form 4 parsing, the server-side gauge and regime, the fetch retry policy and its sleep budget, the carry-forward policy, COT and short-interest reducers, the verdict matrix, the regime explainer's prose across 13 scenarios, the Worker's routing and R2/304 behaviour, and the shared module — including `safeUrl`'s rejection of `javascript:`, `data:`, and control-character scheme smuggling.
+
+Two things are pinned by contract rather than by assertion, because they are the places this repo has actually drifted: `fixtures/gauge-parity.json` holds one input set that both gauge implementations are scored against, with the intended divergences written down as numbers; and `test_gauge_refs.py` parses `OMEN.GAUGE_REFS` out of `omen-common.js` to check the Python mirror of the reference ranges.
+
+> This section deliberately quotes no test count. The two manuals used to claim 141 and 135 while the suite collected 289; a number in prose that nothing checks is a number that goes stale. `test_docs_truth.py` now fails the build if one reappears.
 
 ## 🚀 How it stays fresh
 
@@ -229,9 +309,9 @@ Tracked with acceptance criteria in [BACKLOG.md](BACKLOG.md). Stated here becaus
 
 ## 📚 More
 
-- [**readme.txt**](readme.txt) — the full manual, in glorious ASCII.
 - [**BACKLOG.md**](BACKLOG.md) — open work with acceptance criteria.
 - [**docs/updates/**](docs/updates) — dated change notes.
+- [**readme.txt**](readme.txt) — the ASCII banner, and a pointer back here. It used to be a second full manual; two hand-maintained copies of one document drift, and these had.
 
 ## License
 

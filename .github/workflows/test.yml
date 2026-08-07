@@ -8,9 +8,10 @@
 # `python3 -m pytest omen/` is the documented single entry point and covers both
 # languages: omen/test_regime_explainer.py shells out to the Node suites.
 #
-# There is no bundler and no linter in this repo, so `node --check` (parse-only) is
-# the pragmatic static gate for the files pytest never loads — the Worker itself and
-# the Play-charts fetcher, which would otherwise only fail at deploy/cron time.
+# The Python side is linted by ruff (config and rule rationale in ruff.toml at the repo
+# root). There is still no bundler and no JS linter, so `node --check` (parse-only) stays
+# the pragmatic static gate for the files pytest never loads — the Worker itself and the
+# Play-charts fetcher, which would otherwise only fail at deploy/cron time.
 
 name: Tests
 
@@ -47,8 +48,16 @@ jobs:
           node-version: "20"
 
       - name: Install test dependencies
-        # The fetchers and their tests are stdlib-only; pytest is the sole requirement.
-        run: pip install pytest
+        # The fetchers and their tests are stdlib-only; pytest and ruff are the only
+        # requirements, and ruff is pinned exactly for the same reason the one npm
+        # dependency is — a new minor adds rules, and CI going red should mean the code
+        # changed, not that the linter did.
+        run: pip install pytest ruff==0.16.2
+
+      - name: Lint the Python sources
+        # Rule selection and the reasoning behind it live in ruff.toml. Baseline is zero,
+        # so any finding here is new.
+        run: ruff check .
 
       - name: Syntax-check the Node sources
         # Parse-only check for the JS that pytest never imports: the Worker entrypoint

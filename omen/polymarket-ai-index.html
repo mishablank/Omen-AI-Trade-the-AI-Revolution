@@ -1185,34 +1185,42 @@ function computeSignals(){
 }
 // blended crash-pressure gauge: 5 signal families, each 0-100, gauge = mean of available families
 function computeGauge(){
-  const sc=(x,lo,hi)=>x==null?null:clamp((x-lo)/(hi-lo)*100,0,100);
+  // Every component is normalized against OMEN.GAUGE_REFS, the one table of calm→stress
+  // ranges — shared with computeGaugeHistory below, the published reference-range prose,
+  // and (mirrored, test-pinned) the server gauge in update-market-data.py.
+  const sc=OMEN.gaugeScore;
   const bubble=markets.get(BUBBLE_ID);
   const fam={};
   // 1) prediction markets
-  const pm=[ sc(bubble&&!bubble.closed?bubble.yes*100:null,0,40), sc(nvdaTailProb(),0,25), sc(h100Sub2(),0,30) ].filter(v=>v!=null);
+  const pm=[ sc(bubble&&!bubble.closed?bubble.yes*100:null,"pred_bubble"), sc(nvdaTailProb(),"pred_nvda_tail"), sc(h100Sub2(),"pred_h100_sub2") ].filter(v=>v!=null);
   fam.pred={ label:"Prediction markets", v: pm.length?pm.reduce((a,b)=>a+b)/pm.length:null };
   // 2) options skew (25d risk reversal, in vol pts)
   const nrr=mkt?.skew?.NVDA?.rr, srr=mkt?.skew?.SOXX?.rr;
-  const opt=[ sc(nrr!=null?nrr*100:null,1,10), sc(srr!=null?srr*100:null,4,15) ].filter(v=>v!=null);
+  const opt=[ sc(nrr!=null?nrr*100:null,"opt_nvda_rr"), sc(srr!=null?srr*100:null,"opt_soxx_rr") ].filter(v=>v!=null);
   fam.opt={ label:"Options skew", v: opt.length?opt.reduce((a,b)=>a+b)/opt.length:null };
   // 3) volatility indices
   const V=mkt?.vol||{}; const ts=(V.VIX&&V.VIX3M)?V.VIX.last/V.VIX3M.last:null;
-  const vol=[ sc(ts,0.82,1.05), sc(V.VXN?.last,18,40), sc(V.SKEW?.last,115,160), sc(V.VVIX?.last,90,130) ].filter(v=>v!=null);
+  const vol=[ sc(ts,"vol_term"), sc(V.VXN?.last,"vol_vxn"), sc(V.SKEW?.last,"vol_skew"), sc(V.VVIX?.last,"vol_vvix") ].filter(v=>v!=null);
   fam.vol={ label:"Volatility complex", v: vol.length?vol.reduce((a,b)=>a+b)/vol.length:null };
   // 4) credit: HYG/HY-IG price proxies + true FRED spreads
+  // The ratio is joined on the trading date, not on array position: the fetcher's
+  // carry-forward policy can leave HYG refreshed and LQD a run behind (or either series
+  // short a session), and pairing by index then silently divides Monday's HYG by Friday's
+  // LQD. computeGaugeHistory has always keyed this by date; the live read now agrees.
   const C=mkt?.credit||{}; const hygDD=drawdown(C.HYG);
-  let hyig=null; if(C.HYG&&C.LQD){ const r=C.HYG.map((p,i)=>C.LQD[i]?p.c/C.LQD[i].c:null).filter(x=>x!=null);
+  let hyig=null; if(C.HYG&&C.LQD){ const L=new Map(C.LQD.map(q=>[q.d,q.c]));
+    const r=C.HYG.map(p=>{ const l=L.get(p.d); return l?p.c/l:null; }).filter(x=>x!=null);
     if(r.length){ const hi=Math.max(...r); hyig=(r[r.length-1]/hi-1)*100; } }
   const oas=mkt?.fred?.HY_OAS?.last, ccc=mkt?.fred?.CCC_OAS?.last;
-  const cr=[ sc(hygDD!=null?-hygDD:null,0,8), sc(hyig!=null?-hyig:null,0,6), sc(oas,2.5,5.0), sc(ccc,8.5,14.0) ].filter(v=>v!=null);
+  const cr=[ sc(hygDD!=null?-hygDD:null,"credit_hyg_dd"), sc(hyig!=null?-hyig:null,"credit_hyig_dd"), sc(oas,"credit_hy_oas"), sc(ccc,"credit_ccc_oas") ].filter(v=>v!=null);
   fam.credit={ label:"Credit stress", v: cr.length?cr.reduce((a,b)=>a+b)/cr.length:null };
   // 5) equity drawdown vs bubble triggers
   const E=mkt?.equity||{}; const nDD=drawdown(E.NVDA), sDD=drawdown(E.SOXX);
-  const eq=[ sc(nDD!=null?-nDD:null,0,50), sc(sDD!=null?-sDD:null,0,40) ].filter(v=>v!=null);
+  const eq=[ sc(nDD!=null?-nDD:null,"equity_nvda_dd"), sc(sDD!=null?-sDD:null,"equity_soxx_dd") ].filter(v=>v!=null);
   fam.equity={ label:"Equity drawdown", v: eq.length?eq.reduce((a,b)=>a+b)/eq.length:null };
   // 6) macro: recession + fed rate cut expectations + china AI competition
   const rec=macroRecession(), fed=macroFedCuts(), cn=chinaTop3();
-  const mac=[ sc(rec,5,50), sc(fed,0,60), sc(cn,5,50) ].filter(v=>v!=null);
+  const mac=[ sc(rec,"macro_recession"), sc(fed,"macro_fed_cuts"), sc(cn,"macro_china_top3") ].filter(v=>v!=null);
   fam.macro={ label:"Macro & China", v: mac.length?mac.reduce((a,b)=>a+b)/mac.length:null };
   const avail=Object.values(fam).filter(f=>f.v!=null);
   // thesis weighting: weight families by the crash-thesis schema
@@ -1365,7 +1373,7 @@ function regimeExplainer(reg){
    H100 events are rediscovered monthly and have no persistent history). */
 function computeGaugeHistory(days){
   if(!mkt) return null;
-  const sc=(x,lo,hi)=>x==null?null:clamp((x-lo)/(hi-lo)*100,0,100);
+  const sc=OMEN.gaugeScore;   // same reference ranges as the live gauge, by construction
   const toMap=arr=>{ const m=new Map(); for(const p of arr||[]) m.set(p.d,p.c); return m; };
   const ffill=(map,d,maxBack=6)=>{ const dt=Date.parse(d+"T00:00:00Z");
     for(let k=0;k<=maxBack;k++){ const key=new Date(dt-k*86400000).toISOString().slice(0,10); if(map.has(key)) return map.get(key); } return null; };
@@ -1388,18 +1396,18 @@ function computeGaugeHistory(days){
     const endSec=Math.floor(Date.parse(d+"T23:59:59Z")/1000);
     const fams=[];
     const bp=bubbleAt(endSec);
-    if(bp!=null) fams.push(sc(bp*100,0,40));
+    if(bp!=null) fams.push(sc(bp*100,"pred_bubble"));
     const rrN=ffill(skewM.NVDA,d), rrS=ffill(skewM.SOXX,d);
-    const opt=[sc(rrN!=null?rrN*100:null,1,10), sc(rrS!=null?rrS*100:null,4,15)].filter(v=>v!=null);
+    const opt=[sc(rrN!=null?rrN*100:null,"opt_nvda_rr"), sc(rrS!=null?rrS*100:null,"opt_soxx_rr")].filter(v=>v!=null);
     if(opt.length) fams.push(opt.reduce((a,b)=>a+b)/opt.length);
     const vix=ffill(vm.VIX,d), v3=ffill(vm.VIX3M,d);
-    const vol=[sc(vix&&v3?vix/v3:null,0.82,1.05), sc(ffill(vm.VXN,d),18,40), sc(ffill(vm.SKEW,d),115,160), sc(ffill(vm.VVIX,d),90,130)].filter(v=>v!=null);
+    const vol=[sc(vix&&v3?vix/v3:null,"vol_term"), sc(ffill(vm.VXN,d),"vol_vxn"), sc(ffill(vm.SKEW,d),"vol_skew"), sc(ffill(vm.VVIX,d),"vol_vvix")].filter(v=>v!=null);
     if(vol.length) fams.push(vol.reduce((a,b)=>a+b)/vol.length);
     const hd=ffill(hygDD,d), hg=ffill(hyigDD,d), oo=ffill(oasM,d), cc2=ffill(cccM,d);
-    const cr=[sc(hd!=null?-hd:null,0,8), sc(hg!=null?-hg:null,0,6), sc(oo,2.5,5.0), sc(cc2,8.5,14.0)].filter(v=>v!=null);
+    const cr=[sc(hd!=null?-hd:null,"credit_hyg_dd"), sc(hg!=null?-hg:null,"credit_hyig_dd"), sc(oo,"credit_hy_oas"), sc(cc2,"credit_ccc_oas")].filter(v=>v!=null);
     if(cr.length) fams.push(cr.reduce((a,b)=>a+b)/cr.length);
     const nd=ffill(nvdaDD,d), sd2=ffill(soxxDD,d);
-    const eq=[sc(nd!=null?-nd:null,0,50), sc(sd2!=null?-sd2:null,0,40)].filter(v=>v!=null);
+    const eq=[sc(nd!=null?-nd:null,"equity_nvda_dd"), sc(sd2!=null?-sd2:null,"equity_soxx_dd")].filter(v=>v!=null);
     if(eq.length) fams.push(eq.reduce((a,b)=>a+b)/eq.length);
     if(fams.length>=3){ out.dates.push(d); out.vals.push(fams.reduce((a,b)=>a+b)/fams.length); }
   }
@@ -2698,7 +2706,7 @@ $("alertBtn").onclick=async()=>{ if(!("Notification" in window)){ alert("This br
   if(alertsOn) new Notification("AI Crash Monitor","Alerts enabled. You'll be notified when the crash regime escalates."); };
 
 $("foot").innerHTML=`<p style="margin-top:8px"><strong>Composite.</strong> 100×Σ(wᵢ·pᵢ)/Σwᵢ over constituents live at each timestamp; the history panels are <strong>chain-linked</strong> (only common-member moves shift the line, so markets entering/leaving cause no step) and back-adjusted to read in probability units. Closed/resolved markets are dropped from the live index (see coverage). <strong>Deadline-adjusted</strong> basis annualizes only one-time-event markets (pᵢ→1−(1−p)^(365/days)); structural questions (†) are left raw.</p>
-<p style="margin-top:8px"><strong>Crash-Pressure Gauge – two instruments, one headline.</strong> The <em>headline</em> gauge – the number behind the regime chip here, the landing page&rsquo;s dial and the escalation alert – is the fetcher&rsquo;s server-side gauge, embedded in market-data.json and computed once per run so those three can never disagree. It is <strong>five equally-weighted families</strong>, each normalized 0–100 vs calm→stress refs: prediction markets (bubble-burst market only, 0–40%), options skew (NVDA RR 1–10pt, SOXX 4–15pt), vol complex (VIX/VIX3M 0.82–1.05, VXN 18–40, SKEW 115–160, VVIX 90–130), credit (HYG &amp; HY/IG drawdown 0→−8%/−6%, HY OAS 2.5–5.0%, CCC OAS 8.5–14%), equity drawdown (NVDA 0→−50%, SOXX 0→−40%). If the fetcher payload is missing or more than 2h stale, the chip falls back to the card&rsquo;s score and says so. The <em>gauge card</em> on this page is a richer <strong>exploratory</strong> read that can sit above or below the headline: it widens the prediction family to three components (bubble 0–40%, NVDA tail 0–25%, H100&lt;$2 0–30%) and adds a sixth <em>macro</em> family (recession 5–50%, Fed cuts 0–60%, China top-3 5–50%), with an optional thesis weighting (pred 25 / opt 15 / vol 10 / credit 10 / equity 10 / macro 30). The gauge history chart is reconstructed from stored daily series; its prediction-market family is bubble-market-only, so it slightly understates days when the NVDA-tail or H100 signals were hot. Regime: stressed at gauge≥55 / crash≥40 / crash≥25 with z≥2; elevated at gauge≥35 / crash≥25 / z≥1.5 / stack≥15%. A single early-warning market (China competition, one bubble print, one euphoria read) caps at Elevated — it can no longer trip Stressed on its own. The chip states which condition fired. “Crash” here means the crash-market basket – Bear’s MKT sleeve, unchanged in membership by the Bear merge – and not the Bear composite: these bands price crash risk, so regulatory odds must not trip them.</p>
+<p style="margin-top:8px"><strong>Crash-Pressure Gauge – two instruments, one headline.</strong> The <em>headline</em> gauge – the number behind the regime chip here, the landing page&rsquo;s dial and the escalation alert – is the fetcher&rsquo;s server-side gauge, embedded in market-data.json and computed once per run so those three can never disagree. It is <strong>five equally-weighted families</strong>, each normalized 0–100 vs calm→stress refs: ${OMEN.gaugeRefsProse("server")}. If the fetcher payload is missing or more than 2h stale, the chip falls back to the card&rsquo;s score and says so. The <em>gauge card</em> on this page is a richer <strong>exploratory</strong> read that can sit above or below the headline: it adds three further components on top &ndash; ${OMEN.gaugeRefsProse("extra")} &ndash;, with an optional thesis weighting (pred 25 / opt 15 / vol 10 / credit 10 / equity 10 / macro 30). Every range in those two lists is rendered from <code>OMEN.GAUGE_REFS</code>, the single table the gauge is actually scored against, so the published thresholds cannot drift away from the arithmetic. The gauge history chart is reconstructed from stored daily series; its prediction-market family is bubble-market-only, so it slightly understates days when the NVDA-tail or H100 signals were hot. Regime: stressed at gauge≥55 / crash≥40 / crash≥25 with z≥2; elevated at gauge≥35 / crash≥25 / z≥1.5 / stack≥15%. A single early-warning market (China competition, one bubble print, one euphoria read) caps at Elevated — it can no longer trip Stressed on its own. The chip states which condition fired. “Crash” here means the crash-market basket – Bear’s MKT sleeve, unchanged in membership by the Bear merge – and not the Bear composite: these bands price crash risk, so regulatory odds must not trip them.</p>
 <p style="margin-top:8px"><strong>Leading vs confirming.</strong> The families are also split into a <em>leading</em> sub-score (prediction markets, options skew, credit – all priced before the fact; the card&rsquo;s exploratory read includes macro here too) and a <em>confirming</em> sub-score (vol complex, equity drawdown – both move with or after prices). The headline gauge stays the mean of its five families for continuity, but the split is the honest read: only the leading side can warn, and the lead-lag study below shows even that lead is unproven.</p>
 <p style="margin-top:8px"><strong>Bull split.</strong> Bull constituents are tagged TECH (model releases, benchmarks, hardware – technology-progress odds) or CAP (IPOs, valuation flips – capital-markets odds). Technology progress historically survives financial unwinds (railways, dot-com), so the capital-only sub-reading is the cleaner cycle signal; the tech side mostly tells you the release calendar is intact.</p>
 <p style="margin-top:8px"><strong>LEAPS tail.</strong> From the same chains: the expiry nearest 365d (min 250d) and the listed put nearest each drawdown level. P(S<sub>T</sub>&lt;K) is read as a <em>put-spread digital</em> &ndash; e<sup>rT</sup>&middot;[P(K+h)&minus;P(K&minus;h)]/2h over bid&ndash;ask midpoints at r=4%, with h the larger of $5 and 4% of spot. That is the Breeden&ndash;Litzenberger construction and it is model-free. The older N(&minus;d2)-at-one-strike reading is <em>biased high</em>, because it drops the skew term in Q(S<sub>T</sub>&le;K)=N(&minus;d2)+e<sup>rT</sup>&middot;vega&middot;&part;&sigma;/&part;K, which is negative under equity downside skew &ndash; on the 2027-06-17 NVDA $100 put it read 10.1% against ~6% here. h is deliberately wider than one strike: roughly half the $1-wide butterflies on these chains violate convexity and would imply negative densities. Still risk-neutral, so it overstates real-world odds by the variance risk premium &ndash; use it as a deep-market ceiling to sanity-check the thin Polymarket bubble book, not as a forecast.</p>

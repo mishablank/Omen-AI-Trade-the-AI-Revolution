@@ -1,0 +1,53 @@
+# Lint config for the Python fetchers. CI runs `ruff check .` (see .github/workflows/test.yml)
+# and fails on any finding, so the baseline here is zero.
+#
+# Until this file existed the only static gate in the repo was `node --check` on the JS,
+# and test.yml said so in a comment: "there's no linter to lean on". The consistency of
+# these fetchers was maintained entirely by one person's discipline. This makes the parts
+# of that discipline a machine can check mechanical.
+#
+# The selection is deliberately not ruff's default set. Two of ruff's defaults, E4 and E7,
+# are pycodestyle style rules that argue with how this codebase is written on purpose —
+# compact `import json, os, re` headers, one-line lambdas, the occasional `a; b` pair in a
+# tight loop. Those are house style, not defects, and a linter that fights the house style
+# gets switched off. What is selected instead is the set that catches things that are
+# actually wrong:
+#
+#   F     pyflakes — undefined names, unused imports and locals, f-string mistakes. The
+#         real bug-finder, and the reason to have a linter at all in a stdlib-only repo
+#         with a lot of rarely-taken except/fallback branches.
+#   E9    syntax and IO errors ruff cannot parse past.
+#   B     bugbear — mutable default arguments, loop-variable capture, the classic traps.
+#   DTZ   naive datetimes. DTZ003 is the guard against `utcnow()` coming back: it is
+#         deprecated in 3.12, which is the interpreter CI runs.
+#   UP    pyupgrade — syntax left behind by an older Python than the pinned 3.12.
+#   W     trailing whitespace and friends.
+#   PIE   small unambiguous redundancies.
+#
+# All seven were at or near zero on adoption, so nothing here was chosen by what happened
+# to pass.
+
+target-version = "py312"
+
+[lint]
+select = ["E9", "F", "B", "UP", "W", "PIE", "DTZ"]
+
+ignore = [
+  # DTZ011 flags `datetime.date.today()`. Every use of it here is a *calendar day* key —
+  # the daily snapshot row, a history entry's "date", a month bucket — on a runner that is
+  # UTC. Making those tz-aware would not make them more correct, only more ceremonious,
+  # and rewriting them would silently change which day a late-evening local run writes to.
+  "DTZ011",
+
+  # The two rules below would rewrite working code into syntax that only a newer
+  # interpreter understands: UP017 swaps `datetime.timezone.utc` for the 3.11 `datetime.UTC`
+  # alias, and B905 wants a `strict=` on every zip(), which is 3.10+.
+  #
+  # CI pins 3.12 and the README asks for 3.12, but the fetchers as written run unmodified
+  # on considerably older ones — which is worth keeping for a stdlib-only tool whose whole
+  # pitch is that you can run it anywhere with nothing installed. Neither rule catches a
+  # defect; they trade that portability for an alias and a keyword. Drop either line if the
+  # floor is ever raised deliberately.
+  "UP017",
+  "B905",
+]

@@ -231,8 +231,12 @@ footer{border-top:1px solid var(--line);padding:40px 0;background:var(--bg2)}
         <p>“Popping” and “bubble” are different questions. OMEN’s markets and gauges answer <b>how much stress is priced</b> – they cannot say the market is <em>wrong</em>, which is what “bubble” means. For that the monitor carries two non-sentiment anchors: audited <b>capex vs operating cash flow</b> for the AI-capex filers (SEC XBRL), and <b>LEAPS-implied 1-year tail odds</b> from the far deeper options market as a cross-check on thin prediction books. Everything else here can be collectively euphoric or collectively scared at the same time.</p>
       </div>
     </div>
+    <!-- Filled from OMEN.GAUGE_REFS at load, like gauge.html's copy of this block. Typed
+         by hand, both had drifted the same two ways: they advertised the monitor-only
+         NVDA-tail and H100 components, and omitted the HY and CCC spreads the published
+         gauge does read. -->
     <div class="ranges">
-      <b>REFERENCE RANGES (CALM → STRESS)</b> – prediction markets: bubble-burst 0–40% · NVDA deep tail 0–25% · H100&lt;$2 0–30% &nbsp;/&nbsp; options skew: NVDA 25Δ RR 1–10 pt · SOXX 4–15 pt &nbsp;/&nbsp; volatility: VIX/VIX3M 0.82–1.05 · VXN 18–40 · SKEW 115–160 · VVIX 90–130 &nbsp;/&nbsp; credit: HYG drawdown 0 to −8% · HY/IG 0 to −6% &nbsp;/&nbsp; equity: NVDA 0 → −50% · SOXX 0 → −40%
+      <b>REFERENCE RANGES (CALM → STRESS)</b> <span id="refRanges"></span>
     </div>
   </div>
 </section>
@@ -263,6 +267,16 @@ footer{border-top:1px solid var(--line);padding:40px 0;background:var(--bg2)}
   </div>
 </footer>
 
+<script src="omen-common.js"></script>
+<script>
+"use strict";
+// The published ranges, rendered from the table the gauge is actually scored against.
+// Both scopes are named: the five families behind the headline number, then the extra
+// components the monitor's exploratory gauge card layers on top.
+document.getElementById("refRanges").innerHTML =
+  "– " + OMEN.gaugeRefsProse("server")
+  + " &nbsp;/&nbsp; <b>MONITOR&rsquo;S EXPLORATORY CARD ADDS</b> – " + OMEN.gaugeRefsProse("extra");
+</script>
 <script src="omen-nav.js" defer></script>
 </body>
 </html>
