@@ -237,7 +237,7 @@ auction clears, LBNL interconnection-queue totals, per-CUSIP TRACE spreads.
     ├── wrangler.jsonc ................ Worker config, assets + R2 bindings
     ├── readme.txt .................... this file
     ├── BACKLOG.md .................... open work, with acceptance criteria
-    ├── UPDATES-*.md .................. dated change notes
+    ├── docs/updates/ ................. dated change notes
     │
     ├── .github/workflows/
     │   ├── refresh.yml ............... the ~30-minute data pipeline

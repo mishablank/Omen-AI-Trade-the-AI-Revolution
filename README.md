@@ -229,7 +229,7 @@ Tracked with acceptance criteria in [BACKLOG.md](BACKLOG.md). Stated here becaus
 
 - [**readme.txt**](readme.txt) — the full manual, in glorious ASCII.
 - [**BACKLOG.md**](BACKLOG.md) — open work with acceptance criteria.
-- **UPDATES-\*.md** — dated change notes.
+- [**docs/updates/**](docs/updates) — dated change notes.
 
 ## License
 

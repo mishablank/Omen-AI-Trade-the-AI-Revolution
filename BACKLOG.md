@@ -179,7 +179,7 @@ Analysis 8 of the top 10 — at roughly 1/4 to 1/2 of Veo's $/minute. Image is s
 (Chinese entries at #5–8). None of that reaches the page, so a Chinese video-model
 breakthrough — the Kling/Seedance dynamic — would be invisible to the adoption index and
 to the leaderboard-proximity card. Remaining gap #4 of 10 from the Aug-2026 peer-dashboard
-survey (see `UPDATES-2026-08-06-supply-side.md` for the first five).
+survey (see `docs/updates/UPDATES-2026-08-06-supply-side.md` for the first five).
 
 ### Acceptance Criteria
 
