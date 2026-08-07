@@ -169,6 +169,7 @@ omen-ai/
     ├── test-gauge-parity.mjs ...... the monitor's gauge vs the same fixture
     ├── test-worker.mjs ............ routing, R2-first, etag/304, fallbacks
     ├── test-verdict.mjs ........... all nine verdict cells
+    ├── test-a11y.mjs .............. chart text alternatives, keyboard sorting
     ├── test-pure-helpers.mjs, test-china-helpers.mjs, test-ci-branch-guard.mjs
     │
     │  ── data (committed; see below) ──
