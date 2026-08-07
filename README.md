@@ -169,6 +169,7 @@ omen-ai/
     ├── test-gauge-parity.mjs ...... the monitor's gauge vs the same fixture
     ├── test-worker.mjs ............ routing, R2-first, etag/304, fallbacks
     ├── test-verdict.mjs ........... all nine verdict cells
+    ├── test-a11y.mjs .............. chart text alternatives, keyboard sorting
     ├── test-pure-helpers.mjs, test-china-helpers.mjs, test-ci-branch-guard.mjs
     │
     │  ── data (committed; see below) ──
@@ -303,8 +304,6 @@ Tracked with acceptance criteria in [BACKLOG.md](BACKLOG.md). Stated here becaus
 
 - China monitor "community mentions" (w=10) is hardcoded `null` — Reddit and X have no public, key-free, CORS-accessible API for it.
 - Android chart presence rides a reverse-engineered scrape that breaks every year or two; a SerpApi fallback is specced.
-- The CSS tokens still carry two parallel *names* for one palette (`--bg`/`--ink` vs `--page`/`--text-primary`).
-- Chart accessibility: the SVG charts have no text alternative, direction is encoded by colour alone, and sortable table headers aren't keyboard-reachable.
 - Some fundamentals fields are hand-updated, and the capex aggregate sums whichever hyperscalers reported in a given quarter — so a 4-filer quarter can sit next to a 5-filer quarter.
 
 ## 📚 More

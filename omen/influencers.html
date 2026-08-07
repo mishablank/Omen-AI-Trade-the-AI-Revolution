@@ -7,51 +7,51 @@
 <link rel="stylesheet" href="omen.css">
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
-  body { font-family: system-ui, -apple-system, "Segoe UI", sans-serif; background: var(--page); color: var(--text-primary); padding: 22px 20px 48px; max-width: 1160px; margin: 0 auto;
+  body { font-family: system-ui, -apple-system, "Segoe UI", sans-serif; background: var(--bg); color: var(--ink); padding: 22px 20px 48px; max-width: 1160px; margin: 0 auto;
     background-image: radial-gradient(900px 380px at 78% -120px, rgba(227,166,60,.06), transparent 70%); }
   a { color: inherit; }
   ::selection { background: var(--acc); color: #141005; }
   header { display: flex; align-items: baseline; gap: 12px; flex-wrap: wrap; }
   header h1 { font-family: var(--serif); font-size: 26px; font-weight: 700; letter-spacing: -0.01em; }
-  header p.sub { color: var(--text-secondary); font-size: 13.5px; margin-top: 4px; flex-basis: 100%; line-height: 1.5; }
-  .backlink { font-size: 12px; font-weight: 600; color: var(--text-secondary); text-decoration: none; border: 1px solid var(--border); border-radius: 999px; padding: 4px 12px; white-space: nowrap; }
+  header p.sub { color: var(--mut); font-size: 13.5px; margin-top: 4px; flex-basis: 100%; line-height: 1.5; }
+  .backlink { font-size: 12px; font-weight: 600; color: var(--mut); text-decoration: none; border: 1px solid var(--border); border-radius: 999px; padding: 4px 12px; white-space: nowrap; }
   .backlink:hover { color: var(--accT); border-color: var(--acc); }
   .toolbar { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin: 16px 0 10px; }
-  .seg { display: inline-flex; border: 1px solid var(--border); border-radius: 8px; overflow: hidden; background: var(--surface-1); }
-  .seg button { font: inherit; font-size: 12.5px; padding: 6px 11px; border: none; background: transparent; color: var(--text-secondary); cursor: pointer; }
-  .seg button.active { background: var(--bull-wash); color: var(--text-primary); font-weight: 600; }
+  .seg { display: inline-flex; border: 1px solid var(--border); border-radius: 8px; overflow: hidden; background: var(--panel); }
+  .seg button { font: inherit; font-size: 12.5px; padding: 6px 11px; border: none; background: transparent; color: var(--mut); cursor: pointer; }
+  .seg button.active { background: var(--bull-wash); color: var(--ink); font-weight: 600; }
   .toolbar .grow { margin-left: auto; display: flex; align-items: center; gap: 10px; }
-  .status { font-size: 12px; color: var(--muted); }
-  .card { background: var(--surface-1); border: 1px solid var(--grid); border-radius: 12px; padding: 18px; margin-top: 16px; }
+  .status { font-size: 12px; color: var(--dim); }
+  .card { background: var(--panel); border: 1px solid var(--line); border-radius: 12px; padding: 18px; margin-top: 16px; }
   .card h2 { font-family: var(--serif); font-size: 17px; font-weight: 700; display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
-  .card .cap { font-size: 12px; color: var(--muted); margin-top: 3px; line-height: 1.5; }
+  .card .cap { font-size: 12px; color: var(--dim); margin-top: 3px; line-height: 1.5; }
   .badge { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; background: rgba(227,166,60,0.12); color: var(--accT); border: 1px solid rgba(227,166,60,0.35); border-radius: 4px; padding: 1px 5px; }
-  .sub { font-size: 11.5px; color: var(--muted); }
+  .sub { font-size: 11.5px; color: var(--dim); }
   .statrow { display: flex; gap: 22px; flex-wrap: wrap; margin-top: 12px; }
-  .stat .l { font-size: 11.5px; color: var(--muted); }
+  .stat .l { font-size: 11.5px; color: var(--dim); }
   .stat .v { font-size: 19px; font-weight: 600; margin-top: 1px; }
-  .stat .v small { font-size: 12px; font-weight: 400; color: var(--muted); }
-  .note { font-size: 11.5px; color: var(--muted); margin-top: 9px; line-height: 1.55; }
-  footer { margin-top: 22px; font-size: 12px; color: var(--muted); line-height: 1.6; }
-  code { font-family: ui-monospace, "SF Mono", Menlo, monospace; font-size: 0.92em; background: var(--grid); border-radius: 4px; padding: 1px 5px; }
+  .stat .v small { font-size: 12px; font-weight: 400; color: var(--dim); }
+  .note { font-size: 11.5px; color: var(--dim); margin-top: 9px; line-height: 1.55; }
+  footer { margin-top: 22px; font-size: 12px; color: var(--dim); line-height: 1.6; }
+  code { font-family: ui-monospace, "SF Mono", Menlo, monospace; font-size: 0.92em; background: var(--line); border-radius: 4px; padding: 1px 5px; }
   /* KOL board */
-  .inf { display: grid; grid-template-columns: 220px 1fr 96px; gap: 14px; align-items: center; padding: 11px 0; border-bottom: 1px solid var(--grid); font-size: 13px; }
+  .inf { display: grid; grid-template-columns: 220px 1fr 96px; gap: 14px; align-items: center; padding: 11px 0; border-bottom: 1px solid var(--line); font-size: 13px; }
   .inf:last-child { border-bottom: none; }
   @media (max-width: 700px) { .inf { grid-template-columns: 1fr 84px; } .inf .mid { grid-column: 1 / -1; } }
   .inf .who a { font-weight: 600; text-decoration: none; }
   .inf .who a:hover { text-decoration: underline; }
   .inf .who .sub { margin-top: 1px; }
-  .inf .take { font-size: 12px; color: var(--text-secondary); line-height: 1.45; }
+  .inf .take { font-size: 12px; color: var(--mut); line-height: 1.45; }
   .inf .mid { min-width: 0; }
   .inf .stance { justify-self: end; }
   .pill { display: inline-flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 650; letter-spacing: 0.02em; border-radius: 999px; padding: 4px 12px; border: 1px solid transparent; }
   .pill i { width: 8px; height: 8px; border-radius: 50%; display: inline-block; }
   .pill.bull { background: var(--bull-wash); color: var(--bull); border-color: rgba(42,120,214,0.30); }
   .pill.bear { background: var(--crash-wash); color: var(--crash); border-color: rgba(227,73,72,0.30); }
-  .pill.neutral { background: var(--grid); color: var(--text-secondary); }
+  .pill.neutral { background: var(--line); color: var(--mut); }
   .pill.bull i { background: var(--bull); }
   .pill.bear i { background: var(--crash); }
-  .pill.neutral i { background: var(--muted); }
+  .pill.neutral i { background: var(--dim); }
 
   /* ---------- mobile ----------
    * The board reflows to "name + stance / take" at 700px, but the stance pill, the sort

@@ -678,6 +678,13 @@ function renderTape(days){
     return `<span class="${d.live?"today":""}" style="background:${VERDICT_INK[d.verdict]}" title="${esc(tip)}"></span>`;
   }).join("");
   $("tapeCells").innerHTML=cells;
+  // the per-cell titles are mouse-only; the container carries the read-out a screen
+  // reader gets, composed from the same data so it cannot go stale
+  const today=days[days.length-1];
+  $("tapeCells").setAttribute("role","img");
+  $("tapeCells").setAttribute("aria-label",
+    `Verdict tape, one cell per day, ${days[0].date} to today: ${VERDICTS[today.verdict].label}`
+    +(today.gauge!=null?`, gauge ${today.gauge.toFixed(1)} of 100`:"")+".");
   $("tapeRange").textContent=`${days[0].date} → today`;
   const seen=[...new Set(days.map(d=>d.verdict))];
   $("tapeLegend").innerHTML=["riskon","constructive","mixed","caution","riskoff"]
