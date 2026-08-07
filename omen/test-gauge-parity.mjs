@@ -118,6 +118,36 @@ const g = gaugeFor("equal");
   console.log("  score / weighting / lead-conf");
 }
 
+/* ---------- headlineGauge: the chip reads the server gauge, not this card ---------- */
+{
+  // The convergence rule: the monitor's regime chip states the fetcher's server_gauge
+  // (the number the landing page and the alert already use) and falls back to the
+  // page's own six-family score only when the payload is missing or stale.
+  const HG = slice("function headlineGauge()", "\n// The rule inputs");
+  const sig = { gauge: { score: 40.2 } };
+  const iso = (agoMs) => new Date(Date.now() - agoMs).toISOString();
+  const FRESH_MS = 2 * 3600000;
+  const hg = (mkt) => build(HG, ["headlineGauge"], { mkt, sig, FRESH_MS }).headlineGauge();
+
+  const fresh = hg({ server_gauge: { score: 36.25 }, updated: iso(10 * 60000) });
+  ok("headline/fresh server gauge wins", fresh.score === 36.25 && fresh.source === "server",
+    JSON.stringify(fresh));
+
+  const stale = hg({ server_gauge: { score: 36.25 }, updated: iso(3 * 3600000) });
+  ok("headline/stale payload falls back to the client score",
+    stale.score === 40.2 && stale.source === "client", JSON.stringify(stale));
+
+  ok("headline/no server_gauge falls back",
+    hg({ updated: iso(10 * 60000) }).source === "client");
+  ok("headline/null server score falls back",
+    hg({ server_gauge: { score: null }, updated: iso(10 * 60000) }).source === "client");
+  ok("headline/no updated stamp cannot prove freshness, falls back",
+    hg({ server_gauge: { score: 36.25 } }).source === "client");
+  ok("headline/no payload at all falls back",
+    hg(null).source === "client" && hg(null).score === 40.2);
+  console.log("  headlineGauge (server-first, stale fallback)");
+}
+
 /* ---------- every component is scored through the shared ranges table ---------- */
 {
   // OMEN.gaugeScore closes over the module's own GAUGE_REFS - a component can only be

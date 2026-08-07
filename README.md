@@ -20,7 +20,7 @@ Every AI-bubble take you've read is somebody's opinion. OMEN is a price.
 
 It blends what prediction markets *think* will happen with what options, credit, volatility and equity markets are *actually charging* for protection — plus the one non-market anchor that matters, hyperscaler capex against operating cash flow, straight out of SEC XBRL. Out comes a single 0–100 crash-pressure gauge, a stated regime, and one of five verdicts.
 
-No database. No framework. No build step. No server-side rendering. Static HTML, a handful of stdlib-only Python fetchers, and a 78-line Cloudflare Worker — the whole thing is about 11,000 lines, and every number on it comes from a free, mostly keyless endpoint.
+No database. No framework. No build step. No server-side rendering. Static HTML, a handful of stdlib-only Python fetchers, and a small Cloudflare Worker — the whole thing is about 11,000 lines, and every number on it comes from a free, mostly keyless endpoint.
 
 **Not investment advice.** This is a measurement instrument, not a recommendation.
 
@@ -55,6 +55,8 @@ Five equally-weighted families, each normalized 0–100 against a fixed calm→s
 | | `EQUITY` | NVDA and SOXX drawdown from the running high |
 
 **Only the leading side can warn.** That split is the entire point: a gauge that goes red because equities already fell is a thermometer, not a warning.
+
+**One headline, stated once.** The regime everywhere – the landing dial, the monitor's chip, the escalation alert – reads the *server-side* gauge above, computed once per run and embedded in `market-data.json`, so the three can never disagree. The monitor's gauge card additionally shows an **exploratory six-family read**: the prediction leg widened to the NVDA-tail and H100 components, plus a macro family (recession, Fed cuts, China top-3) and a weighting toggle. It is labelled as exploratory and does not drive the regime; only when the fetcher payload is missing or more than 2h stale does the chip fall back to it, and it says so on the card.
 
 ### Regime bands
 
@@ -116,7 +118,7 @@ omen-ai/
 ├── ci-branch-guard.mjs ........... vetoes a Workers Builds deploy of any branch but main
 ├── ruff.toml ..................... Python lint rules, and why each one is on
 ├── BACKLOG.md .................... open work, with acceptance criteria
-├── UPDATES-*.md .................. dated change notes
+├── docs/updates/ ................. dated change notes
 │
 ├── .github/workflows/
 │   ├── refresh.yml ............... the ~30-minute data pipeline
@@ -158,6 +160,7 @@ omen-ai/
     ├── test_gauge_parity.py ....... server gauge vs the shared fixture
     ├── test_gauge_refs.py ......... the Python range mirror vs OMEN.GAUGE_REFS
     ├── test_docs_truth.py ......... this tree, and no unverifiable doc claims
+    ├── test_update_influencers.py .. the KOL scorer's containment rules
     ├── test_deploy_guard.py, test_seed_market_data.py
     ├── test_documented_secrets.py, test_mobile_nav.py
     ├── test_regime_explainer.py ... runs every Node suite under pytest
@@ -307,7 +310,7 @@ Tracked with acceptance criteria in [BACKLOG.md](BACKLOG.md). Stated here becaus
 ## 📚 More
 
 - [**BACKLOG.md**](BACKLOG.md) — open work with acceptance criteria.
-- **UPDATES-\*.md** — dated change notes.
+- [**docs/updates/**](docs/updates) — dated change notes.
 - [**readme.txt**](readme.txt) — the ASCII banner, and a pointer back here. It used to be a second full manual; two hand-maintained copies of one document drift, and these had.
 
 ## License

@@ -2,13 +2,16 @@
  *
  * Two mechanisms can deploy this Worker. The intended one is
  * .github/workflows/deploy.yml, which runs on push to main behind the test gate.
- * The other is Cloudflare's Workers Builds git integration, which builds *every
- * branch push* and puts it straight into production — deploy.yml's header says it
- * must be disconnected, and on 2026-07-30 two feature-branch pushes each reached
- * production ~30s later. Verified still live on 2026-08-05: pushing the branch
- * `dataviz-upgrades` served an unreviewed landing page to production for ~2
+ * The other was Cloudflare's Workers Builds git integration, which builds *every
+ * branch push* and puts it straight into production — on 2026-07-30 two
+ * feature-branch pushes each reached production ~30s later, and on 2026-08-05 the
+ * branch `dataviz-upgrades` served an unreviewed landing page to production for ~2
  * minutes, until the data cron's next push to main rebuilt over it. Nothing
  * guarantees that drag-back — the window is "until main is pushed again".
+ *
+ * The integration was disconnected in the dashboard on 2026-08-07, so this guard is
+ * now insurance against a future reconnect rather than the active defence. It stays
+ * wired in because reconnecting takes one dashboard click and forgets nothing.
  *
  * wrangler runs wrangler.jsonc's build.command before it uploads, and Workers
  * Builds deploys by running wrangler. So this is the one repo-side hook that can

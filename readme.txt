@@ -37,7 +37,7 @@ hardcoded test count reappears in either document.
 
   README.md ....... the manual
   BACKLOG.md ...... open work, with acceptance criteria
-  UPDATES-*.md .... dated change notes
+  docs/updates/ ... dated change notes
 
 The banner stays. It was the best part of this file anyway.
 

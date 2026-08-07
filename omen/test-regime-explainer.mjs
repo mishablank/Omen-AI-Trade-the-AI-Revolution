@@ -40,11 +40,15 @@ function build({ gauge, z, level, stack, snaps = {} }) {
     stack,
   };
   const localStorage = { getItem: () => JSON.stringify(snaps) };
+  // mkt is null: no fetcher payload, so headlineGauge() falls back to the client score —
+  // which is exactly `sig.gauge`, i.e. the scenario's `gauge` input drives the rules
+  // directly, same as before headlineGauge existed. The server-first path has its own
+  // cases in test-gauge-parity.mjs.
   const factory = new Function(
-    "sig", "indexNowFixed", "migrateSnaps", "SNAP_KEY", "localStorage", "OMEN",
+    "sig", "indexNowFixed", "migrateSnaps", "SNAP_KEY", "localStorage", "OMEN", "mkt",
     BLOCK + "\nreturn { computeRegime, regimeExplainer, gaugeBand, regimeRules };"
   );
-  return factory(sig, () => level, (s) => s, "snap-key", localStorage, OMEN);
+  return factory(sig, () => level, (s) => s, "snap-key", localStorage, OMEN, null);
 }
 
 /* ---------- assertions ---------- */
