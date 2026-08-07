@@ -43,7 +43,11 @@ The consumer-app family now pulls Android chart presence from `update-app-charts
 
 ## Front end — converge the two CSS token vocabularies
 
-**Status:** Open
+**Status:** Done (2026-08-07) — 174 call sites rewritten to the `--bg`/`--ink` family across the
+three monitor-family pages (plus `--delta-up`/`--delta-down` → `--pos`/`--neg`, the same
+duplication); alias block deleted from `omen.css` (`--border` stays, it never had a twin).
+Each pair was proven to resolve to the identical literal and no page overrode either name;
+all eight pages render-verified in headless Chrome after the sweep.
 **Component:** `omen.css`, `polymarket-ai-index.html`, `china-ai-monitor.html`, `influencers.html`
 **Priority:** Low
 
