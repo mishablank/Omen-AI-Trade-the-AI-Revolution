@@ -35,6 +35,54 @@ const DATA_FILES = {
 // R2 read volume tiny while the dashboard still reads as live.
 const CACHE_CONTROL = "public, max-age=0, s-maxage=60, must-revalidate";
 
+// Security headers on everything this Worker hands out. The pages render remote API
+// data through innerHTML behind esc()/safeUrl (omen-common.js); the CSP is the
+// backstop for the one call site that misses them. It cannot stop inline-script
+// injection — the pages ARE inline scripts, so script-src needs 'unsafe-inline' —
+// but it does block external script loads, plugin content, framing, form posts and
+// any exfil fetch to a host that is not one of the five APIs the pages actually use.
+//
+// connect-src is the audited inventory of client-side fetch targets (2026-08-07:
+// Polymarket Gamma+CLOB on five pages, OpenRouter on capex+china, HuggingFace and
+// api.github.com on china). A new external feed added to a page will fail loudly in
+// the console until it is added here — that friction is the point. Note this also
+// means any Cloudflare feature that injects scripts (Rocket Loader, Web Analytics,
+// email obfuscation) would be blocked: none is enabled today, keep it that way or
+// add its origin deliberately.
+const CSP = [
+  "default-src 'self'",
+  "script-src 'self' 'unsafe-inline'",   // every page is one inline script
+  "style-src 'self' 'unsafe-inline'",    // inline style attributes throughout
+  "img-src 'self' data:",
+  "connect-src 'self'"
+    + " https://gamma-api.polymarket.com"
+    + " https://clob.polymarket.com"
+    + " https://openrouter.ai"
+    + " https://huggingface.co"
+    + " https://api.github.com",
+  "font-src 'self'",
+  "object-src 'none'",
+  "base-uri 'self'",
+  "form-action 'none'",
+  "frame-ancestors 'none'",
+].join("; ");
+
+// Wrap a response with the security headers. CSP and the legacy frame header only
+// make sense on documents, so they key off content-type; nosniff, referrer policy
+// and HSTS go on everything, data files and 304s included. The copy via the
+// Response constructor is required — asset responses arrive immutable.
+function secured(resp) {
+  const r = new Response(resp.body, resp);
+  r.headers.set("x-content-type-options", "nosniff");
+  r.headers.set("referrer-policy", "strict-origin-when-cross-origin");
+  r.headers.set("strict-transport-security", "max-age=31536000");
+  if ((r.headers.get("content-type") || "").includes("text/html")) {
+    r.headers.set("content-security-policy", CSP);
+    r.headers.set("x-frame-options", "DENY");
+  }
+  return r;
+}
+
 export default {
   async fetch(request, env, ctx) {
     const url = new URL(request.url);
@@ -46,7 +94,7 @@ export default {
     const view = url.pathname.match(/^\/polymarket-ai-index\/([a-z-]+)\/?$/);
     if (view && DASHBOARD_VIEWS.has(view[1])) {
       const asset = new URL("/polymarket-ai-index", url.origin);
-      return env.ASSETS.fetch(new Request(asset, request));
+      return secured(await env.ASSETS.fetch(new Request(asset, request)));
     }
 
     const spec = DATA_FILES[url.pathname];
@@ -64,9 +112,9 @@ export default {
           // honour conditional requests so the edge/browser can 304
           const inm = request.headers.get("if-none-match");
           if (inm && obj.httpEtag && inm === obj.httpEtag) {
-            return new Response(null, { status: 304, headers });
+            return secured(new Response(null, { status: 304, headers }));
           }
-          return new Response(obj.body, { headers });
+          return secured(new Response(obj.body, { headers }));
         }
       } catch (e) {
         // fall through to the bundled asset on any R2 error
@@ -74,6 +122,6 @@ export default {
     }
 
     // everything else — and any R2 miss/error — is served from the bundled assets
-    return env.ASSETS.fetch(request);
+    return secured(await env.ASSETS.fetch(request));
   },
 };

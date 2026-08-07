@@ -20,7 +20,7 @@ Every AI-bubble take you've read is somebody's opinion. OMEN is a price.
 
 It blends what prediction markets *think* will happen with what options, credit, volatility and equity markets are *actually charging* for protection — plus the one non-market anchor that matters, hyperscaler capex against operating cash flow, straight out of SEC XBRL. Out comes a single 0–100 crash-pressure gauge, a stated regime, and one of five verdicts.
 
-No database. No framework. No build step. No server-side rendering. Static HTML, a handful of stdlib-only Python fetchers, and a 78-line Cloudflare Worker — the whole thing is about 11,000 lines, and every number on it comes from a free, mostly keyless endpoint.
+No database. No framework. No build step. No server-side rendering. Static HTML, a handful of stdlib-only Python fetchers, and a small Cloudflare Worker — the whole thing is about 11,000 lines, and every number on it comes from a free, mostly keyless endpoint.
 
 **Not investment advice.** This is a measurement instrument, not a recommendation.
 
