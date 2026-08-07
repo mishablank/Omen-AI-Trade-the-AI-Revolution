@@ -12,9 +12,14 @@
 # It was NOT disconnected when this landed. Re-verified 2026-08-05: pushing the branch
 # `dataviz-upgrades` served an unreviewed landing page from production for ~2 minutes,
 # until the data cron's next push to main rebuilt over it. ci-branch-guard.mjs (wired in
-# as wrangler.jsonc's build.command) now vetoes a Workers Build of any branch but main,
-# so that path fails closed instead of shipping. The guard is insurance, not the fix —
-# disconnect the integration in the Cloudflare dashboard.
+# as wrangler.jsonc's build.command) vetoes a Workers Build of any branch but main, so
+# that path fails closed instead of shipping.
+#
+# RESOLVED 2026-08-07: the integration was disconnected in the dashboard (Compute
+# (Workers) > omen-ai > Settings > Build shows no Git repository), and three branch
+# pushes that day produced no Workers Build — production headers confirmed main was
+# never displaced. This workflow is now the only deployer. ci-branch-guard.mjs stays
+# wired in as insurance against a future reconnect.
 #
 # Data refreshes deliberately do NOT deploy. refresh.yml commits with the default
 # GITHUB_TOKEN, and GitHub does not raise workflow events for GITHUB_TOKEN pushes, so
