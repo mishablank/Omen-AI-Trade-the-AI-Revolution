@@ -1450,6 +1450,9 @@ function deltaSpan(v,d=1,suf="",badWhenUp=false){ if(v==null||!isFinite(v)) retu
 function hbar(label,p,color){ const w=clamp(p,0,100); return `<div class="hbar"><span class="k">${label}</span><span class="track"><i style="width:${w}%;background:${color}"></i></span><span class="v">${p.toFixed(1)}%</span></div>`; }
 function spark(svgId, vals, color){
   const svg=$(svgId); if(!svg) return;
+  // decorative: the number it accompanies is the accessible value (same rule as
+  // OMEN.sparkSvg, which marks its own output aria-hidden)
+  svg.setAttribute("aria-hidden","true"); svg.setAttribute("focusable","false");
   const vs=(vals||[]).filter(v=>v!=null);
   if(vs.length<3){ svg.innerHTML=""; return; }
   const W=200,H=26,n=vals.length;
@@ -2265,8 +2268,10 @@ function renderTable(side){
     if(ka==null&&kb==null) return 0; if(ka==null) return 1; if(kb==null) return -1;
     return ka<kb?-st.dir:ka>kb?st.dir:0; });
   const totW=rows.reduce((s,r)=>s+weightOf(r.c.id),0), color=SIDE_COLOR[side], now=Date.now(), hz=basis==="hazard";
-  const arrow=k=>st.k===k?`<span class="arrow">${st.dir<0?"▼":"▲"}</span>`:"";
-  const th=(k,label,num)=>`<th class="sortable${num?" num":""}" data-k="${k}">${label} ${arrow(k)}</th>`;
+  const arrow=k=>st.k===k?`<span class="arrow" aria-hidden="true">${st.dir<0?"▼":"▲"}</span>`:"";
+  // Keyboard-reachable sort controls: tabbable, Enter/Space activated (wired below),
+  // with the current order announced via aria-sort rather than only the ▲▼ glyph.
+  const th=(k,label,num)=>`<th class="sortable${num?" num":""}" data-k="${k}" scope="col" role="button" tabindex="0" aria-sort="${st.k===k?(st.dir<0?"descending":"ascending"):"none"}">${label} ${arrow(k)}</th>`;
   let h=`<thead><tr>${th("label","Market")}${th("yes","YES",1)}${hz?'<th class="num">1y-eq</th>':""}${th("d1","24h",1)}${th("d7","7d",1)}${th("vol","Vol",1)}<th class="num">Wt</th></tr></thead><tbody>`;
   const risky=RISK_UP[side];
   // concentration: effective number of constituents = 1/Σ(w/Σw)² – exposes how few
@@ -2289,9 +2294,14 @@ function renderTable(side){
   const tbl=$(side+"Table");
   tbl.innerHTML=h+"</tbody>";
   tbl.querySelectorAll("th.sortable").forEach(el=>{
-    el.onclick=()=>{ const k=el.dataset.k;
+    const sort=()=>{ const k=el.dataset.k;
       if(st.k===k) st.dir=-st.dir; else { st.k=k; st.dir=k==="label"?1:-1; }
-      renderTable(side); };
+      renderTable(side);
+      // the re-render replaced this header; put focus back on its successor so a
+      // keyboard user can flip the direction without tabbing back in
+      tbl.querySelector(`th.sortable[data-k="${k}"]`)?.focus(); };
+    el.onclick=sort;
+    el.onkeydown=e=>{ if(e.key==="Enter"||e.key===" "){ e.preventDefault(); sort(); } };
   });
 }
 function renderCoverage(){
@@ -2391,6 +2401,14 @@ function lineChart(svgId,tipId,wrapId,data,H,opts={}){
   g+=endLabels(series,y,W-mR+7);
   g+=`<g class="xh"></g><rect class="hit" x="${mL}" y="${mT}" width="${iw}" height="${ih}" fill="transparent" style="touch-action:pan-y"/>`;
   svg.innerHTML=g;
+  // A text alternative for information that exists nowhere else on the page: what is
+  // plotted, over what span, ending at what value. Composed from the live data, so it
+  // can never go stale the way a hand-written label would.
+  const fmtDay=t=>new Date(t*1000).toLocaleDateString(undefined,{month:"short",day:"numeric"});
+  const latest=series.map(s=>{ const v=[...s.vals].reverse().find(x=>x!=null);
+    return v==null?null:`${s.name} ${v.toFixed(1)}`; }).filter(Boolean).join(", ");
+  svg.setAttribute("role","img");
+  svg.setAttribute("aria-label",`Line chart of ${series.map(s=>s.name).join(", ")}, ${fmtDay(buckets[0])} to ${fmtDay(buckets[buckets.length-1])}. Latest: ${latest}.`);
   const hit=svg.querySelector(".hit"), xh=svg.querySelector(".xh");
   hit.onpointermove=ev=>{ const rect=svg.getBoundingClientRect();
     let i=Math.round((((ev.clientX-rect.left)/rect.width)*W-mL)/iw*(buckets.length-1)); i=clamp(i,0,buckets.length-1);
@@ -2444,6 +2462,12 @@ function multiPanelChart(svgId,tipId,wrapId,buckets,panels){
     g+=`<text x="${x(i)}" y="${H-6}" text-anchor="middle" font-size="11" fill="var(--muted)">${d.toLocaleDateString(undefined,{month:"short",day:"numeric"})}</text>`; }
   g+=`<g class="xh"></g><rect class="hit" x="${mL}" y="0" width="${iw}" height="${H-18}" fill="transparent" style="touch-action:pan-y"/>`;
   svg.innerHTML=g;
+  // same text-alternative rule as lineChart: plotted series, span, latest values
+  const fmtDay=t=>new Date(t*1000).toLocaleDateString(undefined,{month:"short",day:"numeric"});
+  const latest=panels.map(p=>{ const v=[...p.vals].reverse().find(x=>x!=null);
+    return v==null?null:`${p.name} ${v.toFixed(1)}`; }).filter(Boolean).join(", ");
+  svg.setAttribute("role","img");
+  svg.setAttribute("aria-label",`Small-multiples chart: ${panels.map(p=>p.name).join(", ")}, ${fmtDay(buckets[0])} to ${fmtDay(buckets[buckets.length-1])}, one panel per series with its own scale. Latest: ${latest}.`);
   const hit=svg.querySelector(".hit"), xh=svg.querySelector(".xh");
   hit.onpointermove=ev=>{ const rect=svg.getBoundingClientRect();
     let i=Math.round((((ev.clientX-rect.left)/rect.width)*W-mL)/iw*(buckets.length-1)); i=clamp(i,0,buckets.length-1);

@@ -4,7 +4,7 @@
   "private": true,
   "description": "Node side of the OMEN dashboard: the Play-charts fetcher (update-app-charts.mjs) and the browser-JS test suites.",
   "scripts": {
-    "test": "node test-regime-explainer.mjs && node test-pure-helpers.mjs && node test-verdict.mjs && node test-omen-common.mjs && node test-china-helpers.mjs && node test-ci-branch-guard.mjs && node test-gauge-parity.mjs && node test-worker.mjs"
+    "test": "node test-regime-explainer.mjs && node test-pure-helpers.mjs && node test-verdict.mjs && node test-omen-common.mjs && node test-china-helpers.mjs && node test-ci-branch-guard.mjs && node test-gauge-parity.mjs && node test-worker.mjs && node test-a11y.mjs"
   },
   "engines": {
     "node": ">=20"
