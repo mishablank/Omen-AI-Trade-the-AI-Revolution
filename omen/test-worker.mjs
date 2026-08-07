@@ -156,6 +156,52 @@ console.log("worker — routing, R2-first data, etag/304, fallbacks\n");
   console.log("  fallbacks (miss / error / unbound)");
 }
 
+/* ---------- security headers: on everything, CSP on documents only ---------- */
+{
+  // An HTML response gets the full set. The stub mimics the assets binding serving
+  // a page, content-type and all.
+  const env = {
+    ASSETS: {
+      fetch: () => new Response("<!doctype html>", {
+        headers: { "content-type": "text/html; charset=utf-8" },
+      }),
+    },
+  };
+  const page = await run("/polymarket-ai-index", env);
+  eq("sec/html nosniff", page.headers.get("x-content-type-options"), "nosniff");
+  eq("sec/html referrer-policy", page.headers.get("referrer-policy"), "strict-origin-when-cross-origin");
+  eq("sec/html hsts", page.headers.get("strict-transport-security"), "max-age=31536000");
+  eq("sec/html x-frame-options", page.headers.get("x-frame-options"), "DENY");
+  const csp = page.headers.get("content-security-policy") || "";
+  ok("sec/html has a CSP", csp.length > 0);
+  ok("sec/csp default-src self", csp.includes("default-src 'self'"));
+  ok("sec/csp inline scripts stay allowed (the pages are inline scripts)",
+    csp.includes("script-src 'self' 'unsafe-inline'"));
+  ok("sec/csp frame-ancestors none", csp.includes("frame-ancestors 'none'"));
+  // The audited fetch inventory: every host a page talks to, and nothing else.
+  for (const host of ["https://gamma-api.polymarket.com", "https://clob.polymarket.com",
+    "https://openrouter.ai", "https://huggingface.co", "https://api.github.com"]) {
+    ok(`sec/csp connect-src ${host}`, csp.includes(host));
+  }
+  eq("sec/csp allows exactly five external hosts",
+    (csp.match(/https:\/\//g) || []).length, 5);
+  ok("sec/html body intact after wrapping", (await page.text()).startsWith("<!doctype"));
+
+  // Data responses are not documents: no CSP, but nosniff/HSTS still apply —
+  // including on a 304, which carries headers even without a body.
+  const r2 = { "market-data.json": r2obj("{}", '"t"') };
+  const data = await run("/market-data.json", stubEnv({ r2 }).env);
+  eq("sec/data nosniff", data.headers.get("x-content-type-options"), "nosniff");
+  ok("sec/data has HSTS", data.headers.get("strict-transport-security") !== null);
+  eq("sec/data carries no CSP", data.headers.get("content-security-policy"), null);
+  eq("sec/data existing headers survive", data.headers.get("x-omen-source"), "r2");
+
+  const notMod = await run("/market-data.json", stubEnv({ r2 }).env, { "if-none-match": '"t"' });
+  eq("sec/304 still nosniffed", notMod.headers.get("x-content-type-options"), "nosniff");
+  eq("sec/304 status preserved through wrapping", notMod.status, 304);
+  console.log("  security headers (CSP on HTML, nosniff/HSTS everywhere)");
+}
+
 /* ---------- view routing: five views, one document ---------- */
 {
   for (const view of ["today", "markets", "gpu", "prediction-markets", "methodology"]) {
