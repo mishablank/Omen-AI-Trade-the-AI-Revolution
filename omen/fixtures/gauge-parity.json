@@ -1,0 +1,60 @@
+{
+  "_what": "Shared fixture for the gauge parity suites (test_gauge_parity.py + test-gauge-parity.mjs). One synthetic market-data snapshot, evaluated by BOTH gauge implementations - the server one in update-market-data.py and the monitor's computeGauge in polymarket-ai-index.html. The expected values pin today's behaviour, including the two families where the implementations deliberately differ; a change to either side fails its suite until this file is updated on purpose.",
+  "_how_expected_were_derived": "Inputs are chosen so every component lands on a hand-checkable number: e.g. VXN 29 -> (29-18)/(40-18)*100 = 50, HYG 80->78.4 = -2% drawdown -> 25 on the 0..8 scale. Values below carry full float precision from evaluating the arithmetic once; the suites compare with 1e-9 tolerance.",
+
+  "mkt": {
+    "skew": { "NVDA": { "rr": 0.055 }, "SOXX": { "rr": 0.095 } },
+    "vol": {
+      "VIX": { "last": 18.7 }, "VIX3M": { "last": 20.0 }, "VXN": { "last": 29.0 },
+      "SKEW": { "last": 137.5 }, "VVIX": { "last": 110.0 }
+    },
+    "credit": {
+      "HYG": [ { "d": "2026-08-01", "c": 80.0 }, { "d": "2026-08-04", "c": 78.4 } ],
+      "LQD": [ { "d": "2026-08-01", "c": 100.0 }, { "d": "2026-08-04", "c": 98.0 } ]
+    },
+    "fred": { "HY_OAS": { "last": 3.75 }, "CCC_OAS": { "last": 11.25 } },
+    "equity": {
+      "NVDA": [ { "d": "2026-08-01", "c": 100.0 }, { "d": "2026-08-04", "c": 90.0 } ],
+      "SOXX": [ { "d": "2026-08-01", "c": 100.0 }, { "d": "2026-08-04", "c": 92.0 } ]
+    }
+  },
+
+  "prices": { "691340": 0.12, "676827": 0.10, "676846": 0.14 },
+
+  "js_inputs": {
+    "_what": "Signals only the monitor's gauge reads - stubbed into its slice, absent from the server gauge by design.",
+    "nvda_tail_pct": 10.0,
+    "h100_sub2_pct": 15.0,
+    "recession_pct": 27.5,
+    "fed_cuts_pct": 30.0,
+    "china_top3_pct": 27.5
+  },
+
+  "expected": {
+    "shared_fam": {
+      "_what": "The four families whose math both implementations share. These MUST stay equal between the two suites - this is the parity contract.",
+      "opt": 50.0,
+      "vol": 49.99999999999999,
+      "credit": 31.24999999999997,
+      "equity": 19.999999999999993
+    },
+    "python": {
+      "_what": "Server gauge (update-market-data.py): 5 families, pred = bubble market only. Feeds alerts, snapshots.csv and the landing page's server_gauge.",
+      "pred": 30.0,
+      "score": 36.24999999999999,
+      "lead": 37.08333333333332,
+      "conf": 34.99999999999999,
+      "regime": "elevated",
+      "crash_level": 12.0
+    },
+    "js": {
+      "_what": "Monitor gauge (polymarket-ai-index.html computeGauge): 6 families. KNOWN, DOCUMENTED DIVERGENCES from the server gauge - pred averages three components (bubble + NVDA tail + H100<$2) and there is a macro family the server gauge does not have, so score/lead differ. If a converging change makes these equal the Python values, that is progress: update this block deliberately.",
+      "pred": 40.0,
+      "macro": 50.0,
+      "score_equal": 40.20833333333333,
+      "score_thesis": 42.625,
+      "lead": 42.81249999999999,
+      "conf": 34.99999999999999
+    }
+  }
+}
