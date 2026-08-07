@@ -1,5 +1,5 @@
 {
- "updated": "2026-08-07T20:45:35Z",
+ "updated": "2026-08-07T21:42:37Z",
  "snapshot_date": "2026-08-07",
  "artificial_analysis": {
   "cn_best": "GLM-5.2",
@@ -38,7 +38,7 @@
   "best": [
    {
     "label": "Qwen",
-    "rank": 179,
+    "rank": 178,
     "store": "android",
     "country": "br"
    }
@@ -55,7 +55,7 @@
    "au",
    "kr"
   ],
-  "detail": "no Chinese AI app in any iOS or Play top-100 (nearest: Qwen #179 (BR Play)); basket-mean Western top-100 presence 0/100 across 10 markets",
+  "detail": "no Chinese AI app in any iOS or Play top-100 (nearest: Qwen #178 (BR Play)); basket-mean Western top-100 presence 0/100 across 10 markets",
   "note": "iOS Apple RSS top-100 + Android Play top-200 across 10 markets; presence = basket-mean of best top-100 chart rank (DeepSeek/Qwen/Doubao/Kimi/MiniMax), #1=100 #100=1; ranks past top-100 score 0."
  },
  "lmarena": {
@@ -532,9 +532,9 @@
  "openrouter_week": {
   "week": "2026-08-03",
   "cn_share": 0.499,
-  "us_share": 0.3732,
-  "spi": 1.337,
-  "total_tokens": 50076591828414
+  "us_share": 0.3733,
+  "spi": 1.336,
+  "total_tokens": 50182843748495
  },
  "vercel_gateway": {
   "asof": "2026-08-07",
@@ -877,8 +877,8 @@
   "license": "AI Gateway Leaderboard Data (c) Vercel, CC BY 4.0"
  },
  "ollama": {
-  "cn": 279255400,
-  "us": 452470466,
+  "cn": 279256200,
+  "us": 452471268,
   "cn_top": [
    {
     "name": "deepseek-r1",
@@ -920,16 +920,14 @@
    }
   ],
   "n_models": 231,
-  "asof": "2026-08-07",
-  "cn_per_day": 981383,
-  "us_per_day": 744544
+  "asof": "2026-08-07"
  },
  "kalshi": {
   "asof": "2026-08-07",
   "markets": [
    {
     "label": "Will a Chinese AI model be #1 this year?",
-    "p": 0.12,
+    "p": 0.16,
     "ticker": "KXBESTLLMCHINA-27",
     "series": "kxbestllmchina"
    },
@@ -953,7 +951,7 @@
    },
    {
     "label": "Best AI at end of 2026: Claude",
-    "p": 0.651,
+    "p": 0.645,
     "ticker": "KXLLM1-26DEC31-A",
     "series": "kxllm1"
    }
@@ -1019,10 +1017,6 @@
    {
     "pkg": "openai",
     "wk": 111146151
-   },
-   {
-    "pkg": "anthropic",
-    "wk": 46249433
    },
    {
     "pkg": "google-genai",
