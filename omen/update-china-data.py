@@ -1086,23 +1086,32 @@ def compute_index(out):
 
 
 METRICS_COLS = ["date", "adoption_index", "spi", "router_cn_share", "vercel_cn_share",
-                "hf_cn_share", "ollama_cn_share", "gh_stars_per_day", "price_gap"]
+                "hf_cn_share", "ollama_cn_share", "gh_stars_per_day", "price_gap",
+                "search_share", "apps_score", "arena_elo_gap"]
 
 
 def append_metrics(path, row):
-    """Append one row per UTC day; a rerun on the same day replaces that day's row."""
-    lines = path.read_text().rstrip("\n").split("\n") if path.exists() else []
-    if not lines or lines[0] != ",".join(METRICS_COLS):
-        lines = [",".join(METRICS_COLS)]
-    body = [l for l in lines[1:] if l and not l.startswith(row["date"] + ",")]
-    body.append(",".join("" if row.get(c) is None else str(row[c]) for c in METRICS_COLS))
-    path.write_text("\n".join(lines[:1] + body) + "\n")
+    """Append one row per UTC day; a rerun on the same day replaces that day's row.
+
+    Rows are re-keyed by column name against the file's own header, so adding a
+    column to METRICS_COLS migrates the history in place (new cells blank) instead
+    of discarding it."""
+    rows = []
+    if path.exists():
+        lines = path.read_text().rstrip("\n").split("\n")
+        old_cols = lines[0].split(",")
+        rows = [dict(zip(old_cols, l.split(","))) for l in lines[1:] if l]
+    rows = [r for r in rows if r.get("date") and r["date"] != row["date"]]
+    rows.append({c: "" if row.get(c) is None else str(row[c]) for c in METRICS_COLS})
+    body = [",".join(r.get(c, "") for c in METRICS_COLS) for r in rows]
+    path.write_text("\n".join([",".join(METRICS_COLS)] + body) + "\n")
 
 
 def metrics_row(out, price_gap):
     idx, _fams = compute_index(out)
     wk, vg = out.get("openrouter_week") or {}, out.get("vercel_gateway") or {}
     hf, ol = out.get("hf") or {}, out.get("ollama") or {}
+    sc, ap, lb = out.get("search_consumer") or {}, out.get("apps") or {}, out.get("lmarena") or {}
     share = lambda d: (round(d["cn"] / (d["cn"] + d["us"]), 4)
                        if d.get("cn") and d.get("us") else None)
     return {"date": out["snapshot_date"], "adoption_index": idx, "spi": wk.get("spi"),
@@ -1110,7 +1119,13 @@ def metrics_row(out, price_gap):
             "vercel_cn_share": round(vg["cn_share"] / 100, 4) if vg.get("cn_share") is not None else None,
             "hf_cn_share": share(hf), "ollama_cn_share": share(ol),
             "gh_stars_per_day": out.get("github_stars_per_day"),
-            "price_gap": price_gap["gap"] if price_gap else None}
+            "price_gap": price_gap["gap"] if price_gap else None,
+            # fractions like the other share columns; the raw 0-100 apps score as-is
+            "search_share": (round(sc["western_share_pct"] / 100, 4)
+                             if sc.get("western_share_pct") is not None else None),
+            "apps_score": ap.get("score"),
+            "arena_elo_gap": (lb["us_leader_score"] - lb["best_score"]
+                              if lb.get("us_leader_score") and lb.get("best_score") else None)}
 
 
 # ---- Epoch AI supply-side datasets (CC BY 4.0) ------------------------------------

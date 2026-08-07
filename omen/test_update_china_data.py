@@ -751,3 +751,28 @@ def test_epoch_fresh_requires_a_value_and_a_recent_stamp():
     assert not ucd.epoch_fresh(fam, {"t": now - 10 * 86400})   # stale stamp
     assert not ucd.epoch_fresh(fam, None)                      # never stamped
     assert not ucd.epoch_fresh(None, {"t": now - 3600})        # stamp but no value
+
+
+def test_metrics_row_carries_search_apps_and_arena_gap():
+    row = ucd.metrics_row(full_out(), None)
+    assert row["search_share"] == 0.25       # 25% -> fraction, like the other shares
+    assert row["apps_score"] == 40
+    assert row["arena_elo_gap"] == 50
+
+
+def test_append_metrics_migrates_old_schema_rows_instead_of_discarding(tmp_path):
+    """Adding a column to METRICS_COLS must widen the history in place - the first
+    version of this writer reset the whole file whenever the header changed."""
+    p = tmp_path / "china-metrics.csv"
+    old_cols = ucd.METRICS_COLS[:9]          # the schema before search/apps/arena
+    p.write_text(",".join(old_cols) + "\n" +
+                 "2026-08-04,59.8,1.488,0.5162,0.4724,0.6949,0.381,253.7,\n")
+    row = {c: None for c in ucd.METRICS_COLS} | {"date": "2026-08-05",
+                                                 "adoption_index": 57.7, "apps_score": 0}
+    ucd.append_metrics(p, row)
+    lines = p.read_text().strip().split("\n")
+    assert lines[0].split(",") == ucd.METRICS_COLS
+    assert len(lines) == 3                   # header + migrated old row + new row
+    assert lines[1].startswith("2026-08-04,59.8,")
+    assert lines[1].count(",") == len(ucd.METRICS_COLS) - 1   # padded to new width
+    assert lines[2].split(",")[ucd.METRICS_COLS.index("apps_score")] == "0"

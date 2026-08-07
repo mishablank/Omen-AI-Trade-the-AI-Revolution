@@ -290,6 +290,8 @@
   <div class="card">
     <h2>GitHub developer engagement <span class="sub" id="ghAsof">&ndash; active flagship repos, live</span></h2>
     <table id="ghTable"><thead><tr><th>Repo</th><th class="num">Stars</th><th class="num">Forks</th><th class="num">&Delta;/day</th></tr></thead><tbody></tbody></table>
+    <div class="idxsparkwrap"><svg id="ghSpark" style="display:none"></svg></div>
+    <div class="note" id="ghSparkNote"></div>
     <div class="note" id="ghNote">&Delta;/day is measured server-side between the updater's daily runs (a browser-local baseline fills in for dev use). Fork counts are the stronger adoption signal.</div>
   </div>
 
@@ -892,6 +894,9 @@ function renderShareSparks(){
   one("gapSpark", "gapSparkNote", "price_gap",
       {color:"var(--violet)", fmt:v=>v.toFixed(1)+"x", label:"US ÷ CN flagship output price"},
       "Frontier price gap, daily server log - falling means US pricing power holding, rising means compression biting.");
+  one("ghSpark", "ghSparkNote", "gh_stars_per_day",
+      {color:"var(--cn)", fmt:v=>"+"+v.toFixed(0)+"/day", label:"basket stars/day"},
+      "Basket star velocity, daily server log - spikes mark releases landing.");
   if(!REDRAW.includes(renderShareSparks)) REDRAW.push(renderShareSparks);
 }
 /* ---------------- china-data.json override ---------------- */
