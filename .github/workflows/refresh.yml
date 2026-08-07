@@ -206,5 +206,26 @@ jobs:
             echo "No data changes to commit."
           else
             git commit -m "data: refresh $(date -u +%Y-%m-%dT%H:%MZ)"
-            git push
+            # A human push landing inside this ~4-minute run used to make the push fail
+            # outright. That reds the run, and — the part that actually matters — the
+            # alert-state.json this run just wrote never lands, so the next escalation is
+            # undeduped and can alert a second time. Only the losing side should pay for
+            # the race: try the push, and if it is rejected, rebase the data commit onto
+            # whatever arrived and try once more. Nothing is ever force-pushed; a genuine
+            # conflict still fails the run loudly.
+            #
+            # --autostash because market-data.json is usually left modified-but-unstaged
+            # (it is only re-committed weekly, above), and rebase refuses a dirty tree.
+            # --deepen because actions/checkout leaves a depth-1 clone with no merge base.
+            if ! git push; then
+              branch="${GITHUB_REF_NAME:-main}"
+              echo "push rejected — rebasing onto origin/$branch and retrying once"
+              git fetch --deepen=50 origin "$branch"
+              if ! git rebase --autostash "origin/$branch"; then
+                git rebase --abort || true
+                echo "::error::data commit conflicts with a concurrent push to $branch"
+                exit 1
+              fi
+              git push
+            fi
           fi
