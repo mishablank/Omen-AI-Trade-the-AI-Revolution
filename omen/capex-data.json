@@ -1,5 +1,5 @@
 {
- "updated": "2026-08-08T15:23:04Z",
+ "updated": "2026-08-08T16:22:47Z",
  "tsmc": {
   "asof": "2026-06",
   "rev_ntd_b": 442.7,
@@ -160,7 +160,7 @@
    "@google/gemini-cli": 389849
   },
   "pypi": {
-   "claude-agent-sdk": null,
+   "claude-agent-sdk": 7220506,
    "openai-agents": 9074647
   },
   "npm_total_wk": 28201450,
