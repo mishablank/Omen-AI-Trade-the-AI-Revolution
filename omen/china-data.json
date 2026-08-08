@@ -1,5 +1,5 @@
 {
- "updated": "2026-08-08T07:05:10Z",
+ "updated": "2026-08-08T08:51:53Z",
  "snapshot_date": "2026-08-08",
  "artificial_analysis": {
   "cn_best": "GLM-5.2",
@@ -462,72 +462,72 @@
   "cnOrgs": [
    {
     "org": "Qwen",
-    "dl": 263841695
+    "dl": 261087927
    },
    {
     "org": "deepseek-ai",
-    "dl": 33067107
+    "dl": 32421619
    },
    {
     "org": "zai-org",
-    "dl": 14755183
+    "dl": 14565124
    },
    {
     "org": "moonshotai",
-    "dl": 4870961
+    "dl": 4904915
    },
    {
     "org": "MiniMaxAI",
-    "dl": 2434699
-   },
-   {
-    "org": "XiaomiMiMo",
-    "dl": 1341065
+    "dl": 2435112
    },
    {
     "org": "stepfun-ai",
-    "dl": 1335772
+    "dl": 1328054
+   },
+   {
+    "org": "XiaomiMiMo",
+    "dl": 1309499
    },
    {
     "org": "tencent",
-    "dl": 995215
+    "dl": 985681
    }
   ],
   "usOrgs": [
    {
     "org": "google",
-    "dl": 60821385
+    "dl": 59839656
    },
    {
     "org": "meta-llama",
-    "dl": 35724223
+    "dl": 35009577
    },
    {
     "org": "nvidia",
-    "dl": 22302595
+    "dl": 22191493
    },
    {
     "org": "openai",
-    "dl": 12470396
+    "dl": 12309265
    },
    {
     "org": "microsoft",
-    "dl": 6921793
+    "dl": 6821818
    },
    {
     "org": "allenai",
-    "dl": 3928846
+    "dl": 3913723
    }
   ],
-  "cn": 322641697,
-  "us": 142169238
+  "cn": 319037931,
+  "us": 140085532
  },
  "openrouter_week": {
   "week": "2026-08-03",
-  "cn_share": 0.5026,
-  "us_share": 0.3708,
-  "spi": 1.356,
-  "total_tokens": 53704621798692
+  "cn_share": 0.5038,
+  "us_share": 0.3698,
+  "spi": 1.362,
+  "total_tokens": 54534451492918
  },
  "vercel_gateway": {
   "asof": "2026-08-08",
@@ -870,8 +870,8 @@
   "license": "AI Gateway Leaderboard Data (c) Vercel, CC BY 4.0"
  },
  "ollama": {
-  "cn": 279463700,
-  "us": 452683348,
+  "cn": 279465200,
+  "us": 452684851,
   "cn_top": [
    {
     "name": "deepseek-r1",
@@ -944,7 +944,7 @@
    },
    {
     "label": "Best AI at end of 2026: Claude",
-    "p": 0.65,
+    "p": 0.662,
     "ticker": "KXLLM1-26DEC31-A",
     "series": "kxllm1"
    }
@@ -1007,6 +1007,10 @@
    }
   ],
   "us": [
+   {
+    "pkg": "openai",
+    "wk": 113678723
+   },
    {
     "pkg": "anthropic",
     "wk": 47399408
