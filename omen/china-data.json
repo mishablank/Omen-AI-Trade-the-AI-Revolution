@@ -1,5 +1,5 @@
 {
- "updated": "2026-08-08T17:22:07Z",
+ "updated": "2026-08-08T18:24:13Z",
  "snapshot_date": "2026-08-08",
  "artificial_analysis": {
   "cn_best": "GLM-5.2",
@@ -524,10 +524,10 @@
  },
  "openrouter_week": {
   "week": "2026-08-03",
-  "cn_share": 0.5074,
-  "us_share": 0.367,
-  "spi": 1.383,
-  "total_tokens": 57812489414526
+  "cn_share": 0.5077,
+  "us_share": 0.3668,
+  "spi": 1.384,
+  "total_tokens": 58242813072028
  },
  "vercel_gateway": {
   "asof": "2026-08-08",
@@ -870,8 +870,8 @@
   "license": "AI Gateway Leaderboard Data (c) Vercel, CC BY 4.0"
  },
  "ollama": {
-  "cn": 279573000,
-  "us": 452695220,
+  "cn": 279574200,
+  "us": 452796723,
   "cn_top": [
    {
     "name": "deepseek-r1",
@@ -913,9 +913,7 @@
    }
   ],
   "n_models": 231,
-  "asof": "2026-08-08",
-  "cn_per_day": 369867,
-  "us_per_day": 261741
+  "asof": "2026-08-08"
  },
  "kalshi": {
   "asof": "2026-08-08",
@@ -928,7 +926,7 @@
    },
    {
     "label": "Best AI at end of 2026: Kimi",
-    "p": 0.02,
+    "p": 0.03,
     "ticker": "KXLLM1-26DEC31-MOON",
     "series": "kxllm1"
    },
