@@ -1,5 +1,5 @@
 {
- "updated": "2026-08-08T05:48:38Z",
+ "updated": "2026-08-08T07:05:10Z",
  "snapshot_date": "2026-08-08",
  "artificial_analysis": {
   "cn_best": "GLM-5.2",
@@ -470,7 +470,7 @@
    },
    {
     "org": "zai-org",
-    "dl": 14757801
+    "dl": 14755183
    },
    {
     "org": "moonshotai",
@@ -519,45 +519,45 @@
     "dl": 3928846
    }
   ],
-  "cn": 322644315,
+  "cn": 322641697,
   "us": 142169238
  },
  "openrouter_week": {
   "week": "2026-08-03",
-  "cn_share": 0.502,
-  "us_share": 0.3712,
-  "spi": 1.352,
-  "total_tokens": 53264868776421
+  "cn_share": 0.5026,
+  "us_share": 0.3708,
+  "spi": 1.356,
+  "total_tokens": 53704621798692
  },
  "vercel_gateway": {
   "asof": "2026-08-08",
-  "cn_share": 57.47,
-  "us_share": 42.44,
-  "spi": 1.354,
+  "cn_share": 58.27,
+  "us_share": 41.59,
+  "spi": 1.401,
   "top_cn": [
    {
     "lab": "deepseek",
-    "share": 32.27
+    "share": 32.22
    },
    {
     "lab": "stepfun",
-    "share": 10.0
+    "share": 11.04
    },
    {
     "lab": "zai",
-    "share": 7.06
+    "share": 6.9
    },
    {
     "lab": "moonshotai",
-    "share": 5.98
+    "share": 6.15
    },
    {
     "lab": "minimax",
-    "share": 0.84
+    "share": 0.76
    },
    {
     "lab": "alibaba",
-    "share": 0.67
+    "share": 0.62
    }
   ],
   "series": [
@@ -863,15 +863,15 @@
    },
    {
     "d": "2026-08-08",
-    "cn": 57.47,
-    "us": 42.44
+    "cn": 58.27,
+    "us": 41.59
    }
   ],
   "license": "AI Gateway Leaderboard Data (c) Vercel, CC BY 4.0"
  },
  "ollama": {
-  "cn": 279361900,
-  "us": 452680911,
+  "cn": 279463700,
+  "us": 452683348,
   "cn_top": [
    {
     "name": "deepseek-r1",
@@ -879,7 +879,7 @@
    },
    {
     "name": "qwen2.5",
-    "pulls": 36300000
+    "pulls": 36400000
    },
    {
     "name": "qwen3",
@@ -944,7 +944,7 @@
    },
    {
     "label": "Best AI at end of 2026: Claude",
-    "p": 0.656,
+    "p": 0.65,
     "ticker": "KXLLM1-26DEC31-A",
     "series": "kxllm1"
    }
@@ -994,6 +994,10 @@
  "sdk": {
   "cn": [
    {
+    "pkg": "dashscope",
+    "wk": 764984
+   },
+   {
     "pkg": "zhipuai",
     "wk": 94891
    },
@@ -1003,10 +1007,6 @@
    }
   ],
   "us": [
-   {
-    "pkg": "openai",
-    "wk": 113678723
-   },
    {
     "pkg": "anthropic",
     "wk": 47399408
