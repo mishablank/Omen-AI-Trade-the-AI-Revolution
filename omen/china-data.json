@@ -1,5 +1,5 @@
 {
- "updated": "2026-08-08T11:35:59Z",
+ "updated": "2026-08-08T13:03:57Z",
  "snapshot_date": "2026-08-08",
  "artificial_analysis": {
   "cn_best": "GLM-5.2",
@@ -524,10 +524,10 @@
  },
  "openrouter_week": {
   "week": "2026-08-03",
-  "cn_share": 0.505,
-  "us_share": 0.3688,
-  "spi": 1.369,
-  "total_tokens": 55464450153429
+  "cn_share": 0.5058,
+  "us_share": 0.3683,
+  "spi": 1.373,
+  "total_tokens": 56100489795419
  },
  "vercel_gateway": {
   "asof": "2026-08-08",
@@ -870,8 +870,8 @@
   "license": "AI Gateway Leaderboard Data (c) Vercel, CC BY 4.0"
  },
  "ollama": {
-  "cn": 279467900,
-  "us": 452689372,
+  "cn": 279469200,
+  "us": 452690478,
   "cn_top": [
    {
     "name": "deepseek-r1",
@@ -920,7 +920,7 @@
   "markets": [
    {
     "label": "Will a Chinese AI model be #1 this year?",
-    "p": 0.15,
+    "p": 0.09,
     "ticker": "KXBESTLLMCHINA-27",
     "series": "kxbestllmchina"
    },
@@ -1000,6 +1000,10 @@
    {
     "pkg": "zhipuai",
     "wk": 94891
+   },
+   {
+    "pkg": "zai-sdk",
+    "wk": 29563
    }
   ],
   "us": [
