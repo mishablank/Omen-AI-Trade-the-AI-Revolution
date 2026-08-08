@@ -1,5 +1,5 @@
 {
- "updated": "2026-08-08T21:21:43Z",
+ "updated": "2026-08-08T22:37:29Z",
  "snapshot_date": "2026-08-08",
  "artificial_analysis": {
   "cn_best": "GLM-5.2",
@@ -526,8 +526,8 @@
   "week": "2026-08-03",
   "cn_share": 0.5078,
   "us_share": 0.3665,
-  "spi": 1.385,
-  "total_tokens": 59187448457088
+  "spi": 1.386,
+  "total_tokens": 59643976577816
  },
  "vercel_gateway": {
   "asof": "2026-08-08",
@@ -870,8 +870,8 @@
   "license": "AI Gateway Leaderboard Data (c) Vercel, CC BY 4.0"
  },
  "ollama": {
-  "cn": 279576600,
-  "us": 452899851,
+  "cn": 279577400,
+  "us": 452900553,
   "cn_top": [
    {
     "name": "deepseek-r1",
@@ -920,7 +920,7 @@
   "markets": [
    {
     "label": "Will a Chinese AI model be #1 this year?",
-    "p": 0.13,
+    "p": 0.14,
     "ticker": "KXBESTLLMCHINA-27",
     "series": "kxbestllmchina"
    },
