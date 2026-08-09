@@ -1,5 +1,5 @@
 {
- "updated": "2026-08-09T11:37:08Z",
+ "updated": "2026-08-09T13:06:25Z",
  "snapshot_date": "2026-08-09",
  "artificial_analysis": {
   "cn_best": "GLM-5.2",
@@ -531,10 +531,10 @@
  },
  "openrouter_week": {
   "week": "2026-08-03",
-  "cn_share": 0.5132,
-  "us_share": 0.3621,
-  "spi": 1.417,
-  "total_tokens": 64009747414021
+  "cn_share": 0.5139,
+  "us_share": 0.3616,
+  "spi": 1.421,
+  "total_tokens": 64716531389279
  },
  "vercel_gateway": {
   "asof": "2026-08-09",
@@ -877,8 +877,8 @@
   "license": "AI Gateway Leaderboard Data (c) Vercel, CC BY 4.0"
  },
  "ollama": {
-  "cn": 280087900,
-  "us": 453215677,
+  "cn": 280089000,
+  "us": 453216781,
   "cn_top": [
    {
     "name": "deepseek-r1",
@@ -927,7 +927,7 @@
   "markets": [
    {
     "label": "Will a Chinese AI model be #1 this year?",
-    "p": 0.15,
+    "p": 0.1,
     "ticker": "KXBESTLLMCHINA-27",
     "series": "kxbestllmchina"
    },
@@ -951,7 +951,7 @@
    },
    {
     "label": "Best AI at end of 2026: Claude",
-    "p": 0.644,
+    "p": 0.655,
     "ticker": "KXLLM1-26DEC31-A",
     "series": "kxllm1"
    }
