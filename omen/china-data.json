@@ -1,5 +1,5 @@
 {
- "updated": "2026-08-09T02:17:16Z",
+ "updated": "2026-08-09T04:24:08Z",
  "snapshot_date": "2026-08-09",
  "artificial_analysis": {
   "cn_best": "GLM-5.2",
@@ -524,10 +524,10 @@
  },
  "openrouter_week": {
   "week": "2026-08-03",
-  "cn_share": 0.5088,
-  "us_share": 0.3657,
-  "spi": 1.391,
-  "total_tokens": 60827996683885
+  "cn_share": 0.5098,
+  "us_share": 0.3649,
+  "spi": 1.397,
+  "total_tokens": 61434269657294
  },
  "vercel_gateway": {
   "asof": "2026-08-09",
@@ -870,8 +870,8 @@
   "license": "AI Gateway Leaderboard Data (c) Vercel, CC BY 4.0"
  },
  "ollama": {
-  "cn": 279880000,
-  "us": 452904392,
+  "cn": 279881100,
+  "us": 453106410,
   "cn_top": [
    {
     "name": "deepseek-r1",
@@ -901,11 +901,11 @@
   "us_top": [
    {
     "name": "llama3.1",
-    "pulls": 118200000
+    "pulls": 118300000
    },
    {
     "name": "llama3.2",
-    "pulls": 79400000
+    "pulls": 79500000
    },
    {
     "name": "gemma3",
@@ -920,7 +920,7 @@
   "markets": [
    {
     "label": "Will a Chinese AI model be #1 this year?",
-    "p": 0.13,
+    "p": 0.15,
     "ticker": "KXBESTLLMCHINA-27",
     "series": "kxbestllmchina"
    },
@@ -938,7 +938,7 @@
    },
    {
     "label": "Best AI at end of 2026: Qwen",
-    "p": 0.017,
+    "p": 0.011,
     "ticker": "KXLLM1-26DEC31-ALI",
     "series": "kxllm1"
    },
@@ -1010,6 +1010,10 @@
    {
     "pkg": "openai",
     "wk": 113772448
+   },
+   {
+    "pkg": "anthropic",
+    "wk": 48790825
    },
    {
     "pkg": "google-genai",
