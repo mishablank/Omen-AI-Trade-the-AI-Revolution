@@ -1,5 +1,5 @@
 {
- "updated": "2026-08-10T06:16:47Z",
+ "updated": "2026-08-10T08:45:45Z",
  "snapshot_date": "2026-08-10",
  "artificial_analysis": {
   "cn_best": "GLM-5.2",
@@ -60,7 +60,7 @@
  },
  "lmarena": {
   "best_model": "qwen3.8-max",
-  "best_org": "alibaba",
+  "best_org": "Alibaba",
   "best_rank": 6,
   "best_score": 1497,
   "us_leader": "claude-fable-5",
@@ -70,367 +70,367 @@
   "models": [
    {
     "model": "claude-fable-5",
-    "org": "anthropic",
+    "org": "Anthropic",
     "elo": 1507,
     "cn": false
    },
    {
     "model": "claude-opus-4-6-thinking",
-    "org": "anthropic",
+    "org": "Anthropic",
     "elo": 1505,
     "cn": false
    },
    {
     "model": "claude-opus-4-7-thinking",
-    "org": "anthropic",
+    "org": "Anthropic",
     "elo": 1502,
     "cn": false
    },
    {
     "model": "muse-spark-1.2 (xHigh)",
-    "org": "meta",
+    "org": "Meta",
     "elo": 1498,
     "cn": false
    },
    {
     "model": "claude-opus-4-6",
-    "org": "anthropic",
+    "org": "Anthropic",
     "elo": 1497,
     "cn": false
    },
    {
     "model": "qwen3.8-max",
-    "org": "alibaba",
+    "org": "Alibaba",
     "elo": 1497,
     "cn": true
    },
    {
     "model": "claude-opus-4-7",
-    "org": "anthropic",
+    "org": "Anthropic",
     "elo": 1493,
     "cn": false
    },
    {
     "model": "claude-opus-5-high",
-    "org": "anthropic",
+    "org": "Anthropic",
     "elo": 1493,
     "cn": false
    },
    {
     "model": "claude-opus-5-max",
-    "org": "anthropic",
+    "org": "Anthropic",
     "elo": 1488,
     "cn": false
    },
    {
     "model": "muse-spark",
-    "org": "meta",
+    "org": "Meta",
     "elo": 1488,
     "cn": false
    },
    {
     "model": "muse-spark-1.1",
-    "org": "meta",
+    "org": "Meta",
     "elo": 1487,
     "cn": false
    },
    {
     "model": "gemini-3.1-pro-preview",
-    "org": "google",
+    "org": "Google",
     "elo": 1487,
     "cn": false
    },
    {
     "model": "gemini-3-pro",
-    "org": "google",
+    "org": "Google",
     "elo": 1486,
     "cn": false
    },
    {
     "model": "kimi-k3-max",
-    "org": "moonshot",
+    "org": "Moonshot",
     "elo": 1485,
     "cn": true
    },
    {
     "model": "gemini-3.6-flash",
-    "org": "google",
+    "org": "Google",
     "elo": 1485,
     "cn": false
    },
    {
     "model": "claude-opus-4-8-thinking",
-    "org": "anthropic",
+    "org": "Anthropic",
     "elo": 1483,
     "cn": false
    },
    {
     "model": "gpt-5.5-high",
-    "org": "openai",
+    "org": "OpenAI",
     "elo": 1482,
     "cn": false
    },
    {
     "model": "gpt-5.6-sol-xhigh",
-    "org": "openai",
+    "org": "OpenAI",
     "elo": 1482,
     "cn": false
    },
    {
     "model": "gpt-5.4-high",
-    "org": "openai",
+    "org": "OpenAI",
     "elo": 1477,
     "cn": false
    },
    {
     "model": "gpt-5.5",
-    "org": "openai",
+    "org": "OpenAI",
     "elo": 1477,
     "cn": false
    },
    {
     "model": "gemini-3.5-flash-high",
-    "org": "google",
+    "org": "Google",
     "elo": 1476,
     "cn": false
    },
    {
     "model": "gpt-5.2-chat-latest-20260210",
-    "org": "openai",
+    "org": "OpenAI",
     "elo": 1476,
     "cn": false
    },
    {
     "model": "qwen3.7-max-preview",
-    "org": "alibaba",
+    "org": "Alibaba",
     "elo": 1475,
     "cn": true
    },
    {
     "model": "grok-4.20-beta1",
-    "org": "xai",
+    "org": "SpaceXAI",
     "elo": 1474,
     "cn": false
    },
    {
     "model": "gemini-3.5-flash-medium",
-    "org": "google",
+    "org": "Google",
     "elo": 1474,
     "cn": false
    },
    {
     "model": "gpt-5.5-instant",
-    "org": "openai",
+    "org": "OpenAI",
     "elo": 1474,
     "cn": false
    },
    {
     "model": "gemini-3-flash",
-    "org": "google",
+    "org": "Google",
     "elo": 1473,
     "cn": false
    },
    {
     "model": "claude-opus-4-8",
-    "org": "anthropic",
+    "org": "Anthropic",
     "elo": 1473,
     "cn": false
    },
    {
     "model": "claude-opus-4-5-20251101-thinking-32k",
-    "org": "anthropic",
+    "org": "Anthropic",
     "elo": 1473,
     "cn": false
    },
    {
     "model": "claude-sonnet-4-6",
-    "org": "anthropic",
+    "org": "Anthropic",
     "elo": 1472,
     "cn": false
    },
    {
     "model": "grok-4.20-beta-0309-reasoning",
-    "org": "xai",
+    "org": "SpaceXAI",
     "elo": 1472,
     "cn": false
    },
    {
     "model": "grok-4.20-multi-agent-beta-0309",
-    "org": "xai",
+    "org": "SpaceXAI",
     "elo": 1471,
     "cn": false
    },
    {
     "model": "glm-5.2-max",
-    "org": "zai",
+    "org": "Z.ai",
     "elo": 1471,
-    "cn": false
+    "cn": true
    },
    {
     "model": "claude-opus-4-5-20251101",
-    "org": "anthropic",
+    "org": "Anthropic",
     "elo": 1469,
     "cn": false
    },
    {
     "model": "grok-4.5",
-    "org": "xai",
+    "org": "SpaceXAI",
     "elo": 1468,
     "cn": false
    },
    {
     "model": "glm-5.1",
-    "org": "zai",
+    "org": "Z.ai",
     "elo": 1468,
-    "cn": false
+    "cn": true
    },
    {
     "model": "ernie-5.1",
-    "org": "baidu",
+    "org": "Baidu",
     "elo": 1467,
     "cn": true
    },
    {
     "model": "gpt-5.6-terra-xhigh",
-    "org": "openai",
+    "org": "OpenAI",
     "elo": 1467,
     "cn": false
    },
    {
     "model": "mimo-v2.5-pro",
-    "org": "xiaomi",
+    "org": "Xiaomi",
     "elo": 1467,
     "cn": true
    },
    {
     "model": "grok-4.1-thinking",
-    "org": "xai",
+    "org": "SpaceXAI",
     "elo": 1466,
     "cn": false
    },
    {
     "model": "qwen3.5-max-preview",
-    "org": "alibaba",
+    "org": "Alibaba",
     "elo": 1465,
     "cn": true
    },
    {
     "model": "gpt-5.4",
-    "org": "openai",
+    "org": "OpenAI",
     "elo": 1465,
     "cn": false
    },
    {
     "model": "claude-sonnet-5-high",
-    "org": "anthropic",
+    "org": "Anthropic",
     "elo": 1463,
     "cn": false
    },
    {
     "model": "kimi-k2.6",
-    "org": "moonshot",
+    "org": "Moonshot",
     "elo": 1461,
     "cn": true
    },
    {
     "model": "qwen3.6-max-preview",
-    "org": "alibaba",
+    "org": "Alibaba",
     "elo": 1460,
     "cn": true
    },
    {
     "model": "grok-4.1",
-    "org": "xai",
+    "org": "SpaceXAI",
     "elo": 1460,
     "cn": false
    },
    {
     "model": "gemini-3.5-flash-lite",
-    "org": "google",
+    "org": "Google",
     "elo": 1459,
     "cn": false
    },
    {
     "model": "gemini-3-flash (thinking-minimal)",
-    "org": "google",
+    "org": "Google",
     "elo": 1459,
     "cn": false
    },
    {
     "model": "qwen3.7-plus",
-    "org": "alibaba",
+    "org": "Alibaba",
     "elo": 1458,
     "cn": true
    },
    {
     "model": "deepseek-v4-pro",
-    "org": "deepseek",
+    "org": "DeepSeek",
     "elo": 1457,
     "cn": true
    },
    {
     "model": "glm-5",
-    "org": "zai",
+    "org": "Z.ai",
     "elo": 1457,
-    "cn": false
+    "cn": true
    },
    {
     "model": "dola-seed-2.0-pro",
-    "org": "bytedance",
+    "org": "Bytedance",
     "elo": 1456,
     "cn": true
    },
    {
     "model": "claude-sonnet-4-5-20250929-thinking-32k",
-    "org": "anthropic",
+    "org": "Anthropic",
     "elo": 1456,
     "cn": false
    },
    {
     "model": "deepseek-v4-pro-high-preview",
-    "org": "deepseek",
+    "org": "DeepSeek",
     "elo": 1456,
     "cn": true
    },
    {
     "model": "claude-sonnet-4-5-20250929",
-    "org": "anthropic",
+    "org": "Anthropic",
     "elo": 1455,
     "cn": false
    },
    {
     "model": "gpt-5.1-high",
-    "org": "openai",
+    "org": "OpenAI",
     "elo": 1454,
     "cn": false
    },
    {
     "model": "hy3",
-    "org": "tencent",
+    "org": "Tencent",
     "elo": 1453,
     "cn": true
    },
    {
     "model": "gemma-4-31b",
-    "org": "google",
+    "org": "Google",
     "elo": 1451,
     "cn": false
    },
    {
     "model": "kimi-k2.5-thinking",
-    "org": "moonshot",
+    "org": "Moonshot",
     "elo": 1451,
     "cn": true
    },
    {
     "model": "gpt-5.6-luna-xhigh",
-    "org": "openai",
+    "org": "OpenAI",
     "elo": 1450,
     "cn": false
    }
   ],
-  "asof": "2026-08-06",
-  "source": "lmarena-dataset"
+  "asof": "2026-08-10",
+  "source": "arena-scrape"
  },
  "github": {
   "repos": [
@@ -469,119 +469,119 @@
   "cnOrgs": [
    {
     "org": "Qwen",
-    "dl": 258140262
+    "dl": 257278258
    },
    {
     "org": "deepseek-ai",
-    "dl": 31655471
+    "dl": 31202155
    },
    {
     "org": "zai-org",
-    "dl": 14291975
+    "dl": 14118081
    },
    {
     "org": "moonshotai",
-    "dl": 4911077
+    "dl": 4927993
    },
    {
     "org": "MiniMaxAI",
-    "dl": 2431504
+    "dl": 2430155
    },
    {
     "org": "stepfun-ai",
-    "dl": 1321642
+    "dl": 1308358
    },
    {
     "org": "XiaomiMiMo",
-    "dl": 1275538
+    "dl": 1256114
    },
    {
     "org": "tencent",
-    "dl": 990317
+    "dl": 1012709
    }
   ],
   "usOrgs": [
    {
     "org": "google",
-    "dl": 59020164
+    "dl": 57986326
    },
    {
     "org": "meta-llama",
-    "dl": 34392633
+    "dl": 34082206
    },
    {
     "org": "nvidia",
-    "dl": 21863530
+    "dl": 21668511
    },
    {
     "org": "openai",
-    "dl": 12142739
+    "dl": 12030862
    },
    {
     "org": "microsoft",
-    "dl": 6704273
+    "dl": 6458565
    },
    {
     "org": "allenai",
-    "dl": 3931169
+    "dl": 3909971
    }
   ],
-  "cn": 315017786,
-  "us": 138054508
+  "cn": 313533823,
+  "us": 136136441
  },
  "openrouter_week": {
   "week": "2026-08-10",
-  "cn_share": 0.6203,
-  "us_share": 0.2774,
-  "spi": 2.236,
-  "total_tokens": 2364111238708
+  "cn_share": 0.62,
+  "us_share": 0.278,
+  "spi": 2.231,
+  "total_tokens": 3515908794385
  },
  "vercel_gateway": {
   "asof": "2026-08-10",
-  "cn_share": 53.97,
-  "us_share": 45.94,
-  "spi": 1.175,
+  "cn_share": 54.25,
+  "us_share": 45.65,
+  "spi": 1.188,
   "top_cn": [
    {
     "lab": "deepseek",
-    "share": 32.33
+    "share": 31.37
    },
    {
     "lab": "stepfun",
-    "share": 11.06
-   },
-   {
-    "lab": "zai",
-    "share": 4.06
+    "share": 12.09
    },
    {
     "lab": "moonshotai",
-    "share": 4.03
+    "share": 4.31
+   },
+   {
+    "lab": "zai",
+    "share": 4.12
    },
    {
     "lab": "minimax",
-    "share": 0.92
+    "share": 0.94
    },
    {
     "lab": "alibaba",
-    "share": 0.6
+    "share": 0.59
    }
   ],
   "series": [
    {
     "d": "2026-06-11",
-    "cn": 33.65,
+    "cn": 33.66,
     "us": 66.03
    },
    {
     "d": "2026-06-12",
     "cn": 35.9,
-    "us": 63.83
+    "us": 63.82
    },
    {
     "d": "2026-06-13",
     "cn": 44.37,
-    "us": 55.39
+    "us": 55.38
    },
    {
     "d": "2026-06-14",
@@ -596,22 +596,22 @@
    {
     "d": "2026-06-16",
     "cn": 37.67,
-    "us": 62.16
+    "us": 62.15
    },
    {
     "d": "2026-06-17",
-    "cn": 38.44,
-    "us": 61.37
+    "cn": 38.45,
+    "us": 61.36
    },
    {
     "d": "2026-06-18",
-    "cn": 29.99,
-    "us": 69.81
+    "cn": 30.0,
+    "us": 69.8
    },
    {
     "d": "2026-06-19",
     "cn": 26.72,
-    "us": 73.13
+    "us": 73.12
    },
    {
     "d": "2026-06-20",
@@ -620,33 +620,33 @@
    },
    {
     "d": "2026-06-21",
-    "cn": 29.44,
-    "us": 70.38
+    "cn": 29.45,
+    "us": 70.37
    },
    {
     "d": "2026-06-22",
-    "cn": 30.16,
+    "cn": 30.17,
     "us": 69.64
    },
    {
     "d": "2026-06-23",
     "cn": 30.12,
-    "us": 69.71
+    "us": 69.7
    },
    {
     "d": "2026-06-24",
-    "cn": 27.46,
-    "us": 72.39
+    "cn": 27.47,
+    "us": 72.38
    },
    {
     "d": "2026-06-25",
-    "cn": 29.8,
+    "cn": 29.81,
     "us": 70.01
    },
    {
     "d": "2026-06-26",
     "cn": 32.59,
-    "us": 67.24
+    "us": 67.23
    },
    {
     "d": "2026-06-27",
@@ -655,7 +655,7 @@
    },
    {
     "d": "2026-06-28",
-    "cn": 35.46,
+    "cn": 35.47,
     "us": 64.37
    },
    {
@@ -670,7 +670,7 @@
    },
    {
     "d": "2026-07-01",
-    "cn": 27.69,
+    "cn": 27.7,
     "us": 72.16
    },
    {
@@ -681,97 +681,97 @@
    {
     "d": "2026-07-03",
     "cn": 41.25,
-    "us": 58.63
+    "us": 58.62
    },
    {
     "d": "2026-07-04",
-    "cn": 43.12,
+    "cn": 43.13,
     "us": 56.77
    },
    {
     "d": "2026-07-05",
-    "cn": 46.67,
-    "us": 53.19
+    "cn": 46.68,
+    "us": 53.18
    },
    {
     "d": "2026-07-06",
-    "cn": 44.35,
-    "us": 55.54
+    "cn": 44.36,
+    "us": 55.53
    },
    {
     "d": "2026-07-07",
-    "cn": 46.58,
-    "us": 53.34
+    "cn": 46.59,
+    "us": 53.33
    },
    {
     "d": "2026-07-08",
-    "cn": 43.78,
+    "cn": 43.79,
     "us": 56.11
    },
    {
     "d": "2026-07-09",
     "cn": 45.93,
-    "us": 53.96
+    "us": 53.95
    },
    {
     "d": "2026-07-10",
-    "cn": 46.2,
+    "cn": 46.21,
     "us": 53.7
    },
    {
     "d": "2026-07-11",
-    "cn": 50.76,
-    "us": 49.16
+    "cn": 50.77,
+    "us": 49.15
    },
    {
     "d": "2026-07-12",
-    "cn": 49.84,
-    "us": 50.02
+    "cn": 49.85,
+    "us": 50.01
    },
    {
     "d": "2026-07-13",
-    "cn": 46.12,
+    "cn": 46.13,
     "us": 53.76
    },
    {
     "d": "2026-07-14",
-    "cn": 49.18,
-    "us": 50.69
+    "cn": 49.19,
+    "us": 50.68
    },
    {
     "d": "2026-07-15",
-    "cn": 45.47,
-    "us": 54.44
+    "cn": 45.48,
+    "us": 54.43
    },
    {
     "d": "2026-07-16",
-    "cn": 45.1,
+    "cn": 45.11,
     "us": 54.81
    },
    {
     "d": "2026-07-17",
-    "cn": 42.88,
+    "cn": 42.89,
     "us": 56.99
    },
    {
     "d": "2026-07-18",
     "cn": 46.23,
-    "us": 53.66
+    "us": 53.65
    },
    {
     "d": "2026-07-19",
     "cn": 49.67,
-    "us": 50.2
+    "us": 50.19
    },
    {
     "d": "2026-07-20",
-    "cn": 49.55,
-    "us": 50.35
+    "cn": 49.56,
+    "us": 50.34
    },
    {
     "d": "2026-07-21",
     "cn": 52.24,
-    "us": 47.68
+    "us": 47.67
    },
    {
     "d": "2026-07-22",
@@ -781,27 +781,27 @@
    {
     "d": "2026-07-23",
     "cn": 41.07,
-    "us": 58.82
+    "us": 58.81
    },
    {
     "d": "2026-07-24",
     "cn": 47.46,
-    "us": 52.37
+    "us": 52.36
    },
    {
     "d": "2026-07-25",
-    "cn": 46.85,
-    "us": 53.03
+    "cn": 46.86,
+    "us": 53.02
    },
    {
     "d": "2026-07-26",
-    "cn": 50.33,
+    "cn": 50.34,
     "us": 49.53
    },
    {
     "d": "2026-07-27",
-    "cn": 45.09,
-    "us": 54.76
+    "cn": 45.1,
+    "us": 54.75
    },
    {
     "d": "2026-07-28",
@@ -815,8 +815,8 @@
    },
    {
     "d": "2026-07-30",
-    "cn": 47.71,
-    "us": 52.19
+    "cn": 47.72,
+    "us": 52.18
    },
    {
     "d": "2026-07-31",
@@ -825,23 +825,23 @@
    },
    {
     "d": "2026-08-01",
-    "cn": 50.94,
+    "cn": 50.95,
     "us": 48.88
    },
    {
     "d": "2026-08-02",
     "cn": 51.41,
-    "us": 48.45
+    "us": 48.44
    },
    {
     "d": "2026-08-03",
     "cn": 46.08,
-    "us": 53.79
+    "us": 53.78
    },
    {
     "d": "2026-08-04",
-    "cn": 44.83,
-    "us": 55.07
+    "cn": 44.84,
+    "us": 55.06
    },
    {
     "d": "2026-08-05",
@@ -850,8 +850,8 @@
    },
    {
     "d": "2026-08-06",
-    "cn": 51.77,
-    "us": 48.08
+    "cn": 51.78,
+    "us": 48.07
    },
    {
     "d": "2026-08-07",
@@ -860,25 +860,25 @@
    },
    {
     "d": "2026-08-08",
-    "cn": 60.95,
+    "cn": 60.96,
     "us": 38.94
    },
    {
     "d": "2026-08-09",
     "cn": 59.88,
-    "us": 40.04
+    "us": 40.03
    },
    {
     "d": "2026-08-10",
-    "cn": 53.97,
-    "us": 45.94
+    "cn": 54.25,
+    "us": 45.65
    }
   ],
   "license": "AI Gateway Leaderboard Data (c) Vercel, CC BY 4.0"
  },
  "ollama": {
-  "cn": 280401900,
-  "us": 453734581,
+  "cn": 280404800,
+  "us": 453737217,
   "cn_top": [
    {
     "name": "deepseek-r1",
@@ -945,13 +945,13 @@
    },
    {
     "label": "Best AI at end of 2026: Qwen",
-    "p": 0.02,
+    "p": 0.017,
     "ticker": "KXLLM1-26DEC31-ALI",
     "series": "kxllm1"
    },
    {
     "label": "Best AI at end of 2026: Claude",
-    "p": 0.65,
+    "p": 0.649,
     "ticker": "KXLLM1-26DEC31-A",
     "series": "kxllm1"
    }
@@ -1005,10 +1005,6 @@
     "wk": 665746
    },
    {
-    "pkg": "zhipuai",
-    "wk": 99810
-   },
-   {
     "pkg": "zai-sdk",
     "wk": 28035
    }
@@ -1021,6 +1017,10 @@
    {
     "pkg": "anthropic",
     "wk": 49706308
+   },
+   {
+    "pkg": "google-genai",
+    "wk": 69369049
    }
   ],
   "asof": "2026-08-10"
