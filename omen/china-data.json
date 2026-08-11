@@ -1,5 +1,5 @@
 {
- "updated": "2026-08-11T20:11:23Z",
+ "updated": "2026-08-11T21:23:57Z",
  "snapshot_date": "2026-08-11",
  "artificial_analysis": {
   "cn_best": "GLM-5.2",
@@ -531,32 +531,32 @@
  },
  "openrouter_week": {
   "week": "2026-08-10",
-  "cn_share": 0.5805,
-  "us_share": 0.3105,
-  "spi": 1.87,
-  "total_tokens": 19832014197899
+  "cn_share": 0.5792,
+  "us_share": 0.3118,
+  "spi": 1.858,
+  "total_tokens": 20313210282495
  },
  "vercel_gateway": {
   "asof": "2026-08-11",
-  "cn_share": 54.33,
-  "us_share": 45.61,
-  "spi": 1.191,
+  "cn_share": 53.88,
+  "us_share": 46.07,
+  "spi": 1.17,
   "top_cn": [
    {
     "lab": "deepseek",
-    "share": 29.34
+    "share": 29.14
    },
    {
     "lab": "stepfun",
-    "share": 13.14
+    "share": 13.0
    },
    {
     "lab": "moonshotai",
-    "share": 4.88
+    "share": 4.82
    },
    {
     "lab": "zai",
-    "share": 4.46
+    "share": 4.39
    },
    {
     "lab": "minimax",
@@ -870,15 +870,15 @@
    },
    {
     "d": "2026-08-11",
-    "cn": 54.33,
-    "us": 45.61
+    "cn": 53.88,
+    "us": 46.07
    }
   ],
   "license": "AI Gateway Leaderboard Data (c) Vercel, CC BY 4.0"
  },
  "ollama": {
-  "cn": 281234299,
-  "us": 454373461,
+  "cn": 281235199,
+  "us": 454575401,
   "cn_top": [
    {
     "name": "deepseek-r1",
@@ -908,11 +908,11 @@
   "us_top": [
    {
     "name": "llama3.1",
-    "pulls": 118300000
+    "pulls": 118400000
    },
    {
     "name": "llama3.2",
-    "pulls": 79700000
+    "pulls": 79800000
    },
    {
     "name": "gemma3",
@@ -951,7 +951,7 @@
    },
    {
     "label": "Best AI at end of 2026: Claude",
-    "p": 0.672,
+    "p": 0.671,
     "ticker": "KXLLM1-26DEC31-A",
     "series": "kxllm1"
    }
@@ -1005,6 +1005,10 @@
     "wk": 662600
    },
    {
+    "pkg": "zhipuai",
+    "wk": 101412
+   },
+   {
     "pkg": "zai-sdk",
     "wk": 25981
    }
@@ -1013,6 +1017,14 @@
    {
     "pkg": "openai",
     "wk": 110745648
+   },
+   {
+    "pkg": "anthropic",
+    "wk": 50380513
+   },
+   {
+    "pkg": "google-genai",
+    "wk": 69393602
    }
   ],
   "asof": "2026-08-11"
