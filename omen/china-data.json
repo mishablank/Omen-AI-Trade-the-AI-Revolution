@@ -1,5 +1,5 @@
 {
- "updated": "2026-08-11T22:14:28Z",
+ "updated": "2026-08-11T22:53:12Z",
  "snapshot_date": "2026-08-11",
  "artificial_analysis": {
   "cn_best": "GLM-5.2",
@@ -533,8 +533,8 @@
   "week": "2026-08-10",
   "cn_share": 0.578,
   "us_share": 0.313,
-  "spi": 1.847,
-  "total_tokens": 20824265631237
+  "spi": 1.846,
+  "total_tokens": 20834833609343
  },
  "vercel_gateway": {
   "asof": "2026-08-11",
@@ -877,8 +877,8 @@
   "license": "AI Gateway Leaderboard Data (c) Vercel, CC BY 4.0"
  },
  "ollama": {
-  "cn": 281335899,
-  "us": 454576099,
+  "cn": 281336099,
+  "us": 454576539,
   "cn_top": [
    {
     "name": "deepseek-r1",
@@ -939,7 +939,7 @@
    },
    {
     "label": "Best AI at end of 2026: Ernie",
-    "p": 0.003,
+    "p": 0.005,
     "ticker": "KXLLM1-26DEC31-BAID",
     "series": "kxllm1"
    },
@@ -951,7 +951,7 @@
    },
    {
     "label": "Best AI at end of 2026: Claude",
-    "p": 0.671,
+    "p": 0.652,
     "ticker": "KXLLM1-26DEC31-A",
     "series": "kxllm1"
    }
@@ -1015,16 +1015,8 @@
   ],
   "us": [
    {
-    "pkg": "openai",
-    "wk": 110745648
-   },
-   {
     "pkg": "anthropic",
     "wk": 50380513
-   },
-   {
-    "pkg": "google-genai",
-    "wk": 69393602
    }
   ],
   "asof": "2026-08-11"
