@@ -1,5 +1,5 @@
 {
- "updated": "2026-08-11T09:07:14Z",
+ "updated": "2026-08-11T10:57:31Z",
  "snapshot_date": "2026-08-11",
  "artificial_analysis": {
   "cn_best": "GLM-5.2",
@@ -531,40 +531,40 @@
  },
  "openrouter_week": {
   "week": "2026-08-10",
-  "cn_share": 0.5632,
-  "us_share": 0.3271,
-  "spi": 1.722,
-  "total_tokens": 14457331579385
+  "cn_share": 0.5626,
+  "us_share": 0.3279,
+  "spi": 1.716,
+  "total_tokens": 15304370291664
  },
  "vercel_gateway": {
   "asof": "2026-08-11",
-  "cn_share": 54.54,
-  "us_share": 45.41,
-  "spi": 1.201,
+  "cn_share": 55.68,
+  "us_share": 44.27,
+  "spi": 1.258,
   "top_cn": [
    {
     "lab": "deepseek",
-    "share": 30.41
+    "share": 30.16
    },
    {
     "lab": "stepfun",
-    "share": 13.05
+    "share": 13.8
    },
    {
     "lab": "moonshotai",
-    "share": 4.32
+    "share": 5.02
    },
    {
     "lab": "zai",
-    "share": 4.12
+    "share": 4.14
    },
    {
     "lab": "minimax",
-    "share": 1.2
+    "share": 1.13
    },
    {
     "lab": "xiaomi",
-    "share": 0.59
+    "share": 0.6
    }
   ],
   "series": [
@@ -870,15 +870,15 @@
    },
    {
     "d": "2026-08-11",
-    "cn": 54.54,
-    "us": 45.41
+    "cn": 55.68,
+    "us": 44.27
    }
   ],
   "license": "AI Gateway Leaderboard Data (c) Vercel, CC BY 4.0"
  },
  "ollama": {
-  "cn": 280924599,
-  "us": 454261305,
+  "cn": 281026100,
+  "us": 454362825,
   "cn_top": [
    {
     "name": "deepseek-r1",
@@ -939,7 +939,7 @@
    },
    {
     "label": "Best AI at end of 2026: Ernie",
-    "p": 0.004,
+    "p": 0.006,
     "ticker": "KXLLM1-26DEC31-BAID",
     "series": "kxllm1"
    },
@@ -951,7 +951,7 @@
    },
    {
     "label": "Best AI at end of 2026: Claude",
-    "p": 0.641,
+    "p": 0.645,
     "ticker": "KXLLM1-26DEC31-A",
     "series": "kxllm1"
    }
@@ -961,7 +961,7 @@
   "cn": [
    {
     "base": "Qwen/Qwen3-8B",
-    "n": 1982
+    "n": 1983
    },
    {
     "base": "deepseek-ai/DeepSeek-R1",
@@ -994,7 +994,7 @@
     "n": 111
    }
   ],
-  "cn_total": 2364,
+  "cn_total": 2365,
   "us_total": 2518,
   "asof": "2026-08-11"
  },
@@ -1003,6 +1003,10 @@
    {
     "pkg": "dashscope",
     "wk": 662600
+   },
+   {
+    "pkg": "zhipuai",
+    "wk": 101412
    },
    {
     "pkg": "zai-sdk",
@@ -1015,8 +1019,8 @@
     "wk": 110745648
    },
    {
-    "pkg": "anthropic",
-    "wk": 50380513
+    "pkg": "google-genai",
+    "wk": 69393602
    }
   ],
   "asof": "2026-08-11"
