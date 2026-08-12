@@ -1,5 +1,5 @@
 {
- "updated": "2026-08-12T04:54:23Z",
+ "updated": "2026-08-12T06:20:47Z",
  "snapshot_date": "2026-08-12",
  "artificial_analysis": {
   "cn_best": "GLM-5.2",
@@ -531,36 +531,36 @@
  },
  "openrouter_week": {
   "week": "2026-08-10",
-  "cn_share": 0.5777,
-  "us_share": 0.313,
-  "spi": 1.845,
-  "total_tokens": 23390313592893
+  "cn_share": 0.5776,
+  "us_share": 0.3131,
+  "spi": 1.844,
+  "total_tokens": 23919469139388
  },
  "vercel_gateway": {
   "asof": "2026-08-12",
-  "cn_share": 51.63,
-  "us_share": 48.33,
-  "spi": 1.068,
+  "cn_share": 51.92,
+  "us_share": 48.03,
+  "spi": 1.081,
   "top_cn": [
    {
     "lab": "deepseek",
-    "share": 31.65
+    "share": 31.36
    },
    {
     "lab": "stepfun",
-    "share": 10.64
+    "share": 11.15
    },
    {
     "lab": "moonshotai",
-    "share": 4.14
+    "share": 4.31
    },
    {
     "lab": "zai",
-    "share": 2.8
+    "share": 2.77
    },
    {
     "lab": "minimax",
-    "share": 0.89
+    "share": 0.86
    },
    {
     "lab": "alibaba",
@@ -870,15 +870,15 @@
    },
    {
     "d": "2026-08-12",
-    "cn": 51.63,
-    "us": 48.33
+    "cn": 51.92,
+    "us": 48.03
    }
   ],
   "license": "AI Gateway Leaderboard Data (c) Vercel, CC BY 4.0"
  },
  "ollama": {
-  "cn": 281339799,
-  "us": 454683963,
+  "cn": 281340599,
+  "us": 454686478,
   "cn_top": [
    {
     "name": "deepseek-r1",
@@ -920,9 +920,7 @@
    }
   ],
   "n_models": 233,
-  "asof": "2026-08-12",
-  "cn_per_day": 575781,
-  "us_per_day": 472419
+  "asof": "2026-08-12"
  },
  "kalshi": {
   "asof": "2026-08-12",
@@ -953,7 +951,7 @@
    },
    {
     "label": "Best AI at end of 2026: Claude",
-    "p": 0.641,
+    "p": 0.652,
     "ticker": "KXLLM1-26DEC31-A",
     "series": "kxllm1"
    }
@@ -1003,6 +1001,10 @@
  "sdk": {
   "cn": [
    {
+    "pkg": "dashscope",
+    "wk": 658327
+   },
+   {
     "pkg": "zhipuai",
     "wk": 104702
    },
@@ -1015,10 +1017,6 @@
    {
     "pkg": "anthropic",
     "wk": 50398349
-   },
-   {
-    "pkg": "google-genai",
-    "wk": 69606845
    }
   ],
   "asof": "2026-08-12"
