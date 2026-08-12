@@ -1,5 +1,5 @@
 {
- "updated": "2026-08-12T10:15:18Z",
+ "updated": "2026-08-12T11:54:12Z",
  "snapshot_date": "2026-08-12",
  "artificial_analysis": {
   "cn_best": "GLM-5.2",
@@ -9,7 +9,7 @@
   "asof": "2026-07-12"
  },
  "search_consumer": {
-  "western_share_pct": 3.4,
+  "western_share_pct": 3.5,
   "asof": "2026-08",
   "source": "google-trends",
   "terms_us": [
@@ -29,7 +29,7 @@
    "Seed 1.6",
    "Seed 2.0"
   ],
-  "note": "Google Trends US, 90-day avg: 8 Chinese AI terms = 3.4% of AI-assistant search interest vs ChatGPT+Gemini+Claude+Llama AI+Meta AI."
+  "note": "Google Trends US, 90-day avg: 8 Chinese AI terms = 3.5% of AI-assistant search interest vs ChatGPT+Gemini+Claude+Llama AI+Meta AI."
  },
  "apps": {
   "score": 0,
@@ -531,40 +531,40 @@
  },
  "openrouter_week": {
   "week": "2026-08-10",
-  "cn_share": 0.5782,
-  "us_share": 0.3133,
-  "spi": 1.845,
-  "total_tokens": 25653986168624
+  "cn_share": 0.576,
+  "us_share": 0.3157,
+  "spi": 1.824,
+  "total_tokens": 26884754104124
  },
  "vercel_gateway": {
   "asof": "2026-08-12",
-  "cn_share": 51.77,
-  "us_share": 48.18,
+  "cn_share": 51.78,
+  "us_share": 48.16,
   "spi": 1.075,
   "top_cn": [
    {
     "lab": "deepseek",
-    "share": 29.65
+    "share": 29.24
    },
    {
     "lab": "stepfun",
-    "share": 13.3
+    "share": 13.61
    },
    {
     "lab": "moonshotai",
-    "share": 4.3
+    "share": 4.4
    },
    {
     "lab": "zai",
-    "share": 2.32
+    "share": 2.35
    },
    {
     "lab": "minimax",
-    "share": 0.76
+    "share": 0.78
    },
    {
     "lab": "alibaba",
-    "share": 0.74
+    "share": 0.73
    }
   ],
   "series": [
@@ -870,15 +870,15 @@
    },
    {
     "d": "2026-08-12",
-    "cn": 51.77,
-    "us": 48.18
+    "cn": 51.78,
+    "us": 48.16
    }
   ],
   "license": "AI Gateway Leaderboard Data (c) Vercel, CC BY 4.0"
  },
  "ollama": {
-  "cn": 281544999,
-  "us": 454694197,
+  "cn": 281546499,
+  "us": 454797727,
   "cn_top": [
    {
     "name": "deepseek-r1",
@@ -933,7 +933,7 @@
    },
    {
     "label": "Best AI at end of 2026: Kimi",
-    "p": 0.02,
+    "p": 0.01,
     "ticker": "KXLLM1-26DEC31-MOON",
     "series": "kxllm1"
    },
@@ -951,7 +951,7 @@
    },
    {
     "label": "Best AI at end of 2026: Claude",
-    "p": 0.651,
+    "p": 0.645,
     "ticker": "KXLLM1-26DEC31-A",
     "series": "kxllm1"
    }
@@ -1005,10 +1005,6 @@
     "wk": 658327
    },
    {
-    "pkg": "zhipuai",
-    "wk": 104702
-   },
-   {
     "pkg": "zai-sdk",
     "wk": 26653
    }
@@ -1021,6 +1017,10 @@
    {
     "pkg": "anthropic",
     "wk": 50398349
+   },
+   {
+    "pkg": "google-genai",
+    "wk": 69606845
    }
   ],
   "asof": "2026-08-12"
