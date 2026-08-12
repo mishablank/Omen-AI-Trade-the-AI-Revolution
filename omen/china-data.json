@@ -1,5 +1,5 @@
 {
- "updated": "2026-08-12T08:25:04Z",
+ "updated": "2026-08-12T10:15:18Z",
  "snapshot_date": "2026-08-12",
  "artificial_analysis": {
   "cn_best": "GLM-5.2",
@@ -532,39 +532,39 @@
  "openrouter_week": {
   "week": "2026-08-10",
   "cn_share": 0.5782,
-  "us_share": 0.3131,
-  "spi": 1.847,
-  "total_tokens": 25146955124254
+  "us_share": 0.3133,
+  "spi": 1.845,
+  "total_tokens": 25653986168624
  },
  "vercel_gateway": {
   "asof": "2026-08-12",
-  "cn_share": 51.51,
-  "us_share": 48.44,
-  "spi": 1.063,
+  "cn_share": 51.77,
+  "us_share": 48.18,
+  "spi": 1.075,
   "top_cn": [
    {
     "lab": "deepseek",
-    "share": 29.97
+    "share": 29.65
    },
    {
     "lab": "stepfun",
-    "share": 12.41
+    "share": 13.3
    },
    {
     "lab": "moonshotai",
-    "share": 4.39
+    "share": 4.3
    },
    {
     "lab": "zai",
-    "share": 2.44
+    "share": 2.32
    },
    {
     "lab": "minimax",
-    "share": 0.82
+    "share": 0.76
    },
    {
     "lab": "alibaba",
-    "share": 0.76
+    "share": 0.74
    }
   ],
   "series": [
@@ -870,19 +870,19 @@
    },
    {
     "d": "2026-08-12",
-    "cn": 51.51,
-    "us": 48.44
+    "cn": 51.77,
+    "us": 48.18
    }
   ],
   "license": "AI Gateway Leaderboard Data (c) Vercel, CC BY 4.0"
  },
  "ollama": {
-  "cn": 281443199,
-  "us": 454690760,
+  "cn": 281544999,
+  "us": 454694197,
   "cn_top": [
    {
     "name": "deepseek-r1",
-    "pulls": 91200000
+    "pulls": 91300000
    },
    {
     "name": "qwen2.5",
@@ -939,19 +939,19 @@
    },
    {
     "label": "Best AI at end of 2026: Ernie",
-    "p": 0.006,
+    "p": 0.003,
     "ticker": "KXLLM1-26DEC31-BAID",
     "series": "kxllm1"
    },
    {
     "label": "Best AI at end of 2026: Qwen",
-    "p": 0.022,
+    "p": 0.021,
     "ticker": "KXLLM1-26DEC31-ALI",
     "series": "kxllm1"
    },
    {
     "label": "Best AI at end of 2026: Claude",
-    "p": 0.656,
+    "p": 0.651,
     "ticker": "KXLLM1-26DEC31-A",
     "series": "kxllm1"
    }
@@ -1034,7 +1034,7 @@
   "us_n": 118,
   "cn_n": 175,
   "n": 460,
-  "asof": "2026-08-06",
+  "asof": "2026-08-12",
   "attribution": "Epoch AI (epoch.ai/data), CC BY 4.0"
  },
  "epoch_chips": {
@@ -1096,7 +1096,7 @@
     "h100e": 8277
    }
   ],
-  "asof": "2026-08-06",
+  "asof": "2026-08-12",
   "attribution": "Epoch AI (epoch.ai/data), CC BY 4.0"
  },
  "epoch_models": {
@@ -1175,7 +1175,7 @@
   "us_12mo": 57,
   "cn_12mo": 32,
   "latest_q": "2026Q2",
-  "asof": "2026-08-06",
+  "asof": "2026-08-12",
   "attribution": "Epoch AI (epoch.ai/data), CC BY 4.0"
  }
 }
