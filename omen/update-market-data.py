@@ -48,7 +48,11 @@ CORE = ["NVDA", "SOXX", "CRWV", "ORCL"]
 BASKET = ["NVDA", "MSFT", "GOOGL", "AMZN", "META", "AVGO", "MU", "ANET",
           "VST", "CEG", "NBIS", "IREN", "CRWV", "ORCL", "SMCI"]
 BENCH = ["SPY"]
-EQUITY = sorted(set(CORE + BASKET + BENCH))
+# D4 (handover 2026-08-13): Korea and Taiwan join the drawdown family. KOSPI is ~50%
+# semis – the same AI hardware trade – and fell 43.93% in 27 days against SOXX's 28.73%
+# in the July event, so it is the higher-beta read on identical risk, not a new one.
+ASIA_SEMI = ["^KS11", "EWY", "TSM"]
+EQUITY = sorted(set(CORE + BASKET + BENCH + ASIA_SEMI))
 VOL = {"^VXN": "VXN", "^VIX": "VIX", "^VIX3M": "VIX3M", "^SKEW": "SKEW", "^VVIX": "VVIX"}
 # HYG/LQD/JNK are the leveraged-credit proxies; BIZD (VanEck BDC ETF) is the
 # private-credit / direct-lending channel Kedrosky flags — where pensions and
@@ -79,6 +83,22 @@ SECTORS = {"XLK": "technology", "XLF": "financials", "XLV": "health care",
 # Gold-silver froth (macro strip, backdrop only): the ratio is the classic
 # speculative-metals tell and needs no new venue — both are liquid US ETFs.
 FROTH = ["GLD", "SLV"]
+# ---- Berg turning-point tape (handover 2026-08-13) ----
+# Tickers carrying the turn panel: OHLCV at 1y for the crash-low and gap logic, plus a
+# 10y close history for the ROC percentile ranks. Korea earns its place because KOSPI is
+# roughly half semis – the same AI hardware trade, and it fell 43.9% in 27 days against
+# SOXX's 28.7% in the July event, so it is the higher-beta read on the identical risk.
+TURN_TICKERS = ["^GSPC", "^NDX", "SOXX", "^KS11"]
+# D1 divergence spread: each index against its OWN peak, side by side.
+DIVERGENCE_TICKERS = ["^GSPC", "^NDX", "SOXX", "RSP", "^RUT"]
+# A5 deviation-from-trend thrust: an equal-weight multi-cap composite, the free clone of
+# the NDR index Berg quotes. Large + mid + small, equally weighted.
+THRUST_TICKERS = ["SPY", "MDY", "IWM"]
+# The turn tape needs no prune_payload entry: its bars are fetched into a local in
+# build() and only conclusions plus a 90-bar display series are ever written. Publishing
+# the raw input would have cost 752 KB across eight tickers against a 178 KB file.
+# ASIA_SEMI is the deliberate exception – D4 puts those three in the drawdown family,
+# which charts them, so they publish like any other EQUITY name.
 # Fetched only to feed a computed block — nothing charts their closes, and market-data.json
 # is rewritten into R2 every 30 minutes, so their series are dropped before the file is
 # written (prune_payload). Publishing all of them raised the file 173 KB -> 326 KB; the
@@ -372,6 +392,29 @@ def yahoo_series(sym, rng="6mo"):
     return [{"d": datetime.datetime.fromtimestamp(t, datetime.timezone.utc).strftime("%Y-%m-%d"),
              "c": round(c, 2)}
             for t, c in zip(ts, cl) if c is not None]
+
+
+def yahoo_bars(sym, rng="1y"):
+    """Full OHLCV bars – the gap rules, intraday-low tests and volume flags need the
+    extremes that yahoo_series() throws away.
+
+    Deliberately a second function rather than a widened yahoo_series(): that shape is
+    read by data["equity"], data["credit"] and data["vol"][*]["series"], by both client
+    pages and by a large slice of the existing suite, and none of them want OHLCV. A bar
+    missing any leg is skipped whole – a bar with a close but no high cannot be gapped
+    against."""
+    j = json.loads(get(f"https://query1.finance.yahoo.com/v8/finance/chart/{sym}?range={rng}&interval=1d"))
+    res = j["chart"]["result"][0]
+    q = res["indicators"]["quote"][0]
+    out = []
+    for i, t in enumerate(res["timestamp"]):
+        o, h, l, c = q["open"][i], q["high"][i], q["low"][i], q["close"][i]
+        if o is None or h is None or l is None or c is None:
+            continue
+        out.append({"d": datetime.datetime.fromtimestamp(t, datetime.timezone.utc).strftime("%Y-%m-%d"),
+                    "o": round(o, 2), "h": round(h, 2), "l": round(l, 2), "c": round(c, 2),
+                    "v": q["volume"][i] or 0})
+    return out
 
 
 def yahoo_monthly(sym, rng="10y"):
@@ -2647,6 +2690,352 @@ def carry_sub(data, prev, section, key, e=None):
     return True
 
 
+# ---------- Berg turning-point metrics (handover 2026-08-13) ----------
+# Every family OMEN already scores measures how bad it is getting. None measure whether
+# the flush is COMPLETE. Berg's claim is that bottoms are the detectable event – V-shaped,
+# panic-driven, statistically rare – while tops roll and are not. These metrics are
+# therefore neither leading nor confirming in OMEN's existing split: they fire after the
+# damage, about the recovery. Group tag: turn.
+#
+# The thresholds below are transcriptions of rules stated on the record, not fitted
+# parameters, and none are verified against the source recording. They sit in one block
+# so methodology.html can print them and a reader can reject one number without
+# reverse-engineering the panel.
+TURN_PARAMS_VERSION = "2026-08-13"
+# A1: what counts as a panic. One global 15%/30d finds NOTHING on ^GSPC or ^NDX across
+# five years of tape, which would render the panel permanently empty on the two headline
+# indices; Berg's own worked examples run off ~9% index declines. So the drop is per
+# ticker class, not global.
+PANIC_DROP_PCT = {"^GSPC": 9.0, "^NDX": 10.0, "^RUT": 12.0, "SOXX": 15.0,
+                  "^KS11": 15.0, "EWY": 15.0}
+PANIC_DROP_DEFAULT = 12.0
+PANIC_WINDOW = 30
+BOUNCE_DAYS = 3              # sessions off the low before the low is fixed as reference
+BERG_DAY_MARKS = (8, 9, 12, 16, 19)
+BERG_UP_TRIGGERS = ((8, 8), (8, 9), (16, 19))
+ROC_EXTREME_PCTILE = 99.0
+BREAKAWAY_MIN_DAYS_BELOW = 42
+VXN_SHORT_MA = 4
+VXN_LONG_MA = 15
+VXN_COMPLACENT_DEV = -20.0
+BOTTOM_WINDOW = 120          # C1: bottoms in the recent tape, not across all history
+TURN_DISPLAY_BARS = 90       # how much series the payload carries per ticker
+# §2's bad-tick filter is calibrated to PRICE tickers and is never applied to the vol
+# complex. Across 5y, ^GSPC's |low/close-1| maxes at 0.093, so a 0.15 band only ever
+# catches a genuine bad print; ^VXN's runs to a p99 of 0.369 and a max of 0.794, so the
+# same band would "repair" 58 of its 1,254 real sessions. Vol feeds neither the crash-low
+# nor the gap logic, so it is simply not filtered.
+SANITY_MAX_DEV = 0.15
+
+
+def clean_bars(bars, max_dev=SANITY_MAX_DEV):
+    """Clamp bad intraday ticks to their own close, keeping the session.
+
+    Dropping the bar would shift every day count in A2/A3, so the extreme is clamped and
+    the repair counted – the panel discloses the count rather than hiding it."""
+    out, repaired = [], 0
+    for b in bars or []:
+        c, nb, touched = b.get("c"), dict(b), False
+        for k in ("h", "l"):
+            v = b.get(k)
+            if c and v is not None and abs(v / c - 1) > max_dev:
+                nb[k] = c
+                touched = True
+        repaired += 1 if touched else 0
+        out.append(nb)
+    return out, repaired
+
+
+def crash_low_integrity(bars, drop_pct=PANIC_DROP_DEFAULT, window=PANIC_WINDOW,
+                        bounce_days=BOUNCE_DAYS):
+    """The reference panic low, and how far spot sits above each of its two levels.
+
+    Berg's rule: a crash low gets TESTED on a closing basis – that is the normal path –
+    but a break of the panic day's INTRADAY low invalidates the crash-low thesis and is a
+    regime change. Both levels are reported; only the intraday break sets regime_change.
+
+    The reference is sticky. Once price has held for bounce_days the low is fixed, and a
+    later marginal new closing low is a violation of that reference rather than a new
+    reference. The episode resets only when price regains the pre-decline peak, which is
+    what makes a genuinely separate panic a new anchor."""
+    bars = list(bars or [])
+    if len(bars) < 2:
+        return None
+    closes = [b["c"] for b in bars]
+    ep = None
+    for j, c in enumerate(closes):
+        seg = closes[max(0, j - window):j + 1]
+        peak = max(seg)
+        declined = (c / peak - 1) * 100 <= -drop_pct and c == min(seg)
+        if ep is not None and c >= ep["peak"]:
+            ep = None                      # regained the pre-decline peak: episode over
+        if ep is None:
+            if declined:
+                ep = {"peak": peak, "low_i": j, "fixed": False}
+        elif not ep["fixed"]:
+            if bars[j]["l"] < bars[ep["low_i"]]["l"]:
+                ep["low_i"] = j            # still carving the low
+            elif j - ep["low_i"] >= bounce_days:
+                ep["fixed"] = True         # held long enough to be the reference
+    if ep is None:
+        return None
+    i = ep["low_i"]
+    low_bar, spot, after = bars[i], closes[-1], bars[i + 1:]
+    close_low, intraday_low = low_bar["c"], low_bar["l"]
+    broke_intraday = any(b["l"] < intraday_low for b in after)
+    return {"index": i, "date": low_bar.get("d"),
+            "close_low": round(close_low, 2), "intraday_low": round(intraday_low, 2),
+            "to_close_low_pct": round((close_low / spot - 1) * 100, 2),
+            "to_intraday_low_pct": round((intraday_low / spot - 1) * 100, 2),
+            "close_low_violated": any(b["c"] < close_low for b in after),
+            "intraday_low_violated": broke_intraday,
+            "regime_change": broke_intraday,
+            "fixed": ep["fixed"],
+            "decline_pct": round((close_low / ep["peak"] - 1) * 100, 2)}
+
+
+def days_off_low(bars, low_idx):
+    """Trading days since the reference low with the CLOSING low unbroken.
+
+    The counter freezes at the break rather than resetting – "held 12 days then broke" is
+    the fact worth showing, and a zero would erase it."""
+    bars = list(bars or [])
+    if not bars or low_idx >= len(bars) - 1:
+        return {"days": 0, "intact": True, "milestone": None}
+    close_low, days, intact = bars[low_idx]["c"], 0, True
+    for b in bars[low_idx + 1:]:
+        if b["c"] < close_low:
+            intact = False
+            break
+        days += 1
+    return {"days": days, "intact": intact,
+            "milestone": days if intact and days in BERG_DAY_MARKS else None}
+
+
+def up_days_in_window(bars, low_idx, n):
+    """Up closes in the n sessions after the low. Flat closes are not up closes."""
+    bars = list(bars or [])
+    win = bars[low_idx + 1:low_idx + 1 + n]
+    up, prev = 0, bars[low_idx]["c"] if low_idx < len(bars) else None
+    for b in win:
+        if prev is not None and b["c"] > prev:
+            up += 1
+        prev = b["c"]
+    return {"up": up, "n": len(win)}
+
+
+def up_day_trigger(up, n):
+    """The Berg cluster this (up, n) pair satisfies, as its display label."""
+    for t_up, t_n in BERG_UP_TRIGGERS:
+        if n == t_n and up >= t_up:
+            return f"{t_up} of {t_n}"
+    return None
+
+
+def roc_percentile(closes, n, lookbacks=(252, 1260)):
+    """Current n-day rate of change, ranked against its own trailing distribution.
+
+    The rarity is the signal, not the return. A lookback the history cannot fill ranks
+    None rather than ranking against a short window and overstating the rarity – note
+    Yahoo's range=5y returns 1,254 bars, six short of 1,260, so the long rank needs 10y."""
+    closes = list(closes or [])
+    if n < 1 or len(closes) <= n:
+        return None
+    rocs = [(closes[i] / closes[i - n] - 1) * 100
+            for i in range(n, len(closes)) if closes[i - n]]
+    if not rocs:
+        return None
+    cur, ranks = rocs[-1], {}
+    for lb in lookbacks:
+        if len(rocs) < lb:
+            ranks[lb] = None
+            continue
+        hist = rocs[-lb:]
+        ranks[lb] = round(sum(1 for v in hist if v <= cur) / len(hist) * 100, 2)
+    return {"n": n, "roc": round(cur, 2), "ranks": ranks,
+            "extreme": any(r is not None and r >= ROC_EXTREME_PCTILE for r in ranks.values())}
+
+
+def gap_events(bars):
+    """Berg's mechanical gap: the session must hold the gap for the WHOLE session.
+
+    Upside = open above the prior high AND the low of day never trades back below it. An
+    open above the prior high that fills intraday is not a gap."""
+    bars = list(bars or [])
+    out = []
+    for i in range(1, len(bars)):
+        p, c = bars[i - 1], bars[i]
+        if c["o"] > p["h"] and c["l"] > p["h"]:
+            out.append({"i": i, "d": c.get("d"), "dir": "up",
+                        "size_pct": round((c["l"] / p["h"] - 1) * 100, 2)})
+        elif c["o"] < p["l"] and c["h"] < p["l"]:
+            out.append({"i": i, "d": c.get("d"), "dir": "down",
+                        "size_pct": round((c["h"] / p["l"] - 1) * 100, 2)})
+    return out
+
+
+def breakaway_gap_to_ath(bars, min_days_below=BREAKAWAY_MIN_DAYS_BELOW):
+    """Index spent >= 2 months below its ATH, then broke it with an upside gap.
+
+    Rare and dateable, which is why it ships as a badge and not a score. Berg's ~80%
+    follow-through claim is his, unverified here, and the UI says so."""
+    bars = list(bars or [])
+    if len(bars) < 2:
+        return None
+    prior, cur = bars[:-1], bars[-1]
+    ath_i = max(range(len(prior)), key=lambda k: prior[k]["h"])
+    ath = prior[ath_i]["h"]
+    days_below = len(prior) - 1 - ath_i
+    if days_below < min_days_below or cur["c"] <= ath:
+        return None
+    gaps = gap_events(bars[-2:])
+    if not gaps or gaps[0]["dir"] != "up":
+        return None
+    return {"d": cur.get("d"), "ath": round(ath, 2), "ath_date": prior[ath_i].get("d"),
+            "days_below": days_below, "gap_pct": gaps[0]["size_pct"]}
+
+
+def rsp_spy_spread(rsp, spy, bottom_window=BOTTOM_WINDOW):
+    """RSP vs SPY: the cheapest real breadth read OMEN lacks.
+
+    Joined on the trading date, never on array position – either leg is carried forward
+    independently when its fetch fails, exactly the trap the HY/IG ratio already hit.
+
+    Bottoms are searched inside a trailing window. Unwindowed against 5y of tape this
+    returns the 2022 bear lows (RSP 2022-09-30, SPY 2022-10-12) – true, and useless as a
+    read on the current turn."""
+    s_by_d = {p["d"]: p["c"] for p in spy or []}
+    pairs = [(p["d"], p["c"], s_by_d[p["d"]]) for p in rsp or []
+             if p["d"] in s_by_d and s_by_d[p["d"]]]
+    if not pairs:
+        return None
+    ratio = [{"d": d, "c": round(r / s, 5)} for d, r, s in pairs]
+    r_c = [r for _, r, _ in pairs]
+    s_c = [s for _, _, s in pairs]
+    last = len(pairs) - 1
+    lo = max(0, len(pairs) - bottom_window)
+    r_bot = min(range(lo, len(r_c)), key=lambda k: r_c[k])
+    s_bot = min(range(lo, len(s_c)), key=lambda k: s_c[k])
+    return {"ratio": ratio[-1]["c"], "series": ratio[-TURN_DISPLAY_BARS:],
+            "days_since_ath": {"RSP": last - max(range(len(r_c)), key=lambda k: r_c[k]),
+                               "SPY": last - max(range(len(s_c)), key=lambda k: s_c[k])},
+            "bottom_dates": {"RSP": pairs[r_bot][0], "SPY": pairs[s_bot][0]},
+            # positive = equal-weight bottomed first, which is the lead signal
+            "bottom_lead_days": s_bot - r_bot}
+
+
+def divergence_spread(series_by_sym):
+    """Each index's distance below its OWN peak, with that peak's date, worst first.
+
+    The late-cycle tell OMEN lacks: one index at a new high while the next is double
+    digits below a peak set two months ago. It reads at lows too – a higher low against a
+    lower low next door is the positive divergence."""
+    out = []
+    for sym, s in (series_by_sym or {}).items():
+        s = list(s or [])
+        if not s:
+            continue
+        top = max(range(len(s)), key=lambda k: s[k]["c"])
+        peak = s[top]["c"]
+        out.append({"sym": sym, "peak_date": s[top]["d"],
+                    "off_peak_pct": round((s[-1]["c"] / peak - 1) * 100, 2) if peak else 0.0})
+    out.sort(key=lambda x: x["off_peak_pct"])
+    return out
+
+
+def compute_turn(bars_by_sym, data, now):
+    """Assemble the whole turn block from one OHLCV history per ticker.
+
+    Publishes conclusions and a 90-bar display series, never the 10y input – see the
+    fetch site in build() for why."""
+    by = {}
+    for sym in TURN_TICKERS:
+        raw = bars_by_sym.get(sym)
+        if not raw:
+            continue
+        bars, repaired = clean_bars(raw)
+        closes = [b["c"] for b in bars]
+        drop = PANIC_DROP_PCT.get(sym, PANIC_DROP_DEFAULT)
+        cl = crash_low_integrity(bars, drop_pct=drop)
+        entry = {"panic_drop_pct": drop, "repaired_bars": repaired, "crash_low": cl,
+                 "roc": {str(n): roc_percentile(closes, n) for n in (5, 10)},
+                 "breakaway": breakaway_gap_to_ath(bars),
+                 "gaps": gap_events(bars)[-10:],
+                 "series": [{"d": b["d"], "c": b["c"]} for b in bars[-TURN_DISPLAY_BARS:]]}
+        if cl:
+            entry["days_off_low"] = days_off_low(bars, cl["index"])
+            u = up_days_in_window(bars, cl["index"], 19)
+            u["trigger"] = up_day_trigger(u["up"], u["n"])
+            entry["up_days"] = u
+        else:
+            entry["days_off_low"] = {"days": 0, "intact": True, "milestone": None}
+            entry["up_days"] = {"up": 0, "n": 0, "trigger": None}
+        by[sym] = entry
+
+    def closes_of(sym):
+        return [{"d": b["d"], "c": b["c"]} for b in (bars_by_sym.get(sym) or [])]
+
+    breadth = {}
+    if bars_by_sym.get("RSP") and bars_by_sym.get("SPY"):
+        breadth["rsp_spy"] = rsp_spy_spread(closes_of("RSP"), closes_of("SPY"))
+    vxn = ((data.get("vol") or {}).get("VXN") or {}).get("series") or []
+    return {"params_version": TURN_PARAMS_VERSION,
+            "at": now.strftime("%Y-%m-%dT%H:%M:%SZ"),
+            "by": by,
+            "divergence": divergence_spread(
+                {s: closes_of(s) for s in DIVERGENCE_TICKERS if bars_by_sym.get(s)}),
+            "breadth": breadth,
+            "vol": {"vxn_dev": vxn_deviation([p["c"] for p in vxn])},
+            "active": turn_conditions(by, breadth)}
+
+
+def turn_conditions(by, breadth):
+    """Berg operates on clusters of simple conditions, not a composite, so the headline is
+    a count: "N of 12 turning-point conditions active".
+
+    Deliberately not blended into a 0-100 score. A mean would let four half-true
+    conditions outvote one that actually fired, and the whole point of the panel is that
+    the conditions are individually legible and individually falsifiable."""
+    out = []
+
+    def add(key, label, on):
+        out.append({"key": key, "label": label, "on": bool(on)})
+
+    for sym in TURN_TICKERS:
+        t = (by or {}).get(sym) or {}
+        cl, dl, ud = t.get("crash_low"), t.get("days_off_low"), t.get("up_days")
+        add(f"{sym}:low_intact", f"{sym} crash low intact",
+            cl and cl.get("fixed") and not cl.get("intraday_low_violated"))
+        add(f"{sym}:day_mark", f"{sym} held the low {(dl or {}).get('days', 0)} days",
+            dl and dl.get("milestone") is not None)
+        add(f"{sym}:up_cluster", f"{sym} up-day cluster", (ud or {}).get("trigger"))
+        add(f"{sym}:roc_rare", f"{sym} rate-of-change in the top 1%",
+            any((t.get("roc") or {}).get(str(n), {}).get("extreme") for n in (5, 10)))
+        add(f"{sym}:breakaway", f"{sym} breakaway gap to a new high", t.get("breakaway"))
+    add("breadth:ew_led", "equal-weight bottomed before cap-weight",
+        breadth and (breadth.get("rsp_spy") or {}).get("bottom_lead_days", 0) > 0)
+    return {"n": sum(1 for c in out if c["on"]), "of": len(out), "conditions": out}
+
+
+def vxn_deviation(closes, short=VXN_SHORT_MA, long=VXN_LONG_MA):
+    """Short VXN mean vs its ~3-week mean; a sharp collapse of short vs long is the
+    complacency read.
+
+    NOTE this is a LEADING signal sitting inside `vol`, a family OMEN labels confirming.
+    It is annotated wherever it renders rather than being silently averaged into a
+    confirming score."""
+    closes = [c for c in (closes or []) if c is not None]
+    if short < 1 or long < short or len(closes) < long:
+        return None
+    s_ma = sum(closes[-short:]) / short
+    l_ma = sum(closes[-long:]) / long
+    if not l_ma:
+        return None
+    dev = (s_ma / l_ma - 1) * 100
+    return {"short_ma": round(s_ma, 2), "long_ma": round(l_ma, 2), "dev_pct": round(dev, 2),
+            "complacent": dev <= VXN_COMPLACENT_DEV}
+
+
 def build():
     prev = {}
     if os.path.exists(OUT):
@@ -2666,7 +3055,7 @@ def build():
             # Rosenberg/Bernstein parameter set
             "occ": None, "spec_blur": None, "credit_div": None, "misalloc": None,
             "positioning": None, "cape": None, "corr_breadth": None, "rotation": None,
-            "real_econ": None, "macro_strip": None, "fragility": None}
+            "real_econ": None, "macro_strip": None, "fragility": None, "turn": None}
 
     # Deduped: XLU is both the power proxy and the utilities sector in SECTORS, and the
     # cross-check tape must not cost a second download of a series already in hand.
@@ -2697,6 +3086,46 @@ def build():
             print(f"vol {name}: {s[-1]['c']}")
         except Exception as e:
             carry_sub(data, prev, "vol", name, e)
+
+    # ---- Berg turn block (handover 2026-08-13) ----
+    # Runs after the vol loop on purpose: D2 reads data["vol"]["VXN"]["series"], and
+    # computing this earlier would silently publish a null deviation every run.
+    #
+    # One 10y OHLCV call per ticker serves every turn metric – the bars feed the crash-low
+    # and gap logic, the closes off the same bars feed the ROC percentile ranks. 10y and
+    # not 5y because range=5y returns 1,254 bars, six short of the 1,260-day lookback, so
+    # the long rank would be None on every ticker forever. The raw bars stay local and are
+    # never written: 5y OHLCV across eight tickers measured 752 KB against a 178 KB file.
+    turn_bars = {}
+    for sym in sorted(set(TURN_TICKERS) | set(DIVERGENCE_TICKERS)
+                      | set(THRUST_TICKERS) | {"RSP", "SPY"}):
+        try:
+            turn_bars[sym] = yahoo_bars(sym, "10y")
+        except Exception as e:
+            print(f"turn bars {sym}: FAIL {e}")
+    try:
+        turn = compute_turn(turn_bars, data, now)
+        if turn["by"] or turn["divergence"]:
+            data["turn"] = turn
+            a = turn["active"]
+            print(f"turn: {a['n']}/{a['of']} conditions active "
+                  f"({len(turn['by'])} tickers, params {TURN_PARAMS_VERSION})")
+            for sym, t in sorted(turn["by"].items()):
+                cl = t.get("crash_low")
+                if cl:
+                    print(f"turn {sym}: panic {cl['date']} {cl['decline_pct']}% · held "
+                          f"{t['days_off_low']['days']}d · close-low {cl['to_close_low_pct']}% "
+                          f"intraday {cl['to_intraday_low_pct']}% · "
+                          f"regime_change={cl['regime_change']}")
+                else:
+                    print(f"turn {sym}: no qualifying panic low at -{t['panic_drop_pct']}%")
+        else:
+            # every leg failed: hold the last computed block rather than publish an empty
+            # panel, same policy as misalloc/macro_strip above
+            data["turn"] = prev.get("turn")
+            print("turn: no usable tape, carried previous block")
+    except Exception as e:
+        carry(data, prev, "turn", e)
 
     for sym in SKEW_SYMS:
         try:
