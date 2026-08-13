@@ -1219,7 +1219,7 @@ def test_parse_cape_table_decodes_entities_before_matching():
 
 def test_cape_sigma_uses_the_post_epoch_window():
     series = ([{"d": f"1880-{m:02d}-01", "c": 100.0} for m in range(1, 13)]
-              + [{"d": f"19{y:02d}-01-01", "c": 10.0 + (y % 5)} for y in range(0, 60)]
+              + [{"d": f"19{y:02d}-01-01", "c": 10.0 + (y % 5)} for y in range(60)]
               + [{"d": "2026-08-01", "c": 40.0}])
     out = umd.cape_sigma(series, epoch=1900)
     assert out["cape"] == 40.0 and out["epoch"] == 1900

@@ -2084,7 +2084,9 @@ def parse_cape_table(html_text):
     out = []
     for date_txt, val in rows:
         try:
-            d = datetime.datetime.strptime(date_txt, "%b %d, %Y").date()
+            # noqa DTZ007: a calendar month-stamp ("Aug 13, 2026"), not an instant — it is
+            # reduced to a date on the same line and never compared across zones.
+            d = datetime.datetime.strptime(date_txt, "%b %d, %Y").date()  # noqa: DTZ007
             out.append({"d": d.isoformat(), "c": float(val)})
         except ValueError:
             continue
