@@ -1,5 +1,5 @@
 {
- "updated": "2026-08-13T22:52:35Z",
+ "updated": "2026-08-13T23:51:27Z",
  "snapshot_date": "2026-08-13",
  "artificial_analysis": {
   "cn_best": "GLM-5.2",
@@ -876,8 +876,8 @@
   "license": "AI Gateway Leaderboard Data (c) Vercel, CC BY 4.0"
  },
  "ollama": {
-  "cn": 282274298,
-  "us": 455745266,
+  "cn": 282275298,
+  "us": 455747488,
   "cn_top": [
    {
     "name": "deepseek-r1",
@@ -919,9 +919,7 @@
    }
   ],
   "n_models": 233,
-  "asof": "2026-08-13",
-  "cn_per_day": 491923,
-  "us_per_day": 621040
+  "asof": "2026-08-13"
  },
  "kalshi": {
   "asof": "2026-08-13",
