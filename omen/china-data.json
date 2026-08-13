@@ -1,5 +1,5 @@
 {
- "updated": "2026-08-13T11:54:34Z",
+ "updated": "2026-08-13T13:28:03Z",
  "snapshot_date": "2026-08-13",
  "artificial_analysis": {
   "cn_best": "GLM-5.2",
@@ -442,8 +442,8 @@
    "QwenLM/qwen-code",
    "XiaomiMiMo/MiMo-Audio",
    "XiaomiMiMo/MiMo-Code",
-   "deepseek-ai/3FS",
    "deepseek-ai/FlashMLA",
+   "deepseek-ai/deepseek-harness",
    "zai-org/GLM-OCR",
    "zai-org/Open-AutoGLM"
   ],
@@ -531,40 +531,40 @@
  },
  "openrouter_week": {
   "week": "2026-08-10",
-  "cn_share": 0.5637,
+  "cn_share": 0.5635,
   "us_share": 0.3263,
-  "spi": 1.728,
-  "total_tokens": 38090933644241
+  "spi": 1.727,
+  "total_tokens": 38635908019299
  },
  "vercel_gateway": {
   "asof": "2026-08-13",
-  "cn_share": 54.94,
-  "us_share": 45.02,
-  "spi": 1.22,
+  "cn_share": 55.7,
+  "us_share": 44.25,
+  "spi": 1.259,
   "top_cn": [
    {
     "lab": "deepseek",
-    "share": 32.34
+    "share": 31.66
    },
    {
     "lab": "stepfun",
-    "share": 14.13
+    "share": 14.36
    },
    {
     "lab": "moonshotai",
-    "share": 4.34
+    "share": 4.8
    },
    {
     "lab": "zai",
-    "share": 2.32
+    "share": 3.05
    },
    {
     "lab": "minimax",
-    "share": 0.81
+    "share": 0.83
    },
    {
     "lab": "xiaomi",
-    "share": 0.52
+    "share": 0.51
    }
   ],
   "series": [
@@ -870,15 +870,15 @@
    },
    {
     "d": "2026-08-13",
-    "cn": 54.94,
-    "us": 45.02
+    "cn": 55.7,
+    "us": 44.25
    }
   ],
   "license": "AI Gateway Leaderboard Data (c) Vercel, CC BY 4.0"
  },
  "ollama": {
-  "cn": 282065898,
-  "us": 455432266,
+  "cn": 282267398,
+  "us": 455433869,
   "cn_top": [
    {
     "name": "deepseek-r1",
@@ -890,7 +890,7 @@
    },
    {
     "name": "qwen3",
-    "pulls": 34000000
+    "pulls": 34100000
    },
    {
     "name": "qwen2.5-coder",
@@ -951,7 +951,7 @@
    },
    {
     "label": "Best AI at end of 2026: Claude",
-    "p": 0.662,
+    "p": 0.672,
     "ticker": "KXLLM1-26DEC31-A",
     "series": "kxllm1"
    }
@@ -1005,14 +1005,14 @@
     "wk": 668022
    },
    {
-    "pkg": "zhipuai",
-    "wk": 98832
+    "pkg": "zai-sdk",
+    "wk": 26963
    }
   ],
   "us": [
    {
-    "pkg": "openai",
-    "wk": 108822290
+    "pkg": "anthropic",
+    "wk": 50763819
    }
   ],
   "asof": "2026-08-13"
