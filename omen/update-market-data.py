@@ -32,6 +32,7 @@ Env for --alert (all optional): TELEGRAM_BOT_TOKEN + TELEGRAM_CHAT_ID, and/or NT
 No third-party dependencies. Run it from the folder that serves the dashboard.
 """
 import urllib.request, urllib.error, urllib.parse, json, datetime, re, sys, os, time, math, gzip
+import html, io, zipfile
 import xml.etree.ElementTree as ET
 
 HERE = os.path.dirname(os.path.abspath(__file__))
@@ -59,12 +60,74 @@ LEVERED_AI = ["CRWV", "ORCL", "NBIS", "IREN"]
 # power/electricity: XLU proxies data-center power-demand pull (kept OUT of the
 # breadth basket so it never moves that signal); ELEC_CPI is residents' bills.
 POWER_PROXY = ["XLU"]
+# ---- Rosenberg/Bernstein cross-check tape (handover 2026-08-12) ----
+# Rate-sensitive real economy: homebuilders are the cleanest listed read on the part
+# of the economy that AI capex is NOT holding up. Weakness here while the AI basket
+# runs is the fragility Rosenberg points at ("without AI we'd be in recession").
+REAL_ECON = ["ITB", "XHB"]
+# Rotation confirmation: ACWI-ex-US. Sustained ex-US leadership over the AI basket is
+# Bernstein's regime-change tell, so it is a relative-strength line, not a level.
+ROTATION = ["ACWX"]
+# Correlation breadth: the eleven S&P sector SPDRs, rolled against the AI basket. The
+# claim under test is that only health care and staples are still uncorrelated — that
+# is a count of sectors above a threshold, which needs every sector, not a sample.
+# XLU is already fetched as the power proxy; the fetch list is deduped, the mapping is not.
+SECTORS = {"XLK": "technology", "XLF": "financials", "XLV": "health care",
+           "XLP": "staples", "XLE": "energy", "XLI": "industrials",
+           "XLY": "discretionary", "XLU": "utilities", "XLB": "materials",
+           "XLRE": "real estate", "XLC": "communication"}
+# Gold-silver froth (macro strip, backdrop only): the ratio is the classic
+# speculative-metals tell and needs no new venue — both are liquid US ETFs.
+FROTH = ["GLD", "SLV"]
+# Fetched only to feed a computed block — nothing charts their closes, and market-data.json
+# is rewritten into R2 every 30 minutes, so their series are dropped before the file is
+# written (prune_payload). Publishing all of them raised the file 173 KB -> 326 KB; the
+# eleven sector SPDRs alone were 45 KB of closes behind eleven published correlations.
+# XLU is deliberately absent: it is also POWER_PROXY, which the power panel does chart.
+TRANSIENT_EQUITY = frozenset(set(SECTORS) - set(POWER_PROXY) | set(FROTH) | set(ROTATION))
+# Same idea on the FRED side: these are inputs to a derived block, and what the pages read
+# is the block. HH_EQ_FIN keeps its series (the household-allocation chart runs on it) and
+# IG_OAS keeps its own (the HY−IG gap is charted); the rest publish last value only.
+FRED_SUMMARY_ONLY = frozenset({"RES_CONS", "INV_EQUIP", "INV_IP", "REAL_GDP", "HH_EQ_TOT",
+                               "HOUST", "ALTSALES", "TRIM_PCE", "TERM_PREM",
+                               "FEDFUNDS", "NROU"})
 FRED = {"BAMLH0A0HYM2": "HY_OAS", "BAMLH0A3HYC": "CCC_OAS", "NFCI": "NFCI",
         "GDP": "GDP", "CUSR0000SEHF01": "ELEC_CPI",
         # claims-watch tape (singularity claims panel): core goods CPI (deflation claim),
         # unemployment + prime-age LFPR (displacement claim), realized real GDP growth SAAR
         "CUSR0000SACL1E": "CORE_GOODS_CPI", "UNRATE": "UNRATE",
-        "LNS11300060": "LFPR_PRIME", "A191RL1Q225SBEA": "GDP_GROWTH"}
+        "LNS11300060": "LFPR_PRIME", "A191RL1Q225SBEA": "GDP_GROWTH",
+        # ---- Rosenberg/Bernstein parameter set (handover 2026-08-12) ----
+        # Credit family extension: the IG leg. HY_OAS alone is a level; HY minus IG is
+        # the compensation demanded for leverage specifically, which is the thing that
+        # widens first when the financing bid for AI infrastructure thins out.
+        "BAMLC0A0CM": "IG_OAS",
+        # Capital misallocation (Bernstein): private residential construction is the
+        # denominator of the data-center/housing ratio. The data-center numerator is
+        # NOT on FRED — despite the handover saying it mirrors both — so it is parsed
+        # from the Census C30 workbook directly; see census_c30_series().
+        "PRRESCONS": "RES_CONS",
+        # Ex-AI capex residual: BEA nonresidential fixed investment in equipment and in
+        # intellectual-property products, the two lines AI capex actually lands in.
+        # Read off FRED rather than the BEA API so no key is needed.
+        "Y033RC1Q027SBEA": "INV_EQUIP", "Y001RC1Q027SBEA": "INV_IP",
+        # Real GDP level, for the GDP-ex-AI contribution arithmetic (GDP_GROWTH above
+        # is the SAAR rate; this is the chained level the AI share is subtracted from).
+        "GDPC1": "REAL_GDP",
+        # Positioning: Fed Z.1 B.101 households — directly and indirectly held corporate
+        # equities as a % of financial assets (and of total assets). This is the
+        # "record household equity allocation" leg, back to 1945 so a percentile means
+        # something. Note the transcript's 73% uses a narrower denominator (equities
+        # over equities+bonds+cash); these two are the published Z.1 measures.
+        "BOGZ1FL153064486Q": "HH_EQ_FIN", "BOGZ1FL153064476Q": "HH_EQ_TOT",
+        # Real-economy check: rate-sensitive demand while AI runs.
+        "HOUST": "HOUST", "ALTSALES": "ALTSALES",
+        # Macro context strip (backdrop only, never a gauge input): Dallas Fed
+        # trimmed-mean PCE, the ACM 10y fitted term premium (this IS the NY Fed
+        # ACM series, published on FRED, so the .xls download the handover lists is
+        # not needed), and the policy rate the Taylor-rule gap is measured against.
+        "PCETRIM12M159SFRBDAL": "TRIM_PCE", "THREEFYTP10": "TERM_PREM",
+        "FEDFUNDS": "FEDFUNDS", "NROU": "NROU"}
 SKEW_SYMS = ["NVDA", "SOXX"]
 # LEAPS tail: drawdown levels per symbol; the last one is the bubble-market trigger level
 TAIL_LEVELS = {"NVDA": [-30, -50], "SOXX": [-25, -40]}
@@ -1379,7 +1442,34 @@ GAUGE_REFS = {
     "credit_ccc_oas": (8.5, 14),
     "equity_nvda_dd": (0, 50),
     "equity_soxx_dd": (0, 40),
+    # ---- structural fragility (Rosenberg/Bernstein) — a SECOND composite, not the gauge ----
+    # These mirror the `frag: true` rows of GAUGE_REFS in omen-common.js. They are scored
+    # by compute_fragility() and published under data["fragility"]; compute_gauge() does
+    # not read them, so the headline crash-pressure score and every snapshot ever taken of
+    # it stay comparable. See the note on the JS table for why they are kept apart.
+    "mis_dc_housing": (0.03, 0.12),
+    "mis_ex_ai_capex": (-8, 4),
+    "mis_gdp_ex_ai": (-3, 0),
+    "pos_hh_equity": (50, 100),
+    "pos_margin_yoy": (0, 30),
+    "pos_fund_cash": (-5, -1.5),
+    "pos_fms_gap": (0, 13),
+    "pos_cot_ndx": (50, 100),
+    "val_cape_sigma": (1, 3),
+    "val_corr_breadth": (20, 90),
+    "val_spec_blur": (5, 30),
+    "cred_gap_z": (-1, 2),
 }
+# The rows above that belong to the fragility composite rather than the crash gauge, named
+# rather than derived from the key prefix: "credit_hy_oas" and "cred_gap_z" differ by two
+# characters, and a prefix rule that silently reclassified one of them would move the
+# headline gauge without changing a single number. test_gauge_refs.py pins both sides.
+FRAG_REFS = frozenset({
+    "mis_dc_housing", "mis_ex_ai_capex", "mis_gdp_ex_ai",
+    "pos_hh_equity", "pos_margin_yoy", "pos_fund_cash", "pos_fms_gap", "pos_cot_ndx",
+    "val_cape_sigma", "val_corr_breadth", "val_spec_blur",
+    "cred_gap_z",
+})
 
 
 def sc(x, ref):
@@ -1462,6 +1552,14 @@ def gauge_groups(fam):
     lead = mean_or_none([fam.get("pred"), fam.get("opt"), fam.get("credit")])
     conf = mean_or_none([fam.get("vol"), fam.get("equity")])
     return lead, conf
+
+
+# The two blended-gauge bands, mirroring OMEN.REGIME in omen-common.js. compute_regime
+# below still spells them out inline (with the reasoning that goes with each); these are
+# named so the credit-leads-equity clock can say "the credit family reads stressed" in
+# the same numbers the regime does, instead of inventing a third threshold.
+REGIME_STRESSED = 55
+REGIME_ELEVATED = 35
 
 
 def compute_regime(gauge, price):
@@ -1694,6 +1792,768 @@ def short_interest():
     return out
 
 
+# ================= Rosenberg/Bernstein parameter set (handover 2026-08-12) =================
+# Source: David Rosenberg & Rich Bernstein, "What Ends the AI Trade – And What They Own
+# Instead" (Excess Returns). Everything below is Tier 1 in the handover's own taxonomy —
+# free, keyless, and fetched here — except the four fields in SURVEY_MANUAL, which have no
+# machine-readable free source and follow update-capex-data.py's MANUAL idiom instead.
+#
+# Two corrections to the handover's source table, both verified against the live endpoints:
+#   - FRED does NOT mirror the Census data-center construction series (PRDCCON, PRDCCONS,
+#     TLDCCONS and two more all 404). The number is parsed out of the C30 workbook.
+#   - The NY Fed ACM term premium does not need the .xls download: it is FRED THREEFYTP10.
+# And one substitution: Shiller's ie_data.xls is OLE2/BIFF, which no stdlib module reads,
+# so CAPE comes from multpl.com's monthly table of the same Shiller series.
+
+# Census "Value of Private Construction Put in Place", SA annual rate. Same workbook
+# update-capex-data.py reads for its latest-month tile; here the whole row is kept so the
+# data-center/housing ratio has a history to trend.
+C30_URL = "https://www.census.gov/construction/c30/xlsx/privsa.xlsx"
+C30_DC_ROW = "Data center"          # nested under "Office"; an loose match hits the parent
+C30_HEADER_CELL = "Type of Construction:"
+# FINRA customer margin balances. The 2021-03 path is just where the file was first
+# uploaded — FINRA overwrites it in place every month, so it is the live series.
+FINRA_MARGIN_URL = "https://www.finra.org/sites/default/files/2021-03/margin-statistics.xlsx"
+FINRA_MARGIN_COL = "Debit Balances in Customers' Securities Margin Accounts"
+# OCC clears every listed US option; this is the whole market's contract volume, free.
+OCC_VOLUME_URL = "https://marketdata.theocc.com/mdapi/volume-totals"
+# Shiller CAPE, monthly back to 1871.
+CAPE_URL = "https://www.multpl.com/shiller-pe/table/by-month"
+CAPE_EPOCH = 1900                   # the handover's comparison window: "vs. 1900+ history"
+# Speculation-blur ratio: Polymarket event volume that is entertainment against event
+# volume that is a financial-macro hedge. Gamma caps a page at 100 events, so both legs are
+# deliberately "top 100 events per tag, deduped by event id" — a stable like-for-like
+# ratio, not a claim about total venue volume. Tag slugs verified live 2026-08-13;
+# "economics" and "entertainment" exist but return ~nothing, so they are not used.
+POLY_SPEC_TAGS = ["sports", "politics", "pop-culture"]
+POLY_HEDGE_TAGS = ["economy", "finance", "business", "fed", "inflation", "stocks"]
+POLY_TAG_LIMIT = 100
+# Credit–price divergence: "AI basket at/near highs WHILE credit spreads widen".
+DIVERGENCE_NEAR_HIGH_PCT = 2.0      # within this much of the window high counts as "at highs"
+DIVERGENCE_WEEKS = 8                # the M in "≥ N bp over M weeks"
+DIVERGENCE_BP = 25                  # the N
+CREDIT_CLOCK_MONTHS = 12            # Rosenberg: credit figures it out ~a year before equity
+CORR_WINDOW = 60                    # trading days in the rolling sector correlation
+CORR_HOT = 0.7                      # "count of sectors with corr > 0.7"
+ROTATION_WINDOW = 63                # ~one quarter of ex-US-vs-AI relative strength
+# Fields with no keyless machine-readable source. The handover puts the first three in
+# Tier 2/3 and names the press/manual route; they are published here as explicit nulls with
+# their provenance so a panel can say "not updated" instead of quietly implying it is live.
+SURVEY_MANUAL = {
+    "ici_cash_pct": {"value": 1.6, "asof": "2026-05",
+                     "note": "ICI Trends in Mutual Fund Investing, equity-fund liquidity "
+                             "ratio. Monthly HTML release, no API — update by hand.",
+                     "src": "https://www.ici.org/research/stats"},
+    "fms_recession_pct": {"value": 2.0, "asof": "2026-05",
+                          "note": "BofA Global Fund Manager Survey, share of PMs expecting "
+                                  "a downturn. Subscription product; the headline is "
+                                  "reported in the press within ~1–2 days.",
+                          "src": "https://www.bofaml.com"},
+    "fms_base_rate_pct": {"value": 15.0, "asof": "historical",
+                          "note": "Long-run base rate the survey reading is measured "
+                                  "against, per the transcript.",
+                          "src": "https://www.bofaml.com"},
+    "umich_stock_up_pctile": {"value": None, "asof": None,
+                              "note": "U. Michigan Surveys of Consumers, probability of a "
+                                      "stock-market increase, as a percentile of its own "
+                                      "history. Free data tables, no API — update by hand.",
+                              "src": "https://data.sca.isr.umich.edu/data-archive/mine.php"},
+}
+
+
+# ---------- xlsx (a second, narrower reader than update-capex-data.py's) ----------
+# update-capex-data.py carries xlsx_sheets/xlsx_strings/xlsx_rows for the EIA-860M and C30
+# workbooks. They are not shared because this repo has no local-import convention between
+# the fetchers (each is a standalone stdlib script), and because that reader only looks at
+# <v> elements: it returns None for every t="inlineStr" cell, which is exactly how FINRA
+# writes its date column. Keep both readers honest — if one grows a fix, check the other.
+XLNS = "{http://schemas.openxmlformats.org/spreadsheetml/2006/main}"
+XLREL = "{http://schemas.openxmlformats.org/package/2006/relationships}"
+XLRID = "{http://schemas.openxmlformats.org/officeDocument/2006/relationships}id"
+
+
+def xl_col(ref):
+    """'AB12' -> 27. Empty cells are omitted from the XML, so position has to be read
+    off the cell reference; counting siblings shifts every later column left."""
+    n = 0
+    for ch in ref or "":
+        if not ch.isalpha():
+            break
+        n = n * 26 + (ord(ch.upper()) - 64)
+    return n - 1
+
+
+def xl_sheet_paths(zf):
+    rels = {r.get("Id"): r.get("Target") for r in
+            ET.fromstring(zf.read("xl/_rels/workbook.xml.rels")).iter(XLREL + "Relationship")}
+    wb = ET.fromstring(zf.read("xl/workbook.xml"))
+    return ["xl/" + rels[s.get(XLRID)].lstrip("/")
+            for s in wb.iter(XLNS + "sheet") if rels.get(s.get(XLRID))]
+
+
+def xl_shared(zf):
+    try:
+        root = ET.fromstring(zf.read("xl/sharedStrings.xml"))
+    except KeyError:
+        return []
+    return ["".join(t.text or "" for t in si.iter(XLNS + "t")) for si in root]
+
+
+def xl_rows(zf, path, shared):
+    """One sheet as lists of cell values. Handles the three ways a cell carries text:
+    a shared-string index (t="s"), an inline string (t="inlineStr"), and a bare <v>."""
+    with zf.open(path) as f:
+        for _event, el in ET.iterparse(f, events=("end",)):
+            if el.tag != XLNS + "row":
+                continue
+            row = []
+            for c in el:
+                if c.get("t") == "inlineStr":
+                    node = c.find(XLNS + "is")
+                    val = "".join(t.text or "" for t in node.iter(XLNS + "t")) if node is not None else None
+                else:
+                    v = c.find(XLNS + "v")
+                    if v is None or v.text is None:
+                        continue
+                    val = shared[int(v.text)] if c.get("t") == "s" else v.text
+                i = xl_col(c.get("r"))
+                if i < 0:
+                    continue
+                row += [None] * (i + 1 - len(row))
+                row[i] = val
+            yield row
+            el.clear()
+
+
+def open_xlsx(blob):
+    """(zipfile, shared strings) or (None, None) when the bytes are not a workbook.
+    A 200 with an HTML error page is the normal failure here, not an exception."""
+    try:
+        zf = zipfile.ZipFile(io.BytesIO(blob))
+        return zf, xl_shared(zf)
+    except (zipfile.BadZipFile, KeyError, ET.ParseError):
+        return None, None
+
+
+# ---------- Census C30: the data-center construction row, as a series ----------
+def c30_month(text):
+    """'May\n2026p' -> '2026-05'. The revision/preliminary suffix is not part of it."""
+    m = re.match(r"\s*([A-Za-z]{3,})\s*\n?\s*(\d{4})[pr]?\s*$", text or "")
+    if not m:
+        return None
+    name = m.group(1).lower()[:3]
+    hit = next((i for i, mo in enumerate(C30_MONTHS) if mo.startswith(name)), None)
+    return f"{m.group(2)}-{hit + 1:02d}" if hit is not None else None
+
+
+C30_MONTHS = ["january", "february", "march", "april", "may", "june",
+              "july", "august", "september", "october", "november", "december"]
+
+
+def c30_value_columns(header_cells, pct_col):
+    """{column index: 'YYYY-MM'} for the *dollar* columns of a C30 header row.
+
+    The sheet is two tables sharing one header: six months of values, then a "Percent
+    change Jun 2026 from -" block whose sub-columns are headed with a month too ("May
+    2026", "Jun 2025"). Those parse as months and are not dollars — reading them as the
+    year-ago level turned a +53% year into a +156,386% one.
+
+    Two independent guards, because the banner text is not a contract: everything at or
+    right of the "Percent change" banner is dropped, and scanning stops at the first
+    repeated month. The percent block's sub-columns are by construction the prior month
+    and the year-ago month, so both of them are always already in the value block."""
+    months, seen = {}, set()
+    for i, cell in enumerate(header_cells):
+        if not i or (pct_col is not None and i >= pct_col):
+            continue
+        ym = c30_month(cell)
+        if not ym:
+            continue
+        if ym in seen:
+            break
+        seen.add(ym)
+        months[i] = ym
+    return months
+
+
+def parse_c30_series(blob):
+    """Every month of data-center construction put in place in the workbook (SAAR $M).
+
+    Matched on the exact stripped label: "Data center" is nested under "Office", and a
+    substring match picks the parent row up and overstates the series by ~1.8x."""
+    zf, shared = open_xlsx(blob)
+    if zf is None:
+        return None
+    for path in xl_sheet_paths(zf):
+        months, row, pct_col = None, None, None
+        for cells in xl_rows(zf, path, shared):
+            if not cells:
+                continue
+            if months is None:
+                hit = next((i for i, c in enumerate(cells)
+                            if isinstance(c, str) and c.strip().startswith("Percent change")), None)
+                if hit is not None:
+                    pct_col = hit
+            if not isinstance(cells[0], str):
+                continue
+            if months is None and cells[0].strip() == C30_HEADER_CELL:
+                months = c30_value_columns(cells, pct_col)
+            elif months is not None and cells[0].strip() == C30_DC_ROW:
+                row = cells
+                break
+        if not months or not row:
+            continue
+        out = []
+        for i in sorted(months, key=lambda k: months[k]):
+            try:
+                out.append({"d": months[i] + "-01", "c": float(row[i])})
+            except (IndexError, TypeError, ValueError):
+                continue
+        return out or None
+    return None
+
+
+def census_dc_construction():
+    return parse_c30_series(get_bytes(C30_URL))
+
+
+# ---------- FINRA customer margin debt ----------
+def parse_finra_margin(blob):
+    """[{'d': 'YYYY-MM-01', 'c': debit balances $M}] oldest-first.
+
+    The workbook is one sheet, newest month first, with the date column written as an
+    inline string ("2026-06") rather than a date serial."""
+    zf, shared = open_xlsx(blob)
+    if zf is None:
+        return None
+    for path in xl_sheet_paths(zf):
+        col, out = None, []
+        for cells in xl_rows(zf, path, shared):
+            if col is None:
+                if cells and FINRA_MARGIN_COL in [str(c).strip() if c else c for c in cells]:
+                    col = [str(c).strip() if c else c for c in cells].index(FINRA_MARGIN_COL)
+                continue
+            if not cells or not isinstance(cells[0], str):
+                continue
+            ym = re.fullmatch(r"(\d{4})-(\d{2})", cells[0].strip())
+            if not ym:
+                continue
+            try:
+                out.append({"d": f"{cells[0].strip()}-01", "c": float(cells[col])})
+            except (IndexError, TypeError, ValueError):
+                continue
+        if out:
+            return sorted(out, key=lambda r: r["d"])
+    return None
+
+
+def finra_margin():
+    return parse_finra_margin(get_bytes(FINRA_MARGIN_URL))
+
+
+# ---------- OCC total options volume ----------
+def occ_volume():
+    """Whole-market cleared option contract volume, with OCC's own 52-week bounds.
+
+    The options-to-share ratio the handover asks for needs a total US share-volume leg,
+    which has no free keyless feed; contract volume against its own 52-week range is the
+    part that is honestly available, and it is what the panel says it is."""
+    j = json.loads(get(f"{OCC_VOLUME_URL}?report_date={datetime.date.today().isoformat()}"))
+    e = j.get("entity") or {}
+    opts, hi, lo = e.get("optionsVolume"), e.get("fiftytwo_week_high"), e.get("fiftytwo_week_low")
+    if not opts or not hi or not lo or hi <= lo:
+        return None
+    return {"options": int(opts), "futures": int(e.get("futuresVolume") or 0),
+            "wk52_high": int(hi), "wk52_low": int(lo),
+            "monthly_avg": int(e.get("monthlyDailyAverage") or 0),
+            "yearly_avg": int(e.get("yearlyDailyAverage") or 0),
+            "pct_of_range": round((opts - lo) / (hi - lo) * 100, 1),
+            "vs_year_avg_pct": (round((opts / e["yearlyDailyAverage"] - 1) * 100, 1)
+                                if e.get("yearlyDailyAverage") else None)}
+
+
+# ---------- Shiller CAPE ----------
+def parse_cape_table(html_text):
+    """multpl.com's monthly Shiller-CAPE table -> [{'d','c'}] oldest-first.
+
+    Entities are unescaped first: the value cell is prefixed with an en-space written as
+    &#x2002;, and a regex run over the raw markup reads that entity's digits as the value."""
+    text = html.unescape(html_text)
+    rows = re.findall(r"<td>\s*([A-Z][a-z]{2} \d{1,2}, \d{4})\s*</td>\s*<td>\s*(-?[\d.]+)\s*</td>",
+                      text)
+    out = []
+    for date_txt, val in rows:
+        try:
+            d = datetime.datetime.strptime(date_txt, "%b %d, %Y").date()
+            out.append({"d": d.isoformat(), "c": float(val)})
+        except ValueError:
+            continue
+    return sorted(out, key=lambda r: r["d"]) or None
+
+
+def shiller_cape():
+    return parse_cape_table(get(CAPE_URL))
+
+
+# ---------- Polymarket speculation-blur ----------
+def poly_tag_volume(slug, limit=POLY_TAG_LIMIT):
+    """{event id: volume} for one tag's top events by volume. Keyed by id so the caller
+    can union several tags without double-counting an event that carries both."""
+    url = ("https://gamma-api.polymarket.com/events?closed=false&order=volume"
+           f"&ascending=false&limit={limit}&tag_slug={urllib.parse.quote(slug)}")
+    out = {}
+    for e in json.loads(get(url)):
+        try:
+            vol = float(e.get("volume") or 0)
+        except (TypeError, ValueError):
+            continue
+        if vol > 0 and e.get("id"):
+            out[str(e["id"])] = vol
+    return out
+
+
+def spec_blur():
+    """Entertainment betting volume over financial-hedging volume on Polymarket.
+
+    Bernstein's "speculation blurs into everything" tell, made countable. A tag that
+    fails to fetch is dropped and named rather than treated as zero volume, because a
+    zero on either leg moves the ratio far more than a missing tag should."""
+    legs, missing = {}, []
+    for name, tags in (("spec", POLY_SPEC_TAGS), ("hedge", POLY_HEDGE_TAGS)):
+        merged = {}
+        for slug in tags:
+            try:
+                merged.update(poly_tag_volume(slug))
+            except Exception as e:
+                missing.append(slug)
+                print(f"  spec_blur {slug}: FAIL {e}")
+        legs[name] = merged
+    spec_v = sum(legs["spec"].values())
+    hedge_v = sum(legs["hedge"].values())
+    if not spec_v or not hedge_v:
+        return None
+    return {"spec_usd": round(spec_v), "hedge_usd": round(hedge_v),
+            "spec_events": len(legs["spec"]), "hedge_events": len(legs["hedge"]),
+            "ratio": round(spec_v / hedge_v, 2),
+            "spec_tags": POLY_SPEC_TAGS, "hedge_tags": POLY_HEDGE_TAGS,
+            "missing_tags": missing, "limit": POLY_TAG_LIMIT}
+
+
+# ---------- derived: pure math, unit-tested in test_update_market_data.py ----------
+def pearson(xs, ys):
+    """Correlation of two equal-length samples. None when either has no variance —
+    a flat series has no correlation, and 0 would read as "uncorrelated", which is a
+    different and much stronger claim."""
+    n = min(len(xs), len(ys))
+    if n < 3:
+        return None
+    xs, ys = xs[-n:], ys[-n:]
+    mx, my = sum(xs) / n, sum(ys) / n
+    sxx = sum((x - mx) ** 2 for x in xs)
+    syy = sum((y - my) ** 2 for y in ys)
+    if sxx <= 0 or syy <= 0:
+        return None
+    sxy = sum((x - mx) * (y - my) for x, y in zip(xs, ys))
+    return sxy / math.sqrt(sxx * syy)
+
+
+def returns(series):
+    """Close series -> simple returns. Zero/absent prior closes are skipped, not
+    turned into infinities."""
+    out = []
+    for prev, cur in zip(series, series[1:]):
+        if prev.get("c"):
+            out.append({"d": cur["d"], "r": cur["c"] / prev["c"] - 1})
+    return out
+
+
+def basket_series(equity, syms):
+    """Equal-weight price index of syms, based at 100 on the first shared date.
+
+    Joined on trading date, never on array position: the per-symbol series are carried
+    forward independently when a fetch fails, so one can be a session behind another."""
+    have = [s for s in syms if equity.get(s) and len(equity[s]) > 1]
+    if len(have) < 2:
+        return None
+    dates = set.intersection(*[{p["d"] for p in equity[s]} for s in have])
+    if len(dates) < 2:
+        return None
+    by = {s: {p["d"]: p["c"] for p in equity[s]} for s in have}
+    days = sorted(dates)
+    base = {s: by[s][days[0]] for s in have}
+    out = []
+    for d in days:
+        vals = [by[s][d] / base[s] for s in have if base[s]]
+        if vals:
+            out.append({"d": d, "c": sum(vals) / len(vals) * 100})
+    return out or None
+
+
+def near_high_pct(series):
+    """How far below its own window high the series is, in percent (0 = at the high)."""
+    if not series:
+        return None
+    hi = max(p["c"] for p in series)
+    return (series[-1]["c"] / hi - 1) * 100 if hi else None
+
+
+def spread_change_bp(series, weeks):
+    """Change in a percentage-point spread series over `weeks`, in basis points."""
+    if not series or len(series) < 2:
+        return None
+    last = series[-1]
+    try:
+        cutoff = (datetime.date.fromisoformat(last["d"])
+                  - datetime.timedelta(weeks=weeks)).isoformat()
+    except ValueError:
+        return None
+    older = [p for p in series if p["d"] <= cutoff]
+    if not older:
+        return None
+    return (last["c"] - older[-1]["c"]) * 100
+
+
+def credit_price_divergence(basket, hy, ig):
+    """Rosenberg's "credit figures it out about a year before equity", as a state.
+
+    Divergence = the AI basket is within DIVERGENCE_NEAR_HIGH_PCT of its window high
+    while the HY−IG spread has widened at least DIVERGENCE_BP over DIVERGENCE_WEEKS.
+    Both legs are required: a widening spread in a falling market is just a selloff,
+    and it is the *combination* that the transcript treats as the warning."""
+    if not basket or not hy or not ig:
+        return None
+    by_ig = {p["d"]: p["c"] for p in ig}
+    gap = [{"d": p["d"], "c": p["c"] - by_ig[p["d"]]} for p in hy if p["d"] in by_ig]
+    if len(gap) < 2:
+        return None
+    prox = near_high_pct(basket)
+    widen = spread_change_bp(gap, DIVERGENCE_WEEKS)
+    if prox is None or widen is None:
+        return None
+    at_highs = prox >= -DIVERGENCE_NEAR_HIGH_PCT
+    widening = widen >= DIVERGENCE_BP
+    return {"basket_vs_high_pct": round(prox, 2),
+            "hy_ig_gap": round(gap[-1]["c"], 2),
+            "gap_change_bp": round(widen, 1),
+            "gap_z": zscore([p["c"] for p in gap], gap[-1]["c"]),
+            "at_highs": at_highs, "widening": widening,
+            "diverging": bool(at_highs and widening),
+            "weeks": DIVERGENCE_WEEKS, "bp_threshold": DIVERGENCE_BP,
+            "near_high_pct": DIVERGENCE_NEAR_HIGH_PCT}
+
+
+def credit_clock(credit_score, prev_clock, today):
+    """12-month countdown that starts the first time the credit family reads stressed.
+
+    State, not a level, so it is carried in market-data.json between runs: the whole
+    point is the date of the *first* crossing. It clears when credit falls back under
+    the elevated band — a clock that never resets is a clock nobody believes."""
+    from_prev = (prev_clock or {}).get("started")
+    if credit_score is None:
+        return prev_clock
+    if credit_score < REGIME_ELEVATED:
+        return None
+    started = from_prev
+    if started is None:
+        if credit_score < REGIME_STRESSED:
+            return None
+        started = today
+    try:
+        elapsed = (datetime.date.fromisoformat(today)
+                   - datetime.date.fromisoformat(started)).days / 30.44
+    except ValueError:
+        return None
+    return {"started": started, "months_elapsed": round(elapsed, 1),
+            "months_left": round(max(0.0, CREDIT_CLOCK_MONTHS - elapsed), 1),
+            "horizon_months": CREDIT_CLOCK_MONTHS}
+
+
+def dc_housing_ratio(dc_series, res_series):
+    """Data-center construction over private residential construction, both SAAR $M.
+
+    Bernstein's capital-misallocation measure: the economy pouring concrete for compute
+    instead of for houses. Joined on month; the two come from different publishers of the
+    same Census survey and are not always released in the same week."""
+    if not dc_series or not res_series:
+        return None
+    res = {p["d"][:7]: p["c"] for p in res_series}
+    pairs = [(p["d"][:7], p["c"] / res[p["d"][:7]])
+             for p in dc_series if res.get(p["d"][:7])]
+    if not pairs:
+        return None
+    pairs.sort()
+    hist = [{"d": m + "-01", "c": round(r, 4)} for m, r in pairs]
+    latest = pairs[-1][1]
+    year_ago = f"{int(pairs[-1][0][:4]) - 1}{pairs[-1][0][4:]}"
+    base = next((r for m, r in pairs if m == year_ago), None)
+    return {"ratio": round(latest, 4), "asof": pairs[-1][0],
+            "dc_saar_b": round(dc_series[-1]["c"] / 1000, 1),
+            "res_saar_b": round(res_series[-1]["c"] / 1000, 1),
+            "yoy_pct": round((latest / base - 1) * 100, 1) if base else None,
+            "history": hist[-60:]}
+
+
+def ex_ai_capex(inv_equip, inv_ip, fund):
+    """BEA equipment + IP investment less the AI filers' capex, and its year-over-year.
+
+    The residual is deliberately crude and the numbers do not line up perfectly: BEA is
+    domestic investment, the filers' capex is worldwide, so the subtraction takes a bit
+    too much out. It is still the right sign and the right turning point, which is what
+    "ex-AI capex growth < 0" is being asked for — the note field says so on the page."""
+    if not inv_equip or not inv_ip or not fund:
+        return None
+    equip = {p["d"][:7]: p["c"] for p in inv_equip}
+    ip = {p["d"][:7]: p["c"] for p in inv_ip}
+    quarters = fund.get("quarters") or []
+    capex = fund.get("capex_b") or []
+    rows = []
+    for q, cx in zip(quarters, capex):
+        month = quarter_start_month(q)
+        if month is None or cx is None or month not in equip or month not in ip:
+            continue
+        # filer capex is one quarter's cash; BEA is a seasonally adjusted annual rate
+        rows.append({"q": q, "total_b": equip[month] + ip[month],
+                     "ai_b": cx * 4, "ex_ai_b": equip[month] + ip[month] - cx * 4})
+    if len(rows) < 5:
+        return None
+    idx = {r["q"]: r for r in rows}
+    latest = rows[-1]
+    base = idx.get(f"{int(latest['q'][:4]) - 1}{latest['q'][4:]}")
+    yoy = ((latest["ex_ai_b"] / base["ex_ai_b"] - 1) * 100
+           if base and base["ex_ai_b"] else None)
+    return {"quarter": latest["q"], "total_b": round(latest["total_b"], 1),
+            "ai_b": round(latest["ai_b"], 1), "ex_ai_b": round(latest["ex_ai_b"], 1),
+            "ai_share_pct": round(latest["ai_b"] / latest["total_b"] * 100, 1)
+            if latest["total_b"] else None,
+            "yoy_pct": round(yoy, 1) if yoy is not None else None,
+            "history": [{"q": r["q"], "ex_ai_b": round(r["ex_ai_b"], 1)} for r in rows[-20:]]}
+
+
+def quarter_start_month(q):
+    """'2026Q2' -> '2026-04', the month BEA stamps that quarter's observation with."""
+    m = re.fullmatch(r"(\d{4})Q([1-4])", q or "")
+    return f"{m.group(1)}-{(int(m.group(2)) - 1) * 3 + 1:02d}" if m else None
+
+
+def gdp_ex_ai(gdp_growth, real_gdp, fund):
+    """Trailing 4-quarter real GDP growth, less the arithmetic contribution of AI capex.
+
+    Contribution = the year-over-year *change* in annualized AI capex over the level of
+    GDP. Rosenberg's "without AI we would be in recession" is exactly this residual, and
+    the handover's fragile threshold is under ~0.5%."""
+    if not gdp_growth or not real_gdp or not fund:
+        return None
+    recent = [p["c"] for p in gdp_growth[-4:]]
+    if len(recent) < 4:
+        return None
+    avg = sum(recent) / 4
+    quarters, capex = fund.get("quarters") or [], fund.get("capex_b") or []
+    if len(quarters) < 5 or len(capex) < 5:
+        return None
+    pairs = {q: c for q, c in zip(quarters, capex) if c is not None}
+    latest_q = quarters[-1]
+    base_q = f"{int(latest_q[:4]) - 1}{latest_q[4:]}"
+    if latest_q not in pairs or base_q not in pairs:
+        return None
+    level = real_gdp[-1]["c"]
+    if not level:
+        return None
+    contrib = (pairs[latest_q] - pairs[base_q]) * 4 / level * 100
+    return {"quarter": latest_q, "gdp_4q_avg_pct": round(avg, 2),
+            "ai_contrib_pp": round(contrib, 2),
+            "ex_ai_pct": round(avg - contrib, 2),
+            "gdp_level_b": round(level, 1)}
+
+
+def correlation_breadth(equity, basket, sectors, window=CORR_WINDOW, hot=CORR_HOT):
+    """How much of the S&P now trades as one AI bet.
+
+    Rolling-window correlation of each sector SPDR's daily returns to the AI basket's.
+    The transcript's claim under test is that only health care and staples are still
+    uncorrelated, so the headline is the count above `hot` and the detail is per sector."""
+    if not basket:
+        return None
+    bret = {r["d"]: r["r"] for r in returns(basket)}
+    rows = []
+    for sym, label in sorted(sectors.items()):
+        s = equity.get(sym)
+        if not s or len(s) < window:
+            continue
+        sret = returns(s)
+        dates = [r["d"] for r in sret if r["d"] in bret][-window:]
+        if len(dates) < window // 2:
+            continue
+        by = {r["d"]: r["r"] for r in sret}
+        c = pearson([by[d] for d in dates], [bret[d] for d in dates])
+        if c is not None:
+            rows.append({"sym": sym, "name": label, "corr": round(c, 3), "n": len(dates)})
+    if not rows:
+        return None
+    rows.sort(key=lambda r: -r["corr"])
+    return {"window": window, "threshold": hot, "sectors": rows,
+            "n_hot": sum(r["corr"] > hot for r in rows), "n_total": len(rows),
+            "cool": [r["name"] for r in rows if r["corr"] <= hot]}
+
+
+def rotation_rs(equity, basket, sym="ACWX", window=ROTATION_WINDOW):
+    """Relative strength of ACWI-ex-US against the AI basket.
+
+    Bernstein's regime-change confirmation is *sustained* ex-US leadership, so this
+    reports the change in the RS line over the window, not today's ratio."""
+    s = equity.get(sym)
+    if not s or not basket or len(s) < 2:
+        return None
+    by = {p["d"]: p["c"] for p in basket}
+    line = [{"d": p["d"], "c": p["c"] / by[p["d"]]} for p in s if by.get(p["d"])]
+    if len(line) < 3:
+        return None
+    back = line[max(0, len(line) - 1 - window)]
+    if not back["c"]:
+        return None
+    chg = (line[-1]["c"] / back["c"] - 1) * 100
+    return {"sym": sym, "window": window, "change_pct": round(chg, 2),
+            "leading": chg > 0, "from": back["d"], "to": line[-1]["d"],
+            "history": [{"d": p["d"], "c": round(p["c"], 5)} for p in line[-120:]]}
+
+
+def cape_sigma(series, epoch=CAPE_EPOCH):
+    """Shiller CAPE as standard deviations above its own post-`epoch` mean.
+
+    The handover's bands: calm under 1σ, elevated at 2σ (Grantham's bubble line),
+    stressed at 3σ. Reported with the percentile because sigma on a right-skewed
+    series flatters the tails."""
+    if not series:
+        return None
+    hist = [p["c"] for p in series if p["d"][:4].isdigit() and int(p["d"][:4]) >= epoch]
+    if len(hist) < 60:
+        return None
+    last = series[-1]["c"]
+    mean = sum(hist) / len(hist)
+    sd = math.sqrt(sum((v - mean) ** 2 for v in hist) / len(hist))
+    if sd <= 0:
+        return None
+    return {"cape": round(last, 2), "asof": series[-1]["d"], "epoch": epoch,
+            "mean": round(mean, 2), "sd": round(sd, 2),
+            "sigma": round((last - mean) / sd, 2),
+            "pctile": pctile_rank(hist, last), "n": len(hist)}
+
+
+def taylor_gap(fed_funds, trim_pce, unrate, nrou, r_star=2.0, target=2.0):
+    """Taylor-rule prescription minus the actual funds rate, in percentage points.
+
+    rule = r* + π + 0.5(π − π*) + 0.5·(output gap), with the output gap taken from the
+    unemployment gap through Okun's law (2 points of output per point of unemployment).
+    NROU is a CBO projection that runs a decade into the future, so it is read at the
+    unemployment print's own date rather than at the end of the series — taking its last
+    observation would measure today's rate against the 2036 natural rate."""
+    if not fed_funds or not trim_pce or not unrate or not nrou:
+        return None
+    pi, u, ffr = trim_pce[-1]["c"], unrate[-1]["c"], fed_funds[-1]["c"]
+    at = [p for p in nrou if p["d"] <= unrate[-1]["d"]]
+    if not at:
+        return None
+    rule = r_star + pi + 0.5 * (pi - target) + 1.0 * (at[-1]["c"] - u)
+    return {"rule_pct": round(rule, 2), "actual_pct": round(ffr, 2),
+            "gap_pp": round(rule - ffr, 2), "inflation_pct": round(pi, 2),
+            "unrate_pct": round(u, 2), "nrou_pct": round(at[-1]["c"], 2),
+            "asof": unrate[-1]["d"], "stance": "tight" if rule < ffr else "loose"}
+
+
+def series_percentile(series, keep=None):
+    """Latest observation of a FRED series located in its own history."""
+    if not series:
+        return None
+    vals = [p["c"] for p in series][-keep:] if keep else [p["c"] for p in series]
+    if len(vals) < 8:
+        return None
+    return {"value": round(vals[-1], 2), "asof": series[-1]["d"], "n": len(vals),
+            "pctile": pctile_rank(vals, vals[-1]), "z": zscore(vals, vals[-1]),
+            "min": round(min(vals), 2), "max": round(max(vals), 2)}
+
+
+def ratio_of(a, b):
+    return a / b if a is not None and b else None
+
+
+def dig(obj, *path):
+    """obj["a"]["b"]["c"] where any level may be None or missing."""
+    for key in path:
+        if not isinstance(obj, dict):
+            return None
+        obj = obj.get(key)
+    return obj
+
+
+def compute_fragility(data):
+    """The structural-fragility composite: four families, equal-weighted, 0–100.
+
+    Same arithmetic as compute_gauge — every component normalized onto a written-down
+    calm→stress range, averaged inside its family, families averaged with equal weight so
+    none dominates (the handover's §5 rule). What it deliberately does NOT do is join the
+    crash-pressure gauge: these read at an extreme for years, and a permanently-high
+    headline is a headline nobody reads. Fragility answers "how far is there to fall",
+    the gauge answers "is it starting". Published side by side, never blended.
+
+    Returns None rather than a score built from one surviving family — a composite of
+    one family is not a composite, and it would swing wildly as feeds come and go."""
+    mis = dig(data, "misalloc") or {}
+    pos = dig(data, "positioning") or {}
+    survey = pos.get("survey") or {}
+    cape = dig(data, "cape") or {}
+    corr = dig(data, "corr_breadth") or {}
+
+    fms_gap = None
+    base, now_pct = dig(survey, "fms_base_rate_pct", "value"), dig(survey, "fms_recession_pct", "value")
+    if base is not None and now_pct is not None:
+        fms_gap = base - now_pct
+    cot_ndx = next((c.get("pctile") for c in (dig(data, "cot", "contracts") or [])
+                    if c.get("key") == "ndx"), None)
+    breadth_pct = None
+    if corr.get("n_total"):
+        breadth_pct = corr["n_hot"] / corr["n_total"] * 100
+
+    # Pulled into locals before scoring, one per line, so that the reference name is the
+    # only quoted string in each sc() call. test_gauge_refs.py reads those call sites with
+    # a regex to prove every declared range is actually scored; a nested dig(x, "key")
+    # inside the call reads as the range name and the proof silently checks the wrong thing.
+    dc_ratio = dig(mis, "dc_housing", "ratio")
+    # negated: falling ex-AI capex and falling ex-AI GDP growth are the stressed end
+    ex_ai_yoy = neg(dig(mis, "ex_ai_capex", "yoy_pct"))
+    gdp_ex_ai_pct = neg(dig(mis, "gdp_ex_ai", "ex_ai_pct"))
+    hh_pctile = dig(pos, "hh_equity_fin", "pctile")
+    margin_yoy = dig(pos, "margin_debt", "yoy_pct")
+    fund_cash = neg(dig(survey, "ici_cash_pct", "value"))
+    cape_sig = cape.get("sigma")
+    blur = dig(data, "spec_blur", "ratio")
+    gap_z = dig(data, "credit_div", "gap_z")
+
+    fam = {
+        "mis": mean_or_none([sc(dc_ratio, "mis_dc_housing"),
+                             sc(ex_ai_yoy, "mis_ex_ai_capex"),
+                             sc(gdp_ex_ai_pct, "mis_gdp_ex_ai")]),
+        "pos": mean_or_none([sc(hh_pctile, "pos_hh_equity"),
+                             sc(margin_yoy, "pos_margin_yoy"),
+                             sc(fund_cash, "pos_fund_cash"),
+                             sc(fms_gap, "pos_fms_gap"),
+                             sc(cot_ndx, "pos_cot_ndx")]),
+        "val": mean_or_none([sc(cape_sig, "val_cape_sigma"),
+                             sc(breadth_pct, "val_corr_breadth"),
+                             sc(blur, "val_spec_blur")]),
+        "cred": mean_or_none([sc(gap_z, "cred_gap_z")]),
+    }
+    live = [v for v in fam.values() if v is not None]
+    if len(live) < 2:
+        return None
+    return {"score": round(sum(live) / len(live), 1),
+            "fam": {k: (round(v, 1) if v is not None else None) for k, v in fam.items()},
+            "n_families": len(live)}
+
+
+def neg(x):
+    """Negate, keeping None as None. For the ranges whose stressed end is the low end."""
+    return None if x is None else -x
+
+
 # ---------- alerting ----------
 def send_alert(title, body):
     tok, chat = os.environ.get("TELEGRAM_BOT_TOKEN"), os.environ.get("TELEGRAM_CHAT_ID")
@@ -1800,9 +2660,16 @@ def build():
             "equity": {}, "vol": {}, "skew": {}, "term": {}, "tail": {}, "credit": {},
             "fred": {}, "kalshi": {}, "kalshi_gpu": None, "manifold": [], "metaculus": None,
             "fundamentals": None, "backlog": None, "macro": None, "issuance": None,
-            "insiders": {}, "gpu": None, "cot": None, "short_interest": None}
+            "insiders": {}, "gpu": None, "cot": None, "short_interest": None,
+            # Rosenberg/Bernstein parameter set
+            "occ": None, "spec_blur": None, "credit_div": None, "misalloc": None,
+            "positioning": None, "cape": None, "corr_breadth": None, "rotation": None,
+            "real_econ": None, "macro_strip": None, "fragility": None}
 
-    for sym in EQUITY + POWER_PROXY:
+    # Deduped: XLU is both the power proxy and the utilities sector in SECTORS, and the
+    # cross-check tape must not cost a second download of a series already in hand.
+    tape = EQUITY + POWER_PROXY + REAL_ECON + ROTATION + list(SECTORS) + FROTH
+    for sym in sorted(dict.fromkeys(tape)):
         try:
             data["equity"][sym] = yahoo_series(sym)
             print(f"equity {sym}: {len(data['equity'][sym])} pts")
@@ -1982,6 +2849,197 @@ def build():
     except Exception as e:
         carry(data, prev, "short_interest", e)
 
+    # ---------- Rosenberg/Bernstein parameter set ----------
+    # Raw pulls first, each isolated: these are five unrelated publishers, and one of them
+    # being down must not cost the other four. Only summaries and trimmed histories are
+    # kept — the CAPE table alone is 1,867 monthly points, and market-data.json is
+    # rewritten into R2 every 30 minutes.
+    raw = {}
+    for key, fn in (("c30_dc", census_dc_construction), ("margin", finra_margin),
+                    ("cape", shiller_cape)):
+        try:
+            raw[key] = fn()
+            print(f"{key}: {len(raw[key] or [])} pts"
+                  + (f", last {raw[key][-1]}" if raw[key] else ""))
+        except Exception as e:
+            raw[key] = None
+            print(f"{key}: FAIL {e}")
+
+    try:
+        data["occ"] = occ_volume() or prev.get("occ")
+        if data.get("occ"):
+            print(f"occ: {data['occ']['options'] / 1e6:.1f}M contracts, "
+                  f"{data['occ']['pct_of_range']}% of 52w range")
+    except Exception as e:
+        carry(data, prev, "occ", e)
+
+    try:
+        data["spec_blur"] = spec_blur() or prev.get("spec_blur")
+        if data.get("spec_blur"):
+            s = data["spec_blur"]
+            print(f"spec_blur: {s['ratio']}x (${s['spec_usd'] / 1e6:.0f}M entertainment "
+                  f"vs ${s['hedge_usd'] / 1e6:.0f}M hedging)")
+    except Exception as e:
+        carry(data, prev, "spec_blur", e)
+
+    F = data.get("fred", {})
+    fs = lambda name: (F.get(name) or {}).get("series")     # noqa: E731 - one-liner accessor
+    ai_basket = basket_series(data.get("equity", {}), BASKET)
+
+    # A. credit family extensions
+    try:
+        div = credit_price_divergence(ai_basket, fs("HY_OAS"), fs("IG_OAS"))
+        if div:
+            clock = credit_clock((prev.get("server_gauge") or {}).get("fam", {}).get("credit"),
+                                 (prev.get("credit_div") or {}).get("clock"),
+                                 now.strftime("%Y-%m-%d"))
+            div["clock"] = clock
+            data["credit_div"] = div
+            print(f"credit_div: basket {div['basket_vs_high_pct']}% off high, "
+                  f"HY−IG {div['hy_ig_gap']}pp ({div['gap_change_bp']:+}bp/"
+                  f"{DIVERGENCE_WEEKS}w) diverging={div['diverging']}")
+    except Exception as e:
+        carry(data, prev, "credit_div", e)
+
+    # B. capital misallocation
+    try:
+        mis = {"dc_housing": dc_housing_ratio(raw.get("c30_dc"), fs("RES_CONS")),
+               "ex_ai_capex": ex_ai_capex(fs("INV_EQUIP"), fs("INV_IP"),
+                                          data.get("fundamentals")),
+               "gdp_ex_ai": gdp_ex_ai(fs("GDP_GROWTH"), fs("REAL_GDP"),
+                                      data.get("fundamentals"))}
+        # The C30 workbook only publishes ~13 months of columns, so the ratio's history
+        # is grown across runs the way the skew/term histories are, not re-derived.
+        if mis["dc_housing"]:
+            old = ((prev.get("misalloc") or {}).get("dc_housing") or {}).get("history") or []
+            seen = {p["d"] for p in mis["dc_housing"]["history"]}
+            mis["dc_housing"]["history"] = sorted(
+                [p for p in old if p["d"] not in seen] + mis["dc_housing"]["history"],
+                key=lambda p: p["d"])[-120:]
+        # prune_payload strips the BEA/Census input series from the published file, so a
+        # failed fetch next run cannot rebuild this from a carry-forward — hold the last
+        # computed block instead. Same reason on macro_strip and real_econ below.
+        if not any(mis.values()):
+            data["misalloc"] = prev.get("misalloc")
+        else:
+            data["misalloc"] = mis
+            dch, exa = mis["dc_housing"], mis["ex_ai_capex"]
+            if dch:
+                print(f"misalloc: DC/housing {dch['ratio']} ({dch['yoy_pct']}% YoY), "
+                      f"DC ${dch['dc_saar_b']}B vs residential ${dch['res_saar_b']}B")
+            if exa:
+                print(f"misalloc: ex-AI capex ${exa['ex_ai_b']}B {exa['yoy_pct']}% YoY "
+                      f"({exa['quarter']}, AI is {exa['ai_share_pct']}% of the line)")
+    except Exception as e:
+        carry(data, prev, "misalloc", e)
+
+    # C. positioning & sentiment extremes
+    try:
+        pos = {"hh_equity_fin": series_percentile(fs("HH_EQ_FIN")),
+               "hh_equity_tot": series_percentile(fs("HH_EQ_TOT")),
+               "margin_debt": None, "survey": SURVEY_MANUAL}
+        if raw.get("margin"):
+            mseries = raw["margin"]
+            vals = [p["c"] for p in mseries]
+            yoy = None
+            if len(mseries) > 12 and mseries[-13]["c"]:
+                yoy = round((mseries[-1]["c"] / mseries[-13]["c"] - 1) * 100, 1)
+            pos["margin_debt"] = {
+                "usd_m": mseries[-1]["c"], "asof": mseries[-1]["d"][:7],
+                "yoy_pct": yoy, "pctile": pctile_rank(vals, vals[-1]),
+                "history": [{"d": p["d"], "c": p["c"]} for p in mseries[-120:]]}
+        if any(v for k, v in pos.items() if k != "survey"):
+            data["positioning"] = pos
+            hh = pos["hh_equity_fin"]
+            if hh:
+                print(f"positioning: household equities {hh['value']}% of financial "
+                      f"assets, p{hh['pctile']} of {hh['n']}q ({hh['asof']})")
+            if pos["margin_debt"]:
+                print(f"positioning: margin debt ${pos['margin_debt']['usd_m'] / 1e6:.2f}T "
+                      f"({pos['margin_debt']['yoy_pct']}% YoY)")
+    except Exception as e:
+        carry(data, prev, "positioning", e)
+
+    # E. valuation / contagion cross-checks
+    try:
+        cape = cape_sigma(raw.get("cape"))
+        if cape and raw.get("cape"):
+            cape["history"] = [{"d": p["d"], "c": p["c"]} for p in raw["cape"][-240:]]
+        data["cape"] = cape or prev.get("cape")
+        if data.get("cape"):
+            print(f"cape: {data['cape']['cape']} = {data['cape']['sigma']}σ, "
+                  f"p{data['cape']['pctile']} of {data['cape']['epoch']}+")
+    except Exception as e:
+        carry(data, prev, "cape", e)
+
+    try:
+        data["corr_breadth"] = correlation_breadth(data.get("equity", {}), ai_basket, SECTORS)
+        if data.get("corr_breadth"):
+            c = data["corr_breadth"]
+            print(f"corr_breadth: {c['n_hot']}/{c['n_total']} sectors > {CORR_HOT} "
+                  f"(uncorrelated: {', '.join(c['cool']) or 'none'})")
+    except Exception as e:
+        carry(data, prev, "corr_breadth", e)
+
+    try:
+        data["rotation"] = rotation_rs(data.get("equity", {}), ai_basket)
+        if data.get("rotation"):
+            print(f"rotation: ACWX vs AI basket {data['rotation']['change_pct']:+}% "
+                  f"over {ROTATION_WINDOW}d")
+    except Exception as e:
+        carry(data, prev, "rotation", e)
+
+    try:
+        E = data.get("equity", {})
+        real = {"builders": [{"sym": s, "dd_pct": round(drawdown(E[s]), 2)}
+                             for s in REAL_ECON if E.get(s) and drawdown(E[s]) is not None],
+                "housing_starts": series_percentile(fs("HOUST")),
+                "auto_sales": series_percentile(fs("ALTSALES"))}
+        if not (real["builders"] or real["housing_starts"]):
+            data["real_econ"] = prev.get("real_econ")
+        else:
+            data["real_econ"] = real
+            print("real_econ: " + ", ".join(f"{b['sym']} {b['dd_pct']}%"
+                                            for b in real["builders"]))
+    except Exception as e:
+        carry(data, prev, "real_econ", e)
+
+    # F. macro context strip — backdrop only, never a gauge input
+    try:
+        E = data.get("equity", {})
+        gold, silver = E.get("GLD"), E.get("SLV")
+        gs = None
+        if gold and silver:
+            sv = {p["d"]: p["c"] for p in silver}
+            line = [g["c"] / sv[g["d"]] for g in gold if sv.get(g["d"])]
+            if len(line) > 8:
+                gs = {"ratio": round(line[-1], 2), "pctile": pctile_rank(line, line[-1]),
+                      "n": len(line)}
+        strip = {"taylor": taylor_gap(fs("FEDFUNDS"), fs("TRIM_PCE"),
+                                      fs("UNRATE"), fs("NROU")),
+                 "trimmed_pce": series_percentile(fs("TRIM_PCE")),
+                 "term_premium": series_percentile(fs("TERM_PREM")),
+                 "gold_silver": gs}
+        if not any(strip.values()):
+            data["macro_strip"] = prev.get("macro_strip")
+        else:
+            data["macro_strip"] = strip
+            if strip["taylor"]:
+                t = strip["taylor"]
+                print(f"macro_strip: Taylor rule {t['rule_pct']}% vs FFR {t['actual_pct']}% "
+                      f"(gap {t['gap_pp']:+}pp, {t['stance']})")
+    except Exception as e:
+        carry(data, prev, "macro_strip", e)
+
+    try:
+        data["fragility"] = compute_fragility(data) or prev.get("fragility")
+        if data.get("fragility"):
+            f = data["fragility"]
+            print(f"fragility: {f['score']} over {f['n_families']} families "
+                  + " ".join(f"{k}={v}" for k, v in f["fam"].items() if v is not None))
+    except Exception as e:
+        carry(data, prev, "fragility", e)
+
     # Server-side gauge + regime, embedded so the landing page and the monitor can never
     # disagree about the headline regime. This is also the run's single Polymarket read:
     # it is returned to main() and threaded into the snapshot and the alert, so all three
@@ -2009,10 +3067,28 @@ def build():
     except Exception as e:
         carry(data, prev, "server_gauge", e)   # stale, but its own `at` stamp says so
 
+    prune_payload(data)
     with open(OUT, "w") as f:
         json.dump(data, f)
     print("written:", OUT)
     return data, price
+
+
+def prune_payload(data):
+    """Drop the raw series that exist only to feed a derived block.
+
+    Runs after every computation and immediately before the write, so the arithmetic sees
+    the full history and the file carries the conclusion. The trade is deliberate: a feed
+    that fails on the next run cannot rebuild its block from a carried-forward series,
+    which is why each affected block falls back to its own previous value instead."""
+    equity = data.get("equity") or {}
+    for sym in TRANSIENT_EQUITY:
+        equity.pop(sym, None)
+    for name in FRED_SUMMARY_ONLY:
+        row = (data.get("fred") or {}).get(name)
+        if isinstance(row, dict):
+            row.pop("series", None)
+    return data
 
 
 def write_bundle():

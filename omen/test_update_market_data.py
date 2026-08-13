@@ -1033,3 +1033,532 @@ def test_percentile_of_last_needs_a_year_of_points():
     assert umd.percentile_of_last(vals[::-1]) == round(100.0 / 24, 1)  # latest is the min
     assert umd.percentile_of_last(vals[:6]) is None
     assert umd.percentile_of_last([]) is None
+
+
+# ================= Rosenberg/Bernstein parameter set =================
+
+def _xlsx(sheets, inline=False):
+    """Minimal .xlsx blob: {sheet name: [[cell, ...], ...]}.
+
+    `inline` writes strings as t="inlineStr" instead of through a sharedStrings table,
+    which is how FINRA writes its date column and the exact shape update-capex-data.py's
+    reader returns None for. Both paths are exercised because both are real files.
+    """
+    import io
+    import zipfile
+    from xml.sax.saxutils import escape
+
+    shared, index = [], {}
+
+    def sid(s):
+        if s not in index:
+            index[s] = len(shared)
+            shared.append(s)
+        return index[s]
+
+    def col(n):
+        name = ""
+        while n >= 0:
+            name = chr(ord("A") + n % 26) + name
+            n = n // 26 - 1
+        return name
+
+    parts, names = {}, list(sheets)
+    for i, name in enumerate(names, start=1):
+        xml = ['<worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">'
+               "<sheetData>"]
+        for r, row in enumerate(sheets[name], start=1):
+            xml.append(f'<row r="{r}">')
+            for c, val in enumerate(row):
+                if val is None:
+                    continue                  # a genuinely absent cell, as Excel writes it
+                ref = f"{col(c)}{r}"
+                if isinstance(val, (int, float)):
+                    xml.append(f'<c r="{ref}"><v>{val}</v></c>')
+                elif inline:
+                    xml.append(f'<c r="{ref}" t="inlineStr"><is><t>{escape(val)}</t></is></c>')
+                else:
+                    xml.append(f'<c r="{ref}" t="s"><v>{sid(val)}</v></c>')
+            xml.append("</row>")
+        xml.append("</sheetData></worksheet>")
+        parts[f"xl/worksheets/sheet{i}.xml"] = "".join(xml)
+
+    wb = ['<workbook xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" '
+          'xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships">'
+          "<sheets>"]
+    rels = ['<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/'
+            'relationships">']
+    for i, name in enumerate(names, start=1):
+        wb.append(f'<sheet name="{escape(name)}" sheetId="{i}" r:id="rId{i}"/>')
+        rels.append(f'<Relationship Id="rId{i}" Target="worksheets/sheet{i}.xml" '
+                    'Type="http://schemas.openxmlformats.org/officeDocument/2006/'
+                    'relationships/worksheet"/>')
+    wb.append("</sheets></workbook>")
+    rels.append("</Relationships>")
+
+    ss = ['<sst xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">']
+    ss += [f"<si><t>{escape(s)}</t></si>" for s in shared]
+    ss.append("</sst>")
+
+    buf = io.BytesIO()
+    with zipfile.ZipFile(buf, "w") as z:
+        z.writestr("xl/workbook.xml", "".join(wb))
+        z.writestr("xl/_rels/workbook.xml.rels", "".join(rels))
+        z.writestr("xl/sharedStrings.xml", "".join(ss))
+        for path, xml in parts.items():
+            z.writestr(path, xml)
+    return buf.getvalue()
+
+
+# ---------- Census C30: the percent-change columns are not months ----------
+# Column layout copied from the live workbook (2026-06 release): six dollar columns, then
+# a "Percent change Jun 2026 from -" block whose two sub-columns are headed with a month.
+C30_BANNER = [None, None, None, None, None, None, None, "Percent change\nJun 2026 from -"]
+C30_HEADER = ["Type of Construction:", "Jun\n2026p", "May\n2026r", "Apr\n2026r",
+              "Mar\n2026", "Feb\n2026", "Jun\n2025", "May\n2026", "Jun\n2025"]
+C30_OFFICE = ["    Office", "123000", "122000", "121000", "120000", "119000", "110000",
+              "0.8", "11.8"]
+C30_DC = ["Data center", "68297", "63843", "61859", "58121", "57361", "46850", "7.0", "45.8"]
+
+
+def _c30_blob(rows=None):
+    return _xlsx({"PrivateSA": rows if rows is not None else
+                  [["Value of Private Construction Put in Place"], [], C30_BANNER,
+                   C30_HEADER, C30_OFFICE, C30_DC]})
+
+
+def test_parse_c30_series_reads_every_dollar_column():
+    out = umd.parse_c30_series(_c30_blob())
+    assert out == [{"d": "2025-06-01", "c": 46850.0}, {"d": "2026-02-01", "c": 57361.0},
+                   {"d": "2026-03-01", "c": 58121.0}, {"d": "2026-04-01", "c": 61859.0},
+                   {"d": "2026-05-01", "c": 63843.0}, {"d": "2026-06-01", "c": 68297.0}]
+
+
+def test_parse_c30_series_never_reads_a_percent_change_column_as_a_level():
+    """The bug this exists for: "May 2026" and "Jun 2025" head both a dollar column and a
+    percent-change column. Reading the percent cell as the year-ago level turned a +53%
+    year into a +156,386% one, and nothing about the output looked malformed."""
+    out = umd.parse_c30_series(_c30_blob())
+    assert [p["c"] for p in out] == sorted({46850.0, 57361.0, 58121.0, 61859.0,
+                                            63843.0, 68297.0})
+    assert 7.0 not in [p["c"] for p in out]      # the % change cells
+    assert 45.8 not in [p["c"] for p in out]
+    # one observation per month, so a later join cannot pick the wrong one
+    assert len({p["d"] for p in out}) == len(out)
+
+
+def test_parse_c30_series_stops_at_a_repeated_month_without_the_banner():
+    """Second guard, independent of the banner text: the percent block's sub-columns are
+    by construction the prior month and the year-ago month, both already dollar columns."""
+    no_banner = [["Value of Private Construction Put in Place"], [],
+                 C30_HEADER, C30_DC]
+    out = umd.parse_c30_series(_c30_blob(no_banner))
+    assert len(out) == 6 and max(p["c"] for p in out) == 68297.0
+
+
+def test_parse_c30_series_ignores_the_office_parent_row():
+    out = umd.parse_c30_series(_c30_blob())
+    assert out[-1]["c"] == 68297.0          # not 123000, the Office line it nests under
+
+
+def test_parse_c30_series_missing_row_or_bad_blob_is_none():
+    assert umd.parse_c30_series(_c30_blob([C30_HEADER, C30_OFFICE])) is None
+    assert umd.parse_c30_series(b"<html>503</html>") is None
+
+
+def test_c30_month_parses_the_revision_suffix():
+    assert umd.c30_month("Jun\n2026p") == "2026-06"
+    assert umd.c30_month("May\n2026r") == "2026-05"
+    assert umd.c30_month("September\n2025") == "2025-09"
+    assert umd.c30_month("Percent change") is None
+    assert umd.c30_month(None) is None
+
+
+# ---------- FINRA margin debt ----------
+FINRA_HEADER = ["Year-Month", "Debit Balances in Customers' Securities Margin Accounts",
+                "Free Credit Balances in Customers' Cash Accounts"]
+
+
+def test_parse_finra_margin_reads_inline_string_dates_newest_last():
+    blob = _xlsx({"Customer Margin Balances": [
+        FINRA_HEADER,
+        ["2026-06", 1502072, 217441],
+        ["2026-05", 1415557, 206600],
+        ["2025-06", 1008000, 200000]]}, inline=True)
+    out = umd.parse_finra_margin(blob)
+    assert out == [{"d": "2025-06-01", "c": 1008000.0},
+                   {"d": "2026-05-01", "c": 1415557.0},
+                   {"d": "2026-06-01", "c": 1502072.0}]
+
+
+def test_parse_finra_margin_picks_the_debit_column_not_the_first_number():
+    """The sheet carries three balance columns; only the debit one is margin debt."""
+    blob = _xlsx({"S": [["Year-Month", "Free Credit Balances in Customers' Cash Accounts",
+                         FINRA_MARGIN_DEBIT], ["2026-06", 217441, 1502072]]}, inline=True)
+    assert umd.parse_finra_margin(blob)[-1]["c"] == 1502072.0
+
+
+FINRA_MARGIN_DEBIT = "Debit Balances in Customers' Securities Margin Accounts"
+
+
+def test_parse_finra_margin_bad_blob_is_none():
+    assert umd.parse_finra_margin(b"not a workbook") is None
+
+
+# ---------- Shiller CAPE ----------
+def test_parse_cape_table_decodes_entities_before_matching():
+    """The value cell is prefixed with an en-space written as &#x2002;. A regex run over
+    the raw markup reads that entity's own digits and returns a CAPE of 2002 for every
+    month in the table — a series with zero variance, which then divides by zero."""
+    page = ("<table id='datatable'><tr><th>Date</th><th>Value</th></tr>"
+            "<tr><td>Aug 12, 2026</td><td> &#x2002; 42.34 </td></tr>"
+            "<tr><td>Jul 1, 2026</td><td> &#x2002; 40.73 </td></tr></table>")
+    out = umd.parse_cape_table(page)
+    assert out == [{"d": "2026-07-01", "c": 40.73}, {"d": "2026-08-12", "c": 42.34}]
+
+
+def test_cape_sigma_uses_the_post_epoch_window():
+    series = ([{"d": f"1880-{m:02d}-01", "c": 100.0} for m in range(1, 13)]
+              + [{"d": f"19{y:02d}-01-01", "c": 10.0 + (y % 5)} for y in range(0, 60)]
+              + [{"d": "2026-08-01", "c": 40.0}])
+    out = umd.cape_sigma(series, epoch=1900)
+    assert out["cape"] == 40.0 and out["epoch"] == 1900
+    assert out["n"] == 61                    # the 1880 block is excluded
+    assert out["sigma"] > 3 and out["pctile"] == 100.0
+
+
+def test_cape_sigma_needs_enough_history():
+    assert umd.cape_sigma([{"d": "2026-01-01", "c": 40.0}]) is None
+    assert umd.cape_sigma(None) is None
+
+
+# ---------- A: credit-price divergence and the clock ----------
+def _flat(dates, val):
+    return [{"d": d, "c": val} for d in dates]
+
+
+DAYS = [f"2026-0{m}-{d:02d}" for m in (4, 5, 6) for d in (1, 15)] + ["2026-07-01"]
+
+
+def test_credit_price_divergence_needs_both_legs():
+    rising = [{"d": d, "c": 100.0 + i} for i, d in enumerate(DAYS)]      # basket at highs
+    widening = [{"d": d, "c": 2.0 + i * 0.2} for i, d in enumerate(DAYS)]
+    flat_ig = _flat(DAYS, 1.0)
+    out = umd.credit_price_divergence(rising, widening, flat_ig)
+    assert out["at_highs"] is True and out["widening"] is True and out["diverging"] is True
+
+    # same spreads, but the basket has already rolled over: that is a selloff, not the
+    # divergence the transcript is about
+    falling = [{"d": d, "c": 130.0 - i * 5} for i, d in enumerate(DAYS)]
+    out2 = umd.credit_price_divergence(falling, widening, flat_ig)
+    assert out2["at_highs"] is False and out2["diverging"] is False
+
+    # basket at highs, spreads calm: no signal either
+    out3 = umd.credit_price_divergence(rising, _flat(DAYS, 2.0), flat_ig)
+    assert out3["widening"] is False and out3["diverging"] is False
+
+
+def test_credit_price_divergence_joins_on_date_not_position():
+    """HY and IG are carried forward independently when a fetch fails, so one can be a
+    session behind the other; zipping them would price today's HY against last week's IG."""
+    hy = [{"d": d, "c": 4.0} for d in DAYS]
+    ig = [{"d": d, "c": 1.0} for d in DAYS if d != "2026-05-15"]
+    out = umd.credit_price_divergence(_flat(DAYS, 100.0), hy, ig)
+    assert out["hy_ig_gap"] == 3.0
+
+
+def test_spread_change_bp_measures_over_the_calendar_window():
+    series = [{"d": "2026-04-01", "c": 2.00}, {"d": "2026-05-01", "c": 2.10},
+              {"d": "2026-07-01", "c": 2.50}]
+    assert umd.spread_change_bp(series, 8) == pytest.approx(40.0)   # vs 2026-05-06 cutoff
+    assert umd.spread_change_bp([], 8) is None
+
+
+def test_credit_clock_starts_only_on_a_stressed_credit_family():
+    assert umd.credit_clock(20, None, "2026-08-13") is None          # calm
+    assert umd.credit_clock(40, None, "2026-08-13") is None          # elevated, never crossed
+    started = umd.credit_clock(60, None, "2026-08-13")
+    assert started["started"] == "2026-08-13" and started["months_left"] == 12.0
+
+
+def test_credit_clock_keeps_the_first_crossing_and_counts_down():
+    prior = {"started": "2026-02-13"}
+    out = umd.credit_clock(60, prior, "2026-08-13")
+    assert out["started"] == "2026-02-13"
+    assert out["months_elapsed"] == pytest.approx(5.9, abs=0.1)
+    assert out["months_left"] == pytest.approx(6.1, abs=0.1)
+    # it keeps running while credit stays merely elevated - the clock is about the crossing
+    assert umd.credit_clock(40, prior, "2026-08-13")["started"] == "2026-02-13"
+
+
+def test_credit_clock_resets_when_credit_falls_back_to_calm():
+    assert umd.credit_clock(10, {"started": "2026-02-13"}, "2026-08-13") is None
+
+
+def test_credit_clock_never_goes_negative():
+    out = umd.credit_clock(60, {"started": "2024-01-01"}, "2026-08-13")
+    assert out["months_left"] == 0.0 and out["months_elapsed"] > 12
+
+
+# ---------- B: capital misallocation ----------
+def test_dc_housing_ratio_joins_on_month_and_takes_a_real_year_ago_base():
+    dc = [{"d": "2025-06-01", "c": 46850.0}, {"d": "2026-06-01", "c": 68297.0}]
+    res = [{"d": "2025-06-01", "c": 920447.0}, {"d": "2026-06-01", "c": 877118.0}]
+    out = umd.dc_housing_ratio(dc, res)
+    assert out["ratio"] == pytest.approx(0.0779, abs=1e-4)
+    assert out["yoy_pct"] == pytest.approx(53.0, abs=0.5)
+    assert out["dc_saar_b"] == 68.3 and out["res_saar_b"] == 877.1
+
+
+def test_dc_housing_ratio_drops_months_the_other_side_is_missing():
+    dc = [{"d": "2026-05-01", "c": 63843.0}, {"d": "2026-06-01", "c": 68297.0}]
+    out = umd.dc_housing_ratio(dc, [{"d": "2026-06-01", "c": 877118.0}])
+    assert len(out["history"]) == 1 and out["asof"] == "2026-06"
+    assert umd.dc_housing_ratio(dc, []) is None
+    assert umd.dc_housing_ratio(None, None) is None
+
+
+def _fund(quarters, capex):
+    return {"quarters": quarters, "capex_b": capex}
+
+
+QS = ["2025Q1", "2025Q2", "2025Q3", "2025Q4", "2026Q1", "2026Q2"]
+
+
+def test_ex_ai_capex_annualizes_the_filer_quarter_before_subtracting():
+    """BEA publishes a seasonally adjusted annual rate; the filers report one quarter of
+    cash. Subtracting them raw would leave ~75% of AI capex inside the "ex-AI" line."""
+    equip = [{"d": f"{q[:4]}-{(int(q[5]) - 1) * 3 + 1:02d}-01", "c": 1000.0} for q in QS]
+    ip = [{"d": p["d"], "c": 500.0} for p in equip]
+    out = umd.ex_ai_capex(equip, ip, _fund(QS, [50.0] * 5 + [100.0]))
+    assert out["quarter"] == "2026Q2"
+    assert out["total_b"] == 1500.0
+    assert out["ai_b"] == 400.0                      # 100 x 4, not 100
+    assert out["ex_ai_b"] == 1100.0
+    assert out["ai_share_pct"] == pytest.approx(26.7, abs=0.1)
+    # year-ago quarter is 2025Q2, whose ex-AI line was 1500 - 200 = 1300
+    assert out["yoy_pct"] == pytest.approx(-15.4, abs=0.1)
+
+
+def test_ex_ai_capex_needs_a_year_of_overlap():
+    assert umd.ex_ai_capex([], [], _fund(QS, [1.0] * 6)) is None
+    assert umd.ex_ai_capex(None, None, None) is None
+
+
+def test_quarter_start_month_maps_to_the_bea_stamp():
+    assert umd.quarter_start_month("2026Q1") == "2026-01"
+    assert umd.quarter_start_month("2026Q4") == "2026-10"
+    assert umd.quarter_start_month("2026H1") is None
+
+
+def test_gdp_ex_ai_subtracts_the_change_in_ai_capex_not_its_level():
+    """The arithmetic contribution to growth is the *change* in spending over the level of
+    GDP. Subtracting the level would remove several points of GDP a year and read as a
+    permanent depression."""
+    growth = [{"d": "2025-07-01", "c": 2.0}, {"d": "2025-10-01", "c": 2.0},
+              {"d": "2026-01-01", "c": 2.0}, {"d": "2026-04-01", "c": 2.0}]
+    real = [{"d": "2026-04-01", "c": 24000.0}]
+    out = umd.gdp_ex_ai(growth, real, _fund(QS, [50.0] * 5 + [110.0]))
+    assert out["gdp_4q_avg_pct"] == 2.0
+    # (110 - 50) x 4 / 24000 = 1.0pp
+    assert out["ai_contrib_pp"] == pytest.approx(1.0, abs=0.01)
+    assert out["ex_ai_pct"] == pytest.approx(1.0, abs=0.01)
+
+
+def test_gdp_ex_ai_needs_four_quarters_of_growth():
+    assert umd.gdp_ex_ai([{"d": "2026-04-01", "c": 2.0}], [{"d": "2026-04-01", "c": 1.0}],
+                         _fund(QS, [1.0] * 6)) is None
+
+
+# ---------- E: correlation breadth, rotation ----------
+def test_pearson_is_none_without_variance():
+    assert umd.pearson([1, 2, 3, 4], [2, 4, 6, 8]) == pytest.approx(1.0)
+    assert umd.pearson([1, 2, 3, 4], [8, 6, 4, 2]) == pytest.approx(-1.0)
+    assert umd.pearson([1, 1, 1, 1], [1, 2, 3, 4]) is None       # flat is not "uncorrelated"
+    assert umd.pearson([1, 2], [1, 2]) is None                   # too short
+
+
+def test_basket_series_joins_on_trading_date():
+    equity = {"A": [{"d": "2026-01-01", "c": 10.0}, {"d": "2026-01-02", "c": 11.0},
+                    {"d": "2026-01-03", "c": 12.0}],
+              # B is a session behind - the extra date must be dropped, not paired by index
+              "B": [{"d": "2026-01-01", "c": 100.0}, {"d": "2026-01-02", "c": 100.0}]}
+    out = umd.basket_series(equity, ["A", "B"])
+    assert [p["d"] for p in out] == ["2026-01-01", "2026-01-02"]
+    assert out[0]["c"] == 100.0                                   # based at 100
+    assert out[1]["c"] == pytest.approx(105.0)                    # (1.1 + 1.0) / 2 x 100
+
+
+def test_basket_series_needs_two_live_symbols():
+    assert umd.basket_series({"A": [{"d": "2026-01-01", "c": 1.0}]}, ["A"]) is None
+    assert umd.basket_series({}, ["A", "B"]) is None
+
+
+def _walk(days, steps, start=100.0):
+    """Price path from a repeating list of gross returns.
+
+    Deliberately not a straight line: a linear path has monotonically *shrinking* returns,
+    so two lines with opposite slopes still produce return series that both fall over the
+    window and correlate at +1. The correlation here is of returns, so the fixture has to
+    vary them."""
+    out, px = [], start
+    for i, d in enumerate(days):
+        out.append({"d": d, "c": px})
+        px *= steps[i % len(steps)]
+    return out
+
+
+def test_correlation_breadth_counts_only_sectors_over_the_threshold():
+    days = [f"2026-01-{d:02d}" for d in range(1, 21)]
+    steps = [1.02, 0.99, 1.03, 0.98, 1.01, 0.97, 1.04, 0.99, 1.02, 0.98]
+    basket = _walk(days, steps)
+    equity = {"XLK": _walk(days, steps, 50.0),                          # lockstep
+              "XLP": _walk(days, [2 - s for s in steps], 50.0)}         # mirrored
+    out = umd.correlation_breadth(equity, basket,
+                                  {"XLK": "technology", "XLP": "staples"}, window=10)
+    assert out["n_total"] == 2 and out["n_hot"] == 1
+    assert out["cool"] == ["staples"]
+    assert out["sectors"][0]["sym"] == "XLK"          # sorted by correlation, descending
+
+
+def test_rotation_rs_reports_the_change_not_the_level():
+    days = [f"2026-01-{d:02d}" for d in range(1, 11)]
+    basket = [{"d": d, "c": 100.0 + i * 5} for i, d in enumerate(days)]   # AI leads
+    equity = {"ACWX": [{"d": d, "c": 80.0} for d in days]}
+    out = umd.rotation_rs(equity, basket, window=9)
+    assert out["change_pct"] < 0 and out["leading"] is False
+    # ex-US pulling ahead flips it
+    equity2 = {"ACWX": [{"d": d, "c": 80.0 + i * 20} for i, d in enumerate(days)]}
+    assert umd.rotation_rs(equity2, basket, window=9)["leading"] is True
+
+
+# ---------- F: macro strip ----------
+def test_taylor_gap_reads_nrou_at_the_unemployment_date_not_at_the_series_end():
+    """NROU is a CBO projection that runs a decade past the last real observation. Taking
+    its final point would measure today's policy rate against the 2036 natural rate."""
+    ffr = [{"d": "2026-07-01", "c": 3.63}]
+    pce = [{"d": "2026-06-01", "c": 2.23}]
+    unrate = [{"d": "2026-07-01", "c": 4.10}]
+    nrou = [{"d": "2026-04-01", "c": 4.39}, {"d": "2036-10-01", "c": 9.99}]
+    out = umd.taylor_gap(ffr, pce, unrate, nrou)
+    assert out["nrou_pct"] == 4.39
+    # 2.0 + 2.23 + 0.5(2.23 - 2.0) + (4.39 - 4.10) = 4.635
+    assert out["rule_pct"] == pytest.approx(4.64, abs=0.01)
+    assert out["gap_pp"] == pytest.approx(1.01, abs=0.01)
+    assert out["stance"] == "loose"
+
+
+def test_taylor_gap_is_none_without_every_leg():
+    assert umd.taylor_gap(None, [{"d": "x", "c": 1}], [{"d": "x", "c": 1}],
+                          [{"d": "x", "c": 1}]) is None
+
+
+def test_series_percentile_locates_the_latest_reading():
+    series = [{"d": f"2026-01-{i:02d}", "c": float(i)} for i in range(1, 21)]
+    out = umd.series_percentile(series)
+    assert out["value"] == 20.0 and out["pctile"] == 100.0 and out["n"] == 20
+    assert umd.series_percentile(series[:3]) is None
+
+
+# ---------- the fragility composite ----------
+def _frag_data(**over):
+    data = {
+        "misalloc": {"dc_housing": {"ratio": 0.12},
+                     "ex_ai_capex": {"yoy_pct": -8.0},
+                     "gdp_ex_ai": {"ex_ai_pct": 0.0}},
+        "positioning": {"hh_equity_fin": {"pctile": 100.0},
+                        "margin_debt": {"yoy_pct": 30.0},
+                        "survey": {"ici_cash_pct": {"value": 1.5},
+                                   "fms_recession_pct": {"value": 2.0},
+                                   "fms_base_rate_pct": {"value": 15.0}}},
+        "cape": {"sigma": 3.0},
+        "corr_breadth": {"n_hot": 10, "n_total": 11},
+        "spec_blur": {"ratio": 30.0},
+        "credit_div": {"gap_z": 2.0},
+        "cot": {"contracts": [{"key": "ndx", "pctile": 100.0}]},
+    }
+    data.update(over)
+    return data
+
+
+def test_compute_fragility_pegs_at_100_when_every_component_is_at_its_stressed_end():
+    out = umd.compute_fragility(_frag_data())
+    assert out["score"] == 100.0
+    assert out["n_families"] == 4
+    assert set(out["fam"]) == {"mis", "pos", "val", "cred"}
+
+
+def test_compute_fragility_weights_families_equally_not_components():
+    """`pos` has five components and `cred` has one; the handover's rule is that no family
+    dominates, so a five-component family must not carry five times the weight."""
+    calm_pos = _frag_data()
+    calm_pos["positioning"] = {"hh_equity_fin": {"pctile": 50.0},
+                               "margin_debt": {"yoy_pct": 0.0},
+                               "survey": {"ici_cash_pct": {"value": 5.0},
+                                          "fms_recession_pct": {"value": 15.0},
+                                          "fms_base_rate_pct": {"value": 15.0}}}
+    calm_pos["cot"] = {"contracts": [{"key": "ndx", "pctile": 50.0}]}   # the fifth component
+    out = umd.compute_fragility(calm_pos)
+    assert out["fam"]["pos"] == 0.0
+    assert out["score"] == 75.0            # three families at 100, one at 0
+
+
+def test_compute_fragility_needs_more_than_one_live_family():
+    only_cred = {"credit_div": {"gap_z": 2.0}}
+    assert umd.compute_fragility(only_cred) is None
+    assert umd.compute_fragility({}) is None
+
+
+def test_compute_fragility_survives_a_dark_feed():
+    data = _frag_data()
+    del data["cape"]
+    data["corr_breadth"] = None
+    data["spec_blur"] = None
+    out = umd.compute_fragility(data)
+    assert out["fam"]["val"] is None       # the whole family goes dark
+    assert out["n_families"] == 3          # ...and drops out of the mean, not counted as 0
+    assert out["score"] == 100.0
+
+
+def test_dig_walks_past_missing_levels():
+    assert umd.dig({"a": {"b": 1}}, "a", "b") == 1
+    assert umd.dig({"a": None}, "a", "b") is None
+    assert umd.dig(None, "a") is None
+
+
+def test_neg_keeps_none():
+    assert umd.neg(3) == -3 and umd.neg(-2.5) == 2.5 and umd.neg(None) is None
+
+
+# ---------- payload pruning ----------
+def test_prune_payload_drops_only_the_compute_only_series():
+    data = {"equity": {"NVDA": [{"d": "2026-01-01", "c": 1.0}],
+                       "XLU": [{"d": "2026-01-01", "c": 2.0}],     # also the power proxy
+                       "XLK": [{"d": "2026-01-01", "c": 3.0}],
+                       "GLD": [{"d": "2026-01-01", "c": 4.0}],
+                       "ACWX": [{"d": "2026-01-01", "c": 5.0}]},
+            "fred": {"HY_OAS": {"last": 2.7, "series": [{"d": "2026-01-01", "c": 2.7}]},
+                     "HH_EQ_FIN": {"last": 45.8, "series": [{"d": "2026-01-01", "c": 45.8}]},
+                     "NROU": {"last": 4.39, "series": [{"d": "2026-01-01", "c": 4.39}]}}}
+    umd.prune_payload(data)
+    assert set(data["equity"]) == {"NVDA", "XLU"}
+    assert "series" in data["fred"]["HY_OAS"]        # charted
+    assert "series" in data["fred"]["HH_EQ_FIN"]     # charted
+    assert "series" not in data["fred"]["NROU"]      # a Taylor-rule input, nothing more
+    assert data["fred"]["NROU"]["last"] == 4.39      # the summary survives
+
+
+def test_prune_payload_survives_a_dark_section():
+    assert umd.prune_payload({}) == {}
+    assert umd.prune_payload({"fred": {"NROU": None}})["fred"] == {"NROU": None}
+
+
+def test_the_power_proxy_is_never_pruned():
+    """XLU is both a sector SPDR and the power panel's series; the power panel charts it."""
+    assert not (umd.TRANSIENT_EQUITY & set(umd.POWER_PROXY))
+
+
+def test_every_pruned_fred_name_is_a_real_series():
+    live = set(umd.FRED.values())
+    assert umd.FRED_SUMMARY_ONLY <= live, umd.FRED_SUMMARY_ONLY - live
+    assert umd.TRANSIENT_EQUITY <= set(umd.SECTORS) | set(umd.FROTH) | set(umd.ROTATION)

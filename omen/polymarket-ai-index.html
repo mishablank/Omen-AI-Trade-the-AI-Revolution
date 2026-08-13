@@ -376,6 +376,73 @@
   </details>
 </div>
 
+<!-- Rosenberg/Bernstein parameter set. The fragility composite is the headline of the set
+     and sits on Today next to the gauge; its four families get a panel each below. -->
+<div class="card" id="p-fragility" data-view="today">
+  <h2>Structural fragility <span class="sub" style="font-weight:400">&ndash; how far there is to fall, scored apart from the crash gauge</span></h2>
+  <div class="vline" id="fragVerdict"></div>
+  <div class="statrow" id="fragStats"></div>
+  <div id="fragBars"></div>
+  <details class="howto"><summary>How to read this</summary>
+    <div class="cap">The crash-pressure gauge answers <em>is it starting</em>: every component in it can be back to calm inside a week. This one answers <em>how far is there to fall</em>, and its components sit at an extreme for years &ndash; record household equity allocation, a CAPE three standard deviations rich, data-center concrete crowding out housing. Averaging the two together would peg the headline permanently high and hide the fast signal underneath the slow one, so they are kept as two scoreboards and read together: a calm gauge over a stretched fragility score is the setup, not the all-clear. Same arithmetic either way &ndash; each component normalised 0&ndash;100 against a published range, averaged inside its family, families equal-weighted so none dominates.</div>
+    <div class="note" id="fragNote"></div>
+  </details>
+</div>
+
+<div class="card" id="p-misalloc" data-view="markets">
+  <h2>Capital misallocation <span class="sub" style="font-weight:400">&ndash; Census C30 &amp; BEA, where the money is actually going</span></h2>
+  <div class="vline" id="misVerdict"></div>
+  <div class="statrow" id="misStats"></div>
+  <div id="misBars"></div>
+  <details class="howto"><summary>How to read this</summary>
+    <div class="cap">Bernstein&rsquo;s working definition of a bubble is capital going somewhere it would not go on the merits, so this measures the diversion directly rather than through prices. <em>Data-center vs residential construction</em> is concrete poured for compute against concrete poured for houses. <em>Ex-AI capex</em> subtracts the filers&rsquo; own capex from BEA equipment and intellectual-property investment: when that residual turns negative, the rest of the economy has stopped investing. <em>GDP ex-AI</em> takes the arithmetic contribution of the change in AI capex back out of growth &ndash; the &ldquo;without AI we would be in recession&rdquo; claim, computed instead of asserted.</div>
+    <div class="note" id="misNote"></div>
+  </details>
+</div>
+
+<div class="card" id="p-positioning" data-view="markets">
+  <h2>Positioning &amp; sentiment extremes <span class="sub" style="font-weight:400">&ndash; Fed Z.1, FINRA, ICI: Farrell&rsquo;s ninth rule</span></h2>
+  <div class="vline" id="posVerdict"></div>
+  <div class="statrow" id="posStats"></div>
+  <div id="posBars"></div>
+  <details class="howto"><summary>How to read this</summary>
+    <div class="cap">Farrell&rsquo;s ninth rule &ndash; when everyone agrees, something else is going to happen. Household equity allocation comes from the Fed&rsquo;s Z.1 financial accounts and is shown as a percentile of its own history back to 1945, because the level only means something against what households have ever done before. Margin debt is FINRA&rsquo;s monthly customer debit balances. Two readings here &ndash; the ICI fund cash ratio and the fund-manager-survey recession gap &ndash; have no free machine-readable feed and are dated manual entries; the panel labels them so a stale number is never mistaken for a live one.</div>
+    <div class="note" id="posNote"></div>
+  </details>
+</div>
+
+<div class="card" id="p-creditdiv" data-view="markets">
+  <h2>Credit&ndash;price divergence <span class="sub" style="font-weight:400">&ndash; the financing cost of leverage against the AI basket</span></h2>
+  <div class="vline" id="cdVerdict"></div>
+  <div class="statrow" id="cdStats"></div>
+  <div id="cdBars"></div>
+  <details class="howto"><summary>How to read this</summary>
+    <div class="cap">Rosenberg&rsquo;s claim is that credit works it out roughly a year before equity does. The signal is not a wide spread and it is not a falling basket &ndash; it is the <em>pair</em>: the AI basket sitting at or near its highs while the compensation demanded for leverage widens underneath it. A widening spread in a falling market is just a selloff; both legs together are the warning. The gap here is high-yield minus investment-grade option-adjusted spread, the free stand-in for the single-name CDS and data-center ABS series that are subscription products. When the credit family crosses stressed, a twelve-month clock starts and is shown here until credit falls back.</div>
+    <div class="note" id="cdNote"></div>
+  </details>
+</div>
+
+<div class="card" id="p-valuation2" data-view="prediction-markets">
+  <h2>Valuation &amp; speculation <span class="sub" style="font-weight:400">&ndash; Shiller CAPE, sector correlation, the blur into betting</span></h2>
+  <div class="vline" id="vsVerdict"></div>
+  <div class="statrow" id="vsStats"></div>
+  <div id="vsBars"></div>
+  <details class="howto"><summary>How to read this</summary>
+    <div class="cap">Three cross-checks that sit outside the AI tape. <em>CAPE sigma</em> places Shiller&rsquo;s cyclically-adjusted P/E against its own post-1900 distribution &ndash; one standard deviation is rich, two is Grantham&rsquo;s bubble line, three is the top fraction of a percent of readings ever taken. <em>Correlation breadth</em> counts how many of the eleven S&amp;P sectors now move with the AI basket on a rolling window of daily returns: the more of the index that is one bet, the less diversification anyone actually holds. <em>Speculation blur</em> is entertainment betting volume over financial-hedging volume on Polymarket, the same venue this site reads odds from &ndash; Bernstein&rsquo;s point that in a late bubble speculation stops being a separate activity.</div>
+    <div class="note" id="vsNote"></div>
+  </details>
+</div>
+
+<div class="card" id="p-macrostrip" data-view="markets">
+  <h2>Macro backdrop <span class="sub" style="font-weight:400">&ndash; context only, never an input to either score</span></h2>
+  <div class="vline" id="msVerdict"></div>
+  <div class="statrow" id="msStats"></div>
+  <details class="howto"><summary>How to read this</summary>
+    <div class="cap">The conditions the rest of the board is being read against, kept deliberately outside both composites so that nothing here can move a score. The Taylor-rule gap is the rule&rsquo;s prescribed rate minus the actual funds rate, with the output gap taken from the unemployment gap through Okun&rsquo;s law; a positive gap means policy sits below what the rule asks for. Trimmed-mean PCE is the Dallas Fed&rsquo;s inflation trend, the ACM term premium is the compensation for holding duration, and the gold-silver ratio is the old speculative-metals tell. Each is shown against its own recent range rather than as a bare level.</div>
+    <div class="note" id="msNote"></div>
+  </details>
+</div>
+
 <!-- §4.2: the four GPU panels tell one story; assembleGpuStory() moves them in here at boot
      so the narrative runs ladder -> current gen -> last gen -> the accounting mirror. -->
 <section id="gpuStory" data-view="gpu">
@@ -1069,6 +1136,112 @@ const shortInterestSignal = (SI) => {
   const topRise = withChg.length ? withChg.slice().sort((a,b) => b.chg_pct - a.chg_pct)[0] : null;
   const risingCount = names.filter(n => n.chg_pct != null && n.chg_pct > 0).length;
   return { names, asof: SI.asof || null, topDtc, topRise, risingCount, total: names.length };
+};
+
+/* ================= Fragility: pure helpers ================= */
+// The Rosenberg/Bernstein parameter set, reduced to what each panel renders.
+//
+// These read data["fragility"] and its inputs, which the fetcher computes and scores
+// server-side against OMEN.GAUGE_REFS' `frag: true` rows. Nothing here re-derives a score
+// — the page renders the number the fetcher published, the same rule the crash gauge
+// follows, so the two scoreboards can never disagree with their own JSON.
+//
+// Why a second scoreboard at all: the crash-pressure gauge answers "is it starting", and
+// every component in it can go back to calm in a week. These answer "how far is there to
+// fall", and they sit at an extreme for years. Averaged together the slow ones would peg
+// the headline and the fast ones would never move it.
+const FRAG_FAM_LABEL = { mis: "capital misallocation", pos: "positioning",
+                         val: "valuation & speculation", cred: "credit divergence" };
+
+const fragilitySignal = (F) => {
+  if(!F || F.score == null || !F.fam) return null;
+  const rows = Object.keys(FRAG_FAM_LABEL)
+    .filter(k => F.fam[k] != null)
+    .map(k => ({ key: k, label: FRAG_FAM_LABEL[k], score: F.fam[k] }))
+    .sort((a, b) => b.score - a.score);
+  if(!rows.length) return null;
+  const band = F.score >= 66 ? "stretched" : F.score >= 33 ? "building" : "contained";
+  return { score: F.score, rows, band, dark: 4 - rows.length,
+           top: rows[0], nFamilies: F.n_families ?? rows.length };
+};
+
+// Bernstein's bubble test: capital going somewhere it would not go on the merits.
+const misallocSignal = (M) => {
+  if(!M) return null;
+  const dc = M.dc_housing || null, ex = M.ex_ai_capex || null, gdp = M.gdp_ex_ai || null;
+  if(!dc && !ex && !gdp) return null;
+  return {
+    dc, ex, gdp,
+    // the transcript's own fragile line: real GDP ex the AI contribution under ~0.5%
+    gdpFragile: !!(gdp && gdp.ex_ai_pct != null && gdp.ex_ai_pct < 0.5),
+    exAiShrinking: !!(ex && ex.yoy_pct != null && ex.yoy_pct < 0),
+    dcRising: !!(dc && dc.yoy_pct != null && dc.yoy_pct > 0),
+  };
+};
+
+// Farrell's ninth rule, as five readings. Two of them have no free feed and arrive as a
+// dated manual entry; they are marked so the panel can say which numbers are live.
+const positioningSignal = (P) => {
+  if(!P) return null;
+  const s = P.survey || {};
+  const val = (k) => (s[k] && s[k].value != null ? s[k].value : null);
+  const fmsGap = val("fms_base_rate_pct") != null && val("fms_recession_pct") != null
+    ? val("fms_base_rate_pct") - val("fms_recession_pct") : null;
+  const hh = P.hh_equity_fin || null, margin = P.margin_debt || null;
+  if(!hh && !margin && fmsGap == null) return null;
+  return {
+    hh, margin, fmsGap,
+    cash: val("ici_cash_pct"), cashAsof: s.ici_cash_pct ? s.ici_cash_pct.asof : null,
+    fmsAsof: s.fms_recession_pct ? s.fms_recession_pct.asof : null,
+    hhExtreme: !!(hh && hh.pctile != null && hh.pctile >= 90),
+    marginHot: !!(margin && margin.yoy_pct != null && margin.yoy_pct >= 25),
+  };
+};
+
+// CAPE against its own post-1900 distribution, how much of the index trades as one AI
+// bet, and how much of the venue's volume is entertainment rather than hedging.
+const valuationSignal = (C, B, S) => {
+  if(!C && !B && !S) return null;
+  const band = C && C.sigma != null
+    ? (C.sigma >= 3 ? "stressed" : C.sigma >= 2 ? "elevated" : C.sigma >= 1 ? "rich" : "normal")
+    : null;
+  return {
+    cape: C || null, band,
+    breadth: B || null,
+    // the claim under test from the transcript: only health care and staples still
+    // move independently of the AI trade
+    claimHolds: !!(B && Array.isArray(B.cool) && B.cool.length === 2
+      && B.cool.every(n => n === "health care" || n === "staples")),
+    blur: S || null,
+  };
+};
+
+// Rosenberg: credit works it out about a year before equity does. The signal is the
+// *pair* — price at highs while the financing cost of leverage widens.
+const creditDivSignal = (D) => {
+  if(!D || D.hy_ig_gap == null) return null;
+  return {
+    gap: D.hy_ig_gap, changeBp: D.gap_change_bp, z: D.gap_z,
+    offHigh: D.basket_vs_high_pct, atHighs: !!D.at_highs, widening: !!D.widening,
+    diverging: !!D.diverging, weeks: D.weeks, bp: D.bp_threshold,
+    clock: D.clock || null,
+  };
+};
+
+// Backdrop only. These never enter either composite — they are the conditions the rest
+// of the board is being read against, and saying so is the whole point of the strip.
+const macroStripSignal = (M) => {
+  if(!M) return null;
+  const items = [];
+  if(M.taylor) items.push({ k: "Taylor-rule gap", v: M.taylor.gap_pp, unit: "pp",
+                            note: M.taylor.stance === "loose" ? "policy below rule" : "policy above rule" });
+  if(M.trimmed_pce) items.push({ k: "Trimmed-mean PCE", v: M.trimmed_pce.value, unit: "%",
+                                 note: "p" + M.trimmed_pce.pctile + " of range" });
+  if(M.term_premium) items.push({ k: "ACM term premium", v: M.term_premium.value, unit: "pp",
+                                  note: "p" + M.term_premium.pctile + " of range" });
+  if(M.gold_silver) items.push({ k: "Gold/silver", v: M.gold_silver.ratio, unit: "x",
+                                 note: "p" + M.gold_silver.pctile + " of range" });
+  return items.length ? { items } : null;
 };
 
 /* ================= Index math (chain-linked, membership-aware) ================= */
@@ -2133,6 +2306,168 @@ function renderCot(){
   $("cotVerdict").innerHTML=v;
   $("cotNote").innerHTML=`CFTC Commitments of Traders, legacy futures-only (non-commercial = large speculators: hedge funds and CTAs). Net = long &minus; short as a share of open interest; percentile and z-score locate the latest weekly report inside a ~3-year window. Positions are Tuesday&rsquo;s, released the following Friday, so this lags the ${xlink("volatility complex","markets","p-vol")} by up to a week &ndash; the slow, structural read on leverage, not a same-day trigger. As of ${esc(S.asof)}.`;
 }
+/* ---- Rosenberg/Bernstein parameter set ---- */
+const fragCell=(l,v,x="")=>`<div class="stat"><div class="l">${l}</div><div class="v">${v}${x}</div></div>`;
+const fragEmpty=(ids,msg)=>{ $(ids[0]).innerHTML=`<div class="sub">${msg}</div>`;
+  ids.slice(1).forEach(i=>{ if($(i)) $(i).innerHTML=""; }); };
+
+function renderFragility(){
+  const S=fragilitySignal(mkt?.fragility);
+  if(!S){ fragEmpty(["fragStats","fragBars","fragNote","fragVerdict"],
+    "Run the fetcher to enable the structural-fragility composite."); return; }
+  const col=s=>s>=66?"var(--crash)":s>=33?"var(--reg)":"var(--bull)";
+  $("fragStats").innerHTML=[
+    fragCell("Fragility", S.score.toFixed(0), ` <small>${S.band}</small>`),
+    fragCell("Widest family", S.top.score.toFixed(0), ` <small>${esc(S.top.label)}</small>`),
+    fragCell("Families live", S.nFamilies+"/4", S.dark?` <small>${S.dark} dark</small>`:" <small>all reporting</small>"),
+  ].join("");
+  $("fragBars").innerHTML='<div class="note" style="margin-top:10px"><strong>By family</strong> &ndash; each 0&ndash;100 against its published range, equal-weighted into the composite</div>'+
+    S.rows.map(r=>`<div class="hbar"><span class="k">${esc(r.label)}</span><span class="track"><i style="width:${clamp(r.score,0,100).toFixed(0)}%;background:${col(r.score)}"></i></span><span class="v">${r.score.toFixed(0)}</span></div>`).join("");
+  const g=mkt?.server_gauge?.score;
+  let v;
+  if(S.band==="stretched" && g!=null && g<35){
+    v=`Fragility is <strong>stretched at ${S.score.toFixed(0)}</strong> while the ${xlink("crash-pressure gauge","today","p-gauge")} reads only ${g.toFixed(0)}. That combination is the setup, not the all-clear: the preconditions for a deep fall are in place and nothing has started yet.`;
+  } else if(S.band==="stretched"){
+    v=`Fragility is <strong>stretched at ${S.score.toFixed(0)}</strong>, led by ${esc(S.top.label)} at ${S.top.score.toFixed(0)}. Deep structural exposure and a gauge that is already moving.`;
+  } else if(S.band==="building"){
+    v=`Fragility is <strong>building at ${S.score.toFixed(0)}</strong> &ndash; ${esc(S.top.label)} is the widest family at ${S.top.score.toFixed(0)}.`;
+  } else {
+    v=`Fragility is <strong>contained at ${S.score.toFixed(0)}</strong>: no family is near its stressed reference range.`;
+  }
+  $("fragVerdict").innerHTML=v;
+  $("fragNote").innerHTML=`Four families &ndash; capital misallocation, positioning, valuation &amp; speculation, credit divergence &ndash; scored server-side against the <code>frag</code> rows of the shared reference table and averaged with equal weight, so a five-component family cannot outvote a one-component family. Deliberately not blended into the ${xlink("crash-pressure gauge","today","p-gauge")}: these components read at an extreme for years, and folding them in would peg that number and break every snapshot ever taken of it. Reference ranges: ${OMEN.gaugeRefsProse("frag")}. Parameters after Rosenberg &amp; Bernstein, <em>What Ends the AI Trade</em> (Excess Returns, Aug 2026).`;
+}
+
+function renderMisalloc(){
+  const S=misallocSignal(mkt?.misalloc);
+  if(!S){ fragEmpty(["misStats","misBars","misNote","misVerdict"],
+    "Run the fetcher to enable the capital-misallocation panel (Census C30 + BEA)."); return; }
+  const {dc,ex,gdp}=S;
+  $("misStats").innerHTML=[
+    dc?fragCell("DC / housing", dc.ratio.toFixed(3), ` <small>${snum(dc.yoy_pct,0)}% YoY</small>`):"",
+    dc?fragCell("Data centers", "$"+dc.dc_saar_b.toFixed(0)+"B", ` <small>vs $${dc.res_saar_b.toFixed(0)}B residential</small>`):"",
+    ex?fragCell("Ex-AI capex", snum(ex.yoy_pct,1)+"%", ` <small>YoY, ${esc(ex.quarter)}</small>`):"",
+    gdp?fragCell("GDP ex-AI", gdp.ex_ai_pct.toFixed(2)+"%", ` <small>of ${gdp.gdp_4q_avg_pct.toFixed(2)}% headline</small>`):"",
+  ].filter(Boolean).join("");
+  if(dc&&Array.isArray(dc.history)&&dc.history.length>1){
+    const vals=dc.history.map(p=>p.c);
+    $("misBars").innerHTML='<div class="note" style="margin-top:10px"><strong>Data-center construction as a share of residential</strong> &ndash; both seasonally adjusted annual rates</div>'+
+      `<div class="spark" style="height:56px">${OMEN.sparkSvg(vals,300,56,"var(--reg)",true)}</div>`;
+  } else { $("misBars").innerHTML=""; }
+  let v;
+  if(S.gdpFragile&&S.exAiShrinking){
+    v=`Both misallocation legs are lit: ex-AI capex is <strong>shrinking</strong> (${snum(ex.yoy_pct,1)}% YoY) and growth without the AI contribution is <strong>${gdp.ex_ai_pct.toFixed(2)}%</strong>. On these numbers the expansion is the buildout.`;
+  } else if(S.gdpFragile){
+    v=`Strip the arithmetic contribution of AI capex out of growth and <strong>${gdp.ex_ai_pct.toFixed(2)}%</strong> is left of a ${gdp.gdp_4q_avg_pct.toFixed(2)}% headline &ndash; under the ~0.5% the transcript calls fragile.`;
+  } else if(dc&&S.dcRising){
+    v=`Data-center construction is running at <strong>${(dc.ratio*100).toFixed(1)}% of residential</strong> and up ${snum(dc.yoy_pct,0)}% on the year, but the wider capex line is still growing: diversion, not yet crowding-out.`;
+  } else {
+    v=`No misallocation extreme on the published data: ex-AI investment is still growing and growth survives the removal of the AI contribution.`;
+  }
+  $("misVerdict").innerHTML=v;
+  $("misNote").innerHTML=`Data-center construction is the &ldquo;Data center&rdquo; line of the Census C30 value-of-private-construction workbook (broken out as its own category since Jul 2024), over total private residential from the same survey. Ex-AI capex subtracts the five ${xlink("AI filers&rsquo; capex","gpu","p-capex")}, annualised, from BEA nonresidential investment in equipment plus intellectual-property products &ndash; a deliberately crude residual, since BEA is domestic and filer capex is worldwide, so the subtraction takes out slightly too much. It is the turn that is being read, not the level. GDP ex-AI removes the year-over-year <em>change</em> in annualised AI capex over the level of real GDP.${dc?" Construction data as of "+esc(dc.asof)+".":""}`;
+}
+
+function renderPositioning(){
+  const S=positioningSignal(mkt?.positioning);
+  if(!S){ fragEmpty(["posStats","posBars","posNote","posVerdict"],
+    "Run the fetcher to enable the positioning panel (Fed Z.1 + FINRA)."); return; }
+  const {hh,margin}=S;
+  $("posStats").innerHTML=[
+    hh?fragCell("Household equities", hh.value.toFixed(1)+"%", ` <small>p${hh.pctile} of ${hh.n}q</small>`):"",
+    margin?fragCell("Margin debt", "$"+(margin.usd_m/1e6).toFixed(2)+"T", ` <small>${snum(margin.yoy_pct,0)}% YoY</small>`):"",
+    S.cash!=null?fragCell("Fund cash", S.cash.toFixed(1)+"%", ` <small>manual &middot; ${esc(S.cashAsof||"undated")}</small>`):"",
+    S.fmsGap!=null?fragCell("FMS recession gap", snum(S.fmsGap,0)+"pp", ` <small>manual &middot; ${esc(S.fmsAsof||"undated")}</small>`):"",
+  ].filter(Boolean).join("");
+  const bars=[];
+  if(hh) bars.push({k:"Household equity allocation",p:hh.pctile,v:hh.value.toFixed(1)+"%"});
+  if(margin&&margin.pctile!=null) bars.push({k:"Margin debt level",p:margin.pctile,v:"$"+(margin.usd_m/1e6).toFixed(2)+"T"});
+  $("posBars").innerHTML=bars.length?'<div class="note" style="margin-top:10px"><strong>Where the latest reading sits in its own history</strong></div>'+
+    bars.map(b=>`<div class="hbar"><span class="k">${esc(b.k)}</span><span class="track"><i style="width:${clamp(b.p,0,100).toFixed(0)}%;background:${b.p>=90?"var(--crash)":b.p>=75?"var(--reg)":"var(--bull)"}"></i></span><span class="v">${b.v} &middot; p${b.p.toFixed(0)}</span></div>`).join(""):"";
+  let v;
+  if(S.hhExtreme&&S.marginHot){
+    v=`Households hold <strong>${hh.value.toFixed(1)}% of their financial assets in equities</strong> &ndash; the ${hh.pctile.toFixed(0)}th percentile of the record &ndash; and margin debt is up ${snum(margin.yoy_pct,0)}% on the year. The crowd is both fully invested and leveraged into it.`;
+  } else if(S.hhExtreme){
+    v=`Household equity allocation is at the <strong>${hh.pctile.toFixed(0)}th percentile</strong> of its history at ${hh.value.toFixed(1)}% of financial assets. There is no marginal domestic buyer left with a normal allocation.`;
+  } else if(S.marginHot){
+    v=`Margin debt is up <strong>${snum(margin.yoy_pct,0)}% on the year</strong> to $${(margin.usd_m/1e6).toFixed(2)}T &ndash; borrowing is growing faster than the market it is buying.`;
+  } else {
+    v=`Positioning is inside its normal range on the live readings &ndash; no allocation or leverage extreme to unwind.`;
+  }
+  $("posVerdict").innerHTML=v;
+  $("posNote").innerHTML=`Household equity allocation is Fed Z.1 table B.101, directly and indirectly held corporate equities as a percentage of financial assets, quarterly back to 1945 via FRED. The transcript&rsquo;s 73% figure uses a narrower denominator (equities over equities, bonds and cash) and is not this series. Margin debt is FINRA&rsquo;s monthly customer debit balances. Fund cash (ICI) and the fund-manager-survey recession gap have no free machine-readable source and are dated manual entries &ndash; they are labelled <em>manual</em> above and never presented as live. Index-level speculator positioning has its own panel: ${xlink("speculator positioning","markets","p-cot")}.`;
+}
+
+function renderCreditDiv(){
+  const S=creditDivSignal(mkt?.credit_div);
+  if(!S){ fragEmpty(["cdStats","cdBars","cdNote","cdVerdict"],
+    "Run the fetcher to enable the credit-divergence panel (FRED OAS)."); return; }
+  $("cdStats").innerHTML=[
+    fragCell("HY &minus; IG gap", S.gap.toFixed(2)+"pp", S.z!=null?` <small>z ${snum(S.z,1)}</small>`:""),
+    fragCell(`Gap change / ${S.weeks}w`, snum(S.changeBp,0)+"bp", ` <small>trigger ${S.bp}bp</small>`),
+    fragCell("AI basket", snum(S.offHigh,1)+"%", " <small>from window high</small>"),
+    S.clock?fragCell("Credit clock", S.clock.months_left.toFixed(1)+"mo", " <small>left of 12</small>"):"",
+  ].filter(Boolean).join("");
+  $("cdBars").innerHTML='<div class="note" style="margin-top:10px"><strong>Both legs are required</strong> &ndash; the divergence is price at highs <em>while</em> the cost of leverage widens</div>'+
+    [{k:"AI basket at/near highs",on:S.atHighs},{k:`HY&minus;IG widening ≥ ${S.bp}bp over ${S.weeks}w`,on:S.widening}]
+      .map(r=>`<div class="hbar"><span class="k">${r.k}</span><span class="track"><i style="width:${r.on?100:6}%;background:${r.on?"var(--crash)":"var(--bull)"}"></i></span><span class="v">${r.on?"yes":"no"}</span></div>`).join("");
+  let v;
+  if(S.diverging){
+    v=`<strong>Divergence is live</strong>: the AI basket is ${snum(S.offHigh,1)}% off its high while the high-yield-to-investment-grade gap has widened ${snum(S.changeBp,0)}bp over ${S.weeks} weeks. On Rosenberg&rsquo;s reading credit has started pricing something equity has not.`;
+  } else if(S.widening){
+    v=`The financing gap is <strong>widening</strong> (${snum(S.changeBp,0)}bp over ${S.weeks}w) but the basket is already ${snum(S.offHigh,1)}% off its high &ndash; spreads and price moving together is an ordinary selloff, not the divergence.`;
+  } else if(S.atHighs){
+    v=`The basket is at its highs and the financing gap is <strong>calm</strong> at ${S.gap.toFixed(2)}pp (${snum(S.changeBp,0)}bp over ${S.weeks}w). Credit is not dissenting.`;
+  } else {
+    v=`Neither leg is lit: the basket is ${snum(S.offHigh,1)}% off its high and the HY&minus;IG gap is unchanged at ${S.gap.toFixed(2)}pp.`;
+  }
+  if(S.clock) v+=` The credit clock has been running since ${esc(S.clock.started)} &ndash; ${S.clock.months_left.toFixed(1)} of 12 months left.`;
+  $("cdVerdict").innerHTML=v;
+  $("cdNote").innerHTML=`High-yield minus investment-grade ICE BofA option-adjusted spread (FRED BAMLH0A0HYM2 and BAMLC0A0CM), joined on trading date, against an equal-weight index of the ${xlink("AI-capex basket","markets","p-breadth")}. Single-name CDS and data-center ABS spread series &ndash; the instruments this is really about &ndash; are subscription products; the HY&minus;IG gap is the free stand-in and is labelled as such. The twelve-month clock starts the first time the ${xlink("credit family","today","p-gauge")} of the crash gauge crosses stressed and clears when it falls back below elevated.`;
+}
+
+function renderValuationSpec(){
+  const S=valuationSignal(mkt?.cape, mkt?.corr_breadth, mkt?.spec_blur);
+  if(!S||(!S.cape&&!S.breadth&&!S.blur)){ fragEmpty(["vsStats","vsBars","vsNote","vsVerdict"],
+    "Run the fetcher to enable the valuation panel (Shiller CAPE + correlation breadth)."); return; }
+  const {cape,breadth,blur}=S;
+  $("vsStats").innerHTML=[
+    cape?fragCell("CAPE", cape.cape.toFixed(1), ` <small>${snum(cape.sigma,1)}&sigma; &middot; p${cape.pctile}</small>`):"",
+    breadth?fragCell("Sectors correlated", breadth.n_hot+"/"+breadth.n_total, ` <small>&gt; ${breadth.threshold} over ${breadth.window}d</small>`):"",
+    blur?fragCell("Speculation blur", blur.ratio.toFixed(1)+"x", " <small>entertainment / hedging</small>"):"",
+  ].filter(Boolean).join("");
+  $("vsBars").innerHTML=breadth&&Array.isArray(breadth.sectors)?
+    '<div class="note" style="margin-top:10px"><strong>Rolling correlation of each S&amp;P sector to the AI basket</strong> &ndash; daily returns over '+breadth.window+' sessions</div>'+
+    breadth.sectors.map(r=>{
+      const hot=r.corr>breadth.threshold, w=clamp((r.corr+1)/2*100,0,100);
+      return `<div class="hbar"><span class="k">${esc(r.name)}</span><span class="track"><i style="width:${w.toFixed(0)}%;background:${hot?"var(--crash)":"var(--bull)"}"></i></span><span class="v">${snum(r.corr,2)}</span></div>`;
+    }).join(""):"";
+  let v;
+  const bits=[];
+  if(cape) bits.push(`CAPE at <strong>${cape.cape.toFixed(1)}</strong> is ${snum(cape.sigma,1)} standard deviations above its post-${cape.epoch} mean &ndash; the ${cape.pctile.toFixed(1)}th percentile of every reading since`);
+  if(breadth) bits.push(`${breadth.n_hot} of ${breadth.n_total} sectors move with the AI basket`);
+  if(blur) bits.push(`entertainment betting runs ${blur.ratio.toFixed(1)}x financial hedging on Polymarket`);
+  v=bits.join("; ")+".";
+  if(breadth&&!S.claimHolds&&breadth.cool.length>2){
+    v+=` The transcript&rsquo;s claim that only health care and staples are still uncorrelated does <strong>not</strong> hold on this window: ${breadth.cool.length} of ${breadth.n_total} sectors sit under the threshold.`;
+  }
+  $("vsVerdict").innerHTML=v;
+  $("vsNote").innerHTML=`CAPE is Shiller&rsquo;s cyclically-adjusted P/E, monthly, read from multpl.com &ndash; Shiller&rsquo;s own <code>ie_data.xls</code> is a legacy binary workbook no standard-library parser reads, and this repository takes no third-party dependencies. Sigma and percentile are measured against the post-1900 window the transcript uses. Correlation breadth is the Pearson correlation of daily returns over a rolling ${breadth?breadth.window:60}-session window, not of price levels: two rising lines correlate almost perfectly whatever they are, and that is not the question. Speculation blur is top-100-event volume per Polymarket tag, deduplicated by event, entertainment tags over financial tags &ndash; a like-for-like ratio, not a claim about total venue volume.`;
+}
+
+function renderMacroStrip(){
+  const S=macroStripSignal(mkt?.macro_strip);
+  if(!S){ fragEmpty(["msStats","msNote","msVerdict"],
+    "Run the fetcher to enable the macro backdrop strip (FRED)."); return; }
+  $("msStats").innerHTML=S.items.map(i=>
+    fragCell(esc(i.k), snum(i.v,2)+(i.unit==="x"?"x":i.unit==="%"?"%":i.unit), ` <small>${esc(i.note)}</small>`)).join("");
+  const t=mkt?.macro_strip?.taylor;
+  $("msVerdict").innerHTML=t
+    ? `Policy sits <strong>${Math.abs(t.gap_pp).toFixed(2)}pp ${t.gap_pp>0?"below":"above"}</strong> what a Taylor rule asks for at ${t.inflation_pct.toFixed(2)}% trimmed-mean inflation and ${t.unrate_pct.toFixed(1)}% unemployment. Backdrop only &ndash; nothing on this strip moves either score.`
+    : `Backdrop conditions only &ndash; nothing on this strip is an input to the crash gauge or the fragility composite.`;
+  $("msNote").innerHTML=`Taylor rule as r* + &pi; + 0.5(&pi; &minus; 2%) + output gap, with the output gap taken from the unemployment gap through Okun&rsquo;s law and the natural rate read at the unemployment print&rsquo;s own date &ndash; CBO&rsquo;s NROU is a projection running a decade past the last observation, and its final point would measure today against the 2036 natural rate. Computed here rather than scraped from the Atlanta Fed&rsquo;s utility page, which has no API. Term premium is the New York Fed ACM ten-year fitted series, published on FRED as THREEFYTP10, so the workbook download is not needed. Trimmed-mean PCE is the Dallas Fed&rsquo;s. Gold-silver is the GLD/SLV close ratio against its own recent range.`;
+}
+
 function renderShortInterest(){
   const SI=mkt?.short_interest, cell=(l,v,x="")=>`<div class="stat"><div class="l">${l}</div><div class="v">${v}${x}</div></div>`;
   const S=shortInterestSignal(SI);
@@ -2345,7 +2680,10 @@ function fetcherStale(){
 }
 // every panel whose numbers come out of market-data.json rather than the live Polymarket feed
 const FETCHER_PANELS=["p-vol","p-credit","p-breadth","p-insiders","p-cot","p-si","p-leaps","p-fund",
-                      "p-capex","p-dep","p-backlog","p-kgpu","p-aicredit","p-power","p-crown"];
+                      "p-capex","p-dep","p-backlog","p-kgpu","p-aicredit","p-power","p-crown",
+                      // Rosenberg/Bernstein parameter set - every one of these is fetcher-fed
+                      "p-fragility","p-misalloc","p-positioning","p-creditdiv","p-valuation2",
+                      "p-macrostrip"];
 function renderStatuses(){
   const st=fetcherStale();
   for(const id of FETCHER_PANELS) setPanelStatus(id, st?"stale":"ok", st?st.label:"");
@@ -2697,6 +3035,7 @@ function renderAll(){
   renderGauge(); renderTiles(); renderRegime(); renderStack(); renderMomentum();
   renderVol(); renderCredit(); renderBreadth(); renderInsiders();
   renderCrown(); renderNvda(); renderH100(); renderB200(); renderKalshiGpu(); renderValuations(); renderLeaps(); renderFundamentals(); renderMacro(); renderDepreciation(); renderBacklog(); renderCot(); renderShortInterest(); renderAiCredit(); renderPower(); renderCrossVenue(); renderClaims();
+  renderFragility(); renderMisalloc(); renderPositioning(); renderCreditDiv(); renderValuationSpec(); renderMacroStrip();
   renderMainChart(); renderEquity(); renderLeadLag();
   for(const s of SIDES) renderTable(s);
   renderWhatChanged(); renderNavCards();

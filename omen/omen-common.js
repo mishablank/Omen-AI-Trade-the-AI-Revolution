@@ -136,11 +136,35 @@
     macro_recession:  { fam: "macro",  name: "recession",      lo: 5,    hi: 50,   fmt: "pct" },
     macro_fed_cuts:   { fam: "macro",  name: "Fed cuts",       lo: 0,    hi: 60,   fmt: "pct" },
     macro_china_top3: { fam: "macro",  name: "China top-3",    lo: 5,    hi: 50,   fmt: "pct" },
+
+    // ---- structural fragility (Rosenberg/Bernstein handover, 2026-08-12) ----
+    // `frag: true` rows feed the FRAGILITY composite, not the crash-pressure gauge, and
+    // that separation is deliberate. These are preconditions — how far there is to fall —
+    // and they sit at an extreme for years at a time. Blending a decade-long 90 into the
+    // headline would peg it high and destroy the thing the headline is for, which is
+    // saying whether the fall is starting. Same equal-weight machinery, second scoreboard.
+    // Ranges are anchored on the transcript's own numbers where it gives one (CAPE's
+    // 1σ/2σ/3σ bands, ex-AI capex turning negative, GDP-ex-AI under ~0.5%) and on the
+    // observed 2025–26 range where it does not; each row says which in methodology.html.
+    mis_dc_housing:   { fam: "mis",    name: "DC/housing",     lo: 0.03, hi: 0.12, fmt: "level", frag: true },
+    mis_ex_ai_capex:  { fam: "mis",    name: "ex-AI capex",    lo: -8,   hi: 4,    fmt: "yoy",   frag: true },
+    mis_gdp_ex_ai:    { fam: "mis",    name: "GDP ex-AI",      lo: -3,   hi: 0,    fmt: "yoy",   frag: true },
+    pos_hh_equity:    { fam: "pos",    name: "household equity pctile", lo: 50, hi: 100, fmt: "pct", frag: true },
+    pos_margin_yoy:   { fam: "pos",    name: "margin debt",    lo: 0,    hi: 30,   fmt: "yoy",   frag: true },
+    pos_fund_cash:    { fam: "pos",    name: "fund cash",      lo: -5,   hi: -1.5, fmt: "yoy",   frag: true },
+    pos_fms_gap:      { fam: "pos",    name: "FMS gap",        lo: 0,    hi: 13,   fmt: "pt",    frag: true },
+    pos_cot_ndx:      { fam: "pos",    name: "NDX spec pctile", lo: 50,  hi: 100,  fmt: "pct",   frag: true },
+    val_cape_sigma:   { fam: "val",    name: "CAPE σ",         lo: 1,    hi: 3,    fmt: "level", frag: true },
+    val_corr_breadth: { fam: "val",    name: "sectors corr>0.7", lo: 20, hi: 90,   fmt: "pct",   frag: true },
+    val_spec_blur:    { fam: "val",    name: "speculation blur", lo: 5,  hi: 30,   fmt: "level", frag: true },
+    cred_gap_z:       { fam: "cred",   name: "HY−IG gap z",    lo: -1,   hi: 2,    fmt: "level", frag: true },
   };
 
   const GAUGE_FAM_NAMES = {
     pred: "prediction markets", opt: "options skew", vol: "vol complex",
     credit: "credit", equity: "equity drawdown", macro: "macro",
+    mis: "capital misallocation", pos: "positioning", val: "valuation & speculation",
+    cred: "credit divergence",
   };
 
   // Normalize x onto 0–100 against the named reference range. Every gauge component goes
@@ -155,9 +179,16 @@
   // One component as published prose, e.g. "VXN 18–40". Numbers come from the row, never
   // from a second copy in a sentence. Emits literal – − → (the pages are UTF-8) and escapes
   // the name, which is the only part that could carry markup.
+  // A row whose scale runs the "wrong" way — a falling number is the stressed end — is
+  // scored on its negated value, so the published range has to be un-negated to read as
+  // the prose it is ("ex-AI capex +8→−4%"), not as the two negative numbers in the table.
+  const minusSign = (v) => (v < 0 ? "−" + Math.abs(v) : String(v));
+  const negated = (r) => `${minusSign(-r.lo)}→${minusSign(-r.hi)}`;
+
   function gaugeRefText(key) {
     const r = GAUGE_REFS[key], n = esc(r.name);
     if (r.fmt === "ddpct") return `${n} ${r.lo}→−${r.hi}%`;
+    if (r.fmt === "yoy") return `${n} ${negated(r)}%`;
     if (r.fmt === "pt") return `${n} ${r.lo}–${r.hi}pt`;
     if (r.fmt === "pct") return `${n} ${r.lo}–${r.hi}%`;
     return `${n} ${r.lo}–${r.hi}`;
@@ -167,9 +198,15 @@
   //   "prediction markets (bubble 0–40%), options skew (NVDA RR 1–10pt, SOXX 4–15pt), …"
   // scope "server" = the five-family headline gauge's rows; "extra" = the components only
   // the monitor's exploratory card adds; "all" = everything.
+  // scope "server" = the five-family headline gauge's rows; "extra" = the components only
+  // the monitor's exploratory card adds; "frag" = the structural-fragility composite;
+  // "all" = everything. "extra" has to exclude the fragility rows explicitly — it used to
+  // mean "not server", and that definition would have swallowed them the moment they landed.
   function gaugeRefsProse(scope) {
-    const want = (r) => (scope === "server" ? !!r.server : scope === "extra" ? !r.server : true);
-    const order = ["pred", "opt", "vol", "credit", "equity", "macro"];
+    const want = (r) => (scope === "server" ? !!r.server
+      : scope === "frag" ? !!r.frag
+        : scope === "extra" ? !r.server && !r.frag : true);
+    const order = ["pred", "opt", "vol", "credit", "equity", "macro", "mis", "pos", "val", "cred"];
     return order.map((f) => {
       const keys = Object.keys(GAUGE_REFS).filter((k) => GAUGE_REFS[k].fam === f && want(GAUGE_REFS[k]));
       return keys.length ? `${GAUGE_FAM_NAMES[f]} (${keys.map(gaugeRefText).join(", ")})` : "";

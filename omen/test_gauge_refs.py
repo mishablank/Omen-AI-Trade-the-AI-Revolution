@@ -39,6 +39,11 @@ def js_gauge_refs():
     m = re.search(r"const GAUGE_REFS = \{(.*?)\n  \};", COMMON, re.S)
     assert m, "GAUGE_REFS object literal not found in omen-common.js"
     body = m.group(1)
+    # Line comments first, and before the bare-key rewrite: the table is grouped into
+    # sections by // banners explaining what each block feeds, and prose containing
+    # "word:" would otherwise be turned into a JSON key and blow the parse up. No row
+    # value is a string, so there is no "//" inside a literal for this to eat.
+    body = re.sub(r"//[^\n]*", "", body)
     body = re.sub(r"(\w+):", r'"\1":', body)          # bare keys -> JSON keys
     body = re.sub(r",(\s*[}\]])", r"\1", body)        # trailing commas inside rows
     body = re.sub(r",\s*$", "", body.strip())         # ...and after the last row
@@ -65,15 +70,53 @@ def test_python_mirrors_the_shared_table_number_for_number():
 
 
 def test_the_server_split_is_the_documented_one():
-    """`server: true` marks the rows the five-family server gauge also reads. The rest are
-    the monitor's exploratory-only components, and that split is what the parity fixture
-    calls the intended divergence - so it is pinned, not inferred."""
+    """The table now feeds three consumers, and which row feeds which is pinned here.
+
+    `server: true` = the five-family crash-pressure gauge. `frag: true` = the structural
+    fragility composite added with the Rosenberg/Bernstein parameter set. Neither = the
+    monitor's exploratory-only components, which is what the parity fixture calls the
+    intended divergence. Python scores the first two and must carry exactly those rows.
+
+    The separation is the point: fragility components read at an extreme for years, so
+    letting one drift into `server` would move the headline gauge - and every regime call
+    and alert that hangs off it - without changing a single number in this file.
+    """
     server_side = {k for k, v in JS.items() if v.get("server")}
-    assert server_side == set(umd.GAUGE_REFS), (
-        "the `server: true` rows and update-market-data.py's GAUGE_REFS have diverged")
-    assert {k for k in JS if not JS[k].get("server")} == {
+    frag_side = {k for k, v in JS.items() if v.get("frag")}
+    assert not (server_side & frag_side), (
+        f"a row cannot feed both composites: {sorted(server_side & frag_side)}")
+    assert server_side | frag_side == set(umd.GAUGE_REFS), (
+        "the scored rows in omen-common.js and update-market-data.py's GAUGE_REFS "
+        "have diverged")
+    assert frag_side == set(umd.FRAG_REFS), (
+        "the `frag: true` rows and update-market-data.py's FRAG_REFS have diverged")
+    assert {k for k in JS if not JS[k].get("server") and not JS[k].get("frag")} == {
         "pred_nvda_tail", "pred_h100_sub2",
         "macro_recession", "macro_fed_cuts", "macro_china_top3"}
+
+
+def test_the_crash_gauge_scores_no_fragility_row():
+    """compute_gauge() must never read a fragility component.
+
+    This is the regression that the whole split exists to prevent: the headline number is
+    charted in snapshots.csv going back months and is what the alert fires on, so a
+    fragility row leaking into it silently rebases history against a different scale."""
+    src = (HERE / "update-market-data.py").read_text()
+    body = re.search(r"def compute_gauge\(.*?\n(?=def )", src, re.S)
+    assert body, "compute_gauge() not found"
+    scored = set(re.findall(r'\bsc\([^\n]*?,\s*"(\w+)"\)', body.group(0)))
+    leaked = scored & set(umd.FRAG_REFS)
+    assert not leaked, f"compute_gauge() scores fragility rows: {sorted(leaked)}"
+
+
+def test_the_fragility_composite_scores_every_fragility_row():
+    """The other direction - a declared row nothing reads is a range that can rot."""
+    src = (HERE / "update-market-data.py").read_text()
+    body = re.search(r"def compute_fragility\(.*?\n(?=def )", src, re.S)
+    assert body, "compute_fragility() not found"
+    scored = set(re.findall(r'\bsc\([^\n]*?,\s*"(\w+)"\)', body.group(0)))
+    assert scored == set(umd.FRAG_REFS), (
+        f"unscored or unknown fragility rows: {scored ^ set(umd.FRAG_REFS)}")
 
 
 def test_every_python_range_is_actually_used_by_the_server_gauge():

@@ -173,10 +173,17 @@ const g = gaugeFor("equal");
     asked.every((k) => OMEN.GAUGE_REFS[k]));
   // The server gauge mirrors exactly the `server: true` rows; test_gauge_refs.py holds the
   // Python side of that. Here: the rows the monitor adds are the documented divergences.
+  // "monitor-only" means neither composite claims the row: not `server` (the crash gauge)
+  // and not `frag` (the structural-fragility composite). Testing only for !server would
+  // quietly pass every fragility row off as an exploratory monitor component.
   ok("refs/the monitor-only rows are pred's extra components plus macro",
-    Object.keys(OMEN.GAUGE_REFS).filter((k) => !OMEN.GAUGE_REFS[k].server).sort().join() ===
+    Object.keys(OMEN.GAUGE_REFS)
+      .filter((k) => !OMEN.GAUGE_REFS[k].server && !OMEN.GAUGE_REFS[k].frag).sort().join() ===
       ["macro_china_top3", "macro_fed_cuts", "macro_recession",
         "pred_h100_sub2", "pred_nvda_tail"].join());
+  // The fragility rows are scored by their own composite and must never reach computeGauge.
+  ok("refs/no fragility row is marked server",
+    Object.keys(OMEN.GAUGE_REFS).every((k) => !(OMEN.GAUGE_REFS[k].frag && OMEN.GAUGE_REFS[k].server)));
   console.log("  reference ranges (single-sourced from OMEN.GAUGE_REFS)");
 }
 
