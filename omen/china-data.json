@@ -1,5 +1,5 @@
 {
- "updated": "2026-08-13T02:32:37Z",
+ "updated": "2026-08-13T04:58:42Z",
  "snapshot_date": "2026-08-13",
  "artificial_analysis": {
   "cn_best": "GLM-5.2",
@@ -38,7 +38,7 @@
   "best": [
    {
     "label": "Qwen",
-    "rank": 177,
+    "rank": 137,
     "store": "android",
     "country": "br"
    }
@@ -55,12 +55,12 @@
    "au",
    "kr"
   ],
-  "detail": "no Chinese AI app in any iOS or Play top-100 (nearest: Qwen #177 (BR Play)); basket-mean Western top-100 presence 0/100 across 10 markets",
+  "detail": "no Chinese AI app in any iOS or Play top-100 (nearest: Qwen #137 (BR Play)); basket-mean Western top-100 presence 0/100 across 10 markets",
   "note": "iOS Apple RSS top-100 + Android Play top-200 across 10 markets; presence = basket-mean of best top-100 chart rank (DeepSeek/Qwen/Doubao/Kimi/MiniMax), #1=100 #100=1; ranks past top-100 score 0."
  },
  "lmarena": {
   "best_model": "qwen3.8-max",
-  "best_org": "Alibaba",
+  "best_org": "alibaba",
   "best_rank": 9,
   "best_score": 1491,
   "us_leader": "claude-fable-5",
@@ -70,367 +70,367 @@
   "models": [
    {
     "model": "claude-fable-5",
-    "org": "Anthropic",
+    "org": "anthropic",
     "elo": 1507,
     "cn": false
    },
    {
     "model": "claude-opus-4-6-high",
-    "org": "Anthropic",
+    "org": "anthropic",
     "elo": 1505,
     "cn": false
    },
    {
     "model": "claude-opus-4-7-high",
-    "org": "Anthropic",
+    "org": "anthropic",
     "elo": 1502,
     "cn": false
    },
    {
     "model": "muse-spark-1.2 (xHigh)",
-    "org": "Meta",
+    "org": "meta",
     "elo": 1499,
     "cn": false
    },
    {
     "model": "claude-opus-4-6",
-    "org": "Anthropic",
+    "org": "anthropic",
     "elo": 1497,
     "cn": false
    },
    {
     "model": "claude-opus-4-7",
-    "org": "Anthropic",
+    "org": "anthropic",
     "elo": 1494,
     "cn": false
    },
    {
     "model": "claude-opus-5-high",
-    "org": "Anthropic",
+    "org": "anthropic",
     "elo": 1494,
     "cn": false
    },
    {
     "model": "claude-opus-5-max",
-    "org": "Anthropic",
+    "org": "anthropic",
     "elo": 1491,
     "cn": false
    },
    {
     "model": "qwen3.8-max",
-    "org": "Alibaba",
+    "org": "alibaba",
     "elo": 1491,
     "cn": true
    },
    {
     "model": "muse-spark-1.1",
-    "org": "Meta",
+    "org": "meta",
     "elo": 1489,
     "cn": false
    },
    {
     "model": "kimi-k3-max",
-    "org": "Moonshot",
+    "org": "moonshot",
     "elo": 1489,
     "cn": true
    },
    {
     "model": "muse-spark",
-    "org": "Meta",
+    "org": "meta",
     "elo": 1488,
     "cn": false
    },
    {
     "model": "gemini-3.1-pro-preview",
-    "org": "Google",
+    "org": "google",
     "elo": 1486,
     "cn": false
    },
    {
     "model": "gemini-3-pro",
-    "org": "Google",
+    "org": "google",
     "elo": 1485,
     "cn": false
    },
    {
     "model": "gemini-3.6-flash-high",
-    "org": "Google",
+    "org": "google",
     "elo": 1484,
     "cn": false
    },
    {
     "model": "claude-opus-4-8-high",
-    "org": "Anthropic",
+    "org": "anthropic",
     "elo": 1482,
     "cn": false
    },
    {
     "model": "gpt-5.5-high",
-    "org": "OpenAI",
+    "org": "openai",
     "elo": 1482,
     "cn": false
    },
    {
     "model": "gpt-5.6-sol-xhigh",
-    "org": "OpenAI",
+    "org": "openai",
     "elo": 1481,
     "cn": false
    },
    {
     "model": "gemini-3.5-flash-high",
-    "org": "Google",
+    "org": "google",
     "elo": 1477,
     "cn": false
    },
    {
     "model": "gpt-5.5",
-    "org": "OpenAI",
+    "org": "openai",
     "elo": 1477,
     "cn": false
    },
    {
     "model": "gpt-5.4-high",
-    "org": "OpenAI",
+    "org": "openai",
     "elo": 1477,
     "cn": false
    },
    {
     "model": "gpt-5.2-chat-latest-20260210",
-    "org": "OpenAI",
+    "org": "openai",
     "elo": 1476,
     "cn": false
    },
    {
     "model": "gemini-3.5-flash-medium",
-    "org": "Google",
+    "org": "google",
     "elo": 1475,
     "cn": false
    },
    {
     "model": "grok-4.20-beta1",
-    "org": "SpaceXAI",
+    "org": "xai",
     "elo": 1475,
     "cn": false
    },
    {
     "model": "qwen3.7-max-preview",
-    "org": "Alibaba",
+    "org": "alibaba",
     "elo": 1474,
     "cn": true
    },
    {
     "model": "claude-opus-4-8",
-    "org": "Anthropic",
+    "org": "anthropic",
     "elo": 1474,
     "cn": false
    },
    {
     "model": "gpt-5.5-instant",
-    "org": "OpenAI",
+    "org": "openai",
     "elo": 1473,
     "cn": false
    },
    {
     "model": "gemini-3-flash",
-    "org": "Google",
+    "org": "google",
     "elo": 1473,
     "cn": false
    },
    {
     "model": "claude-opus-4-5-20251101-high-32k",
-    "org": "Anthropic",
+    "org": "anthropic",
     "elo": 1473,
     "cn": false
    },
    {
     "model": "claude-sonnet-4-6",
-    "org": "Anthropic",
+    "org": "anthropic",
     "elo": 1472,
     "cn": false
    },
    {
     "model": "grok-4.20-beta-0309-reasoning",
-    "org": "SpaceXAI",
+    "org": "xai",
     "elo": 1472,
     "cn": false
    },
    {
     "model": "glm-5.2-max",
-    "org": "Z.ai",
+    "org": "zai",
     "elo": 1471,
-    "cn": true
+    "cn": false
    },
    {
     "model": "grok-4.20-multi-agent-beta-0309",
-    "org": "SpaceXAI",
+    "org": "xai",
     "elo": 1471,
     "cn": false
    },
    {
     "model": "claude-opus-4-5-20251101",
-    "org": "Anthropic",
+    "org": "anthropic",
     "elo": 1469,
     "cn": false
    },
    {
     "model": "grok-4.5",
-    "org": "SpaceXAI",
+    "org": "xai",
     "elo": 1468,
     "cn": false
    },
    {
     "model": "ernie-5.1",
-    "org": "Baidu",
+    "org": "baidu",
     "elo": 1468,
     "cn": true
    },
    {
     "model": "mimo-v2.5-pro",
-    "org": "Xiaomi",
+    "org": "xiaomi",
     "elo": 1468,
     "cn": true
    },
    {
     "model": "glm-5.1",
-    "org": "Z.ai",
+    "org": "zai",
     "elo": 1467,
-    "cn": true
+    "cn": false
    },
    {
     "model": "qwen3.5-max-preview",
-    "org": "Alibaba",
+    "org": "alibaba",
     "elo": 1466,
     "cn": true
    },
    {
     "model": "grok-4.1-thinking",
-    "org": "SpaceXAI",
+    "org": "xai",
     "elo": 1465,
     "cn": false
    },
    {
     "model": "gpt-5.4",
-    "org": "OpenAI",
+    "org": "openai",
     "elo": 1465,
     "cn": false
    },
    {
     "model": "gpt-5.6-terra-xhigh",
-    "org": "OpenAI",
+    "org": "openai",
     "elo": 1465,
     "cn": false
    },
    {
     "model": "grok-4.6-high",
-    "org": "SpaceXAI",
+    "org": "xai",
     "elo": 1464,
     "cn": false
    },
    {
     "model": "claude-sonnet-5-high",
-    "org": "Anthropic",
+    "org": "anthropic",
     "elo": 1462,
     "cn": false
    },
    {
     "model": "kimi-k2.6",
-    "org": "Moonshot",
+    "org": "moonshot",
     "elo": 1461,
     "cn": true
    },
    {
     "model": "qwen3.6-max-preview",
-    "org": "Alibaba",
+    "org": "alibaba",
     "elo": 1460,
     "cn": true
    },
    {
     "model": "grok-4.1",
-    "org": "SpaceXAI",
+    "org": "xai",
     "elo": 1459,
     "cn": false
    },
    {
     "model": "qwen3.7-plus",
-    "org": "Alibaba",
+    "org": "alibaba",
     "elo": 1458,
     "cn": true
    },
    {
     "model": "gemini-3-flash (thinking-minimal)",
-    "org": "Google",
+    "org": "google",
     "elo": 1458,
     "cn": false
    },
    {
     "model": "deepseek-v4-pro",
-    "org": "DeepSeek",
+    "org": "deepseek",
     "elo": 1458,
     "cn": true
    },
    {
     "model": "gemini-3.5-flash-lite",
-    "org": "Google",
+    "org": "google",
     "elo": 1458,
     "cn": false
    },
    {
     "model": "glm-5",
-    "org": "Z.ai",
+    "org": "zai",
     "elo": 1457,
-    "cn": true
+    "cn": false
    },
    {
     "model": "hy3",
-    "org": "Tencent",
+    "org": "tencent",
     "elo": 1457,
     "cn": true
    },
    {
     "model": "claude-sonnet-4-5-20250929-high-32k",
-    "org": "Anthropic",
+    "org": "anthropic",
     "elo": 1456,
     "cn": false
    },
    {
     "model": "deepseek-v4-pro-high-preview",
-    "org": "DeepSeek",
+    "org": "deepseek",
     "elo": 1456,
     "cn": true
    },
    {
     "model": "dola-seed-2.0-pro",
-    "org": "Bytedance",
+    "org": "bytedance",
     "elo": 1456,
     "cn": true
    },
    {
     "model": "claude-sonnet-4-5-20250929",
-    "org": "Anthropic",
+    "org": "anthropic",
     "elo": 1455,
     "cn": false
    },
    {
     "model": "gpt-5.1-high",
-    "org": "OpenAI",
+    "org": "openai",
     "elo": 1455,
     "cn": false
    },
    {
     "model": "gemma-4-31b",
-    "org": "Google",
+    "org": "google",
     "elo": 1451,
     "cn": false
    },
    {
     "model": "gpt-5.6-luna-xhigh",
-    "org": "OpenAI",
+    "org": "openai",
     "elo": 1451,
     "cn": false
    }
   ],
-  "asof": "2026-08-13",
-  "source": "arena-scrape"
+  "asof": "2026-08-12",
+  "source": "lmarena-dataset"
  },
  "github": {
   "repos": [
@@ -531,40 +531,40 @@
  },
  "openrouter_week": {
   "week": "2026-08-10",
-  "cn_share": 0.5614,
-  "us_share": 0.3284,
-  "spi": 1.709,
-  "total_tokens": 33621803147293
+  "cn_share": 0.5623,
+  "us_share": 0.3276,
+  "spi": 1.716,
+  "total_tokens": 34827891649510
  },
  "vercel_gateway": {
   "asof": "2026-08-13",
-  "cn_share": 49.38,
-  "us_share": 50.59,
-  "spi": 0.976,
+  "cn_share": 52.38,
+  "us_share": 47.58,
+  "spi": 1.101,
   "top_cn": [
    {
     "lab": "deepseek",
-    "share": 30.46
+    "share": 32.23
    },
    {
     "lab": "stepfun",
-    "share": 11.49
+    "share": 12.14
    },
    {
     "lab": "moonshotai",
-    "share": 2.97
+    "share": 3.54
    },
    {
     "lab": "zai",
-    "share": 2.96
+    "share": 2.79
    },
    {
     "lab": "minimax",
-    "share": 0.79
+    "share": 0.83
    },
    {
-    "lab": "alibaba",
-    "share": 0.36
+    "lab": "xiaomi",
+    "share": 0.43
    }
   ],
   "series": [
@@ -870,15 +870,15 @@
    },
    {
     "d": "2026-08-13",
-    "cn": 49.38,
-    "us": 50.59
+    "cn": 52.38,
+    "us": 47.58
    }
   ],
   "license": "AI Gateway Leaderboard Data (c) Vercel, CC BY 4.0"
  },
  "ollama": {
-  "cn": 281857498,
-  "us": 455219067,
+  "cn": 281959098,
+  "us": 455222911,
   "cn_top": [
    {
     "name": "deepseek-r1",
@@ -886,7 +886,7 @@
    },
    {
     "name": "qwen2.5",
-    "pulls": 36700000
+    "pulls": 36800000
    },
    {
     "name": "qwen3",
@@ -920,9 +920,7 @@
    }
   ],
   "n_models": 233,
-  "asof": "2026-08-13",
-  "cn_per_day": 574216,
-  "us_per_day": 593521
+  "asof": "2026-08-13"
  },
  "kalshi": {
   "asof": "2026-08-13",
@@ -953,7 +951,7 @@
    },
    {
     "label": "Best AI at end of 2026: Claude",
-    "p": 0.667,
+    "p": 0.659,
     "ticker": "KXLLM1-26DEC31-A",
     "series": "kxllm1"
    }
@@ -1015,14 +1013,6 @@
    {
     "pkg": "openai",
     "wk": 108822290
-   },
-   {
-    "pkg": "anthropic",
-    "wk": 50763819
-   },
-   {
-    "pkg": "google-genai",
-    "wk": 69621163
    }
   ],
   "asof": "2026-08-13"
