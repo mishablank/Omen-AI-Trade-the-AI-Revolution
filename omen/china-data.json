@@ -1,5 +1,5 @@
 {
- "updated": "2026-08-14T21:53:32Z",
+ "updated": "2026-08-14T22:31:31Z",
  "snapshot_date": "2026-08-14",
  "artificial_analysis": {
   "cn_best": "GLM-5.2",
@@ -38,7 +38,7 @@
   "best": [
    {
     "label": "Qwen",
-    "rank": 148,
+    "rank": 147,
     "store": "android",
     "country": "br"
    }
@@ -55,7 +55,7 @@
    "au",
    "kr"
   ],
-  "detail": "no Chinese AI app in any iOS or Play top-100 (nearest: Qwen #148 (BR Play)); basket-mean Western top-100 presence 0/100 across 10 markets",
+  "detail": "no Chinese AI app in any iOS or Play top-100 (nearest: Qwen #147 (BR Play)); basket-mean Western top-100 presence 0/100 across 10 markets",
   "note": "iOS Apple RSS top-100 + Android Play top-200 across 10 markets; presence = basket-mean of best top-100 chart rank (DeepSeek/Qwen/Doubao/Kimi/MiniMax), #1=100 #100=1; ranks past top-100 score 0."
  },
  "lmarena": {
@@ -531,40 +531,40 @@
  },
  "openrouter_week": {
   "week": "2026-08-10",
-  "cn_share": 0.5509,
-  "us_share": 0.3383,
-  "spi": 1.629,
-  "total_tokens": 54209867827526
+  "cn_share": 0.5504,
+  "us_share": 0.3387,
+  "spi": 1.625,
+  "total_tokens": 54751961662122
  },
  "vercel_gateway": {
   "asof": "2026-08-14",
-  "cn_share": 51.64,
-  "us_share": 48.31,
-  "spi": 1.069,
+  "cn_share": 51.62,
+  "us_share": 48.33,
+  "spi": 1.068,
   "top_cn": [
    {
     "lab": "deepseek",
-    "share": 28.76
+    "share": 28.59
    },
    {
     "lab": "stepfun",
-    "share": 13.02
+    "share": 13.01
    },
    {
     "lab": "zai",
-    "share": 5.03
+    "share": 5.18
    },
    {
     "lab": "moonshotai",
-    "share": 3.03
+    "share": 3.02
    },
    {
     "lab": "minimax",
-    "share": 0.91
+    "share": 0.93
    },
    {
     "lab": "xiaomi",
-    "share": 0.53
+    "share": 0.52
    }
   ],
   "series": [
@@ -870,15 +870,15 @@
    },
    {
     "d": "2026-08-14",
-    "cn": 51.64,
-    "us": 48.31
+    "cn": 51.62,
+    "us": 48.33
    }
   ],
   "license": "AI Gateway Leaderboard Data (c) Vercel, CC BY 4.0"
  },
  "ollama": {
-  "cn": 282904698,
-  "us": 456174015,
+  "cn": 282906399,
+  "us": 456174534,
   "cn_top": [
    {
     "name": "deepseek-r1",
@@ -1001,11 +1001,19 @@
  "sdk": {
   "cn": [
    {
-    "pkg": "dashscope",
-    "wk": 699106
+    "pkg": "zhipuai",
+    "wk": 100072
+   },
+   {
+    "pkg": "zai-sdk",
+    "wk": 27674
    }
   ],
   "us": [
+   {
+    "pkg": "openai",
+    "wk": 108193307
+   },
    {
     "pkg": "anthropic",
     "wk": 52134853
