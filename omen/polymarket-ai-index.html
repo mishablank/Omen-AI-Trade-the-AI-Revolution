@@ -443,6 +443,20 @@
   </details>
 </div>
 
+<!-- Berg turning-point metrics. Every other panel on this board measures how bad it is
+     getting; this one measures whether the flush is finished. It is deliberately a count
+     of conditions rather than a sixth family in the gauge – see the note. -->
+<div class="card" id="p-turn" data-view="today">
+  <h2>Turn &amp; tape structure <span class="sub" style="font-weight:400">&ndash; whether the flush is complete, not how bad it is</span></h2>
+  <div class="vline" id="turnVerdict"></div>
+  <div class="statrow" id="turnStats"></div>
+  <div id="turnRows"></div>
+  <details class="howto"><summary>How to read this</summary>
+    <div class="cap">Bottoms are detectable and tops are not &ndash; that is the whole premise. A panic low is V-shaped, statistically rare and leaves a signature; a top rolls over for months and never announces itself. So these conditions only ever describe a <em>recovery</em>, which makes them neither leading nor confirming in the sense the gauge uses: they fire after the damage. <em>Crash-low integrity</em> is the load-bearing one. A panic low gets re-tested on a closing basis and that is normal; a break of the panic day&rsquo;s <em>intraday</em> low is not a test, it invalidates the low and the panel says so. Both distances are shown because the gap between them is the room the thesis has left. <em>Days held</em> and <em>up-day clusters</em> count the tape&rsquo;s own confirmation, and <em>rate-of-change rank</em> scores rarity rather than size &ndash; a 10-day gain matters because it is the greatest in five years, not because it is 9%.</div>
+    <div class="note" id="turnNote"></div>
+  </details>
+</div>
+
 <!-- §4.2: the four GPU panels tell one story; assembleGpuStory() moves them in here at boot
      so the narrative runs ladder -> current gen -> last gen -> the accounting mirror. -->
 <section id="gpuStory" data-view="gpu">
@@ -1242,6 +1256,42 @@ const macroStripSignal = (M) => {
   if(M.gold_silver) items.push({ k: "Gold/silver", v: M.gold_silver.ratio, unit: "x",
                                  note: "p" + M.gold_silver.pctile + " of range" });
   return items.length ? { items } : null;
+};
+
+/* ================= Turn / tape structure: pure helpers ================= */
+// Berg's turning-point conditions, reduced to what the panel renders. Reads data["turn"],
+// which the fetcher computes server-side — nothing is re-derived here, same rule the
+// crash gauge and the fragility composite follow.
+//
+// Why a count and not a score: Berg operates on clusters of simple conditions, and a mean
+// would let four half-true conditions outvote the one that actually fired. The headline
+// is "N of M active" precisely so a reader can see which N.
+const turnSignal = (T) => {
+  if(!T || !T.by) return null;
+  const rows = Object.keys(T.by).map((sym) => {
+    const t = T.by[sym] || {}, cl = t.crash_low || null, d = t.days_off_low || {}, u = t.up_days || {};
+    const rocs = Object.keys(t.roc || {}).map((n) => t.roc[n]).filter(Boolean);
+    return { sym, cl, drop: t.panic_drop_pct ?? null,
+             days: d.days ?? 0, intact: d.intact !== false, milestone: d.milestone ?? null,
+             up: u.up ?? 0, upN: u.n ?? 0, trigger: u.trigger || null,
+             rocs, rocExtreme: rocs.some((r) => r.extreme),
+             breakaway: t.breakaway || null,
+             regimeChange: !!(cl && cl.regime_change),
+             repaired: t.repaired_bars || 0 };
+  });
+  if(!rows.length) return null;
+  // tickers carrying a live panic low first, then by how long the low has held
+  rows.sort((a, b) => (b.cl ? 1 : 0) - (a.cl ? 1 : 0) || b.days - a.days);
+  const active = T.active || { n: 0, of: rows.length, conditions: [] };
+  return { rows, active,
+           broken: rows.filter((r) => r.regimeChange),
+           holding: rows.filter((r) => r.cl && !r.regimeChange),
+           quiet: rows.filter((r) => !r.cl),
+           div: Array.isArray(T.divergence) ? T.divergence : [],
+           rspSpy: (T.breadth || {}).rsp_spy || null,
+           vxn: (T.vol || {}).vxn_dev || null,
+           repaired: rows.reduce((a, r) => a + r.repaired, 0),
+           version: T.params_version || null };
 };
 
 /* ================= Index math (chain-linked, membership-aware) ================= */
@@ -2338,6 +2388,67 @@ function renderFragility(){
   $("fragNote").innerHTML=`Four families &ndash; capital misallocation, positioning, valuation &amp; speculation, credit divergence &ndash; scored server-side against the <code>frag</code> rows of the shared reference table and averaged with equal weight, so a five-component family cannot outvote a one-component family. Deliberately not blended into the ${xlink("crash-pressure gauge","today","p-gauge")}: these components read at an extreme for years, and folding them in would peg that number and break every snapshot ever taken of it. Reference ranges: ${OMEN.gaugeRefsProse("frag")}. Parameters after Rosenberg &amp; Bernstein, <em>What Ends the AI Trade</em> (Excess Returns, Aug 2026).`;
 }
 
+function renderTurn(){
+  const S=turnSignal(mkt?.turn);
+  if(!S){ fragEmpty(["turnStats","turnRows","turnNote","turnVerdict"],
+    "Run the fetcher to enable the turning-point panel (Yahoo OHLCV)."); return; }
+  const A=S.active;
+  $("turnStats").innerHTML=[
+    // a single condition is not a cluster – Berg's signal is several firing together, so
+    // the label must not promote n=1 into one
+    fragCell("Conditions active", `${A.n}/${A.of}`,
+             ` <small>${A.n===0?"nothing firing":A.n>=Math.ceil(A.of/3)?"cluster forming":"isolated"}</small>`),
+    fragCell("Lows holding", `${S.holding.length}/${S.rows.length}`,
+             S.broken.length?` <small>${S.broken.length} invalidated</small>`:" <small>none broken</small>"),
+    S.rspSpy?fragCell("Equal vs cap weight", snum(S.rspSpy.bottom_lead_days,0)+"d",
+             ` <small>${S.rspSpy.bottom_lead_days>0?"equal-weight bottomed first":"no lead"}</small>`):"",
+    S.vxn?fragCell("VXN vs trend", snum(S.vxn.dev_pct,1)+"%",
+             ` <small>${S.vxn.complacent?"complacent":"no signal"}</small>`):"",
+  ].filter(Boolean).join("");
+
+  const lvl=(r)=>{
+    if(!r.cl) return `<span class="k">${esc(r.sym)}</span><span class="v" style="color:var(--dim)">no panic low at ${mnum(-r.drop)}%</span>`;
+    const c=r.regimeChange?"var(--crash)":r.intact?"var(--bull)":"var(--reg)";
+    const state=r.regimeChange?"intraday low broken":r.intact?`held ${r.days}d`:`closing low tested, held ${r.days}d`;
+    // two decimals, not mnum's default zero: the whole signal in A1 is the gap between the
+    // closing low and the intraday low, and rounding to whole percent collapses them into
+    // the same number. Signed, because a positive distance means spot has fallen THROUGH
+    // the low rather than sitting above it.
+    return `<span class="k">${esc(r.sym)}</span>`+
+      `<span class="v" style="color:${c}">${state}</span>`+
+      `<div class="cap" style="flex-basis:100%;margin-top:4px">panic ${esc(r.cl.date)} ${snum(r.cl.decline_pct,1)}% &middot; `+
+      `close low ${snum(r.cl.to_close_low_pct,2)}% from spot &middot; intraday ${snum(r.cl.to_intraday_low_pct,2)}% `+
+      `${r.trigger?`&middot; <strong>${esc(r.trigger)} up</strong> `:`&middot; ${r.up} of ${r.upN} up `}`+
+      `${r.milestone?`&middot; <strong>${r.milestone}-day mark</strong>`:""}`+
+      `${r.rocExtreme?" &middot; <strong>rate of change in the top 1%</strong>":""}`+
+      `${r.breakaway?` &middot; <strong>breakaway gap over the ${esc(String(r.breakaway.ath))} high</strong>`:""}</div>`;
+  };
+  $("turnRows").innerHTML='<div class="note" style="margin-top:10px"><strong>By index</strong> &ndash; the panic low each one is being measured against, and what the tape has done since</div>'+
+    S.rows.map(r=>`<div class="hbar" style="flex-wrap:wrap">${lvl(r)}</div>`).join("")+
+    (S.div.length?'<div class="note" style="margin-top:14px"><strong>Divergence</strong> &ndash; each index against its own peak, worst first</div>'+
+      S.div.map(d=>`<div class="hbar"><span class="k">${esc(d.sym)}</span><span class="v">${snum(d.off_peak_pct,2)}% <small style="color:var(--dim)">peak ${esc(d.peak_date)}</small></span></div>`).join(""):"");
+
+  let v;
+  if(S.broken.length){
+    const names=S.broken.map(r=>esc(r.sym)).join(", ");
+    v=`<strong>${names} ${S.broken.length>1?"have":"has"} broken the panic day&rsquo;s intraday low.</strong> That is not a re-test &ndash; on Berg&rsquo;s rule it invalidates the crash-low thesis there and reads as a regime change, whatever the other ${A.n} of ${A.of} conditions say.`;
+  } else if(A.n===0){
+    v=`No turning-point conditions are firing. ${S.quiet.length===S.rows.length?"No index has taken a decline deep enough to qualify as a panic in the first place, so there is no low to measure a turn against.":"Lows are on the board but the tape has not confirmed anything off them."}`;
+  } else if(A.n>=Math.ceil(A.of/3)){
+    v=`<strong>${A.n} of ${A.of} turning-point conditions are active</strong> and every panic low on the board is still intact. This is the cluster shape Berg trades &ndash; and the one with two-to-four historical precedents, so read the count, not a probability.`;
+  } else {
+    v=`<strong>${A.n} of ${A.of} conditions active.</strong> Lows are holding but the confirmation the tape usually gives off a real bottom &ndash; day-count marks, up-day clusters, a rare rate-of-change print &ndash; has not arrived.`;
+  }
+  $("turnVerdict").innerHTML=v;
+  $("turnNote").innerHTML=`Conditions are counted, never blended: a mean would let four half-true readings outvote the one that fired. `+
+    `Crash-low integrity separates a closing re-test (normal) from a break of the panic day&rsquo;s intraday low (invalidating), which is why both distances are printed. `+
+    `The panic threshold is per index &ndash; ${S.rows.map(r=>`${esc(r.sym)} ${mnum(-r.drop)}%`).join(", ")} &ndash; because one global 15% finds no qualifying low on the S&amp;P or the Nasdaq 100 across five years and would leave this panel permanently blank on the two indices that matter most. `+
+    `Rate-of-change ranks run against 252 and 1,260 sessions, which needs a ten-year history: Yahoo&rsquo;s five-year range returns 1,254 bars and the long rank would never populate. `+
+    `${S.repaired?`${S.repaired} bad intraday tick${S.repaired>1?"s were":" was"} clamped to its own close before any of this was computed. `:""}`+
+    `<strong>Small samples.</strong> The clusters these conditions describe have fired a handful of times each; Berg himself halved a sample-of-one projection. Treat a full cluster as a reason to look, not a forecast. `+
+    `Parameters ${esc(S.version||"unversioned")}, transcribed from Berg on <em>Monetary Matters</em> (Aug 2026) and not independently verified against the recording.`;
+}
+
 function renderMisalloc(){
   const S=misallocSignal(mkt?.misalloc);
   if(!S){ fragEmpty(["misStats","misBars","misNote","misVerdict"],
@@ -3036,6 +3147,7 @@ function renderAll(){
   renderVol(); renderCredit(); renderBreadth(); renderInsiders();
   renderCrown(); renderNvda(); renderH100(); renderB200(); renderKalshiGpu(); renderValuations(); renderLeaps(); renderFundamentals(); renderMacro(); renderDepreciation(); renderBacklog(); renderCot(); renderShortInterest(); renderAiCredit(); renderPower(); renderCrossVenue(); renderClaims();
   renderFragility(); renderMisalloc(); renderPositioning(); renderCreditDiv(); renderValuationSpec(); renderMacroStrip();
+  renderTurn();
   renderMainChart(); renderEquity(); renderLeadLag();
   for(const s of SIDES) renderTable(s);
   renderWhatChanged(); renderNavCards();
