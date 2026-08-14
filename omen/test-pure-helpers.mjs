@@ -327,5 +327,77 @@ console.log("pure helpers — mnum / xlink / fetcherStale / viewFromPath / claim
 }
 
 
+/* ---------- turnSignal: Berg turning-point conditions ---------- */
+{
+  const code = slice("/* ================= Turn / tape structure: pure helpers",
+                     "/* ================= Index math");
+  const { turnSignal } = build(code, ["turnSignal"]);
+
+  eq("turnSignal/null without data", turnSignal(null), null);
+  eq("turnSignal/null without by", turnSignal({ active: { n: 1 } }), null);
+  eq("turnSignal/null when by is empty", turnSignal({ by: {} }), null);
+
+  const low = (over) => Object.assign({
+    date: "2026-07-17", close_low: 84, intraday_low: 80, decline_pct: -20.3,
+    to_close_low_pct: -8.7, to_intraday_low_pct: -13.04,
+    close_low_violated: false, intraday_low_violated: false, regime_change: false,
+  }, over || {});
+
+  const T = {
+    params_version: "2026-08-13",
+    by: {
+      HELD: { panic_drop_pct: 15, repaired_bars: 1, crash_low: low(),
+              days_off_low: { days: 12, intact: true, milestone: 12 },
+              up_days: { up: 8, n: 9, trigger: "8 of 9" },
+              roc: { 5: { extreme: false }, 10: { extreme: true } }, breakaway: null },
+      BROKE: { panic_drop_pct: 15, repaired_bars: 0,
+               crash_low: low({ intraday_low_violated: true, regime_change: true }),
+               days_off_low: { days: 5, intact: false, milestone: null },
+               up_days: { up: 3, n: 19, trigger: null },
+               roc: { 5: { extreme: false } }, breakaway: null },
+      QUIET: { panic_drop_pct: 9, repaired_bars: 0, crash_low: null,
+               days_off_low: { days: 0, intact: true, milestone: null },
+               up_days: { up: 0, n: 0, trigger: null }, roc: {}, breakaway: null },
+    },
+    active: { n: 3, of: 11, conditions: [] },
+    divergence: [{ sym: "SOXX", off_peak_pct: -15.9, peak_date: "2026-06-22" }],
+    breadth: { rsp_spy: { bottom_lead_days: 6 } },
+    vol: { vxn_dev: { dev_pct: -22.1, complacent: true } },
+  };
+  const s = turnSignal(T);
+
+  eq("turnSignal/splits broken lows", s.broken.length, 1);
+  eq("turnSignal/names the broken index", s.broken[0].sym, "BROKE");
+  eq("turnSignal/splits holding lows", s.holding.length, 1);
+  eq("turnSignal/a ticker with no panic low is quiet, not broken", s.quiet.length, 1);
+  eq("turnSignal/quiet is not counted as holding", s.holding[0].sym, "HELD");
+  ok("turnSignal/tickers with a low sort ahead of those without",
+     s.rows[s.rows.length - 1].sym === "QUIET", s.rows.map((r) => r.sym).join(","));
+  eq("turnSignal/rocExtreme true when any horizon is extreme", s.rows[0].rocExtreme, true);
+  eq("turnSignal/rocExtreme false when none are", s.quiet[0].rocExtreme, false);
+  eq("turnSignal/sums repaired bad ticks", s.repaired, 1);
+  eq("turnSignal/passes the active count through", s.active.n, 3);
+  eq("turnSignal/keeps the params version", s.version, "2026-08-13");
+  eq("turnSignal/lifts the equal-weight lead", s.rspSpy.bottom_lead_days, 6);
+  eq("turnSignal/lifts the VXN deviation", s.vxn.complacent, true);
+  eq("turnSignal/passes divergence through", s.div[0].sym, "SOXX");
+
+  // a break must survive an otherwise-clean day count: intact is about the CLOSING low,
+  // regime change is about the intraday one, and the panel must never conflate them
+  const both = turnSignal({ by: { X: {
+    crash_low: low({ close_low_violated: true, intraday_low_violated: false, regime_change: false }),
+    days_off_low: { days: 6, intact: false, milestone: null },
+    up_days: { up: 4, n: 6, trigger: null }, roc: {} } }, active: { n: 0, of: 5 } });
+  eq("turnSignal/closing test alone is not a regime change", both.broken.length, 0);
+  eq("turnSignal/closing test still marks the low not intact", both.rows[0].intact, false);
+  eq("turnSignal/closing test keeps it in holding", both.holding.length, 1);
+
+  // an absent active block must not throw – the fetcher can carry a partial turn forward
+  const noActive = turnSignal({ by: { X: { crash_low: null, roc: {} } } });
+  eq("turnSignal/synthesises an active block when absent", noActive.active.n, 0);
+  console.log("  turn / tape structure");
+}
+
+
 console.log(failures ? `\n${failures} assertion(s) FAILED` : "\nall assertions passed");
 process.exit(failures ? 1 : 0);
