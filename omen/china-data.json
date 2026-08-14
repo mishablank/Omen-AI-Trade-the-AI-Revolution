@@ -1,5 +1,5 @@
 {
- "updated": "2026-08-14T14:17:09Z",
+ "updated": "2026-08-14T15:23:20Z",
  "snapshot_date": "2026-08-14",
  "artificial_analysis": {
   "cn_best": "GLM-5.2",
@@ -530,40 +530,40 @@
  },
  "openrouter_week": {
   "week": "2026-08-10",
-  "cn_share": 0.5536,
-  "us_share": 0.3356,
-  "spi": 1.65,
-  "total_tokens": 50302266142834
+  "cn_share": 0.5531,
+  "us_share": 0.3361,
+  "spi": 1.646,
+  "total_tokens": 51259137260571
  },
  "vercel_gateway": {
   "asof": "2026-08-14",
-  "cn_share": 51.46,
-  "us_share": 48.49,
-  "spi": 1.061,
+  "cn_share": 51.35,
+  "us_share": 48.6,
+  "spi": 1.057,
   "top_cn": [
    {
     "lab": "deepseek",
-    "share": 28.86
+    "share": 28.94
    },
    {
     "lab": "stepfun",
-    "share": 13.09
+    "share": 13.07
    },
    {
     "lab": "zai",
-    "share": 4.29
+    "share": 4.22
    },
    {
     "lab": "moonshotai",
-    "share": 3.49
+    "share": 3.39
    },
    {
     "lab": "minimax",
-    "share": 0.8
+    "share": 0.81
    },
    {
     "lab": "xiaomi",
-    "share": 0.57
+    "share": 0.56
    }
   ],
   "series": [
@@ -869,15 +869,15 @@
    },
    {
     "d": "2026-08-14",
-    "cn": 51.46,
-    "us": 48.49
+    "cn": 51.35,
+    "us": 48.6
    }
   ],
   "license": "AI Gateway Leaderboard Data (c) Vercel, CC BY 4.0"
  },
  "ollama": {
-  "cn": 282786599,
-  "us": 455965362,
+  "cn": 282787399,
+  "us": 456066164,
   "cn_top": [
    {
     "name": "deepseek-r1",
@@ -911,7 +911,7 @@
    },
    {
     "name": "llama3.2",
-    "pulls": 80000000
+    "pulls": 80100000
    },
    {
     "name": "gemma3",
@@ -950,7 +950,7 @@
    },
    {
     "label": "Best AI at end of 2026: Claude",
-    "p": 0.671,
+    "p": 0.698,
     "ticker": "KXLLM1-26DEC31-A",
     "series": "kxllm1"
    }
@@ -1000,6 +1000,10 @@
  "sdk": {
   "cn": [
    {
+    "pkg": "dashscope",
+    "wk": 699106
+   },
+   {
     "pkg": "zhipuai",
     "wk": 100072
    },
@@ -1009,14 +1013,6 @@
    }
   ],
   "us": [
-   {
-    "pkg": "openai",
-    "wk": 108193307
-   },
-   {
-    "pkg": "anthropic",
-    "wk": 52134853
-   },
    {
     "pkg": "google-genai",
     "wk": 70887584
