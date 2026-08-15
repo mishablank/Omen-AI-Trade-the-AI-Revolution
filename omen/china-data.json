@@ -1,5 +1,5 @@
 {
- "updated": "2026-08-15T03:49:25Z",
+ "updated": "2026-08-15T04:38:57Z",
  "snapshot_date": "2026-08-15",
  "artificial_analysis": {
   "cn_best": "GLM-5.2",
@@ -38,7 +38,7 @@
   "best": [
    {
     "label": "Qwen",
-    "rank": 140,
+    "rank": 144,
     "store": "android",
     "country": "br"
    }
@@ -55,7 +55,7 @@
    "au",
    "kr"
   ],
-  "detail": "no Chinese AI app in any iOS or Play top-100 (nearest: Qwen #140 (BR Play)); basket-mean Western top-100 presence 0/100 across 10 markets",
+  "detail": "no Chinese AI app in any iOS or Play top-100 (nearest: Qwen #144 (BR Play)); basket-mean Western top-100 presence 0/100 across 10 markets",
   "note": "iOS Apple RSS top-100 + Android Play top-200 across 10 markets; presence = basket-mean of best top-100 chart rank (DeepSeek/Qwen/Doubao/Kimi/MiniMax), #1=100 #100=1; ranks past top-100 score 0."
  },
  "lmarena": {
@@ -877,8 +877,8 @@
   "license": "AI Gateway Leaderboard Data (c) Vercel, CC BY 4.0"
  },
  "ollama": {
-  "cn": 283021300,
-  "us": 456380088,
+  "cn": 283023500,
+  "us": 456381011,
   "cn_top": [
    {
     "name": "deepseek-r1",
@@ -939,7 +939,7 @@
    },
    {
     "label": "Best AI at end of 2026: Ernie",
-    "p": 0.004,
+    "p": 0.003,
     "ticker": "KXLLM1-26DEC31-BAID",
     "series": "kxllm1"
    },
@@ -951,7 +951,7 @@
    },
    {
     "label": "Best AI at end of 2026: Claude",
-    "p": 0.676,
+    "p": 0.677,
     "ticker": "KXLLM1-26DEC31-A",
     "series": "kxllm1"
    }
@@ -1007,16 +1007,16 @@
    {
     "pkg": "zhipuai",
     "wk": 96582
+   },
+   {
+    "pkg": "zai-sdk",
+    "wk": 27922
    }
   ],
   "us": [
    {
-    "pkg": "anthropic",
-    "wk": 51686973
-   },
-   {
-    "pkg": "google-genai",
-    "wk": 70324208
+    "pkg": "openai",
+    "wk": 106329593
    }
   ],
   "asof": "2026-08-15"
