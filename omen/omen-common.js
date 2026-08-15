@@ -189,9 +189,12 @@
     const r = GAUGE_REFS[key], n = esc(r.name);
     if (r.fmt === "ddpct") return `${n} ${r.lo}→−${r.hi}%`;
     if (r.fmt === "yoy") return `${n} ${negated(r)}%`;
-    if (r.fmt === "pt") return `${n} ${r.lo}–${r.hi}pt`;
-    if (r.fmt === "pct") return `${n} ${r.lo}–${r.hi}%`;
-    return `${n} ${r.lo}–${r.hi}`;
+    // minusSign on both bounds: these three read the range straight off the table, so a
+    // negative bound would otherwise print an ASCII hyphen beside the U+2212 the rest of
+    // the sentence uses. No row had one until the fragility families landed.
+    if (r.fmt === "pt") return `${n} ${minusSign(r.lo)}–${minusSign(r.hi)}pt`;
+    if (r.fmt === "pct") return `${n} ${minusSign(r.lo)}–${minusSign(r.hi)}%`;
+    return `${n} ${minusSign(r.lo)}–${minusSign(r.hi)}`;
   }
 
   // The reference ranges as one family-grouped sentence fragment:

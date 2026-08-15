@@ -283,5 +283,22 @@ console.log("omen-common — esc / safeUrl / Polymarket shapes / regime / index 
   console.log("  newestPriced");
 }
 
+/* ---------- gaugeRefText: the house minus survives a negative bound ---------- */
+{
+  const { gaugeRefText, GAUGE_REFS } = OMEN;
+  // Until the fragility rows landed, no ref had a negative bound, so the plain/pt/pct
+  // branches interpolated r.lo raw and nothing ever noticed. cred_gap_z (lo −1) is the
+  // first, and it printed an ASCII hyphen next to a U+2212 in the same sentence.
+  const negatives = Object.keys(GAUGE_REFS).filter((k) => GAUGE_REFS[k].lo < 0 || GAUGE_REFS[k].hi < 0);
+  ok("gaugeRefText/a negative bound exists to test", negatives.length > 0);
+  for (const k of negatives) {
+    ok(`gaugeRefText/${k} uses U+2212 not ASCII hyphen`,
+      !/(^|[\s(])-\d/.test(gaugeRefText(k)), gaugeRefText(k));
+  }
+  eq("gaugeRefText/level branch negates with U+2212",
+    gaugeRefText("cred_gap_z"), "HY−IG gap z −1–2");
+  console.log("  gaugeRefText");
+}
+
 console.log(failures ? `\n${failures} failure(s)` : "\nall omen-common tests passed");
 process.exit(failures ? 1 : 0);
