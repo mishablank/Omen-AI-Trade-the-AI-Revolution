@@ -1,5 +1,5 @@
 {
- "updated": "2026-08-15T17:13:31Z",
+ "updated": "2026-08-15T18:16:15Z",
  "snapshot_date": "2026-08-15",
  "artificial_analysis": {
   "cn_best": "GLM-5.2",
@@ -38,7 +38,7 @@
   "best": [
    {
     "label": "Qwen",
-    "rank": 162,
+    "rank": 161,
     "store": "android",
     "country": "br"
    }
@@ -55,7 +55,7 @@
    "au",
    "kr"
   ],
-  "detail": "no Chinese AI app in any iOS or Play top-100 (nearest: Qwen #162 (BR Play)); basket-mean Western top-100 presence 0/100 across 10 markets",
+  "detail": "no Chinese AI app in any iOS or Play top-100 (nearest: Qwen #161 (BR Play)); basket-mean Western top-100 presence 0/100 across 10 markets",
   "note": "iOS Apple RSS top-100 + Android Play top-200 across 10 markets; presence = basket-mean of best top-100 chart rank (DeepSeek/Qwen/Doubao/Kimi/MiniMax), #1=100 #100=1; ranks past top-100 score 0."
  },
  "lmarena": {
@@ -531,10 +531,10 @@
  },
  "openrouter_week": {
   "week": "2026-08-10",
-  "cn_share": 0.5237,
-  "us_share": 0.364,
-  "spi": 1.439,
-  "total_tokens": 62244750697475
+  "cn_share": 0.5233,
+  "us_share": 0.3645,
+  "spi": 1.436,
+  "total_tokens": 62704724127994
  },
  "vercel_gateway": {
   "asof": "2026-08-15",
@@ -877,8 +877,8 @@
   "license": "AI Gateway Leaderboard Data (c) Vercel, CC BY 4.0"
  },
  "ollama": {
-  "cn": 283267400,
-  "us": 456696152,
+  "cn": 283371000,
+  "us": 456697555,
   "cn_top": [
    {
     "name": "deepseek-r1",
@@ -927,7 +927,7 @@
   "markets": [
    {
     "label": "Will a Chinese AI model be #1 this year?",
-    "p": 0.1,
+    "p": 0.12,
     "ticker": "KXBESTLLMCHINA-27",
     "series": "kxbestllmchina"
    },
@@ -951,7 +951,7 @@
    },
    {
     "label": "Best AI at end of 2026: Claude",
-    "p": 0.683,
+    "p": 0.682,
     "ticker": "KXLLM1-26DEC31-A",
     "series": "kxllm1"
    }
@@ -1007,10 +1007,6 @@
    {
     "pkg": "zhipuai",
     "wk": 96582
-   },
-   {
-    "pkg": "zai-sdk",
-    "wk": 27922
    }
   ],
   "us": [
