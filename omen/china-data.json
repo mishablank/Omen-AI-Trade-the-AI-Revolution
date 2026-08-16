@@ -1,5 +1,5 @@
 {
- "updated": "2026-08-16T09:34:26Z",
+ "updated": "2026-08-16T10:30:20Z",
  "snapshot_date": "2026-08-16",
  "artificial_analysis": {
   "cn_best": "GLM-5.2",
@@ -532,39 +532,39 @@
  "openrouter_week": {
   "week": "2026-08-10",
   "cn_share": 0.5184,
-  "us_share": 0.3694,
+  "us_share": 0.3695,
   "spi": 1.403,
-  "total_tokens": 68408760447753
+  "total_tokens": 68914169450114
  },
  "vercel_gateway": {
   "asof": "2026-08-16",
-  "cn_share": 55.04,
-  "us_share": 44.91,
-  "spi": 1.226,
+  "cn_share": 55.06,
+  "us_share": 44.89,
+  "spi": 1.227,
   "top_cn": [
    {
     "lab": "deepseek",
-    "share": 33.17
+    "share": 32.64
    },
    {
     "lab": "stepfun",
-    "share": 14.87
-   },
-   {
-    "lab": "zai",
-    "share": 2.72
+    "share": 16.24
    },
    {
     "lab": "moonshotai",
-    "share": 2.55
+    "share": 2.26
+   },
+   {
+    "lab": "zai",
+    "share": 2.23
    },
    {
     "lab": "minimax",
-    "share": 0.86
+    "share": 0.8
    },
    {
     "lab": "xiaomi",
-    "share": 0.58
+    "share": 0.59
    }
   ],
   "series": [
@@ -870,15 +870,15 @@
    },
    {
     "d": "2026-08-16",
-    "cn": 55.04,
-    "us": 44.91
+    "cn": 55.06,
+    "us": 44.89
    }
   ],
   "license": "AI Gateway Leaderboard Data (c) Vercel, CC BY 4.0"
  },
  "ollama": {
-  "cn": 283914799,
-  "us": 457012660,
+  "cn": 283918300,
+  "us": 457013777,
   "cn_top": [
    {
     "name": "deepseek-r1",
@@ -951,7 +951,7 @@
    },
    {
     "label": "Best AI at end of 2026: Claude",
-    "p": 0.7,
+    "p": 0.69,
     "ticker": "KXLLM1-26DEC31-A",
     "series": "kxllm1"
    }
@@ -961,7 +961,7 @@
   "cn": [
    {
     "base": "Qwen/Qwen3-8B",
-    "n": 1988
+    "n": 1989
    },
    {
     "base": "deepseek-ai/DeepSeek-R1",
@@ -994,7 +994,7 @@
     "n": 111
    }
   ],
-  "cn_total": 2370,
+  "cn_total": 2371,
   "us_total": 2511,
   "asof": "2026-08-16"
  },
@@ -1003,6 +1003,10 @@
    {
     "pkg": "dashscope",
     "wk": 908239
+   },
+   {
+    "pkg": "zhipuai",
+    "wk": 97433
    },
    {
     "pkg": "zai-sdk",
