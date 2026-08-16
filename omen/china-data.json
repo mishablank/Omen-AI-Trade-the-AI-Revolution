@@ -1,5 +1,5 @@
 {
- "updated": "2026-08-16T11:27:03Z",
+ "updated": "2026-08-16T12:53:21Z",
  "snapshot_date": "2026-08-16",
  "artificial_analysis": {
   "cn_best": "GLM-5.2",
@@ -450,21 +450,21 @@
   "source": "search",
   "asof": "2026-08-16",
   "vel": {
-   "MiniMax-AI/MiniMax-H3": 185.5,
-   "MiniMax-AI/skills": 5.8,
-   "MoonshotAI/Kimi-K3": 11.6,
-   "MoonshotAI/kimi-cli": 7.0,
-   "QwenLM/Qwen": 8.1,
-   "QwenLM/qwen-code": 33.6,
+   "MiniMax-AI/MiniMax-H3": 219.7,
+   "MiniMax-AI/skills": 9.3,
+   "MoonshotAI/Kimi-K3": 19.8,
+   "MoonshotAI/kimi-cli": 3.5,
+   "QwenLM/Qwen": 3.5,
+   "QwenLM/qwen-code": 36.0,
    "XiaomiMiMo/MiMo-Audio": 0.0,
-   "XiaomiMiMo/MiMo-Code": 7.0,
-   "deepseek-ai/FlashMLA": 1.2,
-   "deepseek-ai/deepseek-harness": 20650.6,
-   "zai-org/GLM-OCR": 1.2,
-   "zai-org/Open-AutoGLM": 17.4
+   "XiaomiMiMo/MiMo-Code": 11.6,
+   "deepseek-ai/FlashMLA": 2.3,
+   "deepseek-ai/deepseek-harness": 15931.6,
+   "zai-org/GLM-OCR": 2.3,
+   "zai-org/Open-AutoGLM": 3.5
   }
  },
- "github_stars_per_day": 20928.9,
+ "github_stars_per_day": 16243.1,
  "hf": {
   "cnOrgs": [
    {
@@ -531,10 +531,10 @@
  },
  "openrouter_week": {
   "week": "2026-08-10",
-  "cn_share": 0.5183,
-  "us_share": 0.3697,
-  "spi": 1.402,
-  "total_tokens": 69380009872006
+  "cn_share": 0.5181,
+  "us_share": 0.37,
+  "spi": 1.4,
+  "total_tokens": 70006141462713
  },
  "vercel_gateway": {
   "asof": "2026-08-16",
@@ -877,8 +877,8 @@
   "license": "AI Gateway Leaderboard Data (c) Vercel, CC BY 4.0"
  },
  "ollama": {
-  "cn": 283921900,
-  "us": 457014879,
+  "cn": 283928200,
+  "us": 457016980,
   "cn_top": [
    {
     "name": "deepseek-r1",
@@ -920,7 +920,9 @@
    }
   ],
   "n_models": 234,
-  "asof": "2026-08-16"
+  "asof": "2026-08-16",
+  "cn_per_day": 771900,
+  "us_per_day": 490905
  },
  "kalshi": {
   "asof": "2026-08-16",
@@ -1003,6 +1005,10 @@
    {
     "pkg": "dashscope",
     "wk": 908239
+   },
+   {
+    "pkg": "zhipuai",
+    "wk": 97433
    },
    {
     "pkg": "zai-sdk",
