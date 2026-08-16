@@ -1,5 +1,5 @@
 {
- "updated": "2026-08-16T07:37:43Z",
+ "updated": "2026-08-16T08:38:05Z",
  "snapshot_date": "2026-08-16",
  "artificial_analysis": {
   "cn_best": "GLM-5.2",
@@ -469,72 +469,72 @@
   "cnOrgs": [
    {
     "org": "Qwen",
-    "dl": 276112335
+    "dl": 273253383
    },
    {
     "org": "deepseek-ai",
-    "dl": 31034077
+    "dl": 30542941
    },
    {
     "org": "zai-org",
-    "dl": 14079409
+    "dl": 13881758
    },
    {
     "org": "moonshotai",
-    "dl": 5623256
+    "dl": 5561035
    },
    {
     "org": "MiniMaxAI",
-    "dl": 4810495
+    "dl": 4860231
    },
    {
     "org": "stepfun-ai",
-    "dl": 1385380
+    "dl": 1367085
    },
    {
     "org": "tencent",
-    "dl": 1200883
+    "dl": 1223353
    },
    {
     "org": "XiaomiMiMo",
-    "dl": 1182474
+    "dl": 1141799
    }
   ],
   "usOrgs": [
    {
     "org": "google",
-    "dl": 58698847
+    "dl": 57835820
    },
    {
     "org": "meta-llama",
-    "dl": 34368439
+    "dl": 34347980
    },
    {
     "org": "nvidia",
-    "dl": 22681507
+    "dl": 22469934
    },
    {
     "org": "openai",
-    "dl": 12681818
+    "dl": 12564043
    },
    {
     "org": "microsoft",
-    "dl": 7073743
+    "dl": 7022695
    },
    {
     "org": "allenai",
-    "dl": 4132118
+    "dl": 3975249
    }
   ],
-  "cn": 335428309,
-  "us": 139636472
+  "cn": 331831585,
+  "us": 138215721
  },
  "openrouter_week": {
   "week": "2026-08-10",
   "cn_share": 0.5184,
   "us_share": 0.3694,
   "spi": 1.403,
-  "total_tokens": 67812030700611
+  "total_tokens": 67903854373869
  },
  "vercel_gateway": {
   "asof": "2026-08-16",
@@ -877,8 +877,8 @@
   "license": "AI Gateway Leaderboard Data (c) Vercel, CC BY 4.0"
  },
  "ollama": {
-  "cn": 283807700,
-  "us": 457011351,
+  "cn": 283911299,
+  "us": 457011856,
   "cn_top": [
    {
     "name": "deepseek-r1",
@@ -890,7 +890,7 @@
    },
    {
     "name": "qwen3",
-    "pulls": 34300000
+    "pulls": 34400000
    },
    {
     "name": "qwen2.5-coder",
@@ -951,7 +951,7 @@
    },
    {
     "label": "Best AI at end of 2026: Claude",
-    "p": 0.699,
+    "p": 0.698,
     "ticker": "KXLLM1-26DEC31-A",
     "series": "kxllm1"
    }
