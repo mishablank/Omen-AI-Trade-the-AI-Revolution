@@ -1,5 +1,5 @@
 {
- "updated": "2026-08-17T19:31:28Z",
+ "updated": "2026-08-17T20:31:14Z",
  "snapshot_date": "2026-08-17",
  "artificial_analysis": {
   "cn_best": "GLM-5.2",
@@ -38,7 +38,7 @@
   "best": [
    {
     "label": "Qwen",
-    "rank": 86,
+    "rank": 84,
     "store": "android",
     "country": "br"
    }
@@ -55,7 +55,7 @@
    "au",
    "kr"
   ],
-  "detail": "Qwen #86 (BR Play); basket-mean Western top-100 presence 3/100 across 10 markets",
+  "detail": "Qwen #84 (BR Play); basket-mean Western top-100 presence 3/100 across 10 markets",
   "note": "iOS Apple RSS top-100 + Android Play top-200 across 10 markets; presence = basket-mean of best top-100 chart rank (DeepSeek/Qwen/Doubao/Kimi/MiniMax), #1=100 #100=1; ranks past top-100 score 0."
  },
  "lmarena": {
@@ -531,10 +531,10 @@
  },
  "openrouter_week": {
   "week": "2026-08-17",
-  "cn_share": 0.5676,
-  "us_share": 0.3432,
-  "spi": 1.654,
-  "total_tokens": 11001242031431
+  "cn_share": 0.5647,
+  "us_share": 0.3451,
+  "spi": 1.636,
+  "total_tokens": 11485187828882
  },
  "vercel_gateway": {
   "asof": "2026-08-17",
@@ -877,8 +877,8 @@
   "license": "AI Gateway Leaderboard Data (c) Vercel, CC BY 4.0"
  },
  "ollama": {
-  "cn": 284662800,
-  "us": 457756877,
+  "cn": 284866300,
+  "us": 457757593,
   "cn_top": [
    {
     "name": "deepseek-r1",
@@ -890,7 +890,7 @@
    },
    {
     "name": "qwen3",
-    "pulls": 34500000
+    "pulls": 34600000
    },
    {
     "name": "qwen2.5-coder",
@@ -902,7 +902,7 @@
    },
    {
     "name": "qwen3-coder",
-    "pulls": 8300000
+    "pulls": 8400000
    }
   ],
   "us_top": [
@@ -951,7 +951,7 @@
    },
    {
     "label": "Best AI at end of 2026: Claude",
-    "p": 0.68,
+    "p": 0.679,
     "ticker": "KXLLM1-26DEC31-A",
     "series": "kxllm1"
    }
