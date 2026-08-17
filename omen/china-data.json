@@ -1,5 +1,5 @@
 {
- "updated": "2026-08-17T18:52:20Z",
+ "updated": "2026-08-17T19:31:28Z",
  "snapshot_date": "2026-08-17",
  "artificial_analysis": {
   "cn_best": "GLM-5.2",
@@ -38,7 +38,7 @@
   "best": [
    {
     "label": "Qwen",
-    "rank": 88,
+    "rank": 86,
     "store": "android",
     "country": "br"
    }
@@ -55,7 +55,7 @@
    "au",
    "kr"
   ],
-  "detail": "Qwen #88 (BR Play); basket-mean Western top-100 presence 3/100 across 10 markets",
+  "detail": "Qwen #86 (BR Play); basket-mean Western top-100 presence 3/100 across 10 markets",
   "note": "iOS Apple RSS top-100 + Android Play top-200 across 10 markets; presence = basket-mean of best top-100 chart rank (DeepSeek/Qwen/Doubao/Kimi/MiniMax), #1=100 #100=1; ranks past top-100 score 0."
  },
  "lmarena": {
@@ -531,40 +531,40 @@
  },
  "openrouter_week": {
   "week": "2026-08-17",
-  "cn_share": 0.5711,
-  "us_share": 0.3411,
-  "spi": 1.674,
-  "total_tokens": 10365672823584
+  "cn_share": 0.5676,
+  "us_share": 0.3432,
+  "spi": 1.654,
+  "total_tokens": 11001242031431
  },
  "vercel_gateway": {
   "asof": "2026-08-17",
-  "cn_share": 52.28,
-  "us_share": 47.64,
-  "spi": 1.097,
+  "cn_share": 52.01,
+  "us_share": 47.92,
+  "spi": 1.085,
   "top_cn": [
    {
     "lab": "deepseek",
-    "share": 27.58
+    "share": 27.83
    },
    {
     "lab": "stepfun",
-    "share": 14.92
+    "share": 14.53
    },
    {
     "lab": "zai",
-    "share": 5.26
+    "share": 5.18
    },
    {
     "lab": "moonshotai",
-    "share": 2.14
+    "share": 2.16
    },
    {
     "lab": "xiaomi",
-    "share": 1.13
+    "share": 1.1
    },
    {
     "lab": "minimax",
-    "share": 0.87
+    "share": 0.82
    }
   ],
   "series": [
@@ -870,15 +870,15 @@
    },
    {
     "d": "2026-08-17",
-    "cn": 52.28,
-    "us": 47.64
+    "cn": 52.01,
+    "us": 47.92
    }
   ],
   "license": "AI Gateway Leaderboard Data (c) Vercel, CC BY 4.0"
  },
  "ollama": {
-  "cn": 284660200,
-  "us": 457756076,
+  "cn": 284662800,
+  "us": 457756877,
   "cn_top": [
    {
     "name": "deepseek-r1",
@@ -927,7 +927,7 @@
   "markets": [
    {
     "label": "Will a Chinese AI model be #1 this year?",
-    "p": 0.14,
+    "p": 0.17,
     "ticker": "KXBESTLLMCHINA-27",
     "series": "kxbestllmchina"
    },
