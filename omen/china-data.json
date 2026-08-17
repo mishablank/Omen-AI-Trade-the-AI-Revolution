@@ -1,5 +1,5 @@
 {
- "updated": "2026-08-17T17:59:05Z",
+ "updated": "2026-08-17T18:52:20Z",
  "snapshot_date": "2026-08-17",
  "artificial_analysis": {
   "cn_best": "GLM-5.2",
@@ -32,13 +32,13 @@
   "note": "Google Trends US, 90-day avg: 8 Chinese AI terms = 3.5% of AI-assistant search interest vs ChatGPT+Gemini+Claude+Llama AI+Meta AI."
  },
  "apps": {
-  "score": 0,
+  "score": 3,
   "asof": "2026-08-17",
   "source": "app-charts",
   "best": [
    {
     "label": "Qwen",
-    "rank": 101,
+    "rank": 88,
     "store": "android",
     "country": "br"
    }
@@ -55,7 +55,7 @@
    "au",
    "kr"
   ],
-  "detail": "no Chinese AI app in any iOS or Play top-100 (nearest: Qwen #101 (BR Play)); basket-mean Western top-100 presence 0/100 across 10 markets",
+  "detail": "Qwen #88 (BR Play); basket-mean Western top-100 presence 3/100 across 10 markets",
   "note": "iOS Apple RSS top-100 + Android Play top-200 across 10 markets; presence = basket-mean of best top-100 chart rank (DeepSeek/Qwen/Doubao/Kimi/MiniMax), #1=100 #100=1; ranks past top-100 score 0."
  },
  "lmarena": {
@@ -531,10 +531,10 @@
  },
  "openrouter_week": {
   "week": "2026-08-17",
-  "cn_share": 0.5743,
-  "us_share": 0.3397,
-  "spi": 1.69,
-  "total_tokens": 9689236444978
+  "cn_share": 0.5711,
+  "us_share": 0.3411,
+  "spi": 1.674,
+  "total_tokens": 10365672823584
  },
  "vercel_gateway": {
   "asof": "2026-08-17",
@@ -877,8 +877,8 @@
   "license": "AI Gateway Leaderboard Data (c) Vercel, CC BY 4.0"
  },
  "ollama": {
-  "cn": 284656900,
-  "us": 457754839,
+  "cn": 284660200,
+  "us": 457756076,
   "cn_top": [
    {
     "name": "deepseek-r1",
@@ -951,7 +951,7 @@
    },
    {
     "label": "Best AI at end of 2026: Claude",
-    "p": 0.679,
+    "p": 0.68,
     "ticker": "KXLLM1-26DEC31-A",
     "series": "kxllm1"
    }
@@ -1000,6 +1000,10 @@
  },
  "sdk": {
   "cn": [
+   {
+    "pkg": "dashscope",
+    "wk": 969216
+   },
    {
     "pkg": "zhipuai",
     "wk": 99594
