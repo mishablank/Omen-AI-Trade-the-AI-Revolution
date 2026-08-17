@@ -1,5 +1,5 @@
 {
- "updated": "2026-08-17T12:58:04Z",
+ "updated": "2026-08-17T13:41:48Z",
  "snapshot_date": "2026-08-17",
  "artificial_analysis": {
   "cn_best": "GLM-5.2",
@@ -531,40 +531,40 @@
  },
  "openrouter_week": {
   "week": "2026-08-17",
-  "cn_share": 0.5753,
-  "us_share": 0.339,
-  "spi": 1.697,
-  "total_tokens": 6589206227995
+  "cn_share": 0.5747,
+  "us_share": 0.3396,
+  "spi": 1.692,
+  "total_tokens": 7315014401592
  },
  "vercel_gateway": {
   "asof": "2026-08-17",
-  "cn_share": 49.78,
-  "us_share": 50.14,
-  "spi": 0.993,
+  "cn_share": 51.98,
+  "us_share": 47.94,
+  "spi": 1.084,
   "top_cn": [
    {
     "lab": "deepseek",
-    "share": 25.6
+    "share": 26.92
    },
    {
     "lab": "stepfun",
-    "share": 14.64
+    "share": 15.21
    },
    {
     "lab": "zai",
-    "share": 5.25
+    "share": 5.37
    },
    {
     "lab": "moonshotai",
-    "share": 1.75
+    "share": 2.05
    },
    {
     "lab": "xiaomi",
-    "share": 1.19
+    "share": 1.16
    },
    {
     "lab": "minimax",
-    "share": 0.92
+    "share": 0.88
    }
   ],
   "series": [
@@ -870,15 +870,15 @@
    },
    {
     "d": "2026-08-17",
-    "cn": 49.78,
-    "us": 50.14
+    "cn": 51.98,
+    "us": 47.94
    }
   ],
   "license": "AI Gateway Leaderboard Data (c) Vercel, CC BY 4.0"
  },
  "ollama": {
-  "cn": 284534400,
-  "us": 457548893,
+  "cn": 284538099,
+  "us": 457549596,
   "cn_top": [
    {
     "name": "deepseek-r1",
@@ -945,13 +945,13 @@
    },
    {
     "label": "Best AI at end of 2026: Qwen",
-    "p": 0.011,
+    "p": 0.013,
     "ticker": "KXLLM1-26DEC31-ALI",
     "series": "kxllm1"
    },
    {
     "label": "Best AI at end of 2026: Claude",
-    "p": 0.683,
+    "p": 0.69,
     "ticker": "KXLLM1-26DEC31-A",
     "series": "kxllm1"
    }
