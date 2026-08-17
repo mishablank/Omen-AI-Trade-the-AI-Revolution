@@ -1,5 +1,5 @@
 {
- "updated": "2026-08-17T05:41:00Z",
+ "updated": "2026-08-17T07:09:23Z",
  "snapshot_date": "2026-08-17",
  "artificial_analysis": {
   "cn_best": "GLM-5.2",
@@ -477,7 +477,7 @@
    },
    {
     "org": "zai-org",
-    "dl": 13881758
+    "dl": 13880243
    },
    {
     "org": "moonshotai",
@@ -503,11 +503,11 @@
   "usOrgs": [
    {
     "org": "google",
-    "dl": 57835820
+    "dl": 58132800
    },
    {
     "org": "meta-llama",
-    "dl": 34347980
+    "dl": 34333120
    },
    {
     "org": "nvidia",
@@ -526,45 +526,45 @@
     "dl": 3975249
    }
   ],
-  "cn": 331831585,
-  "us": 138215721
+  "cn": 331830070,
+  "us": 138497841
  },
  "openrouter_week": {
   "week": "2026-08-17",
-  "cn_share": 0.5458,
-  "us_share": 0.3656,
-  "spi": 1.493,
-  "total_tokens": 2725161361860
+  "cn_share": 0.5529,
+  "us_share": 0.3594,
+  "spi": 1.538,
+  "total_tokens": 3583719492383
  },
  "vercel_gateway": {
   "asof": "2026-08-17",
-  "cn_share": 48.57,
-  "us_share": 51.34,
-  "spi": 0.946,
+  "cn_share": 49.26,
+  "us_share": 50.65,
+  "spi": 0.973,
   "top_cn": [
    {
     "lab": "deepseek",
-    "share": 28.63
+    "share": 25.83
    },
    {
     "lab": "stepfun",
-    "share": 11.58
+    "share": 13.75
    },
    {
     "lab": "zai",
-    "share": 4.26
+    "share": 5.34
    },
    {
     "lab": "moonshotai",
-    "share": 2.15
-   },
-   {
-    "lab": "minimax",
-    "share": 0.96
+    "share": 1.85
    },
    {
     "lab": "xiaomi",
-    "share": 0.59
+    "share": 1.12
+   },
+   {
+    "lab": "minimax",
+    "share": 0.99
    }
   ],
   "series": [
@@ -870,15 +870,15 @@
    },
    {
     "d": "2026-08-17",
-    "cn": 48.57,
-    "us": 51.34
+    "cn": 49.26,
+    "us": 50.65
    }
   ],
   "license": "AI Gateway Leaderboard Data (c) Vercel, CC BY 4.0"
  },
  "ollama": {
-  "cn": 284397800,
-  "us": 457437284,
+  "cn": 284505500,
+  "us": 457539942,
   "cn_top": [
    {
     "name": "deepseek-r1",
@@ -886,7 +886,7 @@
    },
    {
     "name": "qwen2.5",
-    "pulls": 37000000
+    "pulls": 37100000
    },
    {
     "name": "qwen3",
@@ -951,7 +951,7 @@
    },
    {
     "label": "Best AI at end of 2026: Claude",
-    "p": 0.684,
+    "p": 0.683,
     "ticker": "KXLLM1-26DEC31-A",
     "series": "kxllm1"
    }
@@ -983,7 +983,7 @@
    },
    {
     "base": "google/gemma-3-12b-it",
-    "n": 387
+    "n": 388
    },
    {
     "base": "openai/gpt-oss-20b",
@@ -995,7 +995,7 @@
    }
   ],
   "cn_total": 2372,
-  "us_total": 2510,
+  "us_total": 2511,
   "asof": "2026-08-17"
  },
  "sdk": {
