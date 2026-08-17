@@ -1,5 +1,5 @@
 {
- "updated": "2026-08-17T10:39:21Z",
+ "updated": "2026-08-17T11:33:05Z",
  "snapshot_date": "2026-08-17",
  "artificial_analysis": {
   "cn_best": "GLM-5.2",
@@ -531,10 +531,10 @@
  },
  "openrouter_week": {
   "week": "2026-08-17",
-  "cn_share": 0.559,
-  "us_share": 0.3563,
-  "spi": 1.569,
-  "total_tokens": 5203381383391
+  "cn_share": 0.5763,
+  "us_share": 0.3382,
+  "spi": 1.704,
+  "total_tokens": 5811162962676
  },
  "vercel_gateway": {
   "asof": "2026-08-17",
@@ -877,8 +877,8 @@
   "license": "AI Gateway Leaderboard Data (c) Vercel, CC BY 4.0"
  },
  "ollama": {
-  "cn": 284523700,
-  "us": 457545361,
+  "cn": 284527800,
+  "us": 457547365,
   "cn_top": [
    {
     "name": "deepseek-r1",
