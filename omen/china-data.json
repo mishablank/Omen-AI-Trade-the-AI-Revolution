@@ -1,5 +1,5 @@
 {
- "updated": "2026-08-18T08:46:36Z",
+ "updated": "2026-08-18T09:41:00Z",
  "snapshot_date": "2026-08-18",
  "artificial_analysis": {
   "cn_best": "GLM-5.2",
@@ -469,41 +469,41 @@
   "cnOrgs": [
    {
     "org": "Qwen",
-    "dl": 269529767
+    "dl": 269857276
    },
    {
     "org": "deepseek-ai",
-    "dl": 30010342
+    "dl": 30081722
    },
    {
     "org": "zai-org",
-    "dl": 13692418
+    "dl": 13644330
    },
    {
     "org": "moonshotai",
-    "dl": 5525263
+    "dl": 5611977
    },
    {
     "org": "MiniMaxAI",
-    "dl": 4932495
+    "dl": 5346489
    },
    {
     "org": "stepfun-ai",
-    "dl": 1361311
+    "dl": 1360018
    },
    {
     "org": "tencent",
-    "dl": 1276319
+    "dl": 1280959
    },
    {
     "org": "XiaomiMiMo",
-    "dl": 1092423
+    "dl": 1097783
    }
   ],
   "usOrgs": [
    {
     "org": "google",
-    "dl": 57340214
+    "dl": 57279401
    },
    {
     "org": "meta-llama",
@@ -511,7 +511,7 @@
    },
    {
     "org": "nvidia",
-    "dl": 21899652
+    "dl": 22056170
    },
    {
     "org": "openai",
@@ -523,18 +523,18 @@
    },
    {
     "org": "allenai",
-    "dl": 4047579
+    "dl": 4048330
    }
   ],
-  "cn": 327420338,
-  "us": 136774053
+  "cn": 328280554,
+  "us": 136870509
  },
  "openrouter_week": {
   "week": "2026-08-17",
-  "cn_share": 0.5599,
-  "us_share": 0.3463,
-  "spi": 1.617,
-  "total_tokens": 17833765768792
+  "cn_share": 0.5602,
+  "us_share": 0.3462,
+  "spi": 1.618,
+  "total_tokens": 18482330519206
  },
  "vercel_gateway": {
   "asof": "2026-08-18",
@@ -877,8 +877,8 @@
   "license": "AI Gateway Leaderboard Data (c) Vercel, CC BY 4.0"
  },
  "ollama": {
-  "cn": 285109599,
-  "us": 458070899,
+  "cn": 285113799,
+  "us": 458171799,
   "cn_top": [
    {
     "name": "deepseek-r1",
@@ -951,7 +951,7 @@
    },
    {
     "label": "Best AI at end of 2026: Claude",
-    "p": 0.679,
+    "p": 0.66,
     "ticker": "KXLLM1-26DEC31-A",
     "series": "kxllm1"
    }
@@ -1000,6 +1000,10 @@
  },
  "sdk": {
   "cn": [
+   {
+    "pkg": "dashscope",
+    "wk": 955053
+   },
    {
     "pkg": "zhipuai",
     "wk": 97203
