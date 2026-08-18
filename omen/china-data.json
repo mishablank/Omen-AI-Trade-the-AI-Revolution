@@ -1,5 +1,5 @@
 {
- "updated": "2026-08-18T18:51:07Z",
+ "updated": "2026-08-18T19:31:02Z",
  "snapshot_date": "2026-08-18",
  "artificial_analysis": {
   "cn_best": "GLM-5.2",
@@ -38,7 +38,7 @@
   "best": [
    {
     "label": "Qwen",
-    "rank": 89,
+    "rank": 92,
     "store": "android",
     "country": "br"
    }
@@ -55,7 +55,7 @@
    "au",
    "kr"
   ],
-  "detail": "Qwen #89 (BR Play); basket-mean Western top-100 presence 2/100 across 10 markets",
+  "detail": "Qwen #92 (BR Play); basket-mean Western top-100 presence 2/100 across 10 markets",
   "note": "iOS Apple RSS top-100 + Android Play top-200 across 10 markets; presence = basket-mean of best top-100 chart rank (DeepSeek/Qwen/Doubao/Kimi/MiniMax), #1=100 #100=1; ranks past top-100 score 0."
  },
  "lmarena": {
@@ -538,33 +538,33 @@
  },
  "vercel_gateway": {
   "asof": "2026-08-18",
-  "cn_share": 52.11,
-  "us_share": 47.83,
-  "spi": 1.089,
+  "cn_share": 51.73,
+  "us_share": 48.21,
+  "spi": 1.073,
   "top_cn": [
    {
     "lab": "deepseek",
-    "share": 29.79
+    "share": 29.77
    },
    {
     "lab": "stepfun",
-    "share": 13.64
+    "share": 13.19
    },
    {
     "lab": "zai",
-    "share": 3.56
+    "share": 3.78
    },
    {
     "lab": "moonshotai",
-    "share": 2.29
+    "share": 2.23
    },
    {
     "lab": "xiaomi",
-    "share": 1.43
+    "share": 1.35
    },
    {
     "lab": "minimax",
-    "share": 0.92
+    "share": 0.95
    }
   ],
   "series": [
@@ -850,35 +850,35 @@
    },
    {
     "d": "2026-08-14",
-    "cn": 51.61,
-    "us": 48.34
+    "cn": 51.68,
+    "us": 48.27
    },
    {
     "d": "2026-08-15",
-    "cn": 50.1,
-    "us": 49.86
+    "cn": 50.25,
+    "us": 49.71
    },
    {
     "d": "2026-08-16",
-    "cn": 55.12,
-    "us": 44.83
+    "cn": 55.25,
+    "us": 44.7
    },
    {
     "d": "2026-08-17",
-    "cn": 51.08,
-    "us": 48.85
+    "cn": 51.18,
+    "us": 48.76
    },
    {
     "d": "2026-08-18",
-    "cn": 52.11,
-    "us": 47.83
+    "cn": 51.73,
+    "us": 48.21
    }
   ],
   "license": "AI Gateway Leaderboard Data (c) Vercel, CC BY 4.0"
  },
  "ollama": {
-  "cn": 285360000,
-  "us": 458483599,
+  "cn": 285462600,
+  "us": 458483899,
   "cn_top": [
    {
     "name": "deepseek-r1",
@@ -894,7 +894,7 @@
    },
    {
     "name": "qwen2.5-coder",
-    "pulls": 20400000
+    "pulls": 20500000
    },
    {
     "name": "qwen3.5",
@@ -927,7 +927,7 @@
   "markets": [
    {
     "label": "Will a Chinese AI model be #1 this year?",
-    "p": 0.11,
+    "p": 0.1,
     "ticker": "KXBESTLLMCHINA-27",
     "series": "kxbestllmchina"
    },
@@ -939,19 +939,19 @@
    },
    {
     "label": "Best AI at end of 2026: Ernie",
-    "p": 0.003,
+    "p": 0.002,
     "ticker": "KXLLM1-26DEC31-BAID",
     "series": "kxllm1"
    },
    {
     "label": "Best AI at end of 2026: Qwen",
-    "p": 0.011,
+    "p": 0.021,
     "ticker": "KXLLM1-26DEC31-ALI",
     "series": "kxllm1"
    },
    {
     "label": "Best AI at end of 2026: Claude",
-    "p": 0.722,
+    "p": 0.715,
     "ticker": "KXLLM1-26DEC31-A",
     "series": "kxllm1"
    }
