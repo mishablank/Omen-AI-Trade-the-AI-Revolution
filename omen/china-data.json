@@ -1,5 +1,5 @@
 {
- "updated": "2026-08-18T12:59:51Z",
+ "updated": "2026-08-18T13:45:53Z",
  "snapshot_date": "2026-08-18",
  "artificial_analysis": {
   "cn_best": "GLM-5.2",
@@ -531,36 +531,36 @@
  },
  "openrouter_week": {
   "week": "2026-08-17",
-  "cn_share": 0.559,
-  "us_share": 0.3473,
-  "spi": 1.609,
-  "total_tokens": 20135821792439
+  "cn_share": 0.5582,
+  "us_share": 0.348,
+  "spi": 1.604,
+  "total_tokens": 20701150003035
  },
  "vercel_gateway": {
   "asof": "2026-08-18",
-  "cn_share": 52.27,
-  "us_share": 47.68,
-  "spi": 1.096,
+  "cn_share": 52.64,
+  "us_share": 47.31,
+  "spi": 1.113,
   "top_cn": [
    {
     "lab": "deepseek",
-    "share": 29.3
+    "share": 29.61
    },
    {
     "lab": "stepfun",
-    "share": 14.01
+    "share": 14.13
    },
    {
     "lab": "zai",
-    "share": 3.35
+    "share": 3.47
    },
    {
     "lab": "moonshotai",
-    "share": 2.54
+    "share": 2.44
    },
    {
     "lab": "xiaomi",
-    "share": 1.7
+    "share": 1.63
    },
    {
     "lab": "minimax",
@@ -870,15 +870,15 @@
    },
    {
     "d": "2026-08-18",
-    "cn": 52.27,
-    "us": 47.68
+    "cn": 52.64,
+    "us": 47.31
    }
   ],
   "license": "AI Gateway Leaderboard Data (c) Vercel, CC BY 4.0"
  },
  "ollama": {
-  "cn": 285229100,
-  "us": 458276099,
+  "cn": 285233400,
+  "us": 458476699,
   "cn_top": [
    {
     "name": "deepseek-r1",
@@ -912,7 +912,7 @@
    },
    {
     "name": "llama3.2",
-    "pulls": 80400000
+    "pulls": 80500000
    },
    {
     "name": "gemma3",
@@ -951,7 +951,7 @@
    },
    {
     "label": "Best AI at end of 2026: Claude",
-    "p": 0.671,
+    "p": 0.681,
     "ticker": "KXLLM1-26DEC31-A",
     "series": "kxllm1"
    }
@@ -1001,16 +1001,8 @@
  "sdk": {
   "cn": [
    {
-    "pkg": "dashscope",
-    "wk": 955053
-   },
-   {
     "pkg": "zhipuai",
     "wk": 97203
-   },
-   {
-    "pkg": "zai-sdk",
-    "wk": 27019
    }
   ],
   "us": [
@@ -1021,10 +1013,6 @@
    {
     "pkg": "anthropic",
     "wk": 50535636
-   },
-   {
-    "pkg": "google-genai",
-    "wk": 69578701
    }
   ],
   "asof": "2026-08-18"
