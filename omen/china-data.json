@@ -1,5 +1,5 @@
 {
- "updated": "2026-08-18T14:37:49Z",
+ "updated": "2026-08-18T15:36:01Z",
  "snapshot_date": "2026-08-18",
  "artificial_analysis": {
   "cn_best": "GLM-5.2",
@@ -531,10 +531,10 @@
  },
  "openrouter_week": {
   "week": "2026-08-17",
-  "cn_share": 0.5577,
-  "us_share": 0.3484,
-  "spi": 1.6,
-  "total_tokens": 21182339286041
+  "cn_share": 0.557,
+  "us_share": 0.3491,
+  "spi": 1.596,
+  "total_tokens": 21860697253962
  },
  "vercel_gateway": {
   "asof": "2026-08-18",
@@ -877,8 +877,8 @@
   "license": "AI Gateway Leaderboard Data (c) Vercel, CC BY 4.0"
  },
  "ollama": {
-  "cn": 285237900,
-  "us": 458477399,
+  "cn": 285243300,
+  "us": 458478999,
   "cn_top": [
    {
     "name": "deepseek-r1",
@@ -945,7 +945,7 @@
    },
    {
     "label": "Best AI at end of 2026: Qwen",
-    "p": 0.013,
+    "p": 0.011,
     "ticker": "KXLLM1-26DEC31-ALI",
     "series": "kxllm1"
    },
@@ -983,7 +983,7 @@
    },
    {
     "base": "google/gemma-3-12b-it",
-    "n": 389
+    "n": 390
    },
    {
     "base": "openai/gpt-oss-20b",
@@ -995,7 +995,7 @@
    }
   ],
   "cn_total": 2374,
-  "us_total": 2511,
+  "us_total": 2512,
   "asof": "2026-08-18"
  },
  "sdk": {
