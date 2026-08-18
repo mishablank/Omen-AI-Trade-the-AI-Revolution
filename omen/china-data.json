@@ -1,5 +1,5 @@
 {
- "updated": "2026-08-18T05:36:49Z",
+ "updated": "2026-08-18T06:56:17Z",
  "snapshot_date": "2026-08-18",
  "artificial_analysis": {
   "cn_best": "GLM-5.2",
@@ -450,21 +450,21 @@
   "source": "search",
   "asof": "2026-08-18",
   "vel": {
-   "MiniMax-AI/MiniMax-H3": -198.0,
-   "MiniMax-AI/skills": 6.9,
-   "MoonshotAI/Kimi-K3": 17.2,
-   "MoonshotAI/kimi-cli": 13.7,
-   "QwenLM/Qwen": 4.6,
-   "QwenLM/qwen-code": 40.0,
+   "MiniMax-AI/MiniMax-H3": 143.5,
+   "MiniMax-AI/skills": 15.9,
+   "MoonshotAI/Kimi-K3": 14.8,
+   "MoonshotAI/kimi-cli": 9.1,
+   "QwenLM/Qwen": 2.3,
+   "QwenLM/qwen-code": 38.7,
    "XiaomiMiMo/MiMo-Audio": 0.0,
-   "XiaomiMiMo/MiMo-Code": 3.4,
-   "deepseek-ai/FlashMLA": 3.4,
-   "deepseek-ai/deepseek-harness": 20858.7,
-   "zai-org/GLM-OCR": 5.7,
-   "zai-org/Open-AutoGLM": 6.9
+   "XiaomiMiMo/MiMo-Code": 14.8,
+   "deepseek-ai/FlashMLA": 5.7,
+   "deepseek-ai/deepseek-harness": 11973.3,
+   "zai-org/GLM-OCR": 1.1,
+   "zai-org/Open-AutoGLM": 8.0
   }
  },
- "github_stars_per_day": 20762.6,
+ "github_stars_per_day": 12227.3,
  "hf": {
   "cnOrgs": [
    {
@@ -531,40 +531,40 @@
  },
  "openrouter_week": {
   "week": "2026-08-17",
-  "cn_share": 0.5584,
-  "us_share": 0.3476,
-  "spi": 1.606,
-  "total_tokens": 16118970975610
+  "cn_share": 0.5585,
+  "us_share": 0.3475,
+  "spi": 1.607,
+  "total_tokens": 16622640272822
  },
  "vercel_gateway": {
   "asof": "2026-08-18",
-  "cn_share": 51.93,
-  "us_share": 48.03,
-  "spi": 1.081,
+  "cn_share": 51.42,
+  "us_share": 48.53,
+  "spi": 1.06,
   "top_cn": [
    {
     "lab": "deepseek",
-    "share": 31.6
+    "share": 30.36
    },
    {
     "lab": "stepfun",
-    "share": 11.5
+    "share": 12.4
    },
    {
     "lab": "zai",
-    "share": 3.34
+    "share": 3.18
    },
    {
     "lab": "moonshotai",
-    "share": 2.82
+    "share": 2.59
    },
    {
     "lab": "xiaomi",
-    "share": 1.28
+    "share": 1.53
    },
    {
     "lab": "minimax",
-    "share": 0.92
+    "share": 0.89
    }
   ],
   "series": [
@@ -865,20 +865,20 @@
    },
    {
     "d": "2026-08-17",
-    "cn": 51.1,
-    "us": 48.83
+    "cn": 51.09,
+    "us": 48.84
    },
    {
     "d": "2026-08-18",
-    "cn": 51.93,
-    "us": 48.03
+    "cn": 51.42,
+    "us": 48.53
    }
   ],
   "license": "AI Gateway Leaderboard Data (c) Vercel, CC BY 4.0"
  },
  "ollama": {
-  "cn": 285096200,
-  "us": 458067799,
+  "cn": 285101799,
+  "us": 458069799,
   "cn_top": [
    {
     "name": "deepseek-r1",
@@ -920,7 +920,9 @@
    }
   ],
   "n_models": 234,
-  "asof": "2026-08-18"
+  "asof": "2026-08-18",
+  "cn_per_day": 663273,
+  "us_per_day": 598536
  },
  "kalshi": {
   "asof": "2026-08-18",
