@@ -1,5 +1,5 @@
 {
- "updated": "2026-08-18T01:43:06Z",
+ "updated": "2026-08-18T03:06:25Z",
  "tsmc": {
   "asof": "2026-07",
   "rev_ntd_b": 467.6,
@@ -11,17 +11,17 @@
  "issuance": {
   "days": 90,
   "cur": {
-   "from": "2026-05-20",
-   "to": "2026-08-17",
+   "from": "2026-05-21",
+   "to": "2026-08-18",
    "debt": 21,
-   "s1_ai": 336,
+   "s1_ai": 335,
    "formd_ai": 6
   },
   "prev": {
-   "from": "2026-02-19",
-   "to": "2026-05-19",
+   "from": "2026-02-20",
+   "to": "2026-05-20",
    "debt": 18,
-   "s1_ai": 359,
+   "s1_ai": 358,
    "formd_ai": 4
   }
  },
@@ -160,8 +160,8 @@
    "@google/gemini-cli": 332258
   },
   "pypi": {
-   "claude-agent-sdk": null,
-   "openai-agents": null
+   "claude-agent-sdk": 7867441,
+   "openai-agents": 10209571
   },
   "npm_total_wk": 33737053,
   "series": [
