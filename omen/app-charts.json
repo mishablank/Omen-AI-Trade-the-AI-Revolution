@@ -1,5 +1,5 @@
 {
- "updated": "2026-08-18T17:58:34Z",
+ "updated": "2026-08-18T18:51:07Z",
  "source": "google-play-scraper",
  "store": "android",
  "depth": 200,
@@ -9,17 +9,9 @@
    "label": "Qwen",
    "store": "android",
    "country": "br",
-   "rank": 116,
+   "rank": 89,
    "appId": "com.tongyi.intl",
    "title": "Qwen - Alibaba AI Assistant"
-  },
-  {
-   "label": "MiniMax",
-   "store": "android",
-   "country": "br",
-   "rank": 196,
-   "appId": "ai.hailuo.video",
-   "title": "Hailuo AI: Image&Video Maker"
   }
  ]
 }
