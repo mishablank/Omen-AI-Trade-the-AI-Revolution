@@ -1,5 +1,5 @@
 {
- "updated": "2026-08-19T09:41:23Z",
+ "updated": "2026-08-19T10:36:09Z",
  "snapshot_date": "2026-08-19",
  "artificial_analysis": {
   "cn_best": "GLM-5.2",
@@ -533,8 +533,8 @@
   "week": "2026-08-17",
   "cn_share": 0.5509,
   "us_share": 0.3517,
-  "spi": 1.566,
-  "total_tokens": 30616727870910
+  "spi": 1.567,
+  "total_tokens": 30836266108579
  },
  "vercel_gateway": {
   "asof": "2026-08-19",
@@ -877,8 +877,8 @@
   "license": "AI Gateway Leaderboard Data (c) Vercel, CC BY 4.0"
  },
  "ollama": {
-  "cn": 285815200,
-  "us": 458597699,
+  "cn": 285819400,
+  "us": 458599399,
   "cn_top": [
    {
     "name": "deepseek-r1",
