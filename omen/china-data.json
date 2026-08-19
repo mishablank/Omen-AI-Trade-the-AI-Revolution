@@ -1,5 +1,5 @@
 {
- "updated": "2026-08-19T06:55:59Z",
+ "updated": "2026-08-19T07:46:24Z",
  "snapshot_date": "2026-08-19",
  "artificial_analysis": {
   "cn_best": "GLM-5.2",
@@ -469,15 +469,15 @@
   "cnOrgs": [
    {
     "org": "Qwen",
-    "dl": 269857276
+    "dl": 269538278
    },
    {
     "org": "deepseek-ai",
-    "dl": 30081722
+    "dl": 30046582
    },
    {
     "org": "zai-org",
-    "dl": 13644330
+    "dl": 13642966
    },
    {
     "org": "moonshotai",
@@ -489,11 +489,11 @@
    },
    {
     "org": "stepfun-ai",
-    "dl": 1360018
+    "dl": 1364551
    },
    {
     "org": "tencent",
-    "dl": 1280959
+    "dl": 1280811
    },
    {
     "org": "XiaomiMiMo",
@@ -503,11 +503,11 @@
   "usOrgs": [
    {
     "org": "google",
-    "dl": 57279401
+    "dl": 57291787
    },
    {
     "org": "meta-llama",
-    "dl": 33970753
+    "dl": 33696930
    },
    {
     "org": "nvidia",
@@ -519,22 +519,22 @@
    },
    {
     "org": "microsoft",
-    "dl": 6994259
+    "dl": 6817165
    },
    {
     "org": "allenai",
-    "dl": 4048330
+    "dl": 4044617
    }
   ],
-  "cn": 328280554,
-  "us": 136870509
+  "cn": 327929437,
+  "us": 136428265
  },
  "openrouter_week": {
   "week": "2026-08-17",
-  "cn_share": 0.5496,
-  "us_share": 0.3531,
-  "spi": 1.556,
-  "total_tokens": 29121833534864
+  "cn_share": 0.5501,
+  "us_share": 0.3525,
+  "spi": 1.56,
+  "total_tokens": 29664352360546
  },
  "vercel_gateway": {
   "asof": "2026-08-19",
@@ -877,12 +877,12 @@
   "license": "AI Gateway Leaderboard Data (c) Vercel, CC BY 4.0"
  },
  "ollama": {
-  "cn": 285703000,
-  "us": 458495499,
+  "cn": 285806800,
+  "us": 458496299,
   "cn_top": [
    {
     "name": "deepseek-r1",
-    "pulls": 91500000
+    "pulls": 91600000
    },
    {
     "name": "qwen2.5",
@@ -987,7 +987,7 @@
    },
    {
     "base": "openai/gpt-oss-20b",
-    "n": 538
+    "n": 539
    },
    {
     "base": "microsoft/phi-4",
@@ -995,7 +995,7 @@
    }
   ],
   "cn_total": 2343,
-  "us_total": 2514,
+  "us_total": 2515,
   "asof": "2026-08-19"
  },
  "sdk": {
