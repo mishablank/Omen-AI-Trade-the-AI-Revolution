@@ -1,5 +1,5 @@
 {
- "updated": "2026-08-19T19:53:33Z",
+ "updated": "2026-08-19T20:32:25Z",
  "snapshot_date": "2026-08-19",
  "artificial_analysis": {
   "cn_best": "GLM-5.2",
@@ -538,33 +538,33 @@
  },
  "vercel_gateway": {
   "asof": "2026-08-19",
-  "cn_share": 56.52,
-  "us_share": 43.42,
-  "spi": 1.302,
+  "cn_share": 56.34,
+  "us_share": 43.6,
+  "spi": 1.292,
   "top_cn": [
    {
     "lab": "deepseek",
-    "share": 30.07
+    "share": 29.9
    },
    {
     "lab": "stepfun",
-    "share": 12.59
+    "share": 12.45
    },
    {
     "lab": "zai",
-    "share": 8.18
+    "share": 8.25
    },
    {
     "lab": "moonshotai",
-    "share": 2.86
+    "share": 2.91
    },
    {
     "lab": "xiaomi",
-    "share": 1.25
+    "share": 1.24
    },
    {
     "lab": "minimax",
-    "share": 1.15
+    "share": 1.16
    }
   ],
   "series": [
@@ -870,15 +870,15 @@
    },
    {
     "d": "2026-08-19",
-    "cn": 56.52,
-    "us": 43.42
+    "cn": 56.34,
+    "us": 43.6
    }
   ],
   "license": "AI Gateway Leaderboard Data (c) Vercel, CC BY 4.0"
  },
  "ollama": {
-  "cn": 286167900,
-  "us": 458709999,
+  "cn": 286171100,
+  "us": 458710399,
   "cn_top": [
    {
     "name": "deepseek-r1",
@@ -951,7 +951,7 @@
    },
    {
     "label": "Best AI at end of 2026: Claude",
-    "p": 0.689,
+    "p": 0.675,
     "ticker": "KXLLM1-26DEC31-A",
     "series": "kxllm1"
    }
