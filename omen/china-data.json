@@ -1,5 +1,5 @@
 {
- "updated": "2026-08-19T18:40:26Z",
+ "updated": "2026-08-19T19:29:15Z",
  "snapshot_date": "2026-08-19",
  "artificial_analysis": {
   "cn_best": "GLM-5.2",
@@ -538,33 +538,33 @@
  },
  "vercel_gateway": {
   "asof": "2026-08-19",
-  "cn_share": 56.84,
-  "us_share": 43.1,
-  "spi": 1.319,
+  "cn_share": 56.52,
+  "us_share": 43.42,
+  "spi": 1.302,
   "top_cn": [
    {
     "lab": "deepseek",
-    "share": 30.16
+    "share": 30.07
    },
    {
     "lab": "stepfun",
-    "share": 12.79
+    "share": 12.59
    },
    {
     "lab": "zai",
-    "share": 8.04
+    "share": 8.18
    },
    {
     "lab": "moonshotai",
-    "share": 3.0
+    "share": 2.86
    },
    {
     "lab": "xiaomi",
-    "share": 1.27
+    "share": 1.25
    },
    {
     "lab": "minimax",
-    "share": 1.16
+    "share": 1.15
    }
   ],
   "series": [
@@ -870,15 +870,15 @@
    },
    {
     "d": "2026-08-19",
-    "cn": 56.84,
-    "us": 43.1
+    "cn": 56.52,
+    "us": 43.42
    }
   ],
   "license": "AI Gateway Leaderboard Data (c) Vercel, CC BY 4.0"
  },
  "ollama": {
-  "cn": 286061000,
-  "us": 458708899,
+  "cn": 286165800,
+  "us": 458709399,
   "cn_top": [
    {
     "name": "deepseek-r1",
@@ -886,7 +886,7 @@
    },
    {
     "name": "qwen2.5",
-    "pulls": 37200000
+    "pulls": 37300000
    },
    {
     "name": "qwen3",
@@ -951,7 +951,7 @@
    },
    {
     "label": "Best AI at end of 2026: Claude",
-    "p": 0.687,
+    "p": 0.689,
     "ticker": "KXLLM1-26DEC31-A",
     "series": "kxllm1"
    }
