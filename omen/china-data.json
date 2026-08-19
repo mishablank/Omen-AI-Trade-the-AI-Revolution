@@ -1,5 +1,5 @@
 {
- "updated": "2026-08-19T07:46:24Z",
+ "updated": "2026-08-19T08:47:27Z",
  "snapshot_date": "2026-08-19",
  "artificial_analysis": {
   "cn_best": "GLM-5.2",
@@ -469,72 +469,72 @@
   "cnOrgs": [
    {
     "org": "Qwen",
-    "dl": 269538278
+    "dl": 267317185
    },
    {
     "org": "deepseek-ai",
-    "dl": 30046582
+    "dl": 29682760
    },
    {
     "org": "zai-org",
-    "dl": 13642966
+    "dl": 13511739
    },
    {
     "org": "moonshotai",
-    "dl": 5611977
+    "dl": 5577341
    },
    {
     "org": "MiniMaxAI",
-    "dl": 5346489
+    "dl": 5336021
    },
    {
     "org": "stepfun-ai",
-    "dl": 1364551
+    "dl": 1354936
    },
    {
     "org": "tencent",
-    "dl": 1280811
+    "dl": 1292670
    },
    {
     "org": "XiaomiMiMo",
-    "dl": 1097783
+    "dl": 1071165
    }
   ],
   "usOrgs": [
    {
     "org": "google",
-    "dl": 57291787
+    "dl": 57136565
    },
    {
     "org": "meta-llama",
-    "dl": 33696930
+    "dl": 33682935
    },
    {
     "org": "nvidia",
-    "dl": 22056170
+    "dl": 22078567
    },
    {
     "org": "openai",
-    "dl": 12521596
+    "dl": 12463140
    },
    {
     "org": "microsoft",
-    "dl": 6817165
+    "dl": 6780831
    },
    {
     "org": "allenai",
-    "dl": 4044617
+    "dl": 4029682
    }
   ],
-  "cn": 327929437,
-  "us": 136428265
+  "cn": 325143817,
+  "us": 136171720
  },
  "openrouter_week": {
   "week": "2026-08-17",
-  "cn_share": 0.5501,
-  "us_share": 0.3525,
-  "spi": 1.56,
-  "total_tokens": 29664352360546
+  "cn_share": 0.5507,
+  "us_share": 0.352,
+  "spi": 1.565,
+  "total_tokens": 30275255948850
  },
  "vercel_gateway": {
   "asof": "2026-08-19",
@@ -877,8 +877,8 @@
   "license": "AI Gateway Leaderboard Data (c) Vercel, CC BY 4.0"
  },
  "ollama": {
-  "cn": 285806800,
-  "us": 458496299,
+  "cn": 285811200,
+  "us": 458596899,
   "cn_top": [
    {
     "name": "deepseek-r1",
@@ -961,7 +961,7 @@
   "cn": [
    {
     "base": "Qwen/Qwen3-8B",
-    "n": 1960
+    "n": 1961
    },
    {
     "base": "deepseek-ai/DeepSeek-R1",
@@ -994,7 +994,7 @@
     "n": 112
    }
   ],
-  "cn_total": 2343,
+  "cn_total": 2344,
   "us_total": 2515,
   "asof": "2026-08-19"
  },
