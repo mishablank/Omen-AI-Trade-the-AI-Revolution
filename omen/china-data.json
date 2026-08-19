@@ -1,6 +1,6 @@
 {
- "updated": "2026-08-18T23:28:47Z",
- "snapshot_date": "2026-08-18",
+ "updated": "2026-08-19T01:43:45Z",
+ "snapshot_date": "2026-08-19",
  "artificial_analysis": {
   "cn_best": "GLM-5.2",
   "cn_score": 51,
@@ -33,7 +33,7 @@
  },
  "apps": {
   "score": 1,
-  "asof": "2026-08-18",
+  "asof": "2026-08-19",
   "source": "app-charts",
   "best": [
    {
@@ -448,7 +448,7 @@
    "zai-org/Open-AutoGLM"
   ],
   "source": "search",
-  "asof": "2026-08-18",
+  "asof": "2026-08-19",
   "vel": {
    "MiniMax-AI/MiniMax-H3": 143.5,
    "MiniMax-AI/skills": 15.9,
@@ -531,48 +531,43 @@
  },
  "openrouter_week": {
   "week": "2026-08-17",
-  "cn_share": 0.5503,
-  "us_share": 0.3537,
-  "spi": 1.556,
-  "total_tokens": 25449529195075
+  "cn_share": 0.5492,
+  "us_share": 0.3533,
+  "spi": 1.554,
+  "total_tokens": 26797712816594
  },
  "vercel_gateway": {
-  "asof": "2026-08-18",
-  "cn_share": 50.76,
-  "us_share": 49.19,
-  "spi": 1.032,
+  "asof": "2026-08-19",
+  "cn_share": 52.12,
+  "us_share": 47.85,
+  "spi": 1.089,
   "top_cn": [
    {
     "lab": "deepseek",
-    "share": 29.62
+    "share": 35.39
    },
    {
     "lab": "stepfun",
-    "share": 12.16
+    "share": 7.19
    },
    {
     "lab": "zai",
-    "share": 3.94
+    "share": 5.77
    },
    {
     "lab": "moonshotai",
-    "share": 2.27
-   },
-   {
-    "lab": "xiaomi",
-    "share": 1.3
+    "share": 1.73
    },
    {
     "lab": "minimax",
-    "share": 1.01
+    "share": 0.85
+   },
+   {
+    "lab": "xiaomi",
+    "share": 0.79
    }
   ],
   "series": [
-   {
-    "d": "2026-06-19",
-    "cn": 26.72,
-    "us": 73.12
-   },
    {
     "d": "2026-06-20",
     "cn": 30.22,
@@ -870,15 +865,20 @@
    },
    {
     "d": "2026-08-18",
-    "cn": 50.76,
-    "us": 49.19
+    "cn": 50.4,
+    "us": 49.55
+   },
+   {
+    "d": "2026-08-19",
+    "cn": 52.12,
+    "us": 47.85
    }
   ],
   "license": "AI Gateway Leaderboard Data (c) Vercel, CC BY 4.0"
  },
  "ollama": {
-  "cn": 285576300,
-  "us": 458488199,
+  "cn": 285583999,
+  "us": 458490299,
   "cn_top": [
    {
     "name": "deepseek-r1",
@@ -920,10 +920,10 @@
    }
   ],
   "n_models": 234,
-  "asof": "2026-08-18"
+  "asof": "2026-08-19"
  },
  "kalshi": {
-  "asof": "2026-08-18",
+  "asof": "2026-08-19",
   "markets": [
    {
     "label": "Will a Chinese AI model be #1 this year?",
@@ -996,38 +996,38 @@
   ],
   "cn_total": 2376,
   "us_total": 2514,
-  "asof": "2026-08-18"
+  "asof": "2026-08-19"
  },
  "sdk": {
   "cn": [
    {
     "pkg": "dashscope",
-    "wk": 955053
+    "wk": 945359
    },
    {
     "pkg": "zhipuai",
-    "wk": 97203
+    "wk": 95255
    },
    {
     "pkg": "zai-sdk",
-    "wk": 27019
+    "wk": 25502
    }
   ],
   "us": [
    {
     "pkg": "openai",
-    "wk": 108592704
+    "wk": 110038561
    },
    {
     "pkg": "anthropic",
-    "wk": 50535636
+    "wk": 50081457
    },
    {
     "pkg": "google-genai",
-    "wk": 69578701
+    "wk": 69926346
    }
   ],
-  "asof": "2026-08-18"
+  "asof": "2026-08-19"
  },
  "epoch_compute": {
   "us_share": 79.5,
