@@ -1,5 +1,5 @@
 {
- "updated": "2026-08-20T13:02:53Z",
+ "updated": "2026-08-20T13:51:22Z",
  "snapshot_date": "2026-08-20",
  "artificial_analysis": {
   "cn_best": "GLM-5.2",
@@ -531,10 +531,10 @@
  },
  "openrouter_week": {
   "week": "2026-08-17",
-  "cn_share": 0.548,
-  "us_share": 0.353,
-  "spi": 1.552,
-  "total_tokens": 44308584659357
+  "cn_share": 0.5479,
+  "us_share": 0.3532,
+  "spi": 1.551,
+  "total_tokens": 44875569101845
  },
  "vercel_gateway": {
   "asof": "2026-08-20",
@@ -877,8 +877,8 @@
   "license": "AI Gateway Leaderboard Data (c) Vercel, CC BY 4.0"
  },
  "ollama": {
-  "cn": 286349200,
-  "us": 459227099,
+  "cn": 286352500,
+  "us": 459227499,
   "cn_top": [
    {
     "name": "deepseek-r1",
@@ -1014,6 +1014,14 @@
    }
   ],
   "us": [
+   {
+    "pkg": "openai",
+    "wk": 109172775
+   },
+   {
+    "pkg": "anthropic",
+    "wk": 49285058
+   },
    {
     "pkg": "google-genai",
     "wk": 69904015
