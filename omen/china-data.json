@@ -1,5 +1,5 @@
 {
- "updated": "2026-08-20T17:33:17Z",
+ "updated": "2026-08-20T18:43:49Z",
  "snapshot_date": "2026-08-20",
  "artificial_analysis": {
   "cn_best": "GLM-5.2",
@@ -38,7 +38,7 @@
   "best": [
    {
     "label": "Qwen",
-    "rank": 98,
+    "rank": 94,
     "store": "android",
     "country": "br"
    }
@@ -55,7 +55,7 @@
    "au",
    "kr"
   ],
-  "detail": "Qwen #98 (BR Play); basket-mean Western top-100 presence 1/100 across 10 markets",
+  "detail": "Qwen #94 (BR Play); basket-mean Western top-100 presence 1/100 across 10 markets",
   "note": "iOS Apple RSS top-100 + Android Play top-200 across 10 markets; presence = basket-mean of best top-100 chart rank (DeepSeek/Qwen/Doubao/Kimi/MiniMax), #1=100 #100=1; ranks past top-100 score 0."
  },
  "lmarena": {
@@ -534,37 +534,37 @@
   "cn_share": 0.5478,
   "us_share": 0.3534,
   "spi": 1.55,
-  "total_tokens": 46681516184057
+  "total_tokens": 47277650234499
  },
  "vercel_gateway": {
   "asof": "2026-08-20",
-  "cn_share": 56.86,
-  "us_share": 42.77,
-  "spi": 1.329,
+  "cn_share": 56.51,
+  "us_share": 43.1,
+  "spi": 1.311,
   "top_cn": [
    {
     "lab": "deepseek",
-    "share": 29.22
+    "share": 29.15
    },
    {
     "lab": "stepfun",
-    "share": 13.63
+    "share": 13.49
    },
    {
     "lab": "zai",
-    "share": 9.36
+    "share": 9.27
    },
    {
     "lab": "moonshotai",
-    "share": 1.52
+    "share": 1.53
    },
    {
     "lab": "xiaomi",
-    "share": 1.23
+    "share": 1.2
    },
    {
     "lab": "minimax",
-    "share": 1.04
+    "share": 1.03
    }
   ],
   "series": [
@@ -870,15 +870,15 @@
    },
    {
     "d": "2026-08-20",
-    "cn": 56.86,
-    "us": 42.77
+    "cn": 56.51,
+    "us": 43.1
    }
   ],
   "license": "AI Gateway Leaderboard Data (c) Vercel, CC BY 4.0"
  },
  "ollama": {
-  "cn": 286667500,
-  "us": 459233799,
+  "cn": 286671500,
+  "us": 459234799,
   "cn_top": [
    {
     "name": "deepseek-r1",
@@ -951,7 +951,7 @@
    },
    {
     "label": "Best AI at end of 2026: Claude",
-    "p": 0.676,
+    "p": 0.696,
     "ticker": "KXLLM1-26DEC31-A",
     "series": "kxllm1"
    }
