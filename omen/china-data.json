@@ -1,5 +1,5 @@
 {
- "updated": "2026-08-21T13:02:18Z",
+ "updated": "2026-08-21T13:49:33Z",
  "snapshot_date": "2026-08-21",
  "artificial_analysis": {
   "cn_best": "GLM-5.2",
@@ -531,10 +531,10 @@
  },
  "openrouter_week": {
   "week": "2026-08-17",
-  "cn_share": 0.5446,
-  "us_share": 0.3457,
-  "spi": 1.575,
-  "total_tokens": 57259618916526
+  "cn_share": 0.5438,
+  "us_share": 0.3449,
+  "spi": 1.577,
+  "total_tokens": 57990570831064
  },
  "vercel_gateway": {
   "asof": "2026-08-21",
@@ -877,8 +877,8 @@
   "license": "AI Gateway Leaderboard Data (c) Vercel, CC BY 4.0"
  },
  "ollama": {
-  "cn": 287034100,
-  "us": 459898399,
+  "cn": 287037200,
+  "us": 459900899,
   "cn_top": [
    {
     "name": "deepseek-r1",
@@ -1000,10 +1000,6 @@
  },
  "sdk": {
   "cn": [
-   {
-    "pkg": "dashscope",
-    "wk": 904384
-   },
    {
     "pkg": "zhipuai",
     "wk": 92075
