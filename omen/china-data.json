@@ -1,5 +1,5 @@
 {
- "updated": "2026-08-22T10:31:24Z",
+ "updated": "2026-08-22T11:27:23Z",
  "snapshot_date": "2026-08-22",
  "artificial_analysis": {
   "cn_best": "GLM-5.2",
@@ -877,8 +877,8 @@
   "license": "AI Gateway Leaderboard Data (c) Vercel, CC BY 4.0"
  },
  "ollama": {
-  "cn": 287606699,
-  "us": 460359599,
+  "cn": 287609800,
+  "us": 460360799,
   "cn_top": [
    {
     "name": "deepseek-r1",
@@ -1017,10 +1017,6 @@
    {
     "pkg": "openai",
     "wk": 108406618
-   },
-   {
-    "pkg": "anthropic",
-    "wk": 49632648
    },
    {
     "pkg": "google-genai",
