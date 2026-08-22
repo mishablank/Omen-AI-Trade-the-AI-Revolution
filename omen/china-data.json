@@ -1,5 +1,5 @@
 {
- "updated": "2026-08-22T08:38:50Z",
+ "updated": "2026-08-22T09:34:25Z",
  "snapshot_date": "2026-08-22",
  "artificial_analysis": {
   "cn_best": "GLM-5.2",
@@ -469,41 +469,41 @@
   "cnOrgs": [
    {
     "org": "Qwen",
-    "dl": 258411568
+    "dl": 259040227
    },
    {
     "org": "deepseek-ai",
-    "dl": 28358286
+    "dl": 28492336
    },
    {
     "org": "zai-org",
-    "dl": 13146306
+    "dl": 13023737
    },
    {
     "org": "MiniMaxAI",
-    "dl": 6131356
+    "dl": 6407465
    },
    {
     "org": "moonshotai",
-    "dl": 5633121
+    "dl": 5778665
    },
    {
     "org": "tencent",
-    "dl": 1318106
+    "dl": 1317834
    },
    {
     "org": "stepfun-ai",
-    "dl": 1306630
+    "dl": 1299114
    },
    {
     "org": "XiaomiMiMo",
-    "dl": 964485
+    "dl": 964484
    }
   ],
   "usOrgs": [
    {
     "org": "google",
-    "dl": 55627667
+    "dl": 55542796
    },
    {
     "org": "meta-llama",
@@ -511,7 +511,7 @@
    },
    {
     "org": "nvidia",
-    "dl": 20887874
+    "dl": 20852559
    },
    {
     "org": "openai",
@@ -526,45 +526,45 @@
     "dl": 3845088
    }
   ],
-  "cn": 315269858,
-  "us": 130442055
+  "cn": 316323862,
+  "us": 130321869
  },
  "openrouter_week": {
   "week": "2026-08-17",
-  "cn_share": 0.5022,
-  "us_share": 0.3297,
-  "spi": 1.523,
-  "total_tokens": 68442721376806
+  "cn_share": 0.501,
+  "us_share": 0.3282,
+  "spi": 1.526,
+  "total_tokens": 69241103184720
  },
  "vercel_gateway": {
   "asof": "2026-08-22",
-  "cn_share": 59.91,
-  "us_share": 40.02,
-  "spi": 1.497,
+  "cn_share": 59.45,
+  "us_share": 40.48,
+  "spi": 1.469,
   "top_cn": [
    {
     "lab": "deepseek",
-    "share": 24.52
+    "share": 23.89
    },
    {
     "lab": "stepfun",
-    "share": 15.43
+    "share": 16.63
    },
    {
     "lab": "zai",
-    "share": 15.28
-   },
-   {
-    "lab": "moonshotai",
-    "share": 1.32
+    "share": 14.33
    },
    {
     "lab": "xiaomi",
-    "share": 1.32
+    "share": 1.34
+   },
+   {
+    "lab": "moonshotai",
+    "share": 1.29
    },
    {
     "lab": "minimax",
-    "share": 1.21
+    "share": 1.15
    }
   ],
   "series": [
@@ -870,15 +870,15 @@
    },
    {
     "d": "2026-08-22",
-    "cn": 59.91,
-    "us": 40.02
+    "cn": 59.45,
+    "us": 40.48
    }
   ],
   "license": "AI Gateway Leaderboard Data (c) Vercel, CC BY 4.0"
  },
  "ollama": {
-  "cn": 287600700,
-  "us": 460257899,
+  "cn": 287603499,
+  "us": 460258599,
   "cn_top": [
    {
     "name": "deepseek-r1",
@@ -951,7 +951,7 @@
    },
    {
     "label": "Best AI at end of 2026: Claude",
-    "p": 0.699,
+    "p": 0.673,
     "ticker": "KXLLM1-26DEC31-A",
     "series": "kxllm1"
    }
