@@ -1,5 +1,5 @@
 {
- "updated": "2026-08-22T19:16:55Z",
+ "updated": "2026-08-22T20:13:16Z",
  "snapshot_date": "2026-08-22",
  "artificial_analysis": {
   "cn_best": "GLM-5.2",
@@ -38,7 +38,7 @@
   "best": [
    {
     "label": "Qwen",
-    "rank": 119,
+    "rank": 118,
     "store": "android",
     "country": "br"
    }
@@ -55,7 +55,7 @@
    "au",
    "kr"
   ],
-  "detail": "no Chinese AI app in any iOS or Play top-100 (nearest: Qwen #119 (BR Play)); basket-mean Western top-100 presence 0/100 across 10 markets",
+  "detail": "no Chinese AI app in any iOS or Play top-100 (nearest: Qwen #118 (BR Play)); basket-mean Western top-100 presence 0/100 across 10 markets",
   "note": "iOS Apple RSS top-100 + Android Play top-200 across 10 markets; presence = basket-mean of best top-100 chart rank (DeepSeek/Qwen/Doubao/Kimi/MiniMax), #1=100 #100=1; ranks past top-100 score 0."
  },
  "lmarena": {
@@ -531,40 +531,40 @@
  },
  "openrouter_week": {
   "week": "2026-08-17",
-  "cn_share": 0.4916,
-  "us_share": 0.319,
-  "spi": 1.541,
-  "total_tokens": 75162316031628
+  "cn_share": 0.4901,
+  "us_share": 0.3179,
+  "spi": 1.542,
+  "total_tokens": 75944248797256
  },
  "vercel_gateway": {
   "asof": "2026-08-22",
-  "cn_share": 62.0,
-  "us_share": 37.93,
-  "spi": 1.635,
+  "cn_share": 62.12,
+  "us_share": 37.81,
+  "spi": 1.643,
   "top_cn": [
    {
     "lab": "deepseek",
-    "share": 28.17
+    "share": 29.47
    },
    {
     "lab": "stepfun",
-    "share": 17.6
+    "share": 17.5
    },
    {
     "lab": "zai",
-    "share": 11.66
-   },
-   {
-    "lab": "xiaomi",
-    "share": 1.29
+    "share": 10.69
    },
    {
     "lab": "moonshotai",
-    "share": 1.26
+    "share": 1.25
+   },
+   {
+    "lab": "xiaomi",
+    "share": 1.22
    },
    {
     "lab": "minimax",
-    "share": 1.16
+    "share": 1.13
    }
   ],
   "series": [
@@ -870,15 +870,15 @@
    },
    {
     "d": "2026-08-22",
-    "cn": 62.0,
-    "us": 37.93
+    "cn": 62.12,
+    "us": 37.81
    }
   ],
   "license": "AI Gateway Leaderboard Data (c) Vercel, CC BY 4.0"
  },
  "ollama": {
-  "cn": 287838700,
-  "us": 460469899,
+  "cn": 287941700,
+  "us": 460470598,
   "cn_top": [
    {
     "name": "deepseek-r1",
@@ -886,7 +886,7 @@
    },
    {
     "name": "qwen2.5",
-    "pulls": 37500000
+    "pulls": 37600000
    },
    {
     "name": "qwen3",
@@ -927,7 +927,7 @@
   "markets": [
    {
     "label": "Will a Chinese AI model be #1 this year?",
-    "p": 0.15,
+    "p": 0.11,
     "ticker": "KXBESTLLMCHINA-27",
     "series": "kxbestllmchina"
    },
@@ -961,7 +961,7 @@
   "cn": [
    {
     "base": "Qwen/Qwen3-8B",
-    "n": 1974
+    "n": 1973
    },
    {
     "base": "deepseek-ai/DeepSeek-R1",
@@ -994,7 +994,7 @@
     "n": 113
    }
   ],
-  "cn_total": 2357,
+  "cn_total": 2356,
   "us_total": 2518,
   "asof": "2026-08-22"
  },
@@ -1021,6 +1021,10 @@
    {
     "pkg": "anthropic",
     "wk": 49632648
+   },
+   {
+    "pkg": "google-genai",
+    "wk": 69405324
    }
   ],
   "asof": "2026-08-22"
