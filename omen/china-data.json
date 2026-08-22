@@ -1,5 +1,5 @@
 {
- "updated": "2026-08-22T07:38:01Z",
+ "updated": "2026-08-22T08:38:50Z",
  "snapshot_date": "2026-08-22",
  "artificial_analysis": {
   "cn_best": "GLM-5.2",
@@ -469,72 +469,72 @@
   "cnOrgs": [
    {
     "org": "Qwen",
-    "dl": 260068253
+    "dl": 258411568
    },
    {
     "org": "deepseek-ai",
-    "dl": 28940296
+    "dl": 28358286
    },
    {
     "org": "zai-org",
-    "dl": 13313762
+    "dl": 13146306
    },
    {
     "org": "MiniMaxAI",
-    "dl": 6125296
+    "dl": 6131356
    },
    {
     "org": "moonshotai",
-    "dl": 5695365
+    "dl": 5633121
    },
    {
     "org": "tencent",
-    "dl": 1322562
+    "dl": 1318106
    },
    {
     "org": "stepfun-ai",
-    "dl": 1311441
+    "dl": 1306630
    },
    {
     "org": "XiaomiMiMo",
-    "dl": 1005145
+    "dl": 964485
    }
   ],
   "usOrgs": [
    {
     "org": "google",
-    "dl": 55929602
+    "dl": 55627667
    },
    {
     "org": "meta-llama",
-    "dl": 31380972
+    "dl": 31356434
    },
    {
     "org": "nvidia",
-    "dl": 21089327
+    "dl": 20887874
    },
    {
     "org": "openai",
-    "dl": 12352182
+    "dl": 12313799
    },
    {
     "org": "microsoft",
-    "dl": 6455303
+    "dl": 6411193
    },
    {
     "org": "allenai",
-    "dl": 3882270
+    "dl": 3845088
    }
   ],
-  "cn": 317782120,
-  "us": 131089656
+  "cn": 315269858,
+  "us": 130442055
  },
  "openrouter_week": {
   "week": "2026-08-17",
-  "cn_share": 0.5035,
-  "us_share": 0.3308,
-  "spi": 1.522,
-  "total_tokens": 67781615944598
+  "cn_share": 0.5022,
+  "us_share": 0.3297,
+  "spi": 1.523,
+  "total_tokens": 68442721376806
  },
  "vercel_gateway": {
   "asof": "2026-08-22",
@@ -877,8 +877,8 @@
   "license": "AI Gateway Leaderboard Data (c) Vercel, CC BY 4.0"
  },
  "ollama": {
-  "cn": 287597700,
-  "us": 460257299,
+  "cn": 287600700,
+  "us": 460257899,
   "cn_top": [
    {
     "name": "deepseek-r1",
@@ -951,7 +951,7 @@
    },
    {
     "label": "Best AI at end of 2026: Claude",
-    "p": 0.683,
+    "p": 0.699,
     "ticker": "KXLLM1-26DEC31-A",
     "series": "kxllm1"
    }
@@ -961,7 +961,7 @@
   "cn": [
    {
     "base": "Qwen/Qwen3-8B",
-    "n": 1970
+    "n": 1971
    },
    {
     "base": "deepseek-ai/DeepSeek-R1",
@@ -994,7 +994,7 @@
     "n": 113
    }
   ],
-  "cn_total": 2353,
+  "cn_total": 2354,
   "us_total": 2517,
   "asof": "2026-08-22"
  },
