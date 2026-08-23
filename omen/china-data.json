@@ -1,5 +1,5 @@
 {
- "updated": "2026-08-23T17:13:57Z",
+ "updated": "2026-08-23T18:16:55Z",
  "snapshot_date": "2026-08-23",
  "artificial_analysis": {
   "cn_best": "GLM-5.2",
@@ -32,13 +32,13 @@
   "note": "Google Trends US, 90-day avg: 8 Chinese AI terms = 3.5% of AI-assistant search interest vs ChatGPT+Gemini+Claude+Llama AI+Meta AI."
  },
  "apps": {
-  "score": 0,
+  "score": 2,
   "asof": "2026-08-23",
   "source": "app-charts",
   "best": [
    {
     "label": "Qwen",
-    "rank": 115,
+    "rank": 91,
     "store": "android",
     "country": "br"
    }
@@ -55,7 +55,7 @@
    "au",
    "kr"
   ],
-  "detail": "no Chinese AI app in any iOS or Play top-100 (nearest: Qwen #115 (BR Play)); basket-mean Western top-100 presence 0/100 across 10 markets",
+  "detail": "Qwen #91 (BR Play); basket-mean Western top-100 presence 2/100 across 10 markets",
   "note": "iOS Apple RSS top-100 + Android Play top-200 across 10 markets; presence = basket-mean of best top-100 chart rank (DeepSeek/Qwen/Doubao/Kimi/MiniMax), #1=100 #100=1; ranks past top-100 score 0."
  },
  "lmarena": {
@@ -531,40 +531,40 @@
  },
  "openrouter_week": {
   "week": "2026-08-17",
-  "cn_share": 0.47,
-  "us_share": 0.3038,
+  "cn_share": 0.4691,
+  "us_share": 0.3031,
   "spi": 1.547,
-  "total_tokens": 88921905434465
+  "total_tokens": 89681815461887
  },
  "vercel_gateway": {
   "asof": "2026-08-23",
-  "cn_share": 61.31,
-  "us_share": 38.63,
-  "spi": 1.587,
+  "cn_share": 61.38,
+  "us_share": 38.55,
+  "spi": 1.592,
   "top_cn": [
    {
     "lab": "deepseek",
-    "share": 34.98
+    "share": 34.69
    },
    {
     "lab": "stepfun",
-    "share": 17.21
+    "share": 17.3
    },
    {
     "lab": "zai",
-    "share": 4.88
+    "share": 4.91
    },
    {
     "lab": "xiaomi",
-    "share": 1.34
+    "share": 1.36
    },
    {
     "lab": "moonshotai",
-    "share": 1.19
+    "share": 1.29
    },
    {
     "lab": "minimax",
-    "share": 1.0
+    "share": 1.13
    }
   ],
   "series": [
@@ -870,15 +870,15 @@
    },
    {
     "d": "2026-08-23",
-    "cn": 61.31,
-    "us": 38.63
+    "cn": 61.38,
+    "us": 38.55
    }
   ],
   "license": "AI Gateway Leaderboard Data (c) Vercel, CC BY 4.0"
  },
  "ollama": {
-  "cn": 288704700,
-  "us": 460998199,
+  "cn": 288707600,
+  "us": 461000898,
   "cn_top": [
    {
     "name": "deepseek-r1",
@@ -951,7 +951,7 @@
    },
    {
     "label": "Best AI at end of 2026: Claude",
-    "p": 0.684,
+    "p": 0.678,
     "ticker": "KXLLM1-26DEC31-A",
     "series": "kxllm1"
    }
@@ -961,7 +961,7 @@
   "cn": [
    {
     "base": "Qwen/Qwen3-8B",
-    "n": 1974
+    "n": 1970
    },
    {
     "base": "deepseek-ai/DeepSeek-R1",
@@ -994,7 +994,7 @@
     "n": 113
    }
   ],
-  "cn_total": 2357,
+  "cn_total": 2353,
   "us_total": 2518,
   "asof": "2026-08-23"
  },
