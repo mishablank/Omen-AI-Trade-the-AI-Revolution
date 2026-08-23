@@ -1,5 +1,5 @@
 {
- "updated": "2026-08-23T20:12:28Z",
+ "updated": "2026-08-23T21:13:23Z",
  "snapshot_date": "2026-08-23",
  "artificial_analysis": {
   "cn_best": "GLM-5.2",
@@ -9,7 +9,7 @@
   "asof": "2026-07-12"
  },
  "search_consumer": {
-  "western_share_pct": 3.5,
+  "western_share_pct": 3.4,
   "asof": "2026-08",
   "source": "google-trends",
   "terms_us": [
@@ -29,16 +29,16 @@
    "Seed 1.6",
    "Seed 2.0"
   ],
-  "note": "Google Trends US, 90-day avg: 8 Chinese AI terms = 3.5% of AI-assistant search interest vs ChatGPT+Gemini+Claude+Llama AI+Meta AI."
+  "note": "Google Trends US, 90-day avg: 8 Chinese AI terms = 3.4% of AI-assistant search interest vs ChatGPT+Gemini+Claude+Llama AI+Meta AI."
  },
  "apps": {
-  "score": 3,
+  "score": 4,
   "asof": "2026-08-23",
   "source": "app-charts",
   "best": [
    {
     "label": "Qwen",
-    "rank": 85,
+    "rank": 82,
     "store": "android",
     "country": "br"
    }
@@ -55,7 +55,7 @@
    "au",
    "kr"
   ],
-  "detail": "Qwen #85 (BR Play); basket-mean Western top-100 presence 3/100 across 10 markets",
+  "detail": "Qwen #82 (BR Play); basket-mean Western top-100 presence 4/100 across 10 markets",
   "note": "iOS Apple RSS top-100 + Android Play top-200 across 10 markets; presence = basket-mean of best top-100 chart rank (DeepSeek/Qwen/Doubao/Kimi/MiniMax), #1=100 #100=1; ranks past top-100 score 0."
  },
  "lmarena": {
@@ -531,10 +531,10 @@
  },
  "openrouter_week": {
   "week": "2026-08-17",
-  "cn_share": 0.4681,
-  "us_share": 0.3025,
+  "cn_share": 0.467,
+  "us_share": 0.3017,
   "spi": 1.548,
-  "total_tokens": 90430412280525
+  "total_tokens": 91362810722357
  },
  "vercel_gateway": {
   "asof": "2026-08-23",
@@ -877,8 +877,8 @@
   "license": "AI Gateway Leaderboard Data (c) Vercel, CC BY 4.0"
  },
  "ollama": {
-  "cn": 288712800,
-  "us": 461002899,
+  "cn": 288715500,
+  "us": 461104099,
   "cn_top": [
    {
     "name": "deepseek-r1",
@@ -951,7 +951,7 @@
    },
    {
     "label": "Best AI at end of 2026: Claude",
-    "p": 0.676,
+    "p": 0.661,
     "ticker": "KXLLM1-26DEC31-A",
     "series": "kxllm1"
    }
@@ -979,7 +979,7 @@
   "us": [
    {
     "base": "meta-llama/Llama-3.1-8B",
-    "n": 1473
+    "n": 1472
    },
    {
     "base": "google/gemma-3-12b-it",
@@ -995,7 +995,7 @@
    }
   ],
   "cn_total": 2353,
-  "us_total": 2518,
+  "us_total": 2517,
   "asof": "2026-08-23"
  },
  "sdk": {
