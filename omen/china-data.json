@@ -1,5 +1,5 @@
 {
- "updated": "2026-08-23T14:15:06Z",
+ "updated": "2026-08-23T15:14:04Z",
  "snapshot_date": "2026-08-23",
  "artificial_analysis": {
   "cn_best": "GLM-5.2",
@@ -531,10 +531,10 @@
  },
  "openrouter_week": {
   "week": "2026-08-17",
-  "cn_share": 0.4725,
-  "us_share": 0.3061,
-  "spi": 1.543,
-  "total_tokens": 86585599707904
+  "cn_share": 0.4716,
+  "us_share": 0.3053,
+  "spi": 1.545,
+  "total_tokens": 87481593454446
  },
  "vercel_gateway": {
   "asof": "2026-08-23",
@@ -877,8 +877,8 @@
   "license": "AI Gateway Leaderboard Data (c) Vercel, CC BY 4.0"
  },
  "ollama": {
-  "cn": 288594500,
-  "us": 460792499,
+  "cn": 288597700,
+  "us": 460993999,
   "cn_top": [
    {
     "name": "deepseek-r1",
@@ -945,13 +945,13 @@
    },
    {
     "label": "Best AI at end of 2026: Qwen",
-    "p": 0.009,
+    "p": 0.011,
     "ticker": "KXLLM1-26DEC31-ALI",
     "series": "kxllm1"
    },
    {
     "label": "Best AI at end of 2026: Claude",
-    "p": 0.685,
+    "p": 0.684,
     "ticker": "KXLLM1-26DEC31-A",
     "series": "kxllm1"
    }
@@ -1021,10 +1021,6 @@
    {
     "pkg": "anthropic",
     "wk": 50081467
-   },
-   {
-    "pkg": "google-genai",
-    "wk": 69144698
    }
   ],
   "asof": "2026-08-23"
