@@ -1,5 +1,5 @@
 {
- "updated": "2026-08-23T10:31:44Z",
+ "updated": "2026-08-23T11:27:10Z",
  "snapshot_date": "2026-08-23",
  "artificial_analysis": {
   "cn_best": "GLM-5.2",
@@ -9,7 +9,7 @@
   "asof": "2026-07-12"
  },
  "search_consumer": {
-  "western_share_pct": 3.4,
+  "western_share_pct": 3.5,
   "asof": "2026-08",
   "source": "google-trends",
   "terms_us": [
@@ -29,7 +29,7 @@
    "Seed 1.6",
    "Seed 2.0"
   ],
-  "note": "Google Trends US, 90-day avg: 8 Chinese AI terms = 3.4% of AI-assistant search interest vs ChatGPT+Gemini+Claude+Llama AI+Meta AI."
+  "note": "Google Trends US, 90-day avg: 8 Chinese AI terms = 3.5% of AI-assistant search interest vs ChatGPT+Gemini+Claude+Llama AI+Meta AI."
  },
  "apps": {
   "score": 0,
@@ -877,8 +877,8 @@
   "license": "AI Gateway Leaderboard Data (c) Vercel, CC BY 4.0"
  },
  "ollama": {
-  "cn": 288482200,
-  "us": 460687599,
+  "cn": 288485100,
+  "us": 460689599,
   "cn_top": [
    {
     "name": "deepseek-r1",
