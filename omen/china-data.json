@@ -1,5 +1,5 @@
 {
- "updated": "2026-08-24T13:55:05Z",
+ "updated": "2026-08-24T14:46:31Z",
  "snapshot_date": "2026-08-24",
  "artificial_analysis": {
   "cn_best": "GLM-5.2",
@@ -538,33 +538,33 @@
  },
  "vercel_gateway": {
   "asof": "2026-08-24",
-  "cn_share": 53.98,
-  "us_share": 45.95,
-  "spi": 1.175,
+  "cn_share": 52.88,
+  "us_share": 47.05,
+  "spi": 1.124,
   "top_cn": [
    {
     "lab": "deepseek",
-    "share": 26.59
+    "share": 26.32
    },
    {
     "lab": "stepfun",
-    "share": 15.74
+    "share": 15.15
    },
    {
     "lab": "zai",
-    "share": 5.38
+    "share": 5.37
    },
    {
     "lab": "alibaba",
-    "share": 1.9
+    "share": 1.7
    },
    {
     "lab": "moonshotai",
-    "share": 1.59
+    "share": 1.62
    },
    {
     "lab": "minimax",
-    "share": 1.37
+    "share": 1.38
    }
   ],
   "series": [
@@ -870,15 +870,15 @@
    },
    {
     "d": "2026-08-24",
-    "cn": 53.98,
-    "us": 45.95
+    "cn": 52.88,
+    "us": 47.05
    }
   ],
   "license": "AI Gateway Leaderboard Data (c) Vercel, CC BY 4.0"
  },
  "ollama": {
-  "cn": 289168400,
-  "us": 461731699,
+  "cn": 289172500,
+  "us": 461832599,
   "cn_top": [
    {
     "name": "deepseek-r1",
@@ -927,7 +927,7 @@
   "markets": [
    {
     "label": "Will a Chinese AI model be #1 this year?",
-    "p": 0.12,
+    "p": 0.09,
     "ticker": "KXBESTLLMCHINA-27",
     "series": "kxbestllmchina"
    },
@@ -951,7 +951,7 @@
    },
    {
     "label": "Best AI at end of 2026: Claude",
-    "p": 0.668,
+    "p": 0.669,
     "ticker": "KXLLM1-26DEC31-A",
     "series": "kxllm1"
    }
@@ -1000,10 +1000,6 @@
  },
  "sdk": {
   "cn": [
-   {
-    "pkg": "dashscope",
-    "wk": 605586
-   },
    {
     "pkg": "zhipuai",
     "wk": 94772
