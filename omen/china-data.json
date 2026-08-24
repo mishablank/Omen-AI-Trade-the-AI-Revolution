@@ -1,5 +1,5 @@
 {
- "updated": "2026-08-24T04:54:01Z",
+ "updated": "2026-08-24T05:44:32Z",
  "snapshot_date": "2026-08-24",
  "artificial_analysis": {
   "cn_best": "GLM-5.2",
@@ -450,21 +450,21 @@
   "source": "search",
   "asof": "2026-08-24",
   "vel": {
-   "MiniMax-AI/MiniMax-H3": 87.0,
-   "MiniMax-AI/skills": 9.3,
-   "MoonshotAI/Kimi-K3": 11.6,
-   "MoonshotAI/kimi-cli": 9.3,
-   "QwenLM/Qwen": 5.8,
-   "QwenLM/qwen-code": 24.3,
+   "MiniMax-AI/MiniMax-H3": 103.6,
+   "MiniMax-AI/skills": 7.1,
+   "MoonshotAI/Kimi-K3": 13.1,
+   "MoonshotAI/kimi-cli": 7.1,
+   "QwenLM/Qwen": 4.8,
+   "QwenLM/qwen-code": 20.2,
    "XiaomiMiMo/MiMo-Audio": 0.0,
-   "XiaomiMiMo/MiMo-Code": 22.0,
-   "deepseek-ai/FlashMLA": 0.0,
-   "deepseek-ai/deepseek-harness": 3167.6,
-   "zai-org/GLM-OCR": 46.4,
-   "zai-org/Open-AutoGLM": 3.5
+   "XiaomiMiMo/MiMo-Code": 8.3,
+   "deepseek-ai/FlashMLA": 2.4,
+   "deepseek-ai/deepseek-harness": 3356.8,
+   "zai-org/GLM-OCR": 6.0,
+   "zai-org/Open-AutoGLM": 1.2
   }
  },
- "github_stars_per_day": 3386.8,
+ "github_stars_per_day": 3530.6,
  "hf": {
   "cnOrgs": [
    {
@@ -531,40 +531,40 @@
  },
  "openrouter_week": {
   "week": "2026-08-24",
-  "cn_share": 0.375,
-  "us_share": 0.2184,
-  "spi": 1.717,
-  "total_tokens": 2589650515807
+  "cn_share": 0.367,
+  "us_share": 0.2212,
+  "spi": 1.659,
+  "total_tokens": 3562067851722
  },
  "vercel_gateway": {
   "asof": "2026-08-24",
-  "cn_share": 55.55,
-  "us_share": 44.38,
-  "spi": 1.252,
+  "cn_share": 55.19,
+  "us_share": 44.75,
+  "spi": 1.233,
   "top_cn": [
    {
     "lab": "deepseek",
-    "share": 29.56
+    "share": 28.31
    },
    {
     "lab": "stepfun",
-    "share": 13.65
+    "share": 14.63
    },
    {
     "lab": "zai",
-    "share": 6.87
+    "share": 6.42
    },
    {
     "lab": "moonshotai",
-    "share": 1.61
+    "share": 1.6
    },
    {
-    "lab": "xiaomi",
-    "share": 1.3
+    "lab": "alibaba",
+    "share": 1.58
    },
    {
     "lab": "minimax",
-    "share": 1.25
+    "share": 1.29
    }
   ],
   "series": [
@@ -870,15 +870,15 @@
    },
    {
     "d": "2026-08-24",
-    "cn": 55.55,
-    "us": 44.38
+    "cn": 55.19,
+    "us": 44.75
    }
   ],
   "license": "AI Gateway Leaderboard Data (c) Vercel, CC BY 4.0"
  },
  "ollama": {
-  "cn": 288934500,
-  "us": 461516399,
+  "cn": 288936700,
+  "us": 461518199,
   "cn_top": [
    {
     "name": "deepseek-r1",
@@ -920,7 +920,9 @@
    }
   ],
   "n_models": 235,
-  "asof": "2026-08-24"
+  "asof": "2026-08-24",
+  "cn_per_day": 544930,
+  "us_per_day": 990943
  },
  "kalshi": {
   "asof": "2026-08-24",
@@ -1000,14 +1002,6 @@
  },
  "sdk": {
   "cn": [
-   {
-    "pkg": "dashscope",
-    "wk": 605586
-   },
-   {
-    "pkg": "zhipuai",
-    "wk": 94772
-   },
    {
     "pkg": "zai-sdk",
     "wk": 28710
