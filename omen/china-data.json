@@ -1,5 +1,5 @@
 {
- "updated": "2026-08-24T09:57:48Z",
+ "updated": "2026-08-24T10:46:44Z",
  "snapshot_date": "2026-08-24",
  "artificial_analysis": {
   "cn_best": "GLM-5.2",
@@ -531,10 +531,10 @@
  },
  "openrouter_week": {
   "week": "2026-08-24",
-  "cn_share": 0.3743,
-  "us_share": 0.2221,
-  "spi": 1.685,
-  "total_tokens": 6110878894779
+  "cn_share": 0.3748,
+  "us_share": 0.2257,
+  "spi": 1.66,
+  "total_tokens": 7518265391536
  },
  "vercel_gateway": {
   "asof": "2026-08-24",
@@ -544,23 +544,23 @@
   "top_cn": [
    {
     "lab": "deepseek",
-    "share": 26.54
+    "share": 26.38
    },
    {
     "lab": "stepfun",
-    "share": 15.58
+    "share": 15.75
    },
    {
     "lab": "zai",
-    "share": 5.59
+    "share": 5.46
    },
    {
     "lab": "alibaba",
-    "share": 2.02
+    "share": 2.03
    },
    {
     "lab": "moonshotai",
-    "share": 1.55
+    "share": 1.58
    },
    {
     "lab": "xiaomi",
@@ -877,8 +877,8 @@
   "license": "AI Gateway Leaderboard Data (c) Vercel, CC BY 4.0"
  },
  "ollama": {
-  "cn": 288952300,
-  "us": 461624398,
+  "cn": 288955500,
+  "us": 461625699,
   "cn_top": [
    {
     "name": "deepseek-r1",
@@ -951,7 +951,7 @@
    },
    {
     "label": "Best AI at end of 2026: Claude",
-    "p": 0.669,
+    "p": 0.664,
     "ticker": "KXLLM1-26DEC31-A",
     "series": "kxllm1"
    }
@@ -1038,7 +1038,7 @@
   "us_n": 118,
   "cn_n": 175,
   "n": 460,
-  "asof": "2026-08-18",
+  "asof": "2026-08-24",
   "attribution": "Epoch AI (epoch.ai/data), CC BY 4.0"
  },
  "epoch_chips": {
@@ -1100,7 +1100,7 @@
     "h100e": 8277
    }
   ],
-  "asof": "2026-08-18",
+  "asof": "2026-08-24",
   "attribution": "Epoch AI (epoch.ai/data), CC BY 4.0"
  },
  "epoch_models": {
@@ -1172,14 +1172,14 @@
    },
    {
     "q": "2026Q2",
-    "us": 16,
+    "us": 17,
     "cn": 7
    }
   ],
-  "us_12mo": 56,
-  "cn_12mo": 34,
+  "us_12mo": 57,
+  "cn_12mo": 35,
   "latest_q": "2026Q2",
-  "asof": "2026-08-18",
+  "asof": "2026-08-24",
   "attribution": "Epoch AI (epoch.ai/data), CC BY 4.0"
  }
 }
