@@ -1,5 +1,5 @@
 {
- "updated": "2026-08-25T07:53:45Z",
+ "updated": "2026-08-25T08:52:13Z",
  "snapshot_date": "2026-08-25",
  "artificial_analysis": {
   "cn_best": "GLM-5.2",
@@ -469,72 +469,72 @@
   "cnOrgs": [
    {
     "org": "Qwen",
-    "dl": 254427562
+    "dl": 253948139
    },
    {
     "org": "deepseek-ai",
-    "dl": 27778382
+    "dl": 27683802
    },
    {
     "org": "zai-org",
-    "dl": 12662711
+    "dl": 12577002
    },
    {
     "org": "MiniMaxAI",
-    "dl": 6969809
+    "dl": 7032769
    },
    {
     "org": "moonshotai",
-    "dl": 5811725
+    "dl": 5801429
    },
    {
     "org": "tencent",
-    "dl": 1339620
+    "dl": 1360549
    },
    {
     "org": "stepfun-ai",
-    "dl": 1296949
+    "dl": 1293894
    },
    {
     "org": "XiaomiMiMo",
-    "dl": 879431
+    "dl": 857530
    }
   ],
   "usOrgs": [
    {
     "org": "google",
-    "dl": 54641075
+    "dl": 54108759
    },
    {
     "org": "meta-llama",
-    "dl": 29880677
+    "dl": 29868372
    },
    {
     "org": "nvidia",
-    "dl": 20222693
+    "dl": 20039935
    },
    {
     "org": "openai",
-    "dl": 12158080
+    "dl": 12283766
    },
    {
     "org": "microsoft",
-    "dl": 6010704
+    "dl": 5998536
    },
    {
     "org": "allenai",
-    "dl": 3621061
+    "dl": 3591585
    }
   ],
-  "cn": 311166189,
-  "us": 126534290
+  "cn": 310555114,
+  "us": 125890953
  },
  "openrouter_week": {
   "week": "2026-08-24",
-  "cn_share": 0.3483,
-  "us_share": 0.245,
-  "spi": 1.422,
-  "total_tokens": 24189978253783
+  "cn_share": 0.3486,
+  "us_share": 0.2453,
+  "spi": 1.421,
+  "total_tokens": 24790147687436
  },
  "vercel_gateway": {
   "asof": "2026-08-25",
@@ -877,8 +877,8 @@
   "license": "AI Gateway Leaderboard Data (c) Vercel, CC BY 4.0"
  },
  "ollama": {
-  "cn": 289540000,
-  "us": 462259099,
+  "cn": 289543800,
+  "us": 462259799,
   "cn_top": [
    {
     "name": "deepseek-r1",
@@ -1000,10 +1000,6 @@
  },
  "sdk": {
   "cn": [
-   {
-    "pkg": "dashscope",
-    "wk": 613834
-   },
    {
     "pkg": "zhipuai",
     "wk": 97252
