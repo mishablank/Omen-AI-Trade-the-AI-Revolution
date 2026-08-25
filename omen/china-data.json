@@ -1,5 +1,5 @@
 {
- "updated": "2026-08-25T05:38:16Z",
+ "updated": "2026-08-25T07:00:01Z",
  "snapshot_date": "2026-08-25",
  "artificial_analysis": {
   "cn_best": "GLM-5.2",
@@ -531,10 +531,10 @@
  },
  "openrouter_week": {
   "week": "2026-08-24",
-  "cn_share": 0.3502,
-  "us_share": 0.2432,
-  "spi": 1.44,
-  "total_tokens": 22113999278947
+  "cn_share": 0.3488,
+  "us_share": 0.2442,
+  "spi": 1.428,
+  "total_tokens": 23052839998834
  },
  "vercel_gateway": {
   "asof": "2026-08-25",
@@ -877,8 +877,8 @@
   "license": "AI Gateway Leaderboard Data (c) Vercel, CC BY 4.0"
  },
  "ollama": {
-  "cn": 289529800,
-  "us": 462156299,
+  "cn": 289536300,
+  "us": 462258199,
   "cn_top": [
    {
     "name": "deepseek-r1",
@@ -939,7 +939,7 @@
    },
    {
     "label": "Best AI at end of 2026: Ernie",
-    "p": 0.001,
+    "p": 0.002,
     "ticker": "KXLLM1-26DEC31-BAID",
     "series": "kxllm1"
    },
@@ -951,7 +951,7 @@
    },
    {
     "label": "Best AI at end of 2026: Claude",
-    "p": 0.687,
+    "p": 0.689,
     "ticker": "KXLLM1-26DEC31-A",
     "series": "kxllm1"
    }
@@ -979,7 +979,7 @@
   "us": [
    {
     "base": "meta-llama/Llama-3.1-8B",
-    "n": 1472
+    "n": 1473
    },
    {
     "base": "google/gemma-3-12b-it",
@@ -995,7 +995,7 @@
    }
   ],
   "cn_total": 2363,
-  "us_total": 2517,
+  "us_total": 2518,
   "asof": "2026-08-25"
  },
  "sdk": {
