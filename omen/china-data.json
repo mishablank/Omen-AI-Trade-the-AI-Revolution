@@ -1,5 +1,5 @@
 {
- "updated": "2026-08-25T11:35:16Z",
+ "updated": "2026-08-25T13:01:01Z",
  "snapshot_date": "2026-08-25",
  "artificial_analysis": {
   "cn_best": "GLM-5.2",
@@ -531,40 +531,40 @@
  },
  "openrouter_week": {
   "week": "2026-08-24",
-  "cn_share": 0.3494,
-  "us_share": 0.2455,
-  "spi": 1.423,
-  "total_tokens": 26601080923037
+  "cn_share": 0.3488,
+  "us_share": 0.2462,
+  "spi": 1.417,
+  "total_tokens": 28496821131915
  },
  "vercel_gateway": {
   "asof": "2026-08-25",
-  "cn_share": 54.93,
-  "us_share": 45.02,
-  "spi": 1.22,
+  "cn_share": 56.19,
+  "us_share": 43.76,
+  "spi": 1.284,
   "top_cn": [
    {
     "lab": "deepseek",
-    "share": 26.61
+    "share": 27.11
    },
    {
     "lab": "stepfun",
-    "share": 12.29
+    "share": 12.15
    },
    {
     "lab": "zai",
-    "share": 10.02
+    "share": 8.96
    },
    {
     "lab": "moonshotai",
-    "share": 2.48
+    "share": 4.44
    },
    {
     "lab": "alibaba",
-    "share": 1.45
+    "share": 1.39
    },
    {
     "lab": "minimax",
-    "share": 1.09
+    "share": 1.13
    }
   ],
   "series": [
@@ -870,15 +870,15 @@
    },
    {
     "d": "2026-08-25",
-    "cn": 54.93,
-    "us": 45.02
+    "cn": 56.19,
+    "us": 43.76
    }
   ],
   "license": "AI Gateway Leaderboard Data (c) Vercel, CC BY 4.0"
  },
  "ollama": {
-  "cn": 289854799,
-  "us": 462264499,
+  "cn": 289960599,
+  "us": 462265999,
   "cn_top": [
    {
     "name": "deepseek-r1",
@@ -886,7 +886,7 @@
    },
    {
     "name": "qwen2.5",
-    "pulls": 38100000
+    "pulls": 38200000
    },
    {
     "name": "qwen3",
@@ -951,7 +951,7 @@
    },
    {
     "label": "Best AI at end of 2026: Claude",
-    "p": 0.689,
+    "p": 0.687,
     "ticker": "KXLLM1-26DEC31-A",
     "series": "kxllm1"
    }
@@ -1001,10 +1001,6 @@
  "sdk": {
   "cn": [
    {
-    "pkg": "dashscope",
-    "wk": 613834
-   },
-   {
     "pkg": "zhipuai",
     "wk": 97252
    },
@@ -1014,10 +1010,6 @@
    }
   ],
   "us": [
-   {
-    "pkg": "openai",
-    "wk": 104880263
-   },
    {
     "pkg": "anthropic",
     "wk": 50187021
