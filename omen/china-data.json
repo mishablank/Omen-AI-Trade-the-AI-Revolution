@@ -1,5 +1,5 @@
 {
- "updated": "2026-08-25T15:46:26Z",
+ "updated": "2026-08-25T16:41:20Z",
  "snapshot_date": "2026-08-25",
  "artificial_analysis": {
   "cn_best": "GLM-5.2",
@@ -531,40 +531,40 @@
  },
  "openrouter_week": {
   "week": "2026-08-24",
-  "cn_share": 0.3492,
-  "us_share": 0.2478,
-  "spi": 1.409,
-  "total_tokens": 30483415429614
+  "cn_share": 0.3501,
+  "us_share": 0.2494,
+  "spi": 1.404,
+  "total_tokens": 31591809788518
  },
  "vercel_gateway": {
   "asof": "2026-08-25",
-  "cn_share": 56.01,
-  "us_share": 43.94,
-  "spi": 1.275,
+  "cn_share": 55.42,
+  "us_share": 44.53,
+  "spi": 1.245,
   "top_cn": [
    {
     "lab": "deepseek",
-    "share": 28.83
+    "share": 28.87
    },
    {
     "lab": "stepfun",
-    "share": 11.3
+    "share": 11.04
    },
    {
     "lab": "zai",
-    "share": 8.14
+    "share": 7.9
    },
    {
     "lab": "moonshotai",
-    "share": 4.19
+    "share": 4.07
    },
    {
     "lab": "alibaba",
-    "share": 1.32
+    "share": 1.28
    },
    {
     "lab": "minimax",
-    "share": 1.21
+    "share": 1.23
    }
   ],
   "series": [
@@ -870,15 +870,15 @@
    },
    {
     "d": "2026-08-25",
-    "cn": 56.01,
-    "us": 43.94
+    "cn": 55.42,
+    "us": 44.53
    }
   ],
   "license": "AI Gateway Leaderboard Data (c) Vercel, CC BY 4.0"
  },
  "ollama": {
-  "cn": 289973400,
-  "us": 462370968,
+  "cn": 289978400,
+  "us": 462372793,
   "cn_top": [
    {
     "name": "deepseek-r1",
@@ -951,7 +951,7 @@
    },
    {
     "label": "Best AI at end of 2026: Claude",
-    "p": 0.683,
+    "p": 0.689,
     "ticker": "KXLLM1-26DEC31-A",
     "series": "kxllm1"
    }
@@ -979,7 +979,7 @@
   "us": [
    {
     "base": "meta-llama/Llama-3.1-8B",
-    "n": 1473
+    "n": 1474
    },
    {
     "base": "google/gemma-3-12b-it",
@@ -995,7 +995,7 @@
    }
   ],
   "cn_total": 2364,
-  "us_total": 2519,
+  "us_total": 2520,
   "asof": "2026-08-25"
  },
  "sdk": {
@@ -1007,6 +1007,10 @@
    {
     "pkg": "zhipuai",
     "wk": 97252
+   },
+   {
+    "pkg": "zai-sdk",
+    "wk": 28772
    }
   ],
   "us": [
