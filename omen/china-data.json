@@ -1,5 +1,5 @@
 {
- "updated": "2026-08-25T10:40:27Z",
+ "updated": "2026-08-25T11:35:16Z",
  "snapshot_date": "2026-08-25",
  "artificial_analysis": {
   "cn_best": "GLM-5.2",
@@ -9,7 +9,7 @@
   "asof": "2026-07-12"
  },
  "search_consumer": {
-  "western_share_pct": 3.4,
+  "western_share_pct": 3.5,
   "asof": "2026-08",
   "source": "google-trends",
   "terms_us": [
@@ -29,7 +29,7 @@
    "Seed 1.6",
    "Seed 2.0"
   ],
-  "note": "Google Trends US, 90-day avg: 8 Chinese AI terms = 3.4% of AI-assistant search interest vs ChatGPT+Gemini+Claude+Llama AI+Meta AI."
+  "note": "Google Trends US, 90-day avg: 8 Chinese AI terms = 3.5% of AI-assistant search interest vs ChatGPT+Gemini+Claude+Llama AI+Meta AI."
  },
  "apps": {
   "score": 0,
@@ -532,9 +532,9 @@
  "openrouter_week": {
   "week": "2026-08-24",
   "cn_share": 0.3494,
-  "us_share": 0.2452,
-  "spi": 1.425,
-  "total_tokens": 25670213898746
+  "us_share": 0.2455,
+  "spi": 1.423,
+  "total_tokens": 26601080923037
  },
  "vercel_gateway": {
   "asof": "2026-08-25",
@@ -877,8 +877,8 @@
   "license": "AI Gateway Leaderboard Data (c) Vercel, CC BY 4.0"
  },
  "ollama": {
-  "cn": 289851299,
-  "us": 462262999,
+  "cn": 289854799,
+  "us": 462264499,
   "cn_top": [
    {
     "name": "deepseek-r1",
@@ -951,7 +951,7 @@
    },
    {
     "label": "Best AI at end of 2026: Claude",
-    "p": 0.671,
+    "p": 0.689,
     "ticker": "KXLLM1-26DEC31-A",
     "series": "kxllm1"
    }
@@ -987,7 +987,7 @@
    },
    {
     "base": "openai/gpt-oss-20b",
-    "n": 539
+    "n": 540
    },
    {
     "base": "microsoft/phi-4",
@@ -995,7 +995,7 @@
    }
   ],
   "cn_total": 2363,
-  "us_total": 2518,
+  "us_total": 2519,
   "asof": "2026-08-25"
  },
  "sdk": {
@@ -1014,6 +1014,10 @@
    }
   ],
   "us": [
+   {
+    "pkg": "openai",
+    "wk": 104880263
+   },
    {
     "pkg": "anthropic",
     "wk": 50187021
