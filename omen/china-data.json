@@ -1,5 +1,5 @@
 {
- "updated": "2026-08-25T20:33:31Z",
+ "updated": "2026-08-25T21:32:27Z",
  "snapshot_date": "2026-08-25",
  "artificial_analysis": {
   "cn_best": "GLM-5.2",
@@ -38,7 +38,7 @@
   "best": [
    {
     "label": "Qwen",
-    "rank": 120,
+    "rank": 123,
     "store": "android",
     "country": "br"
    }
@@ -55,7 +55,7 @@
    "au",
    "kr"
   ],
-  "detail": "no Chinese AI app in any iOS or Play top-100 (nearest: Qwen #120 (BR Play)); basket-mean Western top-100 presence 0/100 across 10 markets",
+  "detail": "no Chinese AI app in any iOS or Play top-100 (nearest: Qwen #123 (BR Play)); basket-mean Western top-100 presence 0/100 across 10 markets",
   "note": "iOS Apple RSS top-100 + Android Play top-200 across 10 markets; presence = basket-mean of best top-100 chart rank (DeepSeek/Qwen/Doubao/Kimi/MiniMax), #1=100 #100=1; ranks past top-100 score 0."
  },
  "lmarena": {
@@ -531,40 +531,40 @@
  },
  "openrouter_week": {
   "week": "2026-08-24",
-  "cn_share": 0.3487,
-  "us_share": 0.2527,
-  "spi": 1.38,
-  "total_tokens": 34230533526268
+  "cn_share": 0.3483,
+  "us_share": 0.2533,
+  "spi": 1.375,
+  "total_tokens": 35043170219889
  },
  "vercel_gateway": {
   "asof": "2026-08-25",
-  "cn_share": 54.43,
-  "us_share": 45.52,
-  "spi": 1.196,
+  "cn_share": 53.69,
+  "us_share": 46.26,
+  "spi": 1.161,
   "top_cn": [
    {
     "lab": "deepseek",
-    "share": 29.28
+    "share": 29.2
    },
    {
     "lab": "stepfun",
-    "share": 10.6
+    "share": 10.38
    },
    {
     "lab": "zai",
-    "share": 7.37
+    "share": 7.1
    },
    {
     "lab": "moonshotai",
-    "share": 3.78
+    "share": 3.63
    },
    {
     "lab": "minimax",
-    "share": 1.25
+    "share": 1.31
    },
    {
     "lab": "alibaba",
-    "share": 1.16
+    "share": 1.11
    }
   ],
   "series": [
@@ -870,15 +870,15 @@
    },
    {
     "d": "2026-08-25",
-    "cn": 54.43,
-    "us": 45.52
+    "cn": 53.69,
+    "us": 46.26
    }
   ],
   "license": "AI Gateway Leaderboard Data (c) Vercel, CC BY 4.0"
  },
  "ollama": {
-  "cn": 289996200,
-  "us": 462579269,
+  "cn": 290100600,
+  "us": 462680222,
   "cn_top": [
    {
     "name": "deepseek-r1",
@@ -902,7 +902,7 @@
    },
    {
     "name": "qwen3-coder",
-    "pulls": 8600000
+    "pulls": 8700000
    }
   ],
   "us_top": [
@@ -912,7 +912,7 @@
    },
    {
     "name": "llama3.2",
-    "pulls": 81200000
+    "pulls": 81300000
    },
    {
     "name": "gemma3",
