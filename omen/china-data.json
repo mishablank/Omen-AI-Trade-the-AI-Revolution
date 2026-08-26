@@ -1,5 +1,5 @@
 {
- "updated": "2026-08-26T05:41:08Z",
+ "updated": "2026-08-26T07:00:39Z",
  "snapshot_date": "2026-08-26",
  "artificial_analysis": {
   "cn_best": "GLM-5.2",
@@ -38,7 +38,7 @@
   "best": [
    {
     "label": "Qwen",
-    "rank": 132,
+    "rank": 140,
     "store": "android",
     "country": "br"
    }
@@ -55,7 +55,7 @@
    "au",
    "kr"
   ],
-  "detail": "no Chinese AI app in any iOS or Play top-100 (nearest: Qwen #132 (BR Play)); basket-mean Western top-100 presence 0/100 across 10 markets",
+  "detail": "no Chinese AI app in any iOS or Play top-100 (nearest: Qwen #140 (BR Play)); basket-mean Western top-100 presence 0/100 across 10 markets",
   "note": "iOS Apple RSS top-100 + Android Play top-200 across 10 markets; presence = basket-mean of best top-100 chart rank (DeepSeek/Qwen/Doubao/Kimi/MiniMax), #1=100 #100=1; ranks past top-100 score 0."
  },
  "lmarena": {
@@ -531,40 +531,40 @@
  },
  "openrouter_week": {
   "week": "2026-08-24",
-  "cn_share": 0.347,
-  "us_share": 0.2521,
+  "cn_share": 0.3467,
+  "us_share": 0.252,
   "spi": 1.376,
-  "total_tokens": 41256364331845
+  "total_tokens": 41762077109396
  },
  "vercel_gateway": {
   "asof": "2026-08-26",
-  "cn_share": 60.21,
-  "us_share": 39.75,
-  "spi": 1.515,
+  "cn_share": 60.45,
+  "us_share": 39.5,
+  "spi": 1.53,
   "top_cn": [
    {
     "lab": "deepseek",
-    "share": 29.34
+    "share": 29.16
    },
    {
     "lab": "stepfun",
-    "share": 9.61
+    "share": 9.75
    },
    {
     "lab": "moonshotai",
-    "share": 9.36
+    "share": 9.44
    },
    {
     "lab": "zai",
-    "share": 8.41
+    "share": 8.2
    },
    {
     "lab": "minimax",
-    "share": 1.39
+    "share": 1.72
    },
    {
     "lab": "alibaba",
-    "share": 1.07
+    "share": 1.08
    }
   ],
   "series": [
@@ -870,15 +870,15 @@
    },
    {
     "d": "2026-08-26",
-    "cn": 60.21,
-    "us": 39.75
+    "cn": 60.45,
+    "us": 39.5
    }
   ],
   "license": "AI Gateway Leaderboard Data (c) Vercel, CC BY 4.0"
  },
  "ollama": {
-  "cn": 290334199,
-  "us": 462791318,
+  "cn": 290340599,
+  "us": 462893022,
   "cn_top": [
    {
     "name": "deepseek-r1",
@@ -927,7 +927,7 @@
   "markets": [
    {
     "label": "Will a Chinese AI model be #1 this year?",
-    "p": 0.1,
+    "p": 0.11,
     "ticker": "KXBESTLLMCHINA-27",
     "series": "kxbestllmchina"
    },
@@ -961,7 +961,7 @@
   "cn": [
    {
     "base": "Qwen/Qwen3-8B",
-    "n": 1981
+    "n": 1982
    },
    {
     "base": "deepseek-ai/DeepSeek-R1",
@@ -994,16 +994,12 @@
     "n": 113
    }
   ],
-  "cn_total": 2364,
+  "cn_total": 2365,
   "us_total": 2523,
   "asof": "2026-08-26"
  },
  "sdk": {
   "cn": [
-   {
-    "pkg": "dashscope",
-    "wk": 576860
-   },
    {
     "pkg": "zhipuai",
     "wk": 85611
