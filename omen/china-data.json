@@ -1,5 +1,5 @@
 {
- "updated": "2026-08-26T16:21:36Z",
+ "updated": "2026-08-26T18:18:49Z",
  "snapshot_date": "2026-08-26",
  "artificial_analysis": {
   "cn_best": "GLM-5.2",
@@ -38,7 +38,7 @@
   "best": [
    {
     "label": "Qwen",
-    "rank": 126,
+    "rank": 113,
     "store": "android",
     "country": "br"
    }
@@ -55,7 +55,7 @@
    "au",
    "kr"
   ],
-  "detail": "no Chinese AI app in any iOS or Play top-100 (nearest: Qwen #126 (BR Play)); basket-mean Western top-100 presence 0/100 across 10 markets",
+  "detail": "no Chinese AI app in any iOS or Play top-100 (nearest: Qwen #113 (BR Play)); basket-mean Western top-100 presence 0/100 across 10 markets",
   "note": "iOS Apple RSS top-100 + Android Play top-200 across 10 markets; presence = basket-mean of best top-100 chart rank (DeepSeek/Qwen/Doubao/Kimi/MiniMax), #1=100 #100=1; ranks past top-100 score 0."
  },
  "lmarena": {
@@ -531,40 +531,40 @@
  },
  "openrouter_week": {
   "week": "2026-08-24",
-  "cn_share": 0.3504,
-  "us_share": 0.252,
-  "spi": 1.39,
-  "total_tokens": 49771508092726
+  "cn_share": 0.3563,
+  "us_share": 0.254,
+  "spi": 1.403,
+  "total_tokens": 51197487717142
  },
  "vercel_gateway": {
   "asof": "2026-08-26",
-  "cn_share": 60.3,
-  "us_share": 39.65,
-  "spi": 1.521,
+  "cn_share": 59.7,
+  "us_share": 40.26,
+  "spi": 1.483,
   "top_cn": [
    {
     "lab": "deepseek",
-    "share": 31.27
+    "share": 31.4
    },
    {
     "lab": "stepfun",
-    "share": 10.32
-   },
-   {
-    "lab": "moonshotai",
-    "share": 7.39
+    "share": 10.03
    },
    {
     "lab": "zai",
-    "share": 6.24
+    "share": 6.63
+   },
+   {
+    "lab": "moonshotai",
+    "share": 6.48
    },
    {
     "lab": "minimax",
-    "share": 2.58
+    "share": 2.81
    },
    {
-    "lab": "alibaba",
-    "share": 1.21
+    "lab": "xiaomi",
+    "share": 1.13
    }
   ],
   "series": [
@@ -870,15 +870,15 @@
    },
    {
     "d": "2026-08-26",
-    "cn": 60.3,
-    "us": 39.65
+    "cn": 59.7,
+    "us": 40.26
    }
   ],
   "license": "AI Gateway Leaderboard Data (c) Vercel, CC BY 4.0"
  },
  "ollama": {
-  "cn": 290882100,
-  "us": 463207684,
+  "cn": 290890100,
+  "us": 463310927,
   "cn_top": [
    {
     "name": "deepseek-r1",
@@ -912,7 +912,7 @@
    },
    {
     "name": "llama3.2",
-    "pulls": 81300000
+    "pulls": 81400000
    },
    {
     "name": "gemma3",
@@ -939,19 +939,19 @@
    },
    {
     "label": "Best AI at end of 2026: Ernie",
-    "p": 0.003,
+    "p": 0.001,
     "ticker": "KXLLM1-26DEC31-BAID",
     "series": "kxllm1"
    },
    {
     "label": "Best AI at end of 2026: Qwen",
-    "p": 0.009,
+    "p": 0.01,
     "ticker": "KXLLM1-26DEC31-ALI",
     "series": "kxllm1"
    },
    {
     "label": "Best AI at end of 2026: Claude",
-    "p": 0.729,
+    "p": 0.688,
     "ticker": "KXLLM1-26DEC31-A",
     "series": "kxllm1"
    }
@@ -979,7 +979,7 @@
   "us": [
    {
     "base": "meta-llama/Llama-3.1-8B",
-    "n": 1475
+    "n": 1476
    },
    {
     "base": "google/gemma-3-12b-it",
@@ -995,7 +995,7 @@
    }
   ],
   "cn_total": 2368,
-  "us_total": 2524,
+  "us_total": 2525,
   "asof": "2026-08-26"
  },
  "sdk": {
@@ -1003,16 +1003,16 @@
    {
     "pkg": "dashscope",
     "wk": 576860
-   },
-   {
-    "pkg": "zhipuai",
-    "wk": 85611
    }
   ],
   "us": [
    {
     "pkg": "openai",
     "wk": 97418240
+   },
+   {
+    "pkg": "anthropic",
+    "wk": 47337125
    },
    {
     "pkg": "google-genai",
