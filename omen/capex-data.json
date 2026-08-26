@@ -1,5 +1,5 @@
 {
- "updated": "2026-08-26T13:59:49Z",
+ "updated": "2026-08-26T14:54:08Z",
  "tsmc": {
   "asof": "2026-07",
   "rev_ntd_b": 467.6,
@@ -136,12 +136,12 @@
   "latest_release": "2026-06-26"
  },
  "eia": {
-  "operating_gw": 1377.9,
-  "planned_gw": 191.3,
-  "under_construction_gw": 94.2,
-  "canceled_gw": 185.4,
-  "asof": "2026-06",
-  "src": "https://www.eia.gov/electricity/data/eia860m/xls/june_generator2026.xlsx"
+  "operating_gw": 1382.1,
+  "planned_gw": 192.7,
+  "under_construction_gw": 98.4,
+  "canceled_gw": 184.1,
+  "asof": "2026-07",
+  "src": "https://www.eia.gov/electricity/data/eia860m/xls/july_generator2026.xlsx"
  },
  "capex_gdp": {
   "dc_construction_saar_b": 68.3,
