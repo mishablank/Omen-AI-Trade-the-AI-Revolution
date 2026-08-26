@@ -1,5 +1,5 @@
 {
- "updated": "2026-08-26T11:37:59Z",
+ "updated": "2026-08-26T13:07:02Z",
  "tsmc": {
   "asof": "2026-07",
   "rev_ntd_b": 467.6,
@@ -147,10 +147,10 @@
   "dc_construction_saar_b": 68.3,
   "dc_yoy_pct": 45.8,
   "dc_asof": "2026-06",
-  "computers_saar_b": 406.4,
-  "gdp_saar_b": 32475.2,
+  "computers_saar_b": 400.6,
+  "gdp_saar_b": 32486.1,
   "gdp_asof": "2026-04-01",
-  "pct_gdp": 1.46
+  "pct_gdp": 1.44
  },
  "agents": {
   "asof": "2026-08-26",
@@ -160,8 +160,8 @@
    "@google/gemini-cli": 405932
   },
   "pypi": {
-   "claude-agent-sdk": 7736521,
-   "openai-agents": 9328014
+   "claude-agent-sdk": null,
+   "openai-agents": null
   },
   "npm_total_wk": 40972236,
   "series": [
