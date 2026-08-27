@@ -1,5 +1,5 @@
 {
- "updated": "2026-08-26T20:40:11Z",
+ "updated": "2026-08-27T00:36:05Z",
  "tsmc": {
   "asof": "2026-07",
   "rev_ntd_b": 467.6,
@@ -11,17 +11,17 @@
  "issuance": {
   "days": 90,
   "cur": {
-   "from": "2026-05-29",
-   "to": "2026-08-26",
+   "from": "2026-05-30",
+   "to": "2026-08-27",
    "debt": 21,
-   "s1_ai": 321,
+   "s1_ai": 311,
    "formd_ai": 5
   },
   "prev": {
-   "from": "2026-02-28",
-   "to": "2026-05-28",
+   "from": "2026-03-01",
+   "to": "2026-05-29",
    "debt": 18,
-   "s1_ai": 372,
+   "s1_ai": 382,
    "formd_ai": 5
   }
  },
@@ -153,15 +153,15 @@
   "pct_gdp": 1.44
  },
  "agents": {
-  "asof": "2026-08-26",
+  "asof": "2026-08-27",
   "npm": {
    "@anthropic-ai/claude-code": 23340227,
    "@openai/codex": 17226077,
    "@google/gemini-cli": 405932
   },
   "pypi": {
-   "claude-agent-sdk": 7736521,
-   "openai-agents": 9328014
+   "claude-agent-sdk": null,
+   "openai-agents": null
   },
   "npm_total_wk": 40972236,
   "series": [
@@ -247,6 +247,10 @@
    ],
    [
     "2026-08-26",
+    40972236
+   ],
+   [
+    "2026-08-27",
     40972236
    ]
   ]
