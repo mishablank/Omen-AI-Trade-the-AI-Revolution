@@ -1,5 +1,5 @@
 {
- "updated": "2026-08-29T15:35:38Z",
+ "updated": "2026-08-29T16:56:42Z",
  "snapshot_date": "2026-08-29",
  "artificial_analysis": {
   "cn_best": "GLM-5.2",
@@ -38,7 +38,7 @@
   "best": [
    {
     "label": "Qwen",
-    "rank": 168,
+    "rank": 163,
     "store": "android",
     "country": "br"
    }
@@ -55,7 +55,7 @@
    "au",
    "kr"
   ],
-  "detail": "no Chinese AI app in any iOS or Play top-100 (nearest: Qwen #168 (BR Play)); basket-mean Western top-100 presence 0/100 across 10 markets",
+  "detail": "no Chinese AI app in any iOS or Play top-100 (nearest: Qwen #163 (BR Play)); basket-mean Western top-100 presence 0/100 across 10 markets",
   "note": "iOS Apple RSS top-100 + Android Play top-200 across 10 markets; presence = basket-mean of best top-100 chart rank (DeepSeek/Qwen/Doubao/Kimi/MiniMax), #1=100 #100=1; ranks past top-100 score 0."
  },
  "lmarena": {
@@ -465,42 +465,106 @@
   }
  },
  "github_stars_per_day": 1469.1,
+ "hf": {
+  "cnOrgs": [
+   {
+    "org": "Qwen",
+    "dl": 242193328
+   },
+   {
+    "org": "deepseek-ai",
+    "dl": 25171327
+   },
+   {
+    "org": "zai-org",
+    "dl": 11116936
+   },
+   {
+    "org": "MiniMaxAI",
+    "dl": 7525817
+   },
+   {
+    "org": "moonshotai",
+    "dl": 5248503
+   },
+   {
+    "org": "tencent",
+    "dl": 1456387
+   },
+   {
+    "org": "stepfun-ai",
+    "dl": 1193914
+   },
+   {
+    "org": "XiaomiMiMo",
+    "dl": 706999
+   }
+  ],
+  "usOrgs": [
+   {
+    "org": "google",
+    "dl": 50036984
+   },
+   {
+    "org": "meta-llama",
+    "dl": 26877543
+   },
+   {
+    "org": "nvidia",
+    "dl": 19410319
+   },
+   {
+    "org": "openai",
+    "dl": 11693681
+   },
+   {
+    "org": "microsoft",
+    "dl": 5045346
+   },
+   {
+    "org": "allenai",
+    "dl": 3190757
+   }
+  ],
+  "cn": 294613211,
+  "us": 116254630
+ },
  "openrouter_week": {
   "week": "2026-08-24",
-  "cn_share": 0.4383,
+  "cn_share": 0.4392,
   "us_share": 0.2897,
-  "spi": 1.513,
-  "total_tokens": 94947436772087
+  "spi": 1.516,
+  "total_tokens": 95634960121885
  },
  "vercel_gateway": {
   "asof": "2026-08-29",
-  "cn_share": 67.79,
-  "us_share": 32.16,
-  "spi": 2.108,
+  "cn_share": 70.24,
+  "us_share": 29.71,
+  "spi": 2.364,
   "top_cn": [
    {
     "lab": "deepseek",
-    "share": 37.03
+    "share": 38.31
    },
    {
     "lab": "stepfun",
-    "share": 11.77
+    "share": 12.82
    },
    {
     "lab": "minimax",
-    "share": 9.37
+    "share": 9.15
    },
    {
     "lab": "zai",
-    "share": 7.15
+    "share": 7.5
    },
    {
     "lab": "xiaomi",
-    "share": 1.07
+    "share": 1.05
    },
    {
     "lab": "moonshotai",
-    "share": 0.81
+    "share": 0.85
    }
   ],
   "series": [
@@ -806,15 +870,15 @@
    },
    {
     "d": "2026-08-29",
-    "cn": 67.79,
-    "us": 32.16
+    "cn": 70.24,
+    "us": 29.71
    }
   ],
   "license": "AI Gateway Leaderboard Data (c) Vercel, CC BY 4.0"
  },
  "ollama": {
-  "cn": 292803808,
-  "us": 464914098,
+  "cn": 292906044,
+  "us": 464917697,
   "cn_top": [
    {
     "name": "deepseek-r1",
@@ -826,7 +890,7 @@
    },
    {
     "name": "qwen3",
-    "pulls": 35700000
+    "pulls": 35800000
    },
    {
     "name": "qwen2.5-coder",
@@ -856,9 +920,7 @@
    }
   ],
   "n_models": 239,
-  "asof": "2026-08-29",
-  "cn_per_day": 862736,
-  "us_per_day": 509028
+  "asof": "2026-08-29"
  },
  "kalshi": {
   "asof": "2026-08-29",
@@ -877,19 +939,19 @@
    },
    {
     "label": "Best AI at end of 2026: Ernie",
-    "p": 0.002,
+    "p": 0.001,
     "ticker": "KXLLM1-26DEC31-BAID",
     "series": "kxllm1"
    },
    {
     "label": "Best AI at end of 2026: Qwen",
-    "p": 0.007,
+    "p": 0.006,
     "ticker": "KXLLM1-26DEC31-ALI",
     "series": "kxllm1"
    },
    {
     "label": "Best AI at end of 2026: Claude",
-    "p": 0.717,
+    "p": 0.709,
     "ticker": "KXLLM1-26DEC31-A",
     "series": "kxllm1"
    }
@@ -899,7 +961,7 @@
   "cn": [
    {
     "base": "Qwen/Qwen3-8B",
-    "n": 2001
+    "n": 2002
    },
    {
     "base": "deepseek-ai/DeepSeek-R1",
@@ -917,7 +979,7 @@
   "us": [
    {
     "base": "meta-llama/Llama-3.1-8B",
-    "n": 1467
+    "n": 1469
    },
    {
     "base": "google/gemma-3-12b-it",
@@ -932,8 +994,8 @@
     "n": 114
    }
   ],
-  "cn_total": 2384,
-  "us_total": 2517,
+  "cn_total": 2385,
+  "us_total": 2519,
   "asof": "2026-08-29"
  },
  "sdk": {
