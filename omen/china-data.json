@@ -1,6 +1,6 @@
 {
- "updated": "2026-08-28T22:58:01Z",
- "snapshot_date": "2026-08-28",
+ "updated": "2026-08-29T03:37:50Z",
+ "snapshot_date": "2026-08-29",
  "artificial_analysis": {
   "cn_best": "GLM-5.2",
   "cn_score": 51,
@@ -33,12 +33,12 @@
  },
  "apps": {
   "score": 0,
-  "asof": "2026-08-28",
+  "asof": "2026-08-29",
   "source": "app-charts",
   "best": [
    {
     "label": "Qwen",
-    "rank": 172,
+    "rank": 163,
     "store": "android",
     "country": "br"
    }
@@ -55,7 +55,7 @@
    "au",
    "kr"
   ],
-  "detail": "no Chinese AI app in any iOS or Play top-100 (nearest: Qwen #172 (BR Play)); basket-mean Western top-100 presence 0/100 across 10 markets",
+  "detail": "no Chinese AI app in any iOS or Play top-100 (nearest: Qwen #163 (BR Play)); basket-mean Western top-100 presence 0/100 across 10 markets",
   "note": "iOS Apple RSS top-100 + Android Play top-200 across 10 markets; presence = basket-mean of best top-100 chart rank (DeepSeek/Qwen/Doubao/Kimi/MiniMax), #1=100 #100=1; ranks past top-100 score 0."
  },
  "lmarena": {
@@ -448,7 +448,7 @@
    "zai-org/Open-AutoGLM"
   ],
   "source": "search",
-  "asof": "2026-08-28",
+  "asof": "2026-08-29",
   "vel": {
    "MiniMax-AI/MiniMax-H3": 87.8,
    "MiniMax-AI/skills": 11.7,
@@ -531,48 +531,43 @@
  },
  "openrouter_week": {
   "week": "2026-08-24",
-  "cn_share": 0.4269,
-  "us_share": 0.2884,
-  "spi": 1.48,
-  "total_tokens": 85689629160059
+  "cn_share": 0.4298,
+  "us_share": 0.2892,
+  "spi": 1.486,
+  "total_tokens": 88371788320860
  },
  "vercel_gateway": {
-  "asof": "2026-08-28",
-  "cn_share": 62.46,
-  "us_share": 37.49,
-  "spi": 1.666,
+  "asof": "2026-08-29",
+  "cn_share": 65.54,
+  "us_share": 34.37,
+  "spi": 1.907,
   "top_cn": [
    {
     "lab": "deepseek",
-    "share": 31.11
+    "share": 36.02
    },
    {
     "lab": "stepfun",
-    "share": 10.46
-   },
-   {
-    "lab": "zai",
-    "share": 9.15
+    "share": 9.87
    },
    {
     "lab": "minimax",
-    "share": 8.95
+    "share": 9.33
    },
    {
-    "lab": "moonshotai",
-    "share": 1.35
+    "lab": "zai",
+    "share": 7.58
    },
    {
     "lab": "xiaomi",
-    "share": 0.93
+    "share": 1.06
+   },
+   {
+    "lab": "moonshotai",
+    "share": 0.87
    }
   ],
   "series": [
-   {
-    "d": "2026-06-29",
-    "cn": 34.47,
-    "us": 65.37
-   },
    {
     "d": "2026-06-30",
     "cn": 33.97,
@@ -870,15 +865,20 @@
    },
    {
     "d": "2026-08-28",
-    "cn": 62.46,
-    "us": 37.49
+    "cn": 62.35,
+    "us": 37.59
+   },
+   {
+    "d": "2026-08-29",
+    "cn": 65.54,
+    "us": 34.37
    }
   ],
   "license": "AI Gateway Leaderboard Data (c) Vercel, CC BY 4.0"
  },
  "ollama": {
-  "cn": 292381436,
-  "us": 464490698,
+  "cn": 292685884,
+  "us": 464695498,
   "cn_top": [
    {
     "name": "deepseek-r1",
@@ -920,14 +920,14 @@
    }
   ],
   "n_models": 239,
-  "asof": "2026-08-28"
+  "asof": "2026-08-29"
  },
  "kalshi": {
-  "asof": "2026-08-28",
+  "asof": "2026-08-29",
   "markets": [
    {
     "label": "Will a Chinese AI model be #1 this year?",
-    "p": 0.14,
+    "p": 0.13,
     "ticker": "KXBESTLLMCHINA-27",
     "series": "kxbestllmchina"
    },
@@ -939,7 +939,7 @@
    },
    {
     "label": "Best AI at end of 2026: Ernie",
-    "p": 0.001,
+    "p": 0.002,
     "ticker": "KXLLM1-26DEC31-BAID",
     "series": "kxllm1"
    },
@@ -951,7 +951,7 @@
    },
    {
     "label": "Best AI at end of 2026: Claude",
-    "p": 0.715,
+    "p": 0.699,
     "ticker": "KXLLM1-26DEC31-A",
     "series": "kxllm1"
    }
@@ -996,26 +996,38 @@
   ],
   "cn_total": 2381,
   "us_total": 2519,
-  "asof": "2026-08-28"
+  "asof": "2026-08-29"
  },
  "sdk": {
   "cn": [
    {
+    "pkg": "dashscope",
+    "wk": 501598
+   },
+   {
+    "pkg": "zhipuai",
+    "wk": 53532
+   },
+   {
     "pkg": "zai-sdk",
-    "wk": 26673
+    "wk": 25864
    }
   ],
   "us": [
    {
+    "pkg": "openai",
+    "wk": 76955892
+   },
+   {
     "pkg": "anthropic",
-    "wk": 41525297
+    "wk": 37985812
    },
    {
     "pkg": "google-genai",
-    "wk": 48858379
+    "wk": 42794094
    }
   ],
-  "asof": "2026-08-28"
+  "asof": "2026-08-29"
  },
  "epoch_compute": {
   "us_share": 79.5,
