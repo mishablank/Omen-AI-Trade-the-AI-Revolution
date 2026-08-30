@@ -1,17 +1,8 @@
 {
- "updated": "2026-08-29T22:08:44Z",
+ "updated": "2026-08-30T00:04:08Z",
  "source": "google-play-scraper",
  "store": "android",
  "depth": 200,
  "countries_ok": 10,
- "hits": [
-  {
-   "label": "Qwen",
-   "store": "android",
-   "country": "br",
-   "rank": 199,
-   "appId": "com.tongyi.intl",
-   "title": "Qwen - Alibaba AI Assistant"
-  }
- ]
+ "hits": []
 }
