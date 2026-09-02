@@ -1,5 +1,5 @@
 {
- "updated": "2026-09-02T14:17:20Z",
+ "updated": "2026-09-02T17:05:13Z",
  "snapshot_date": "2026-09-02",
  "artificial_analysis": {
   "cn_best": "GLM-5.2",
@@ -529,40 +529,40 @@
  },
  "openrouter_week": {
   "week": "2026-08-31",
-  "cn_share": 0.5834,
-  "us_share": 0.3245,
-  "spi": 1.798,
-  "total_tokens": 41238353976436
+  "cn_share": 0.5819,
+  "us_share": 0.3269,
+  "spi": 1.78,
+  "total_tokens": 43980672390384
  },
  "vercel_gateway": {
   "asof": "2026-09-02",
-  "cn_share": 65.86,
-  "us_share": 34.11,
-  "spi": 1.931,
+  "cn_share": 64.6,
+  "us_share": 35.37,
+  "spi": 1.826,
   "top_cn": [
    {
     "lab": "deepseek",
-    "share": 44.34
+    "share": 43.2
    },
    {
     "lab": "zai",
-    "share": 8.73
+    "share": 8.44
    },
    {
     "lab": "stepfun",
-    "share": 5.94
+    "share": 6.1
    },
    {
     "lab": "moonshotai",
-    "share": 3.69
+    "share": 3.82
    },
    {
     "lab": "minimax",
-    "share": 1.42
+    "share": 1.39
    },
    {
     "lab": "xiaomi",
-    "share": 1.32
+    "share": 1.23
    }
   ],
   "series": [
@@ -868,19 +868,19 @@
    },
    {
     "d": "2026-09-02",
-    "cn": 65.86,
-    "us": 34.11
+    "cn": 64.6,
+    "us": 35.37
    }
   ],
   "license": "AI Gateway Leaderboard Data (c) Vercel, CC BY 4.0"
  },
  "ollama": {
-  "cn": 295132500,
-  "us": 466661197,
+  "cn": 295237200,
+  "us": 466668197,
   "cn_top": [
    {
     "name": "deepseek-r1",
-    "pulls": 92200000
+    "pulls": 92300000
    },
    {
     "name": "qwen2.5",
@@ -925,7 +925,7 @@
   "markets": [
    {
     "label": "Will a Chinese AI model be #1 this year?",
-    "p": 0.09,
+    "p": 0.12,
     "ticker": "KXBESTLLMCHINA-27",
     "series": "kxbestllmchina"
    },
@@ -949,7 +949,7 @@
    },
    {
     "label": "Best AI at end of 2026: Claude",
-    "p": 0.687,
+    "p": 0.688,
     "ticker": "KXLLM1-26DEC31-A",
     "series": "kxllm1"
    }
@@ -959,7 +959,7 @@
   "cn": [
    {
     "base": "Qwen/Qwen3-8B",
-    "n": 2028
+    "n": 2029
    },
    {
     "base": "deepseek-ai/DeepSeek-R1",
@@ -992,7 +992,7 @@
     "n": 115
    }
   ],
-  "cn_total": 2411,
+  "cn_total": 2412,
   "us_total": 2526,
   "asof": "2026-09-02"
  },
@@ -1003,18 +1003,18 @@
     "wk": 470672
    },
    {
-    "pkg": "zai-sdk",
-    "wk": 20914
+    "pkg": "zhipuai",
+    "wk": 31219
    }
   ],
   "us": [
    {
-    "pkg": "openai",
-    "wk": 61144299
-   },
-   {
     "pkg": "anthropic",
     "wk": 29434490
+   },
+   {
+    "pkg": "google-genai",
+    "wk": 28889602
    }
   ],
   "asof": "2026-09-02"
