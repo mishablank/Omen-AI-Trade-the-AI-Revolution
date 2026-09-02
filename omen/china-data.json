@@ -1,5 +1,5 @@
 {
- "updated": "2026-09-02T20:02:01Z",
+ "updated": "2026-09-02T22:47:50Z",
  "snapshot_date": "2026-09-02",
  "artificial_analysis": {
   "cn_best": "GLM-5.2",
@@ -529,32 +529,32 @@
  },
  "openrouter_week": {
   "week": "2026-08-31",
-  "cn_share": 0.5806,
-  "us_share": 0.3279,
-  "spi": 1.771,
-  "total_tokens": 46376382477200
+  "cn_share": 0.5786,
+  "us_share": 0.3295,
+  "spi": 1.756,
+  "total_tokens": 48271355285522
  },
  "vercel_gateway": {
   "asof": "2026-09-02",
-  "cn_share": 62.95,
-  "us_share": 37.02,
-  "spi": 1.7,
+  "cn_share": 61.76,
+  "us_share": 38.21,
+  "spi": 1.616,
   "top_cn": [
    {
     "lab": "deepseek",
-    "share": 41.7
+    "share": 40.44
    },
    {
     "lab": "zai",
-    "share": 8.2
+    "share": 8.15
    },
    {
     "lab": "stepfun",
-    "share": 6.11
+    "share": 6.1
    },
    {
     "lab": "moonshotai",
-    "share": 4.04
+    "share": 4.23
    },
    {
     "lab": "minimax",
@@ -562,7 +562,7 @@
    },
    {
     "lab": "xiaomi",
-    "share": 1.14
+    "share": 1.1
    }
   ],
   "series": [
@@ -868,15 +868,15 @@
    },
    {
     "d": "2026-09-02",
-    "cn": 62.95,
-    "us": 37.02
+    "cn": 61.76,
+    "us": 38.21
    }
   ],
   "license": "AI Gateway Leaderboard Data (c) Vercel, CC BY 4.0"
  },
  "ollama": {
-  "cn": 295342100,
-  "us": 466672097,
+  "cn": 295347000,
+  "us": 466676397,
   "cn_top": [
    {
     "name": "deepseek-r1",
@@ -949,7 +949,7 @@
    },
    {
     "label": "Best AI at end of 2026: Claude",
-    "p": 0.68,
+    "p": 0.65,
     "ticker": "KXLLM1-26DEC31-A",
     "series": "kxllm1"
    }
@@ -999,10 +999,6 @@
  "sdk": {
   "cn": [
    {
-    "pkg": "dashscope",
-    "wk": 470672
-   },
-   {
     "pkg": "zai-sdk",
     "wk": 20914
    }
@@ -1015,6 +1011,10 @@
    {
     "pkg": "anthropic",
     "wk": 29434490
+   },
+   {
+    "pkg": "google-genai",
+    "wk": 28889602
    }
   ],
   "asof": "2026-09-02"
