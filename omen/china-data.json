@@ -1,5 +1,5 @@
 {
- "updated": "2026-09-02T04:16:17Z",
+ "updated": "2026-09-02T09:25:51Z",
  "snapshot_date": "2026-09-02",
  "artificial_analysis": {
   "cn_best": "GLM-5.2",
@@ -9,7 +9,7 @@
   "asof": "2026-07-12"
  },
  "search_consumer": {
-  "western_share_pct": 3.4,
+  "western_share_pct": 3.2,
   "asof": "2026-09",
   "source": "google-trends",
   "terms_us": [
@@ -29,7 +29,7 @@
    "Seed 1.6",
    "Seed 2.0"
   ],
-  "note": "Google Trends US, 90-day avg: 8 Chinese AI terms = 3.4% of AI-assistant search interest vs ChatGPT+Gemini+Claude+Llama AI+Meta AI."
+  "note": "Google Trends US, 90-day avg: 8 Chinese AI terms = 3.2% of AI-assistant search interest vs ChatGPT+Gemini+Claude+Llama AI+Meta AI."
  },
  "apps": {
   "score": 0,
@@ -38,7 +38,7 @@
   "best": [
    {
     "label": "Qwen",
-    "rank": 125,
+    "rank": 181,
     "store": "android",
     "country": "br"
    }
@@ -55,7 +55,7 @@
    "au",
    "kr"
   ],
-  "detail": "no Chinese AI app in any iOS or Play top-100 (nearest: Qwen #125 (BR Play)); basket-mean Western top-100 presence 0/100 across 10 markets",
+  "detail": "no Chinese AI app in any iOS or Play top-100 (nearest: Qwen #181 (BR Play)); basket-mean Western top-100 presence 0/100 across 10 markets",
   "note": "iOS Apple RSS top-100 + Android Play top-200 across 10 markets; presence = basket-mean of best top-100 chart rank (DeepSeek/Qwen/Doubao/Kimi/MiniMax), #1=100 #100=1; ranks past top-100 score 0."
  },
  "lmarena": {
@@ -444,44 +444,42 @@
    "XiaomiMiMo/MiMo-Code",
    "deepseek-ai/FlashMLA",
    "deepseek-ai/deepseek-harness",
-   "zai-org/GLM-OCR",
-   "zai-org/Open-AutoGLM"
+   "zai-org/GLM-5",
+   "zai-org/GLM-OCR"
   ],
   "source": "search",
   "asof": "2026-09-02",
   "vel": {
-   "MiniMax-AI/MiniMax-H3": 106.0,
-   "MiniMax-AI/skills": 5.4,
-   "MoonshotAI/Kimi-K3": 8.6,
-   "MoonshotAI/kimi-cli": 10.7,
-   "QwenLM/Qwen": 6.4,
-   "QwenLM/qwen-code": 36.4,
+   "MiniMax-AI/MiniMax-H3": 112.8,
+   "MiniMax-AI/skills": 7.2,
+   "MoonshotAI/Kimi-K3": 9.6,
+   "MoonshotAI/kimi-cli": 4.8,
+   "QwenLM/qwen-code": 24.0,
    "XiaomiMiMo/MiMo-Audio": 0.0,
-   "XiaomiMiMo/MiMo-Code": 9.6,
-   "deepseek-ai/FlashMLA": 2.1,
-   "deepseek-ai/deepseek-harness": 1595.6,
-   "zai-org/GLM-OCR": 0.0,
-   "zai-org/Open-AutoGLM": 1.1
+   "XiaomiMiMo/MiMo-Code": 13.2,
+   "deepseek-ai/FlashMLA": 2.4,
+   "deepseek-ai/deepseek-harness": 1506.9,
+   "zai-org/GLM-OCR": 7.2
   }
  },
- "github_stars_per_day": 1782.0,
+ "github_stars_per_day": 1688.0,
  "hf": {
   "cnOrgs": [
    {
     "org": "Qwen",
-    "dl": 250006800
+    "dl": 248927175
    },
    {
     "org": "deepseek-ai",
-    "dl": 24846812
+    "dl": 24165343
    },
    {
     "org": "zai-org",
-    "dl": 10706840
+    "dl": 10694222
    },
    {
     "org": "MiniMaxAI",
-    "dl": 8127680
+    "dl": 8127831
    },
    {
     "org": "moonshotai",
@@ -489,11 +487,11 @@
    },
    {
     "org": "tencent",
-    "dl": 1542168
+    "dl": 1539027
    },
    {
     "org": "stepfun-ai",
-    "dl": 1182853
+    "dl": 1165249
    },
    {
     "org": "XiaomiMiMo",
@@ -503,15 +501,15 @@
   "usOrgs": [
    {
     "org": "google",
-    "dl": 50120868
+    "dl": 50087512
    },
    {
     "org": "meta-llama",
-    "dl": 27334044
+    "dl": 26573052
    },
    {
     "org": "nvidia",
-    "dl": 19689126
+    "dl": 19675118
    },
    {
     "org": "openai",
@@ -519,52 +517,52 @@
    },
    {
     "org": "microsoft",
-    "dl": 4979867
+    "dl": 4900735
    },
    {
     "org": "allenai",
-    "dl": 3424871
+    "dl": 3391659
    }
   ],
-  "cn": 302234634,
-  "us": 117533767
+  "cn": 300440328,
+  "us": 116613067
  },
  "openrouter_week": {
   "week": "2026-08-31",
-  "cn_share": 0.5874,
-  "us_share": 0.3165,
-  "spi": 1.856,
-  "total_tokens": 32924222165532
+  "cn_share": 0.5853,
+  "us_share": 0.3207,
+  "spi": 1.825,
+  "total_tokens": 36923792594619
  },
  "vercel_gateway": {
   "asof": "2026-09-02",
-  "cn_share": 64.77,
-  "us_share": 35.2,
-  "spi": 1.84,
+  "cn_share": 65.21,
+  "us_share": 34.77,
+  "spi": 1.875,
   "top_cn": [
    {
     "lab": "deepseek",
-    "share": 44.36
+    "share": 44.16
    },
    {
     "lab": "zai",
-    "share": 8.61
+    "share": 9.0
    },
    {
     "lab": "stepfun",
-    "share": 4.85
+    "share": 5.5
    },
    {
     "lab": "moonshotai",
-    "share": 4.03
+    "share": 3.35
    },
    {
     "lab": "minimax",
-    "share": 1.28
+    "share": 1.41
    },
    {
     "lab": "xiaomi",
-    "share": 1.26
+    "share": 1.35
    }
   ],
   "series": [
@@ -870,15 +868,15 @@
    },
    {
     "d": "2026-09-02",
-    "cn": 64.77,
-    "us": 35.2
+    "cn": 65.21,
+    "us": 34.77
    }
   ],
   "license": "AI Gateway Leaderboard Data (c) Vercel, CC BY 4.0"
  },
  "ollama": {
-  "cn": 294616800,
-  "us": 466541897,
+  "cn": 295024700,
+  "us": 466652097,
   "cn_top": [
    {
     "name": "deepseek-r1",
@@ -886,11 +884,11 @@
    },
    {
     "name": "qwen2.5",
-    "pulls": 39000000
+    "pulls": 39100000
    },
    {
     "name": "qwen3",
-    "pulls": 36000000
+    "pulls": 36100000
    },
    {
     "name": "qwen2.5-coder",
@@ -898,7 +896,7 @@
    },
    {
     "name": "qwen3.5",
-    "pulls": 19000000
+    "pulls": 19100000
    },
    {
     "name": "qwen3-coder",
@@ -920,7 +918,9 @@
    }
   ],
   "n_models": 239,
-  "asof": "2026-09-02"
+  "asof": "2026-09-02",
+  "cn_per_day": 517209,
+  "us_per_day": 521528
  },
  "kalshi": {
   "asof": "2026-09-02",
@@ -951,7 +951,7 @@
    },
    {
     "label": "Best AI at end of 2026: Claude",
-    "p": 0.691,
+    "p": 0.683,
     "ticker": "KXLLM1-26DEC31-A",
     "series": "kxllm1"
    }
@@ -961,7 +961,7 @@
   "cn": [
    {
     "base": "Qwen/Qwen3-8B",
-    "n": 2022
+    "n": 2027
    },
    {
     "base": "deepseek-ai/DeepSeek-R1",
@@ -994,7 +994,7 @@
     "n": 115
    }
   ],
-  "cn_total": 2405,
+  "cn_total": 2410,
   "us_total": 2526,
   "asof": "2026-09-02"
  },
@@ -1005,22 +1005,18 @@
     "wk": 470672
    },
    {
-    "pkg": "zhipuai",
-    "wk": 31219
-   },
-   {
     "pkg": "zai-sdk",
     "wk": 20914
    }
   ],
   "us": [
    {
-    "pkg": "openai",
-    "wk": 61144299
-   },
-   {
     "pkg": "anthropic",
     "wk": 29434490
+   },
+   {
+    "pkg": "google-genai",
+    "wk": 28889602
    }
   ],
   "asof": "2026-09-02"
