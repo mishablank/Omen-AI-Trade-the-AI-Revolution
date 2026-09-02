@@ -1,5 +1,5 @@
 {
- "updated": "2026-09-02T09:25:51Z",
+ "updated": "2026-09-02T14:17:20Z",
  "snapshot_date": "2026-09-02",
  "artificial_analysis": {
   "cn_best": "GLM-5.2",
@@ -529,40 +529,40 @@
  },
  "openrouter_week": {
   "week": "2026-08-31",
-  "cn_share": 0.5853,
-  "us_share": 0.3207,
-  "spi": 1.825,
-  "total_tokens": 36923792594619
+  "cn_share": 0.5834,
+  "us_share": 0.3245,
+  "spi": 1.798,
+  "total_tokens": 41238353976436
  },
  "vercel_gateway": {
   "asof": "2026-09-02",
-  "cn_share": 65.21,
-  "us_share": 34.77,
-  "spi": 1.875,
+  "cn_share": 65.86,
+  "us_share": 34.11,
+  "spi": 1.931,
   "top_cn": [
    {
     "lab": "deepseek",
-    "share": 44.16
+    "share": 44.34
    },
    {
     "lab": "zai",
-    "share": 9.0
+    "share": 8.73
    },
    {
     "lab": "stepfun",
-    "share": 5.5
+    "share": 5.94
    },
    {
     "lab": "moonshotai",
-    "share": 3.35
+    "share": 3.69
    },
    {
     "lab": "minimax",
-    "share": 1.41
+    "share": 1.42
    },
    {
     "lab": "xiaomi",
-    "share": 1.35
+    "share": 1.32
    }
   ],
   "series": [
@@ -868,15 +868,15 @@
    },
    {
     "d": "2026-09-02",
-    "cn": 65.21,
-    "us": 34.77
+    "cn": 65.86,
+    "us": 34.11
    }
   ],
   "license": "AI Gateway Leaderboard Data (c) Vercel, CC BY 4.0"
  },
  "ollama": {
-  "cn": 295024700,
-  "us": 466652097,
+  "cn": 295132500,
+  "us": 466661197,
   "cn_top": [
    {
     "name": "deepseek-r1",
@@ -918,9 +918,7 @@
    }
   ],
   "n_models": 239,
-  "asof": "2026-09-02",
-  "cn_per_day": 517209,
-  "us_per_day": 521528
+  "asof": "2026-09-02"
  },
  "kalshi": {
   "asof": "2026-09-02",
@@ -939,19 +937,19 @@
    },
    {
     "label": "Best AI at end of 2026: Ernie",
-    "p": 0.001,
+    "p": 0.003,
     "ticker": "KXLLM1-26DEC31-BAID",
     "series": "kxllm1"
    },
    {
     "label": "Best AI at end of 2026: Qwen",
-    "p": 0.005,
+    "p": 0.009,
     "ticker": "KXLLM1-26DEC31-ALI",
     "series": "kxllm1"
    },
    {
     "label": "Best AI at end of 2026: Claude",
-    "p": 0.683,
+    "p": 0.687,
     "ticker": "KXLLM1-26DEC31-A",
     "series": "kxllm1"
    }
@@ -961,7 +959,7 @@
   "cn": [
    {
     "base": "Qwen/Qwen3-8B",
-    "n": 2027
+    "n": 2028
    },
    {
     "base": "deepseek-ai/DeepSeek-R1",
@@ -994,7 +992,7 @@
     "n": 115
    }
   ],
-  "cn_total": 2410,
+  "cn_total": 2411,
   "us_total": 2526,
   "asof": "2026-09-02"
  },
@@ -1011,12 +1009,12 @@
   ],
   "us": [
    {
-    "pkg": "anthropic",
-    "wk": 29434490
+    "pkg": "openai",
+    "wk": 61144299
    },
    {
-    "pkg": "google-genai",
-    "wk": 28889602
+    "pkg": "anthropic",
+    "wk": 29434490
    }
   ],
   "asof": "2026-09-02"
