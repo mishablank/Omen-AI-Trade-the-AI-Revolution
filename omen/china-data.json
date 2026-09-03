@@ -1,5 +1,5 @@
 {
- "updated": "2026-09-03T16:58:55Z",
+ "updated": "2026-09-03T19:44:16Z",
  "snapshot_date": "2026-09-03",
  "artificial_analysis": {
   "cn_best": "GLM-5.2",
@@ -9,7 +9,7 @@
   "asof": "2026-07-12"
  },
  "search_consumer": {
-  "western_share_pct": 3.2,
+  "western_share_pct": 3.8,
   "asof": "2026-09",
   "source": "google-trends",
   "terms_us": [
@@ -29,7 +29,7 @@
    "Seed 1.6",
    "Seed 2.0"
   ],
-  "note": "Google Trends US, 90-day avg: 8 Chinese AI terms = 3.2% of AI-assistant search interest vs ChatGPT+Gemini+Claude+Llama AI+Meta AI."
+  "note": "Google Trends US, 90-day avg: 8 Chinese AI terms = 3.8% of AI-assistant search interest vs ChatGPT+Gemini+Claude+Llama AI+Meta AI."
  },
  "apps": {
   "score": 0,
@@ -531,20 +531,20 @@
  },
  "openrouter_week": {
   "week": "2026-08-31",
-  "cn_share": 0.5921,
-  "us_share": 0.3172,
-  "spi": 1.867,
-  "total_tokens": 62568212641029
+  "cn_share": 0.591,
+  "us_share": 0.3178,
+  "spi": 1.86,
+  "total_tokens": 64135011461065
  },
  "vercel_gateway": {
   "asof": "2026-09-03",
-  "cn_share": 64.48,
-  "us_share": 35.47,
-  "spi": 1.818,
+  "cn_share": 63.61,
+  "us_share": 36.34,
+  "spi": 1.75,
   "top_cn": [
    {
     "lab": "deepseek",
-    "share": 42.28
+    "share": 41.58
    },
    {
     "lab": "zai",
@@ -552,15 +552,15 @@
    },
    {
     "lab": "moonshotai",
-    "share": 6.33
+    "share": 6.24
    },
    {
     "lab": "stepfun",
-    "share": 5.82
+    "share": 5.77
    },
    {
     "lab": "xiaomi",
-    "share": 1.02
+    "share": 0.99
    },
    {
     "lab": "minimax",
@@ -870,15 +870,15 @@
    },
    {
     "d": "2026-09-03",
-    "cn": 64.48,
-    "us": 35.47
+    "cn": 63.61,
+    "us": 36.34
    }
   ],
   "license": "AI Gateway Leaderboard Data (c) Vercel, CC BY 4.0"
  },
  "ollama": {
-  "cn": 295675799,
-  "us": 467302097,
+  "cn": 295780100,
+  "us": 467306997,
   "cn_top": [
    {
     "name": "deepseek-r1",
@@ -898,7 +898,7 @@
    },
    {
     "name": "qwen3.5",
-    "pulls": 19200000
+    "pulls": 19300000
    },
    {
     "name": "qwen3-coder",
@@ -945,13 +945,13 @@
    },
    {
     "label": "Best AI at end of 2026: Qwen",
-    "p": 0.004,
+    "p": 0.006,
     "ticker": "KXLLM1-26DEC31-ALI",
     "series": "kxllm1"
    },
    {
     "label": "Best AI at end of 2026: Claude",
-    "p": 0.646,
+    "p": 0.6,
     "ticker": "KXLLM1-26DEC31-A",
     "series": "kxllm1"
    }
@@ -1001,10 +1001,6 @@
  "sdk": {
   "cn": [
    {
-    "pkg": "zhipuai",
-    "wk": 29926
-   },
-   {
     "pkg": "zai-sdk",
     "wk": 22177
    }
@@ -1015,8 +1011,8 @@
     "wk": 61373106
    },
    {
-    "pkg": "anthropic",
-    "wk": 29771084
+    "pkg": "google-genai",
+    "wk": 29062671
    }
   ],
   "asof": "2026-09-03"
