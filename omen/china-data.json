@@ -1,5 +1,5 @@
 {
- "updated": "2026-09-03T14:20:46Z",
+ "updated": "2026-09-03T16:58:55Z",
  "snapshot_date": "2026-09-03",
  "artificial_analysis": {
   "cn_best": "GLM-5.2",
@@ -511,7 +511,7 @@
    },
    {
     "org": "nvidia",
-    "dl": 17884697
+    "dl": 18230349
    },
    {
     "org": "openai",
@@ -527,44 +527,44 @@
    }
   ],
   "cn": 290523772,
-  "us": 110321389
+  "us": 110667041
  },
  "openrouter_week": {
   "week": "2026-08-31",
-  "cn_share": 0.5906,
-  "us_share": 0.3185,
-  "spi": 1.854,
-  "total_tokens": 59673152789375
+  "cn_share": 0.5921,
+  "us_share": 0.3172,
+  "spi": 1.867,
+  "total_tokens": 62568212641029
  },
  "vercel_gateway": {
   "asof": "2026-09-03",
-  "cn_share": 65.99,
-  "us_share": 33.97,
-  "spi": 1.943,
+  "cn_share": 64.48,
+  "us_share": 35.47,
+  "spi": 1.818,
   "top_cn": [
    {
     "lab": "deepseek",
-    "share": 43.28
+    "share": 42.28
    },
    {
     "lab": "zai",
-    "share": 7.66
+    "share": 7.61
    },
    {
     "lab": "moonshotai",
-    "share": 6.62
+    "share": 6.33
    },
    {
     "lab": "stepfun",
-    "share": 5.94
+    "share": 5.82
    },
    {
     "lab": "xiaomi",
-    "share": 1.09
+    "share": 1.02
    },
    {
     "lab": "minimax",
-    "share": 0.88
+    "share": 0.89
    }
   ],
   "series": [
@@ -870,15 +870,15 @@
    },
    {
     "d": "2026-09-03",
-    "cn": 65.99,
-    "us": 33.97
+    "cn": 64.48,
+    "us": 35.47
    }
   ],
   "license": "AI Gateway Leaderboard Data (c) Vercel, CC BY 4.0"
  },
  "ollama": {
-  "cn": 295671800,
-  "us": 467197497,
+  "cn": 295675799,
+  "us": 467302097,
   "cn_top": [
    {
     "name": "deepseek-r1",
@@ -939,7 +939,7 @@
    },
    {
     "label": "Best AI at end of 2026: Ernie",
-    "p": 0.003,
+    "p": 0.001,
     "ticker": "KXLLM1-26DEC31-BAID",
     "series": "kxllm1"
    },
@@ -951,7 +951,7 @@
    },
    {
     "label": "Best AI at end of 2026: Claude",
-    "p": 0.65,
+    "p": 0.646,
     "ticker": "KXLLM1-26DEC31-A",
     "series": "kxllm1"
    }
@@ -961,7 +961,7 @@
   "cn": [
    {
     "base": "Qwen/Qwen3-8B",
-    "n": 2035
+    "n": 2036
    },
    {
     "base": "deepseek-ai/DeepSeek-R1",
@@ -994,7 +994,7 @@
     "n": 117
    }
   ],
-  "cn_total": 2418,
+  "cn_total": 2419,
   "us_total": 2528,
   "asof": "2026-09-03"
  },
