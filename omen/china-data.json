@@ -1,6 +1,6 @@
 {
- "updated": "2026-09-02T22:47:50Z",
- "snapshot_date": "2026-09-02",
+ "updated": "2026-09-03T00:00:03Z",
+ "snapshot_date": "2026-09-03",
  "artificial_analysis": {
   "cn_best": "GLM-5.2",
   "cn_score": 51,
@@ -33,7 +33,7 @@
  },
  "apps": {
   "score": 0,
-  "asof": "2026-09-02",
+  "asof": "2026-09-03",
   "source": "app-charts",
   "best": [
    {
@@ -448,7 +448,7 @@
    "zai-org/GLM-OCR"
   ],
   "source": "search",
-  "asof": "2026-09-02",
+  "asof": "2026-09-03",
   "vel": {
    "MiniMax-AI/MiniMax-H3": 112.8,
    "MiniMax-AI/skills": 7.2,
@@ -529,40 +529,40 @@
  },
  "openrouter_week": {
   "week": "2026-08-31",
-  "cn_share": 0.5786,
-  "us_share": 0.3295,
-  "spi": 1.756,
-  "total_tokens": 48271355285522
+  "cn_share": 0.5782,
+  "us_share": 0.3296,
+  "spi": 1.754,
+  "total_tokens": 48950619682258
  },
  "vercel_gateway": {
   "asof": "2026-09-02",
-  "cn_share": 61.76,
-  "us_share": 38.21,
-  "spi": 1.616,
+  "cn_share": 61.13,
+  "us_share": 38.84,
+  "spi": 1.574,
   "top_cn": [
    {
     "lab": "deepseek",
-    "share": 40.44
+    "share": 39.7
    },
    {
     "lab": "zai",
-    "share": 8.15
+    "share": 8.12
    },
    {
     "lab": "stepfun",
-    "share": 6.1
+    "share": 6.06
    },
    {
     "lab": "moonshotai",
-    "share": 4.23
+    "share": 4.44
    },
    {
     "lab": "minimax",
-    "share": 1.33
+    "share": 1.31
    },
    {
     "lab": "xiaomi",
-    "share": 1.1
+    "share": 1.08
    }
   ],
   "series": [
@@ -868,15 +868,15 @@
    },
    {
     "d": "2026-09-02",
-    "cn": 61.76,
-    "us": 38.21
+    "cn": 61.13,
+    "us": 38.84
    }
   ],
   "license": "AI Gateway Leaderboard Data (c) Vercel, CC BY 4.0"
  },
  "ollama": {
-  "cn": 295347000,
-  "us": 466676397,
+  "cn": 295448800,
+  "us": 466677597,
   "cn_top": [
    {
     "name": "deepseek-r1",
@@ -896,7 +896,7 @@
    },
    {
     "name": "qwen3.5",
-    "pulls": 19100000
+    "pulls": 19200000
    },
    {
     "name": "qwen3-coder",
@@ -918,14 +918,14 @@
    }
   ],
   "n_models": 239,
-  "asof": "2026-09-02"
+  "asof": "2026-09-03"
  },
  "kalshi": {
-  "asof": "2026-09-02",
+  "asof": "2026-09-03",
   "markets": [
    {
     "label": "Will a Chinese AI model be #1 this year?",
-    "p": 0.12,
+    "p": 0.11,
     "ticker": "KXBESTLLMCHINA-27",
     "series": "kxbestllmchina"
    },
@@ -949,7 +949,7 @@
    },
    {
     "label": "Best AI at end of 2026: Claude",
-    "p": 0.65,
+    "p": 0.658,
     "ticker": "KXLLM1-26DEC31-A",
     "series": "kxllm1"
    }
@@ -959,7 +959,7 @@
   "cn": [
    {
     "base": "Qwen/Qwen3-8B",
-    "n": 2029
+    "n": 2031
    },
    {
     "base": "deepseek-ai/DeepSeek-R1",
@@ -992,9 +992,9 @@
     "n": 117
    }
   ],
-  "cn_total": 2412,
+  "cn_total": 2414,
   "us_total": 2528,
-  "asof": "2026-09-02"
+  "asof": "2026-09-03"
  },
  "sdk": {
   "cn": [
