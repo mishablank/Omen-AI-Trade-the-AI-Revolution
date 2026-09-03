@@ -1,5 +1,5 @@
 {
- "updated": "2026-09-03T09:36:19Z",
+ "updated": "2026-09-03T14:20:46Z",
  "snapshot_date": "2026-09-03",
  "artificial_analysis": {
   "cn_best": "GLM-5.2",
@@ -531,40 +531,40 @@
  },
  "openrouter_week": {
   "week": "2026-08-31",
-  "cn_share": 0.5883,
-  "us_share": 0.3206,
-  "spi": 1.835,
-  "total_tokens": 56297680140676
+  "cn_share": 0.5906,
+  "us_share": 0.3185,
+  "spi": 1.854,
+  "total_tokens": 59673152789375
  },
  "vercel_gateway": {
   "asof": "2026-09-03",
-  "cn_share": 67.16,
-  "us_share": 32.81,
-  "spi": 2.047,
+  "cn_share": 65.99,
+  "us_share": 33.97,
+  "spi": 1.943,
   "top_cn": [
    {
     "lab": "deepseek",
-    "share": 43.49
+    "share": 43.28
    },
    {
     "lab": "zai",
-    "share": 7.91
+    "share": 7.66
    },
    {
     "lab": "moonshotai",
-    "share": 7.21
+    "share": 6.62
    },
    {
     "lab": "stepfun",
-    "share": 5.92
+    "share": 5.94
    },
    {
     "lab": "xiaomi",
-    "share": 1.25
+    "share": 1.09
    },
    {
     "lab": "minimax",
-    "share": 0.85
+    "share": 0.88
    }
   ],
   "series": [
@@ -870,15 +870,15 @@
    },
    {
     "d": "2026-09-03",
-    "cn": 67.16,
-    "us": 32.81
+    "cn": 65.99,
+    "us": 33.97
    }
   ],
   "license": "AI Gateway Leaderboard Data (c) Vercel, CC BY 4.0"
  },
  "ollama": {
-  "cn": 295564200,
-  "us": 467190697,
+  "cn": 295671800,
+  "us": 467197497,
   "cn_top": [
    {
     "name": "deepseek-r1",
@@ -890,7 +890,7 @@
    },
    {
     "name": "qwen3",
-    "pulls": 36100000
+    "pulls": 36200000
    },
    {
     "name": "qwen2.5-coder",
@@ -920,9 +920,7 @@
    }
   ],
   "n_models": 239,
-  "asof": "2026-09-03",
-  "cn_per_day": 535582,
-  "us_per_day": 534689
+  "asof": "2026-09-03"
  },
  "kalshi": {
   "asof": "2026-09-03",
@@ -941,19 +939,19 @@
    },
    {
     "label": "Best AI at end of 2026: Ernie",
-    "p": 0.002,
+    "p": 0.003,
     "ticker": "KXLLM1-26DEC31-BAID",
     "series": "kxllm1"
    },
    {
     "label": "Best AI at end of 2026: Qwen",
-    "p": 0.009,
+    "p": 0.004,
     "ticker": "KXLLM1-26DEC31-ALI",
     "series": "kxllm1"
    },
    {
     "label": "Best AI at end of 2026: Claude",
-    "p": 0.676,
+    "p": 0.65,
     "ticker": "KXLLM1-26DEC31-A",
     "series": "kxllm1"
    }
@@ -1003,8 +1001,8 @@
  "sdk": {
   "cn": [
    {
-    "pkg": "dashscope",
-    "wk": 474432
+    "pkg": "zhipuai",
+    "wk": 29926
    },
    {
     "pkg": "zai-sdk",
