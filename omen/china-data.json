@@ -1,5 +1,5 @@
 {
- "updated": "2026-09-05T17:49:13Z",
+ "updated": "2026-09-05T19:44:16Z",
  "snapshot_date": "2026-09-05",
  "artificial_analysis": {
   "cn_best": "GLM-5.2",
@@ -531,40 +531,40 @@
  },
  "openrouter_week": {
   "week": "2026-08-31",
-  "cn_share": 0.5955,
-  "us_share": 0.3103,
-  "spi": 1.919,
-  "total_tokens": 97066184265761
+  "cn_share": 0.5941,
+  "us_share": 0.3113,
+  "spi": 1.908,
+  "total_tokens": 98546694025856
  },
  "vercel_gateway": {
   "asof": "2026-09-05",
-  "cn_share": 69.32,
-  "us_share": 30.65,
-  "spi": 2.262,
+  "cn_share": 69.28,
+  "us_share": 30.69,
+  "spi": 2.257,
   "top_cn": [
    {
     "lab": "deepseek",
-    "share": 43.3
+    "share": 43.56
    },
    {
     "lab": "stepfun",
-    "share": 9.18
+    "share": 9.42
    },
    {
     "lab": "zai",
-    "share": 7.91
+    "share": 7.78
    },
    {
     "lab": "moonshotai",
-    "share": 6.74
-   },
-   {
-    "lab": "xiaomi",
-    "share": 0.84
+    "share": 6.33
    },
    {
     "lab": "minimax",
-    "share": 0.79
+    "share": 0.82
+   },
+   {
+    "lab": "xiaomi",
+    "share": 0.81
    }
   ],
   "series": [
@@ -870,15 +870,15 @@
    },
    {
     "d": "2026-09-05",
-    "cn": 69.32,
-    "us": 30.65
+    "cn": 69.28,
+    "us": 30.69
    }
   ],
   "license": "AI Gateway Leaderboard Data (c) Vercel, CC BY 4.0"
  },
  "ollama": {
-  "cn": 297033400,
-  "us": 468077097,
+  "cn": 297035300,
+  "us": 468079097,
   "cn_top": [
    {
     "name": "deepseek-r1",
@@ -927,7 +927,7 @@
   "markets": [
    {
     "label": "Will a Chinese AI model be #1 this year?",
-    "p": 0.08,
+    "p": 0.1,
     "ticker": "KXBESTLLMCHINA-27",
     "series": "kxbestllmchina"
    },
@@ -945,13 +945,13 @@
    },
    {
     "label": "Best AI at end of 2026: Qwen",
-    "p": 0.005,
+    "p": 0.003,
     "ticker": "KXLLM1-26DEC31-ALI",
     "series": "kxllm1"
    },
    {
     "label": "Best AI at end of 2026: Claude",
-    "p": 0.619,
+    "p": 0.631,
     "ticker": "KXLLM1-26DEC31-A",
     "series": "kxllm1"
    }
@@ -1001,11 +1001,19 @@
  "sdk": {
   "cn": [
    {
+    "pkg": "zhipuai",
+    "wk": 28582
+   },
+   {
     "pkg": "zai-sdk",
     "wk": 20493
    }
   ],
   "us": [
+   {
+    "pkg": "openai",
+    "wk": 61870394
+   },
    {
     "pkg": "google-genai",
     "wk": 29804557
