@@ -1,6 +1,6 @@
 {
- "updated": "2026-09-04T23:54:20Z",
- "snapshot_date": "2026-09-04",
+ "updated": "2026-09-05T04:06:42Z",
+ "snapshot_date": "2026-09-05",
  "artificial_analysis": {
   "cn_best": "GLM-5.2",
   "cn_score": 51,
@@ -9,7 +9,7 @@
   "asof": "2026-07-12"
  },
  "search_consumer": {
-  "western_share_pct": 1.8,
+  "western_share_pct": 2.1,
   "asof": "2026-09",
   "source": "google-trends",
   "terms_us": [
@@ -29,16 +29,16 @@
    "Seed 1.6",
    "Seed 2.0"
   ],
-  "note": "Google Trends US, 90-day avg: 8 Chinese AI terms = 1.8% of AI-assistant search interest vs ChatGPT+Gemini+Claude+Llama AI+Meta AI."
+  "note": "Google Trends US, 90-day avg: 8 Chinese AI terms = 2.1% of AI-assistant search interest vs ChatGPT+Gemini+Claude+Llama AI+Meta AI."
  },
  "apps": {
   "score": 0,
-  "asof": "2026-09-04",
+  "asof": "2026-09-05",
   "source": "app-charts",
   "best": [
    {
     "label": "Qwen",
-    "rank": 103,
+    "rank": 140,
     "store": "android",
     "country": "br"
    }
@@ -55,7 +55,7 @@
    "au",
    "kr"
   ],
-  "detail": "no Chinese AI app in any iOS or Play top-100 (nearest: Qwen #103 (BR Play)); basket-mean Western top-100 presence 0/100 across 10 markets",
+  "detail": "no Chinese AI app in any iOS or Play top-100 (nearest: Qwen #140 (BR Play)); basket-mean Western top-100 presence 0/100 across 10 markets",
   "note": "iOS Apple RSS top-100 + Android Play top-200 across 10 markets; presence = basket-mean of best top-100 chart rank (DeepSeek/Qwen/Doubao/Kimi/MiniMax), #1=100 #100=1; ranks past top-100 score 0."
  },
  "lmarena": {
@@ -448,7 +448,7 @@
    "zai-org/GLM-OCR"
   ],
   "source": "search",
-  "asof": "2026-09-04",
+  "asof": "2026-09-05",
   "vel": {
    "MiniMax-AI/MiniMax-H3": 92.5,
    "MiniMax-AI/skills": 5.0,
@@ -531,48 +531,43 @@
  },
  "openrouter_week": {
   "week": "2026-08-31",
-  "cn_share": 0.5967,
-  "us_share": 0.3106,
-  "spi": 1.921,
-  "total_tokens": 85565459722583
+  "cn_share": 0.5977,
+  "us_share": 0.309,
+  "spi": 1.935,
+  "total_tokens": 87959376710418
  },
  "vercel_gateway": {
-  "asof": "2026-09-04",
-  "cn_share": 59.91,
-  "us_share": 40.06,
-  "spi": 1.496,
+  "asof": "2026-09-05",
+  "cn_share": 63.55,
+  "us_share": 36.43,
+  "spi": 1.744,
   "top_cn": [
    {
     "lab": "deepseek",
-    "share": 37.63
+    "share": 40.91
    },
    {
     "lab": "zai",
-    "share": 7.62
+    "share": 7.38
    },
    {
     "lab": "stepfun",
-    "share": 6.63
+    "share": 7.34
    },
    {
     "lab": "moonshotai",
-    "share": 4.91
-   },
-   {
-    "lab": "alibaba",
-    "share": 1.36
+    "share": 5.57
    },
    {
     "lab": "minimax",
-    "share": 0.86
+    "share": 0.78
+   },
+   {
+    "lab": "xiaomi",
+    "share": 0.77
    }
   ],
   "series": [
-   {
-    "d": "2026-07-06",
-    "cn": 44.48,
-    "us": 55.41
-   },
    {
     "d": "2026-07-07",
     "cn": 46.72,
@@ -870,15 +865,20 @@
    },
    {
     "d": "2026-09-04",
-    "cn": 59.91,
-    "us": 40.06
+    "cn": 59.9,
+    "us": 40.07
+   },
+   {
+    "d": "2026-09-05",
+    "cn": 63.55,
+    "us": 36.43
    }
   ],
   "license": "AI Gateway Leaderboard Data (c) Vercel, CC BY 4.0"
  },
  "ollama": {
-  "cn": 296616200,
-  "us": 467850997,
+  "cn": 296718700,
+  "us": 468056497,
   "cn_top": [
    {
     "name": "deepseek-r1",
@@ -908,11 +908,11 @@
   "us_top": [
    {
     "name": "llama3.1",
-    "pulls": 119100000
+    "pulls": 119200000
    },
    {
     "name": "llama3.2",
-    "pulls": 82300000
+    "pulls": 82400000
    },
    {
     "name": "gemma3",
@@ -920,10 +920,10 @@
    }
   ],
   "n_models": 239,
-  "asof": "2026-09-04"
+  "asof": "2026-09-05"
  },
  "kalshi": {
-  "asof": "2026-09-04",
+  "asof": "2026-09-05",
   "markets": [
    {
     "label": "Will a Chinese AI model be #1 this year?",
@@ -945,7 +945,7 @@
    },
    {
     "label": "Best AI at end of 2026: Qwen",
-    "p": 0.002,
+    "p": 0.003,
     "ticker": "KXLLM1-26DEC31-ALI",
     "series": "kxllm1"
    },
@@ -996,7 +996,7 @@
   ],
   "cn_total": 2431,
   "us_total": 2530,
-  "asof": "2026-09-04"
+  "asof": "2026-09-05"
  },
  "sdk": {
   "cn": [
