@@ -1,5 +1,5 @@
 {
- "updated": "2026-09-06T21:51:52Z",
+ "updated": "2026-09-06T23:43:20Z",
  "snapshot_date": "2026-09-06",
  "artificial_analysis": {
   "cn_best": "GLM-5.2",
@@ -9,7 +9,7 @@
   "asof": "2026-07-12"
  },
  "search_consumer": {
-  "western_share_pct": 3.1,
+  "western_share_pct": 3.2,
   "asof": "2026-09",
   "source": "google-trends",
   "terms_us": [
@@ -29,7 +29,7 @@
    "Seed 1.6",
    "Seed 2.0"
   ],
-  "note": "Google Trends US, 90-day avg: 8 Chinese AI terms = 3.1% of AI-assistant search interest vs ChatGPT+Gemini+Claude+Llama AI+Meta AI."
+  "note": "Google Trends US, 90-day avg: 8 Chinese AI terms = 3.2% of AI-assistant search interest vs ChatGPT+Gemini+Claude+Llama AI+Meta AI."
  },
  "apps": {
   "score": 0,
@@ -531,10 +531,10 @@
  },
  "openrouter_week": {
   "week": "2026-08-31",
-  "cn_share": 0.5859,
-  "us_share": 0.3169,
-  "spi": 1.849,
-  "total_tokens": 113858367536706
+  "cn_share": 0.5842,
+  "us_share": 0.318,
+  "spi": 1.837,
+  "total_tokens": 115142817599006
  },
  "vercel_gateway": {
   "asof": "2026-09-06",
@@ -877,8 +877,8 @@
   "license": "AI Gateway Leaderboard Data (c) Vercel, CC BY 4.0"
  },
  "ollama": {
-  "cn": 297559100,
-  "us": 468615797,
+  "cn": 297660400,
+  "us": 468618997,
   "cn_top": [
    {
     "name": "deepseek-r1",
@@ -898,7 +898,7 @@
    },
    {
     "name": "qwen3.5",
-    "pulls": 19600000
+    "pulls": 19700000
    },
    {
     "name": "qwen3-coder",
@@ -951,7 +951,7 @@
    },
    {
     "label": "Best AI at end of 2026: Claude",
-    "p": 0.61,
+    "p": 0.618,
     "ticker": "KXLLM1-26DEC31-A",
     "series": "kxllm1"
    }
@@ -961,7 +961,7 @@
   "cn": [
    {
     "base": "Qwen/Qwen3-8B",
-    "n": 2059
+    "n": 2061
    },
    {
     "base": "deepseek-ai/DeepSeek-R1",
@@ -987,15 +987,15 @@
    },
    {
     "base": "openai/gpt-oss-20b",
-    "n": 546
+    "n": 547
    },
    {
     "base": "microsoft/phi-4",
     "n": 117
    }
   ],
-  "cn_total": 2442,
-  "us_total": 2533,
+  "cn_total": 2444,
+  "us_total": 2534,
   "asof": "2026-09-06"
  },
  "sdk": {
