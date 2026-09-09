@@ -1,5 +1,5 @@
 {
- "updated": "2026-09-09T17:05:21Z",
+ "updated": "2026-09-09T19:58:42Z",
  "snapshot_date": "2026-09-09",
  "artificial_analysis": {
   "cn_best": "GLM-5.2",
@@ -531,40 +531,40 @@
  },
  "openrouter_week": {
   "week": "2026-09-07",
-  "cn_share": 0.5942,
-  "us_share": 0.2995,
-  "spi": 1.984,
-  "total_tokens": 51305105879425
+  "cn_share": 0.5909,
+  "us_share": 0.3009,
+  "spi": 1.964,
+  "total_tokens": 53620030940888
  },
  "vercel_gateway": {
   "asof": "2026-09-09",
-  "cn_share": 59.58,
-  "us_share": 40.39,
-  "spi": 1.475,
+  "cn_share": 58.12,
+  "us_share": 41.85,
+  "spi": 1.389,
   "top_cn": [
    {
     "lab": "deepseek",
-    "share": 38.49
+    "share": 37.35
    },
    {
     "lab": "zai",
-    "share": 8.71
+    "share": 8.62
    },
    {
     "lab": "stepfun",
-    "share": 8.17
+    "share": 7.87
    },
    {
     "lab": "moonshotai",
-    "share": 1.44
+    "share": 1.58
    },
    {
     "lab": "xiaomi",
-    "share": 1.19
+    "share": 1.13
    },
    {
     "lab": "alibaba",
-    "share": 0.83
+    "share": 0.78
    }
   ],
   "series": [
@@ -870,15 +870,15 @@
    },
    {
     "d": "2026-09-09",
-    "cn": 59.58,
-    "us": 40.39
+    "cn": 58.12,
+    "us": 41.85
    }
   ],
   "license": "AI Gateway Leaderboard Data (c) Vercel, CC BY 4.0"
  },
  "ollama": {
-  "cn": 299230100,
-  "us": 469911698,
+  "cn": 299332400,
+  "us": 469914698,
   "cn_top": [
    {
     "name": "deepseek-r1",
@@ -898,7 +898,7 @@
    },
    {
     "name": "qwen3.5",
-    "pulls": 19900000
+    "pulls": 20000000
    },
    {
     "name": "qwen3-coder",
@@ -951,7 +951,7 @@
    },
    {
     "label": "Best AI at end of 2026: Claude",
-    "p": 0.605,
+    "p": 0.595,
     "ticker": "KXLLM1-26DEC31-A",
     "series": "kxllm1"
    }
@@ -1001,15 +1001,19 @@
  "sdk": {
   "cn": [
    {
-    "pkg": "dashscope",
-    "wk": 498786
-   },
-   {
     "pkg": "zhipuai",
     "wk": 26283
+   },
+   {
+    "pkg": "zai-sdk",
+    "wk": 20086
    }
   ],
   "us": [
+   {
+    "pkg": "openai",
+    "wk": 63724537
+   },
    {
     "pkg": "anthropic",
     "wk": 31357286
