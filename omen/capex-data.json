@@ -1,5 +1,5 @@
 {
- "updated": "2026-09-10T16:57:46Z",
+ "updated": "2026-09-10T19:32:25Z",
  "tsmc": {
   "asof": "2026-07",
   "rev_ntd_b": 467.6,
@@ -26,13 +26,17 @@
   }
  },
  "ramp": {
-  "asof": "2026-08",
-  "adoption_pct": 56.1,
-  "mom_pp": 0.4,
-  "yoy_pp": 11.2,
-  "btos_pct": 22.1,
-  "btos_asof": "2026-08",
+  "asof": "2026-07",
+  "adoption_pct": 55.7,
+  "mom_pp": 0.8,
+  "yoy_pp": 11.7,
+  "btos_pct": 21.6,
+  "btos_asof": "2026-07",
   "series": [
+   [
+    "2024-08",
+    34.2
+   ],
    [
     "2024-09",
     35.2
@@ -47,7 +51,7 @@
    ],
    [
     "2024-12",
-    36.7
+    36.6
    ],
    [
     "2025-01",
@@ -124,10 +128,6 @@
    [
     "2026-07",
     55.7
-   ],
-   [
-    "2026-08",
-    56.1
    ]
   ]
  },
@@ -160,8 +160,8 @@
    "@google/gemini-cli": 237533
   },
   "pypi": {
-   "claude-agent-sdk": 6850682,
-   "openai-agents": 2647950
+   "claude-agent-sdk": null,
+   "openai-agents": null
   },
   "npm_total_wk": 21947940,
   "series": [
