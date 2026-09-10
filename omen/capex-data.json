@@ -1,5 +1,5 @@
 {
- "updated": "2026-09-10T11:07:12Z",
+ "updated": "2026-09-10T16:19:14Z",
  "tsmc": {
   "asof": "2026-07",
   "rev_ntd_b": 467.6,
@@ -26,17 +26,13 @@
   }
  },
  "ramp": {
-  "asof": "2026-07",
-  "adoption_pct": 55.7,
-  "mom_pp": 0.8,
-  "yoy_pp": 11.7,
-  "btos_pct": 21.6,
-  "btos_asof": "2026-07",
+  "asof": "2026-08",
+  "adoption_pct": 56.1,
+  "mom_pp": 0.4,
+  "yoy_pp": 11.2,
+  "btos_pct": 22.1,
+  "btos_asof": "2026-08",
   "series": [
-   [
-    "2024-08",
-    34.2
-   ],
    [
     "2024-09",
     35.2
@@ -51,7 +47,7 @@
    ],
    [
     "2024-12",
-    36.6
+    36.7
    ],
    [
     "2025-01",
@@ -128,6 +124,10 @@
    [
     "2026-07",
     55.7
+   ],
+   [
+    "2026-08",
+    56.1
    ]
   ]
  },
@@ -155,15 +155,15 @@
  "agents": {
   "asof": "2026-09-10",
   "npm": {
-   "@anthropic-ai/claude-code": 14825815,
-   "@openai/codex": 21092836,
-   "@google/gemini-cli": 271260
+   "@anthropic-ai/claude-code": 8554147,
+   "@openai/codex": 13156260,
+   "@google/gemini-cli": 237533
   },
   "pypi": {
-   "claude-agent-sdk": null,
-   "openai-agents": 2647950
+   "claude-agent-sdk": 6850682,
+   "openai-agents": null
   },
-  "npm_total_wk": 36189911,
+  "npm_total_wk": 21947940,
   "series": [
    [
     "2026-08-16",
@@ -267,7 +267,7 @@
    ],
    [
     "2026-09-10",
-    36189911
+    21947940
    ]
   ]
  },
