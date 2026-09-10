@@ -1,6 +1,6 @@
 {
- "updated": "2026-09-09T22:27:56Z",
- "snapshot_date": "2026-09-09",
+ "updated": "2026-09-10T00:02:15Z",
+ "snapshot_date": "2026-09-10",
  "artificial_analysis": {
   "cn_best": "GLM-5.2",
   "cn_score": 51,
@@ -33,7 +33,7 @@
  },
  "apps": {
   "score": 0,
-  "asof": "2026-09-09",
+  "asof": "2026-09-10",
   "source": "app-charts",
   "best": [],
   "markets": [
@@ -441,7 +441,7 @@
    "zai-org/GLM-OCR"
   ],
   "source": "search",
-  "asof": "2026-09-09",
+  "asof": "2026-09-10",
   "vel": {
    "MiniMax-AI/MiniMax-H3": 65.1,
    "MiniMax-AI/skills": 4.3,
@@ -524,48 +524,43 @@
  },
  "openrouter_week": {
   "week": "2026-09-07",
-  "cn_share": 0.5893,
-  "us_share": 0.3018,
-  "spi": 1.953,
-  "total_tokens": 54555794892519
+  "cn_share": 0.5871,
+  "us_share": 0.3025,
+  "spi": 1.941,
+  "total_tokens": 56041823313383
  },
  "vercel_gateway": {
-  "asof": "2026-09-09",
-  "cn_share": 57.19,
-  "us_share": 42.77,
-  "spi": 1.337,
+  "asof": "2026-09-10",
+  "cn_share": 46.01,
+  "us_share": 53.96,
+  "spi": 0.853,
   "top_cn": [
    {
     "lab": "deepseek",
-    "share": 36.44
+    "share": 27.46
    },
    {
     "lab": "zai",
-    "share": 8.63
+    "share": 9.35
    },
    {
     "lab": "stepfun",
-    "share": 7.68
+    "share": 5.74
    },
    {
     "lab": "moonshotai",
-    "share": 1.79
+    "share": 1.84
+   },
+   {
+    "lab": "minimax",
+    "share": 0.67
    },
    {
     "lab": "xiaomi",
-    "share": 1.11
-   },
-   {
-    "lab": "alibaba",
-    "share": 0.74
+    "share": 0.58
    }
   ],
   "series": [
-   {
-    "d": "2026-07-11",
-    "cn": 51.25,
-    "us": 48.66
-   },
    {
     "d": "2026-07-12",
     "cn": 50.3,
@@ -863,15 +858,20 @@
    },
    {
     "d": "2026-09-09",
-    "cn": 57.19,
-    "us": 42.77
+    "cn": 56.56,
+    "us": 43.4
+   },
+   {
+    "d": "2026-09-10",
+    "cn": 46.01,
+    "us": 53.96
    }
   ],
   "license": "AI Gateway Leaderboard Data (c) Vercel, CC BY 4.0"
  },
  "ollama": {
-  "cn": 299434300,
-  "us": 470018698,
+  "cn": 299435600,
+  "us": 470020398,
   "cn_top": [
    {
     "name": "deepseek-r1",
@@ -913,10 +913,10 @@
    }
   ],
   "n_models": 239,
-  "asof": "2026-09-09"
+  "asof": "2026-09-10"
  },
  "kalshi": {
-  "asof": "2026-09-09",
+  "asof": "2026-09-10",
   "markets": [
    {
     "label": "Will a Chinese AI model be #1 this year?",
@@ -938,7 +938,7 @@
    },
    {
     "label": "Best AI at end of 2026: Qwen",
-    "p": 0.007,
+    "p": 0.01,
     "ticker": "KXLLM1-26DEC31-ALI",
     "series": "kxllm1"
    },
@@ -989,7 +989,7 @@
   ],
   "cn_total": 2455,
   "us_total": 2545,
-  "asof": "2026-09-09"
+  "asof": "2026-09-10"
  },
  "sdk": {
   "cn": [
