@@ -1,33 +1,8 @@
 {
- "updated": "2026-09-11T19:32:58Z",
+ "updated": "2026-09-11T22:21:19Z",
  "source": "google-play-scraper",
  "store": "android",
  "depth": 200,
  "countries_ok": 10,
- "hits": [
-  {
-   "label": "DeepSeek",
-   "store": "android",
-   "country": "de",
-   "rank": 189,
-   "appId": "com.deepseek.chat",
-   "title": "DeepSeek - AI Assistant"
-  },
-  {
-   "label": "MiniMax",
-   "store": "android",
-   "country": "br",
-   "rank": 127,
-   "appId": "ai.hailuo.video",
-   "title": "Hailuo AI: Image&Video Maker"
-  },
-  {
-   "label": "DeepSeek",
-   "store": "android",
-   "country": "ca",
-   "rank": 186,
-   "appId": "com.deepseek.chat",
-   "title": "DeepSeek - AI Assistant"
-  }
- ]
+ "hits": []
 }

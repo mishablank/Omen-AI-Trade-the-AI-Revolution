@@ -1,20 +1,20 @@
 {
- "updated": "2026-09-11T19:34:38Z",
+ "updated": "2026-09-11T22:22:46Z",
  "tsmc": {
-  "asof": "2026-07",
-  "rev_ntd_b": 467.6,
-  "mom_pct": 5.6,
-  "yoy_pct": 44.7,
-  "ytd_yoy_pct": 37.0,
-  "note": "-"
+  "asof": "2026-08",
+  "rev_ntd_b": 514.8,
+  "mom_pct": 10.1,
+  "yoy_pct": 53.3,
+  "ytd_yoy_pct": 39.3,
+  "note": "因先進製程產品需求增加所致。"
  },
  "issuance": {
   "days": 90,
   "cur": {
    "from": "2026-06-14",
    "to": "2026-09-11",
-   "debt": 10,
-   "s1_ai": 288,
+   "debt": 11,
+   "s1_ai": 295,
    "formd_ai": 6
   },
   "prev": {
@@ -161,7 +161,7 @@
   },
   "pypi": {
    "claude-agent-sdk": null,
-   "openai-agents": null
+   "openai-agents": 2685453
   },
   "npm_total_wk": 29073390,
   "series": [
