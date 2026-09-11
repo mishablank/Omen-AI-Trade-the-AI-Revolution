@@ -1,5 +1,5 @@
 {
- "updated": "2026-09-11T14:14:40Z",
+ "updated": "2026-09-11T16:57:38Z",
  "snapshot_date": "2026-09-11",
  "artificial_analysis": {
   "cn_best": "GLM-5.2",
@@ -32,13 +32,25 @@
   "note": "Google Trends US, 90-day avg: 8 Chinese AI terms = 3.0% of AI-assistant search interest vs ChatGPT+Gemini+Claude+Llama AI+Meta AI."
  },
  "apps": {
-  "score": 0,
+  "score": 11,
   "asof": "2026-09-11",
   "source": "app-charts",
   "best": [
    {
+    "label": "Qwen",
+    "rank": 60,
+    "store": "android",
+    "country": "br"
+   },
+   {
+    "label": "DeepSeek",
+    "rank": 86,
+    "store": "android",
+    "country": "ca"
+   },
+   {
     "label": "MiniMax",
-    "rank": 142,
+    "rank": 160,
     "store": "android",
     "country": "br"
    }
@@ -55,7 +67,7 @@
    "au",
    "kr"
   ],
-  "detail": "no Chinese AI app in any iOS or Play top-100 (nearest: MiniMax #142 (BR Play)); basket-mean Western top-100 presence 0/100 across 10 markets",
+  "detail": "Qwen #60 (BR Play); DeepSeek #86 (CA Play); basket-mean Western top-100 presence 11/100 across 10 markets",
   "note": "iOS Apple RSS top-100 + Android Play top-200 across 10 markets; presence = basket-mean of best top-100 chart rank (DeepSeek/Qwen/Doubao/Kimi/MiniMax), #1=100 #100=1; ranks past top-100 score 0."
  },
  "lmarena": {
@@ -531,40 +543,40 @@
  },
  "openrouter_week": {
   "week": "2026-09-07",
-  "cn_share": 0.5853,
-  "us_share": 0.3036,
-  "spi": 1.928,
-  "total_tokens": 85518185749586
+  "cn_share": 0.5863,
+  "us_share": 0.3027,
+  "spi": 1.937,
+  "total_tokens": 87357377846912
  },
  "vercel_gateway": {
   "asof": "2026-09-11",
-  "cn_share": 76.12,
-  "us_share": 23.83,
-  "spi": 3.194,
+  "cn_share": 75.41,
+  "us_share": 24.55,
+  "spi": 3.072,
   "top_cn": [
    {
     "lab": "deepseek",
-    "share": 62.84
+    "share": 62.24
    },
    {
     "lab": "zai",
-    "share": 4.78
+    "share": 4.76
    },
    {
     "lab": "stepfun",
-    "share": 4.19
+    "share": 4.07
    },
    {
     "lab": "moonshotai",
-    "share": 2.6
+    "share": 2.66
    },
    {
     "lab": "xiaomi",
-    "share": 0.67
+    "share": 0.62
    },
    {
     "lab": "minimax",
-    "share": 0.39
+    "share": 0.42
    }
   ],
   "series": [
@@ -870,15 +882,15 @@
    },
    {
     "d": "2026-09-11",
-    "cn": 76.12,
-    "us": 23.83
+    "cn": 75.41,
+    "us": 24.55
    }
   ],
   "license": "AI Gateway Leaderboard Data (c) Vercel, CC BY 4.0"
  },
  "ollama": {
-  "cn": 300171447,
-  "us": 470966198,
+  "cn": 300175046,
+  "us": 471071397,
   "cn_top": [
    {
     "name": "deepseek-r1",
@@ -951,7 +963,7 @@
    },
    {
     "label": "Best AI at end of 2026: Claude",
-    "p": 0.66,
+    "p": 0.634,
     "ticker": "KXLLM1-26DEC31-A",
     "series": "kxllm1"
    }
@@ -1001,14 +1013,18 @@
  "sdk": {
   "cn": [
    {
-    "pkg": "zhipuai",
-    "wk": 27876
+    "pkg": "dashscope",
+    "wk": 634656
    }
   ],
   "us": [
    {
-    "pkg": "openai",
-    "wk": 65532521
+    "pkg": "anthropic",
+    "wk": 31929128
+   },
+   {
+    "pkg": "google-genai",
+    "wk": 31491219
    }
   ],
   "asof": "2026-09-11"
@@ -1022,7 +1038,7 @@
   "us_n": 118,
   "cn_n": 175,
   "n": 460,
-  "asof": "2026-09-05",
+  "asof": "2026-09-11",
   "attribution": "Epoch AI (epoch.ai/data), CC BY 4.0"
  },
  "epoch_chips": {
@@ -1084,7 +1100,7 @@
     "h100e": 8277
    }
   ],
-  "asof": "2026-09-05",
+  "asof": "2026-09-11",
   "attribution": "Epoch AI (epoch.ai/data), CC BY 4.0"
  },
  "epoch_models": {
@@ -1146,7 +1162,7 @@
    },
    {
     "q": "2025Q4",
-    "us": 23,
+    "us": 24,
     "cn": 8
    },
    {
@@ -1156,14 +1172,14 @@
    },
    {
     "q": "2026Q2",
-    "us": 17,
-    "cn": 9
+    "us": 20,
+    "cn": 10
    }
   ],
-  "us_12mo": 58,
-  "cn_12mo": 36,
+  "us_12mo": 66,
+  "cn_12mo": 37,
   "latest_q": "2026Q2",
-  "asof": "2026-09-05",
+  "asof": "2026-09-11",
   "attribution": "Epoch AI (epoch.ai/data), CC BY 4.0"
  }
 }
