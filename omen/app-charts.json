@@ -1,5 +1,5 @@
 {
- "updated": "2026-09-11T16:57:38Z",
+ "updated": "2026-09-11T19:32:58Z",
  "source": "google-play-scraper",
  "store": "android",
  "depth": 200,
@@ -8,40 +8,16 @@
   {
    "label": "DeepSeek",
    "store": "android",
-   "country": "us",
-   "rank": 169,
-   "appId": "com.deepseek.chat",
-   "title": "DeepSeek - AI Assistant"
-  },
-  {
-   "label": "DeepSeek",
-   "store": "android",
    "country": "de",
-   "rank": 99,
+   "rank": 189,
    "appId": "com.deepseek.chat",
    "title": "DeepSeek - AI Assistant"
-  },
-  {
-   "label": "DeepSeek",
-   "store": "android",
-   "country": "fr",
-   "rank": 193,
-   "appId": "com.deepseek.chat",
-   "title": "DeepSeek - AI Assistant"
-  },
-  {
-   "label": "Qwen",
-   "store": "android",
-   "country": "br",
-   "rank": 60,
-   "appId": "com.tongyi.intl",
-   "title": "Qwen - Alibaba AI Assistant"
   },
   {
    "label": "MiniMax",
    "store": "android",
    "country": "br",
-   "rank": 160,
+   "rank": 127,
    "appId": "ai.hailuo.video",
    "title": "Hailuo AI: Image&Video Maker"
   },
@@ -49,15 +25,7 @@
    "label": "DeepSeek",
    "store": "android",
    "country": "ca",
-   "rank": 86,
-   "appId": "com.deepseek.chat",
-   "title": "DeepSeek - AI Assistant"
-  },
-  {
-   "label": "DeepSeek",
-   "store": "android",
-   "country": "au",
-   "rank": 154,
+   "rank": 186,
    "appId": "com.deepseek.chat",
    "title": "DeepSeek - AI Assistant"
   }
