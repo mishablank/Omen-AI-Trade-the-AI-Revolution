@@ -196,8 +196,11 @@ survey (see `docs/updates/UPDATES-2026-08-06-supply-side.md` for the first five)
       the existing `arena()` parser pattern.
 - [ ] Store per modality: best CN model + rank + score, Elo gap to the leader, CN count in
       the top 10. Reuse `arena_summary()` — it is already org-driven, not model-driven.
-- [ ] Optionally join $/min or $/1k-images from Artificial Analysis' server-rendered media
-      leaderboards for a media price-gap stat; label the source and keep it batch.
+- [ ] Join $/min or $/1k-images from Artificial Analysis' media endpoints rather than
+      scraping: the Data API covers the media arenas
+      (`/api/v2/media/text-to-video/models`, `/api/v2/media/text-to-image/models` and the
+      image-to-video / image-editing / speech siblings), so this rides the same key as the
+      text pull. Label the source and keep it batch.
 - [ ] Render as one "Media arenas" panel next to Leaderboard proximity, one row per
       modality; note in-panel that Elo scales are not comparable across sites or boards.
 - [ ] Decide index treatment explicitly: either keep it context-only (like the supply-side
@@ -226,9 +229,12 @@ substitution money moves first. Remaining gap #5 of 10 from the Aug-2026 survey.
       as the text family.
 - [ ] Store best CN rank/score and gap-to-leader per board; surface as extra stats on the
       Leaderboard-proximity card (or a small sibling card if it crowds the statrow).
-- [ ] Check whether the AA free Data API exposes the Coding Agent Index alongside the
-      intelligence index; if yes, add a coding cut to the `aa_frontier` value stats — if
-      not, skip rather than scrape a JS-only page.
+- [ ] Answered (Sep 2026): it does. The models payload's `evaluations` object carries
+      `artificial_analysis_coding_index` and `artificial_analysis_agentic_index` beside
+      `artificial_analysis_intelligence_index`, plus component benchmarks
+      (`terminalbench_hard`, `scicode`, `tau2_telecom`). So add the coding cut to the
+      `aa_frontier` value stats from the call the updater already makes – no second
+      request, no scrape. Blocked on the key below.
 - [ ] Note in the caveats that agentic boards are young and their scoring (%-success, not
       Elo) is not comparable to the arena numbers beside them.
 
@@ -318,3 +324,110 @@ pairing this monitor exists to show. Remaining gap #10 of 10 from the Aug-2026 s
       label.
 - [ ] Caveats: quarterly/semiannual cadence, methodology churn between editions, and no
       index weight — context only.
+
+## Artificial Analysis – the Data API is written but was never connected
+
+**Status:** Open
+**Component:** `omen/update-china-data.py`, `.github/workflows/refresh.yml`, repo secrets
+**Priority:** High
+
+### Problem
+
+`artificial_analysis()` returns `None` on its first line unless `ARTIFICIAL_ANALYSIS_API_KEY`
+is set, and it never has been: the repo carries exactly two secrets, `CLOUDFLARE_API_TOKEN`
+and `CLOUDFLARE_ACCOUNT_ID`. The integration shipped in the 2026-07-20 update
+(`docs/updates/UPDATES-2026-07-20.md` still ends with the "add it as a repo secret to go
+live" instruction) and the step was wired into `refresh.yml`, but the key was never created,
+so the API path has not run once. Two separate things are broken by it, and only one is
+visible as a fallback:
+
+- `china-data.json.artificial_analysis` is still the `MANUAL` literal – GLM-5.2 at 51 vs
+  Claude Fable 5 at 60, `asof` 2026-07-12. The leaderboard panel's "Artificial Analysis
+  index" stat therefore shows a hand-typed figure that has not moved in two months, next to
+  a source note promising it is "live via its free Data API when the updater has a key".
+  Technically true, and misleading in practice.
+- `aa_frontier` is absent from `china-data.json` entirely. It has no `MANUAL` fallback by
+  design, so the whole frontier block – the monthly CN/US index series, `gap_points`, the
+  Epoch-style `lag_months`, and the near-frontier `value` price ratio – has never rendered.
+  `aa_points()`, `aa_value()` and `aa_frontier()` and their unit tests in
+  `test_update_china_data.py` are dead code against the live site, and the panel they feed
+  (`china-ai-monitor.html:1303`) is the supply-side survey's headline gap #1.
+
+Two facts in the code comments have also drifted. The docstring claims a free tier of
+"1,000 req/day"; the published free tier is 100 requests per 24 hours as of Sep 2026 –
+still ample for one daily call, but wrong as written. And `AA_URL` points at
+`/api/v2/data/llms/models` while the current API reference documents `/api/v2/language/models`.
+That may be an alias rather than a break – it cannot be settled without a key, because AA
+checks auth before routing and returns `401 Invalid API key` for every path, real or invented.
+
+### Acceptance Criteria
+
+- [ ] Create an Artificial Analysis Insights Platform account, generate a key, and add
+      `ARTIFICIAL_ANALYSIS_API_KEY` as a repo secret. No code change is needed to go live –
+      `refresh.yml` already injects it, on the China step only.
+- [ ] With the key in hand, confirm whether `AA_URL` still resolves or has moved to
+      `/api/v2/language/models`, and pin whichever answers. Assert the fields the code
+      actually reads (`model_creator.name`, `evaluations.artificial_analysis_intelligence_index`,
+      `release_date`, `pricing.price_1m_blended_3_to_1`) rather than just a 200.
+- [ ] Settle redistribution before the first public render. The free tier is documented as
+      attribution-required and internal-use, and the pricing page says "For data
+      redistribution or external use, contact us" – a public dashboard is arguably external
+      use. The site already credits and links AA, which covers attribution but not
+      redistribution. Get it in writing, or keep the panel to derived statistics (gap, lag,
+      ratio) rather than republishing AA's scores as a table.
+- [ ] Fix the `1,000 req/day` comment; one daily run is one request, and the ceiling is 100.
+- [ ] Decide `MANUAL["artificial_analysis"]`'s fate once the feed is live. `pick_aa` keeps it
+      as a last-resort fallback, but a dated 2026-07 literal silently standing in for a live
+      feed is exactly the drift `test_docs_truth.py` and `test_documented_secrets.py` exist to
+      catch. Either date it in the page label so staleness is visible, or drop it and let the
+      row go blank.
+- [ ] Verify `aa_frontier` renders end to end on a real payload – series, gap, lag and value
+      ratio – not merely that the JSON key appeared.
+- [ ] Note the prerequisite: `refresh.yml` has failed every run since 2026-09-11 at "Upload
+      data to R2" (`10042: Please enable R2 through the Cloudflare Dashboard`), and the
+      commit step runs after it under `bash -e`, so no refreshed data has landed in nine
+      days. Adding the key changes nothing on the live site until that is fixed.
+
+## AI CapEx – token-price deflation from the AA Data API (thesis #1)
+
+**Status:** Open
+**Component:** `omen/update-capex-data.py`, `omen/ai-capex.html`, `omen/update-china-data.py`
+**Priority:** Medium
+
+### Problem
+
+Row 1 of `ai-capex-theses.md` – token deflation against fixed debt, the duration-mismatch
+argument – is the Kedrosky thesis with the cleanest free source ("OpenRouter API pricing
+history; Artificial Analysis") and no implementation. `capex-data.json` carries `tsmc`,
+`issuance`, `ramp`, `aei`, `eia`, `capex_gdp` and `agents`, and nothing at all about the
+price of a unit of intelligence. The tape can show hyperscalers levering up and cannot show
+the revenue line per token collapsing underneath the debt, which is the whole claim.
+
+The machinery already exists one file over, written for a different question. `aa_points()`
+in `update-china-data.py` yields `(side, month, index, blended $/M)` per model, and
+`aa_value()` picks the cheapest model within 3 index points of a frontier. Cut by capability
+band instead of by country, those same rows are the deflation series – no new source, no new
+request.
+
+### Acceptance Criteria
+
+- [ ] Factor the AA pull out of `update-china-data.py` into a small shared module both
+      updaters import, so one keyed request per run serves both pages. The free tier is 100
+      requests/day; do not spend two where one will do, and do not duplicate the parser.
+- [ ] Emit a `token_prices` block into `capex-data.json`: for each of 2–3 fixed capability
+      bands (e.g. index >= 60, >= 50, >= 40), the cheapest blended $/1M tokens by month, plus
+      the YoY percentage change. Reuse `aa_points()`; the band simply replaces `aa_value()`'s
+      country cut.
+- [ ] Carry-forward and tests like every other capex family – the value must survive a failed
+      fetch the way `fetch_ramp` and `fetch_860m` do.
+- [ ] Render on `ai-capex.html` against the fixed debt-service framing the thesis needs, so
+      the two lines are read together rather than as another price chart.
+- [ ] Caveat in-panel, honestly: AA's catalogue is current-only, so delisted models vanish
+      from history and a reconstructed series is survivorship-biased toward what is still
+      sold – the same caveat `aa_frontier` already carries on the China page. AA also
+      re-bases its index across major versions, so a fixed band is only comparable inside the
+      `AA_FRONTIER_SINCE` (2024-01) window. Blended 3:1 is a convention, not a bill.
+- [ ] Blocked on the key above; the shared module is worth writing either way.
+- [ ] While in the file, fix `ai-capex-theses.md`'s internal contradiction: the header says
+      "Rows 1–5 are shipped", the integration notes say rows 3, 4, 5, 7 and 9. The keys in
+      `capex-data.json` back the notes. Mark row 1 in flight when this lands.
