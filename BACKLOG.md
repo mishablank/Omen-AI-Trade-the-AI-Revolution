@@ -129,7 +129,12 @@ live source alongside TSMC/vast.ai/XBRL.
 
 ## AI CapEx – AI spend per FTE / token spend as share of compensation
 
-**Status:** Open
+**Status:** Partly done (2026-09-26, `feat/capex-ai-spend-per-fte`) – curated "AI spend per employee"
+watchlist on the live tape, under Paid adoption: the three ILTB data points tagged *podcast*
+(unnamed firms, not attributed to anyone), plus two disclosed company rows already cited on China
+Watch (Uber's $1,500/month engineer cap, Coinbase's ≈50% cut – both CNBC, Jul 2026) and a Watch
+row for Ramp. **Still open:** Ramp publishes only the adoption CSV as of 2026-09-26 (no spend-level
+series), so the third criterion waits on Ramp.
 **Component:** `omen/ai-capex.html`
 **Priority:** Low
 
