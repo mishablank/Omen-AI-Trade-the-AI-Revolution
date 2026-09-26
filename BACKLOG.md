@@ -150,7 +150,13 @@ share, not spend-per-employee; the per-FTE figures exist only as disclosures and
 
 ## AI CapEx – Lab economics tracker (EV/ARR for OpenAI, Anthropic, xAI)
 
-**Status:** Open
+**Status:** Done (2026-09-26, `feat/lab-economics-ev-arr`) – curated `LAB_ECON` rows (ARR disclosures and
+priced rounds, each sourced, appended never overwritten) and a table in the monitor's valuation-bracket
+card: EV/ARR at the round, on today's run-rate, and market-implied from the bracket ladder's 50% crossing
+(OpenAI ≈$1.35T → 34× on 2026-09-26). Honesty note in-panel. Lives on the monitor, not `ai-capex.html`,
+because that is where the ladder it joins against is fetched. On the way, fixed the ladder parser: the
+OpenAI event moved to a HIGH ladder in trillions plus a LOW (markdown) ladder, which the old parser
+misread, flagging the whole card "unreliable" since the switch.
 **Component:** `omen/ai-capex.html`, `omen/polymarket-ai-index.html`
 **Priority:** Medium
 
