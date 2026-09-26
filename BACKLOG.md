@@ -104,7 +104,14 @@ monitor use a bare `th.onclick` with no `role`, `tabindex` or keyboard handler.
 
 ## AI CapEx – Memory price index (DRAM/HBM spot + contract, LTA coverage)
 
-**Status:** Open
+**Status:** Done (2026-09-26, `feat/capex-memory-pulse`) – `memory` block in `capex-data.json` and a
+"Memory pulse" live-tape panel: the conventional-DRAM contract forecast scanned from TrendForce's free
+press releases (body sentence, not headline; at most once per 20h; carried, and a dated MANUAL seed –
+3Q26 +13–18% – until the 4Q26 release lands), HBM contract direction and DRAM spot trend hand-curated
+with dates, and the Korea 20-day chip-export print (Sep 1–20: +259% YoY, $34.1B) hand-updated with the
+asof enforced (flagged STALE after 15 days). The paywall boundary is stated in the srcline: levels are
+not republished, direction/YoY are the metric. The Korea row moved here from Hardware demand pulse.
+Upkeep: update `MANUAL["korea"]` on ~1st/11th/21st.
 **Component:** `omen/ai-capex.html`, `omen/update-capex-data.py`
 **Priority:** Medium
 
