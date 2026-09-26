@@ -304,8 +304,20 @@
       <div class="stat"><div class="l">Chinese models in top 10 / top 20</div><div class="v" id="lbCounts">&ndash;</div><div class="l">text arena, ordinal ranks</div></div>
       <div class="stat"><div class="l">Artificial Analysis index</div><div class="v" id="aaVals">&ndash;</div><div class="l" id="aaSub"></div></div>
     </div>
+    <div class="statrow">
+      <div class="stat"><div class="l">Best Chinese model on WebDev</div><div class="v" id="lbWeb">&ndash;</div><div class="l" id="lbWebSub">coding board &ndash; appears after the next server-side refresh</div></div>
+      <div class="stat"><div class="l">Best Chinese model on Agent Arena <span class="sub">(task score, not Elo)</span></div><div class="v" id="lbAgent">&ndash;</div><div class="l" id="lbAgentSub"></div></div>
+    </div>
+    <div class="note" id="lbBoardsNote">The second row reads LMArena's coding boards, where the enterprise switching in the thesis below actually happens: Chinese models place far higher on WebDev than on the overall text arena. Agent Arena is young and scores behavioural task outcomes rather than Elo, so its numbers are not comparable with the Elo figures beside it. Both are context only &ndash; no index weight.</div>
     <div class="note">Sources: LMArena's official <a href="https://huggingface.co/datasets/lmarena-ai/leaderboard-dataset" target="_blank" rel="noopener">leaderboard dataset</a> (CC BY 4.0; <a href="https://arena.ai/leaderboard/text" target="_blank" rel="noopener">arena.ai</a> scrape as fallback) and <a href="https://artificialanalysis.ai/models" target="_blank" rel="noopener">Artificial Analysis</a> (live via its free Data API when the updater has a key, else a dated snapshot). Refreshed by the updater script, values dated in the header.</div>
   </div>
+</div>
+
+<!-- ============ MEDIA-GENERATION ARENAS (batch) ============ -->
+<div class="card">
+  <h2>Media arenas &ndash; video and image generation <span class="sub" id="maAsof">&ndash; batch</span></h2>
+  <table id="maTable"><thead><tr><th>Board</th><th>Best Chinese model</th><th class="num">Rank</th><th class="num">vs best non-Chinese</th><th class="num">CN in top 10</th></tr></thead><tbody id="maBody"></tbody></table>
+  <div class="note">The second substitution front, and the one where Chinese labs are already on the podium: on the video boards ByteDance (Seedance), MiniMax, Alibaba (Wan, HappyHorse) and Kuaishou (Kling) crowd the top ten, while image generation is still US-led. Each row compares the best Chinese entry with the best <i>non-Chinese</i> one, because a Chinese model can hold #1 here. Elo is relative to each board's own pool: a 30-point gap on video and on image are not the same distance, and none of these figures compare with the text arena above or with other sites' video arenas. Context only &ndash; no index weight. Price per minute / per image is not joined yet; it rides the Artificial Analysis key. Source: <a href="https://huggingface.co/datasets/lmarena-ai/leaderboard-dataset" target="_blank" rel="noopener">LMArena leaderboard dataset</a> (CC BY 4.0), <a href="https://arena.ai/leaderboard/text-to-video" target="_blank" rel="noopener">arena.ai</a> scrape as the per-board fallback.</div>
 </div>
 
 <div class="grid2">
@@ -435,9 +447,10 @@
   <b>SPI</b> = Chinese-lab &divide; US-lab routed tokens (named authors) on OpenRouter, trailing week.
   <b>Histories</b>: the updater appends one row per UTC day to <code>china-metrics.csv</code> (composite index, SPI, router/HF/Ollama Chinese shares, GitHub star velocity, frontier price gap) &ndash; the small history lines across the page read from it, so they are server-durable rather than per-browser; Polymarket odds histories come live from the public CLOB <code>prices-history</code> endpoint.
   <b>Frontier price gap</b> = median output $/M of US flagship <i>lines</i> (GPT top/mid, Claude Opus/Sonnet, Gemini Pro/Flash) &divide; median of Chinese lines (DeepSeek pro/flash, GLM, Kimi and Kimi Code, MiniMax, Qwen Max). Each line resolves to its newest live model in OpenRouter's catalogue at page load rather than to a pinned version, so a launch or a price cut moves the gap the day it ships and a retired slug surfaces as a named warning instead of quietly leaving the median. Lines are matched on name, never on price: Chinese labs deliberately price their newest flagship <i>below</i> their previous one, so ranking by cost would pick the older model.
+  <b>Coding, agentic and media boards</b> (the WebDev/Agent row on the leaderboard card and the media-arenas table) are context, not index inputs: each reports the best Chinese entry's rank and its distance to the best non-Chinese entry on that board, plus the Chinese count in the top 10. The LMArena-proximity family (w=5) still reads the overall text arena only.
   <b>Supply-side panels</b> (frontier gap, compute stock, chip supply, release cadence) are context, not index inputs &ndash; they carry no weight in the adoption index. Frontier gap = best AA Intelligence Index score per lab country, monthly since 2024; lag = months between a US model first reaching today's best Chinese score and the Chinese frontier getting there; near-frontier price ratio = cheapest blended $/M within 3 index points of each side's frontier, US &divide; Chinese.
   <h3>Caveats</h3>
-  OpenRouter sees only routed traffic &ndash; it overstates Chinese share of the total market (first-party US API traffic is invisible) but is the best public real-time proxy for the substitutable segment; the Vercel AI Gateway cross-check (production apps, export cached 24h) partially corrects that bias and currently reads much lower. HF download totals mix model generations and exclude derivative quantizations. Ollama pulls are lifetime cumulative, so they lag shifts; the derived daily rate is the leading part. Fine-tune-tree counts depend on authors declaring <code>base_model</code> metadata. PyPI SDK installs undercount the Chinese side badly (OpenAI-compatible APIs ride the <code>openai</code> package). Leaderboard (LMArena official dataset, arena.ai scrape fallback), search interest (Google Trends), consumer-app chart presence (Apple RSS + Google Play), Vercel, Ollama, Kalshi, fine-tune trees and SDK installs are all refreshed by <code>update-china-data.py</code>; Artificial-Analysis scores refresh live when the updater has an <code>ARTIFICIAL_ANALYSIS_API_KEY</code>, else they remain a dated snapshot, and the Cloudflare-Radar consumer-traffic panel appears only when a <code>CF_RADAR_TOKEN</code> is configured (see freshness strip). Prediction-market prices are thin in places; Kalshi quotes are daily-batch, not live, and the discovered (<span class="tag src">AUTO</span>) leadership rows rotate as each monthly cohort resolves, so that block is not a fixed panel across visits. The supply-side panels inherit their sources' blind spots: Epoch's cluster dataset covers an estimated 10&ndash;20% of world capacity and anonymizes Chinese systems (the split understates China); chip-sales figures are median estimates with wide confidence intervals, count designs rather than China's smuggled-in NVIDIA inflow, and lag ~2 quarters on the Chinese side; notable-model counts backfill for weeks after a release; the AA frontier series is rebuilt from the current catalogue, so delisted models silently leave its history, and it appears only when the updater has an <code>ARTIFICIAL_ANALYSIS_API_KEY</code>. Epoch CSVs are refetched weekly, not per-run. Nothing here is a validated forecast of equity returns &ndash; the companion monitor's own lead-lag test is honest about that.
+  OpenRouter sees only routed traffic &ndash; it overstates Chinese share of the total market (first-party US API traffic is invisible) but is the best public real-time proxy for the substitutable segment; the Vercel AI Gateway cross-check (production apps, export cached 24h) partially corrects that bias and currently reads much lower. HF download totals mix model generations and exclude derivative quantizations. Ollama pulls are lifetime cumulative, so they lag shifts; the derived daily rate is the leading part. Fine-tune-tree counts depend on authors declaring <code>base_model</code> metadata. PyPI SDK installs undercount the Chinese side badly (OpenAI-compatible APIs ride the <code>openai</code> package). Leaderboard (LMArena official dataset, arena.ai scrape fallback; the WebDev, Agent and media boards come from the same dataset and degrade board by board), search interest (Google Trends), consumer-app chart presence (Apple RSS + Google Play), Vercel, Ollama, Kalshi, fine-tune trees and SDK installs are all refreshed by <code>update-china-data.py</code>; Artificial-Analysis scores refresh live when the updater has an <code>ARTIFICIAL_ANALYSIS_API_KEY</code>, else they remain a dated snapshot, and the Cloudflare-Radar consumer-traffic panel appears only when a <code>CF_RADAR_TOKEN</code> is configured (see freshness strip). Arena Elo is relative to each board's own pool, so gaps are not comparable across boards or with other sites' arenas; Agent Arena is young and scores task outcomes rather than Elo. Prediction-market prices are thin in places; Kalshi quotes are daily-batch, not live, and the discovered (<span class="tag src">AUTO</span>) leadership rows rotate as each monthly cohort resolves, so that block is not a fixed panel across visits. The supply-side panels inherit their sources' blind spots: Epoch's cluster dataset covers an estimated 10&ndash;20% of world capacity and anonymizes Chinese systems (the split understates China); chip-sales figures are median estimates with wide confidence intervals, count designs rather than China's smuggled-in NVIDIA inflow, and lag ~2 quarters on the Chinese side; notable-model counts backfill for weeks after a release; the AA frontier series is rebuilt from the current catalogue, so delisted models silently leave its history, and it appears only when the updater has an <code>ARTIFICIAL_ANALYSIS_API_KEY</code>. Epoch CSVs are refetched weekly, not per-run. Nothing here is a validated forecast of equity returns &ndash; the companion monitor's own lead-lag test is honest about that.
   <h3>Sources</h3>
   <a href="https://openrouter.ai/rankings" target="_blank" rel="noopener">OpenRouter rankings</a> &middot;
   <a href="https://vercel.com/ai-gateway/leaderboards/models" target="_blank" rel="noopener">Vercel AI Gateway leaderboards</a> (data &copy; Vercel, CC BY 4.0) &middot;
@@ -902,7 +915,7 @@ function renderShareSparks(){
 /* ---------------- china-data.json override ---------------- */
 async function loadSnap(){
   try{ const d = await jget("china-data.json", {cache:"no-store"}); snap = { ...SNAP, ...d }; }catch(e){}
-  const parts=[]; if(snap.lmarena?.asof) parts.push("arena "+snap.lmarena.asof); if(snap.search_consumer?.asof) parts.push("consumer "+snap.search_consumer.asof);
+  const parts=[]; if(snap.lmarena?.asof) parts.push("arena "+snap.lmarena.asof); if(snap.arena_boards?.asof) parts.push("boards "+snap.arena_boards.asof); if(snap.search_consumer?.asof) parts.push("consumer "+snap.search_consumer.asof);
   if(snap.vercel_gateway?.asof) parts.push("vercel "+snap.vercel_gateway.asof); if(snap.ollama?.asof) parts.push("ollama "+snap.ollama.asof);
   dot("sn", "warn", parts.join(" · ") || "embedded snapshot");
   const sup=[]; if(snap.epoch_compute?.asof) sup.push("epoch "+snap.epoch_compute.asof);
@@ -1373,6 +1386,49 @@ function renderEQ(){
   const syms = EQ_SYMS.filter(s => S.eq.equity[s]);
   g.innerHTML = syms.map(sym => card(sym, S.eq.equity[sym])).join("");
 }
+/* ---------------- coding/agentic + media arena boards (china-data.json) ----------------
+ * Context, not index inputs: nothing here writes IDX (the updater's compute_index
+ * agrees, and a test pins it). Each board compares the best Chinese entry with the best
+ * non-Chinese one, because on the media boards a Chinese model can hold #1 - "gap to
+ * rank 1" would read zero exactly when the news is biggest.
+ */
+const MEDIA_BOARDS = [["text_to_video","Text &rarr; video"], ["image_to_video","Image &rarr; video"],
+                      ["text_to_image","Text &rarr; image"], ["image_edit","Image edit"]];
+function boardGap(b){
+  // Direction in words, never colour alone: "trails by" / "leads by".
+  if(b.metric === "score")
+    return b.cn_leads ? "leads the field" : b.pct_of_other+"% of the best non-Chinese score";
+  return b.gap > 0 ? "trails by "+b.gap+" Elo" : b.gap < 0 ? "leads by "+(-b.gap)+" Elo" : "level";
+}
+function renderArenaBoards(){
+  const ab = snap.arena_boards?.boards || {};
+  const web = ab.webdev, ag = ab.agent;
+  if(web){
+    $("lbWeb").textContent = "#"+web.best_rank;
+    $("lbWebSub").textContent = web.best_model+" ("+web.best_org+"), "+boardGap(web)+" vs "+web.other_model
+      +" · "+web.top10+" Chinese in top 10 ("+web.asof+")";
+  }
+  if(ag){
+    $("lbAgent").textContent = "#"+ag.best_rank;
+    $("lbAgentSub").textContent = ag.best_model+" ("+ag.best_org+"), "+boardGap(ag)
+      +" · "+ag.top10+" Chinese in top 10 ("+ag.asof+")";
+  }
+  const rows = MEDIA_BOARDS.filter(([k]) => ab[k]);
+  if(!rows.length){
+    $("maBody").innerHTML = '<tr><td colspan="5" class="note">No media-arena data yet &ndash; appears after the next server-side refresh.</td></tr>';
+    return;
+  }
+  const dates = [...new Set(rows.map(([k]) => ab[k].asof))].sort();
+  $("maAsof").textContent = "– LMArena boards, "+dates.at(-1)+(dates.length > 1 ? " (oldest "+dates[0]+")" : "");
+  $("maBody").innerHTML = rows.map(([k, label]) => {
+    const b = ab[k];
+    return `<tr><td>${label}${b.carried ? ' <span class="tag src">CARRIED</span>' : ""}</td>`
+      + `<td><span class="tag cn">CN</span> ${esc(b.best_model)} <span class="sub">${esc(b.best_org)}</span></td>`
+      + `<td class="num">#${b.best_rank}</td>`
+      + `<td class="num">${esc(boardGap(b))} <span class="sub">vs ${esc(b.other_model)}</span></td>`
+      + `<td class="num">${b.top10}</td></tr>`;
+  }).join("");
+}
 function renderSnapshotPanels(){
   const lb = snap.lmarena, aa = snap.artificial_analysis;
   $("lbAsof").textContent = "– snapshot " + lb.asof;
@@ -1426,7 +1482,7 @@ function renderGauge(){
 /* ---------------- boot ---------------- */
 async function boot(){
   await Promise.all([ loadSnap(), loadMetrics() ]);
-  renderSnapshotPanels();
+  renderSnapshotPanels(); renderArenaBoards();
   renderVercel(); renderOllama(); renderFinetunes(); renderSDK(); renderRadar();
   renderAAFrontier(); renderEpochCompute(); renderEpochModels(); renderEpochChips();
   renderPM();   // Kalshi rows render immediately; Polymarket rows join once live

@@ -173,7 +173,12 @@ denominator is catching up. Disclosed ARR run-rates (e.g. Baker cites Grok 4.5 +
 
 ## China AI Monitor — media-generation arenas (video/image)
 
-**Status:** Open
+**Status:** Partly done (2026-09-26, `feat/china-arena-boards`) — four boards (text/image-to-video,
+text-to-image, image edit) fetched from the official dataset with a per-board arena.ai scrape
+fallback and per-board carry-forward, summarized best-CN vs best-non-CN (a Chinese model held #1
+on image-to-video), rendered as a "Media arenas" table under Leaderboard proximity. Index
+treatment decided: context only, pinned by a test. **Still open:** the $/min and $/image join,
+blocked on the AA key.
 **Component:** `china-ai-monitor.html`, `update-china-data.py`
 **Priority:** Medium
 
@@ -209,7 +214,11 @@ survey (see `docs/updates/UPDATES-2026-08-06-supply-side.md` for the first five)
 
 ## China AI Monitor — coding and agentic leaderboards
 
-**Status:** Open
+**Status:** Partly done (2026-09-26, `feat/china-arena-boards`) — WebDev (Elo; arena.ai `/leaderboard/code`
+fallback) and Agent (task score, dataset only: its page has no Elo to scrape) as a second stat
+row on the Leaderboard-proximity card, with the not-comparable caveat. Also fixed a latent bug
+on the way: the dataset spells Z.ai `zai`, so GLM had never counted as Chinese on the text board
+either. **Still open:** the AA coding/agentic index cut, blocked on the key.
 **Component:** `china-ai-monitor.html`, `update-china-data.py`
 **Priority:** Medium
 
