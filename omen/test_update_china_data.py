@@ -402,6 +402,108 @@ def test_arena_summary_rejects_all_us_board():
         ucd.arena_summary([{"model": "m", "org": "openai", "rank": 1, "elo": 1500}])
 
 
+def test_arena_summary_counts_glm_under_the_datasets_zai_spelling():
+    # The dataset lowercases Z.ai to "zai"; the org set only knew "z.ai", so GLM never
+    # counted as Chinese on any board.
+    rows = [{"model": "claude", "org": "anthropic", "rank": 1, "elo": 1510},
+            {"model": "glm-5.2", "org": "zai", "rank": 4, "elo": 1495}]
+    got = ucd.arena_summary(rows)
+    assert (got["best_model"], got["top10"]) == ("glm-5.2", 1)
+
+
+def test_arena_is_cn_knows_the_media_labs_under_both_spellings():
+    for org in ("kling", "KlingAI", "wan", "hidream", "shengshu", "aorizon", "Alibaba-ATH"):
+        assert ucd.arena_is_cn(org), org
+    for org in ("bfl", "Black Forest Labs", "google", "runway", "kandinsky", "", None):
+        assert not ucd.arena_is_cn(org), org
+
+
+def board_payload(*rows, key="rating"):
+    return {"rows": [{"row": {"model_name": m, "organization": o, "rank": r, key: v,
+                              "category": c, "leaderboard_publish_date": "2026-09-25"}}
+                     for m, o, r, v, c in rows]}
+
+
+def test_board_rows_keeps_overall_only_and_rounds_by_metric():
+    elo = ucd.board_rows(board_payload(("a", "google", 1, 1516.4, "overall"),
+                                       ("b", "google", 1, 1400.0, "3d_modeling")))
+    assert elo == [{"model": "a", "org": "google", "rank": 1, "score": 1516, "asof": "2026-09-25"}]
+    score = ucd.board_rows(board_payload(("k", "moonshot", 10, 0.045464, "overall"), key="score"),
+                           metric="score")
+    assert score[0]["score"] == 0.0455
+
+
+def test_board_summary_gap_is_best_cn_vs_best_non_cn():
+    rows = [{"model": "gemini", "org": "google", "rank": 1, "score": 1516},
+            {"model": "seedance", "org": "bytedance", "rank": 5, "score": 1479},
+            {"model": "wan", "org": "wan", "rank": 6, "score": 1476},
+            {"model": "unknown", "org": "", "rank": 7, "score": 1470}]
+    got = ucd.board_summary(rows)
+    assert (got["best_model"], got["other_model"], got["gap"]) == ("seedance", "gemini", 37)
+    assert got["cn_leads"] is False and got["top10"] == 2 and "pct_of_other" not in got
+
+
+def test_board_summary_reports_a_chinese_lead_as_a_negative_gap():
+    rows = [{"model": "minimax-h3", "org": "minimax", "rank": 1, "score": 1495},
+            {"model": "gemini", "org": "google", "rank": 2, "score": 1488}]
+    got = ucd.board_summary(rows)
+    assert got["gap"] == -7 and got["cn_leads"] is True
+
+
+def test_board_summary_ignores_licence_strings_in_the_org_cell():
+    rows = [{"model": "x", "org": "Proprietary", "rank": 1, "score": 1600},
+            {"model": "gpt", "org": "OpenAI", "rank": 2, "score": 1550},
+            {"model": "qwen", "org": "Alibaba", "rank": 3, "score": 1540}]
+    assert ucd.board_summary(rows)["other_model"] == "gpt"
+
+
+def test_board_summary_score_metric_adds_a_ratio():
+    rows = [{"model": "claude", "org": "anthropic", "rank": 1, "score": 0.138},
+            {"model": "kimi", "org": "moonshot", "rank": 10, "score": 0.0455}]
+    got = ucd.board_summary(rows, "score")
+    assert got["pct_of_other"] == 33 and got["gap"] == 0.0925
+
+
+def test_board_summary_rejects_a_one_sided_board():
+    with pytest.raises(ValueError):
+        ucd.board_summary([{"model": "m", "org": "openai", "rank": 1, "score": 1500}])
+
+
+def test_arena_boards_falls_back_per_board_then_carries(monkeypatch):
+    def dataset(config, metric):
+        if config == "webdev":
+            raise OSError("datasets-server down")
+        return {"best_model": config, "source": "lmarena-dataset"}
+
+    def scrape(path):
+        if path == "code":
+            return {"best_model": "scraped-webdev", "source": "arena-scrape"}
+        raise OSError("scrape down")
+
+    monkeypatch.setattr(ucd, "lmarena_board", dataset)
+    monkeypatch.setattr(ucd, "scraped_board", scrape)
+    got = ucd.arena_boards()["boards"]
+    assert got["webdev"]["source"] == "arena-scrape"
+    assert got["agent"]["best_model"] == "agent"
+
+    def all_down(*_):
+        raise OSError("down")
+    monkeypatch.setattr(ucd, "lmarena_board", all_down)
+    monkeypatch.setattr(ucd, "scraped_board", all_down)
+    prev = {"arena_boards": {"boards": {"agent": {"best_model": "old", "asof": "2026-09-01"}}}}
+    got = ucd.arena_boards(prev)["boards"]
+    assert got == {"agent": {"best_model": "old", "asof": "2026-09-01", "carried": True}}
+    with pytest.raises(ValueError):
+        ucd.arena_boards({})
+
+
+def test_every_arena_board_is_context_only():
+    # The backlog asks for an explicit index decision; the decision is "context only".
+    # compute_index must not grow a family for these boards by accident.
+    out = {"arena_boards": {"boards": {"webdev": {"gap": -50, "best_rank": 1}}}}
+    assert ucd.compute_index(out) == ucd.compute_index({})
+
+
 def test_kalshi_price_prefers_dollars_string():
     assert ucd.kalshi_price({"last_price_dollars": "0.1900"}) == 0.19
     assert ucd.kalshi_price({"last_price_dollars": None}) is None

@@ -8,6 +8,9 @@ CORS-open API:
 
   - LMArena leaderboard            : lmarena-ai/leaderboard-dataset on Hugging Face
                                      (CC BY 4.0), arena.ai HTML scrape as fallback
+  - LMArena coding + media boards  : WebDev, Agent, text/image-to-video, text-to-image,
+                                     image edit - same dataset, per-board scrape
+                                     fallback, context only (no index weight)
   - GitHub star velocity           : server-side baseline in china-history.json; the
                                      repo basket itself is rediscovered each run via
                                      the search API (active repos only) and published
@@ -108,18 +111,30 @@ def jget(url, timeout=30, headers=None):
 LMARENA_DATASET_ROWS = ("https://datasets-server.huggingface.co/rows"
                         "?dataset=lmarena-ai/leaderboard-dataset&config=text_style_control"
                         "&split=latest&offset=0&length=100")
+# "ZAI" is how the dataset spells Z.ai (lowercased: "zai", not "z.ai") - without it GLM
+# never counted as Chinese on any board. The media labs below only appear on the
+# video/image boards: Kling is Kuaishou's, Wan is Alibaba's, Vidu is ShengShu's, and
+# HappyHorse (dataset: "aorizon", arena.ai: "Alibaba-ATH") is Alibaba-built.
 CN_ARENA_ORGS_LC = {o.lower() for o in
-                    ("Alibaba", "Qwen", "DeepSeek", "Z.ai", "Zhipu", "Moonshot", "MoonshotAI",
+                    ("Alibaba", "Qwen", "DeepSeek", "Z.ai", "ZAI", "Zhipu", "Moonshot", "MoonshotAI",
                      "MiniMax", "Xiaomi", "Tencent", "StepFun", "Baidu", "ByteDance", "01.AI",
-                     "iFlytek", "Meituan", "InternLM", "OpenBMB")}
+                     "iFlytek", "Meituan", "InternLM", "OpenBMB",
+                     "Kling", "KlingAI", "Kuaishou", "Wan", "HiDream", "ShengShu", "Vidu", "Aorizon",
+                     "Alibaba-ATH", "PixVerse", "Hailuo", "SenseTime", "Meitu")}
+# The arena.ai scrape sometimes lands a model's licence in the org cell ("Proprietary",
+# "Apache 2.0"); those rows are unattributable, not non-Chinese.
+ARENA_NOT_AN_ORG = re.compile(r"licen[cs]e|proprietary|apache|\bmit\b|gpl|creativeml", re.I)
+
+
+def arena_is_cn(org):
+    o = (org or "").lower()
+    return o in CN_ARENA_ORGS_LC or o.removesuffix(" ai") in CN_ARENA_ORGS_LC
 
 
 def arena_summary(rows):
     """Rank-sorted [{model, org, rank, elo}] -> the lmarena dict the page renders."""
     rows = sorted(rows, key=lambda r: r["rank"])
-    def is_cn(org):
-        o = org.lower()
-        return o in CN_ARENA_ORGS_LC or o.removesuffix(" ai") in CN_ARENA_ORGS_LC
+    is_cn = arena_is_cn
     cn = [r for r in rows if is_cn(r["org"])]
     if not cn:
         raise ValueError("no Chinese models found on leaderboard")
@@ -148,9 +163,9 @@ def lmarena_dataset():
     return out
 
 
-def arena():
-    """Fallback: parse the server-rendered arena.ai text leaderboard."""
-    page = get("https://arena.ai/leaderboard/text", timeout=60).decode("utf-8", "replace")
+def arena_scrape_rows(path):
+    """[{model, org, rank, elo}] parsed from a server-rendered arena.ai leaderboard page."""
+    page = get(f"https://arena.ai/leaderboard/{path}", timeout=60).decode("utf-8", "replace")
     rows = []
     for chunk in page.split("<tr")[1:]:
         m = re.search(r'title="([^"]+)"', chunk)
@@ -164,10 +179,123 @@ def arena():
                          "rank": int(rank.group(1)), "elo": int(elo.group(1))})
     if not rows:
         raise ValueError("no leaderboard rows parsed")
-    out = arena_summary(rows)
+    return rows
+
+
+def arena():
+    """Fallback: parse the server-rendered arena.ai text leaderboard."""
+    out = arena_summary(arena_scrape_rows("text"))
     out["asof"] = datetime.now(timezone.utc).strftime("%Y-%m-%d")
     out["source"] = "arena-scrape"
     return out
+
+
+# ---- the other arena boards: coding/agentic and media generation ------------------
+# The overall text arena under-measures exactly the segments where substitution money
+# moves first. The enterprise switches the thesis cites (Coinbase, Lindy) are coding-agent
+# workloads, and Chinese models sit far higher on WebDev than on text; media generation
+# is a second front where Chinese labs already hold podium slots. Same official dataset,
+# same org-driven classification, one request per board, arena.ai scrape as the per-board
+# fallback. Context only: nothing here feeds the adoption index - the page says so.
+LMARENA_BOARD_ROWS = ("https://datasets-server.huggingface.co/rows"
+                      "?dataset=lmarena-ai/leaderboard-dataset&config={config}"
+                      "&split=latest&offset=0&length=100")
+# key -> (dataset config, arena.ai path or None, metric). The dataset orders rows by
+# category then rank, so the first 100 always hold the overall top of every board. The
+# Agent board scores behavioural task outcomes, not Elo, and its arena.ai page renders
+# no 4-digit rating the scrape parser could read - dataset only.
+ARENA_BOARDS = {
+    "webdev":         ("webdev", "code", "elo"),
+    "agent":          ("agent", None, "score"),
+    "text_to_video":  ("text_to_video", "text-to-video", "elo"),
+    "image_to_video": ("image_to_video", "image-to-video", "elo"),
+    "text_to_image":  ("text_to_image", "text-to-image", "elo"),
+    "image_edit":     ("image_edit", "image-edit", "elo"),
+}
+
+
+def board_rows(payload, metric="elo"):
+    """datasets-server rows payload -> [{model, org, rank, score, asof}], overall only."""
+    key = "rating" if metric == "elo" else "score"
+    rows = []
+    for r in payload.get("rows") or []:
+        r = r.get("row") or {}
+        if r.get("category") != "overall" or r.get(key) is None or r.get("rank") is None:
+            continue
+        v = float(r[key])
+        rows.append({"model": r.get("model_name"), "org": r.get("organization") or "",
+                     "rank": int(r["rank"]), "score": round(v) if metric == "elo" else round(v, 4),
+                     "asof": r.get("leaderboard_publish_date")})
+    return rows
+
+
+def board_summary(rows, metric="elo"):
+    """Rank-sorted [{model, org, rank, score}] -> one board's stats.
+
+    The text card compares the best Chinese model with rank #1, which is always a US
+    model there. These boards are different: a Chinese model can lead (MiniMax held #1
+    on image-to-video in Sep 2026), so the comparison is best Chinese vs best
+    non-Chinese entry. gap > 0: the Chinese best trails by that much; < 0: it leads."""
+    rows = sorted(rows, key=lambda r: r["rank"])
+    cn = [r for r in rows if arena_is_cn(r["org"])]
+    other = [r for r in rows if r["org"] and not arena_is_cn(r["org"])
+             and not ARENA_NOT_AN_ORG.search(r["org"])]
+    if not cn or not other:
+        raise ValueError("board lacks a Chinese or a non-Chinese entry")
+    b, o = cn[0], other[0]
+    gap = o["score"] - b["score"]
+    out = {"metric": metric,
+           "best_model": b["model"], "best_org": b["org"], "best_rank": b["rank"],
+           "best_score": b["score"],
+           "other_model": o["model"], "other_org": o["org"], "other_rank": o["rank"],
+           "other_score": o["score"],
+           "gap": round(gap) if metric == "elo" else round(gap, 4),
+           "cn_leads": b["rank"] < o["rank"],
+           "top10": sum(1 for r in cn if r["rank"] <= 10), "n": len(rows)}
+    if metric == "score" and o["score"]:
+        # a ratio is only meaningful for a non-Elo score; Elo differences are the metric
+        out["pct_of_other"] = round(b["score"] / o["score"] * 100)
+    return out
+
+
+def lmarena_board(config, metric="elo"):
+    rows = board_rows(jget(LMARENA_BOARD_ROWS.format(config=config), timeout=60), metric)
+    if not rows:
+        raise ValueError(f"no overall rows for {config}")
+    out = board_summary(rows, metric)
+    out["asof"] = rows[0]["asof"] or datetime.now(timezone.utc).strftime("%Y-%m-%d")
+    out["source"] = "lmarena-dataset"
+    return out
+
+
+def scraped_board(path):
+    rows = [{**r, "score": r["elo"]} for r in arena_scrape_rows(path)]
+    out = board_summary(rows, "elo")
+    out["asof"] = datetime.now(timezone.utc).strftime("%Y-%m-%d")
+    out["source"] = "arena-scrape"
+    return out
+
+
+def arena_boards(prev=None):
+    """Every ARENA_BOARDS entry, each degrading on its own: dataset, then the arena.ai
+    scrape, then the previous run's value for that board (marked carried, its own asof
+    kept so staleness shows). Raises only when no board resolved at all."""
+    prev_b = ((prev or {}).get("arena_boards") or {}).get("boards") or {}
+    boards = {}
+    for key, (config, path, metric) in ARENA_BOARDS.items():
+        srcs = [(lmarena_board, (config, metric))] + ([(scraped_board, (path,))] if path else [])
+        for fn, args in srcs:
+            try:
+                boards[key] = fn(*args)
+                break
+            except Exception as e:
+                print(f"  {key} via {fn.__name__} FAILED ({e})", file=sys.stderr)
+        else:
+            if key in prev_b:
+                boards[key] = {**prev_b[key], "carried": True}
+    if not boards:
+        raise ValueError("no arena board resolved")
+    return {"asof": datetime.now(timezone.utc).strftime("%Y-%m-%d"), "boards": boards}
 
 
 def gh_headers():
@@ -1315,6 +1443,17 @@ def run():
             print(f"  {src.__name__} FAILED ({e})", file=sys.stderr)
     else:
         print("  both sources failed - page keeps its embedded snapshot", file=sys.stderr)
+
+    print("arena boards: webdev, agent, video, image (dataset, scrape, carry per board) ...")
+    try:
+        out["arena_boards"] = arena_boards(prev)
+        for k, b in out["arena_boards"]["boards"].items():
+            print(f"  {k}: best CN {b['best_model']} #{b['best_rank']}, gap {b['gap']}"
+                  f" ({b['source']}{', carried' if b.get('carried') else ''})")
+    except Exception as e:
+        print(f"  FAILED ({e}) - carrying previous value", file=sys.stderr)
+        if prev.get("arena_boards"):
+            out["arena_boards"] = prev["arena_boards"]
 
     print("github basket discovery ...")
     gh_repos, gh_src = github_basket()
