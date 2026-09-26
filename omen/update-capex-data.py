@@ -9,15 +9,15 @@ section of the otherwise hand-curated fundamentals page:
     AI-capex issuers, S-1s and Form Ds mentioning "artificial intelligence"
   - Ramp AI Index (public CSV)                    : paid AI adoption by US firms
   - Anthropic Economic Index (HF dataset meta)    : release freshness only
+  - Memory pulse (TrendForce press releases, keyless): next-quarter conventional DRAM
+    contract-price direction, scanned at most daily; HBM direction, DRAM spot trend
+    and the Korea 20-day chip-export print ride MANUAL, with the Korea asof enforced
   - EIA-860M generator pipeline (monthly XLSX)    : operating vs planned vs under
     construction vs canceled nameplate GW; keyless
   - Census C30 + FRED (keyless)                   : data-center construction and
     computer-equipment investment as a share of nominal GDP
   - Agent-stack installs (npm + pypistats, keyless): weekly downloads of the agent
     CLIs and SDKs - the closest public proxy for agentic adoption
-  - Memory pulse (TrendForce press releases, keyless): next-quarter conventional DRAM
-    contract-price direction, scanned at most daily; HBM direction, DRAM spot trend
-    and the Korea 20-day chip-export print ride MANUAL, with the Korea asof enforced
 
 Not automated, kept in MANUAL below (no free machine-readable source):
   - Korea 20-day semiconductor exports (customs.go.kr press releases)
@@ -333,6 +333,109 @@ def fetch_aei():
     return parse_aei(jget(AEI_META_URL))
 
 
+# ---------- memory pulse (DRAM/HBM contract direction, Korea chip exports) ----------
+# The memory market - LTA game theory, soaring DRAM/HBM contract prices - is a core leg
+# of the AI-cycle read, and the tape's only memory signals were MU's drawdown and a
+# never-filled Korea row. TrendForce's free press releases carry the quarterly contract
+# forecast in a regular sentence ("Conventional DRAM contract prices are forecast to rise
+# 13-18% QoQ in 3Q26"); the headline often has no number, so the body is read. Scanned at
+# most once per TF_SCAN_HOURS - the refresh runs ~33x/day and TrendForce is not an API.
+TF_NEWS = "https://www.trendforce.com/presscenter/news"
+TF_PAGES = 2
+TF_MAX_BODIES = 4
+TF_SCAN_HOURS = 20
+TF_TITLE = re.compile(r"DRAM|memory prices?|contract prices?", re.I)
+TF_CONTRACT = re.compile(
+    r"conventional DRAM contract prices?\s+(?:are|is)\s+(?:forecast|expected|projected|set|likely)\s+to\s+"
+    r"(rise|increase|climb|grow|fall|decline|drop|remain flat)(?:\s+by)?"
+    r"(?:\s+(?:(\d+)\s*[\u2013-]\s*)?(\d+)%)?(?:\s+QoQ)?\s+in\s+(\d)Q(\d{2})", re.I)
+KOREA_STALE_DAYS = 15
+
+
+def tf_list(page_html):
+    """TrendForce press-center page -> [(path, title)] in page order, de-duplicated."""
+    out, seen = [], set()
+    for href, inner in re.findall(r'<a[^>]+href="(/presscenter/news/\d{8}-\d+\.html)"[^>]*>(.*?)</a>',
+                                  page_html, re.S):
+        title = re.sub(r"\s+", " ", re.sub(r"<[^>]+>", " ", inner)).strip()
+        if title and href not in seen:
+            seen.add(href)
+            out.append((href, title))
+    return out
+
+
+def tf_contract(body_html, path=""):
+    """Release body -> {quarter, direction, lo, hi, published, url} or None."""
+    txt = re.sub(r"\s+", " ", re.sub(r"<[^>]+>", " ", body_html)).replace("&ndash;", "\u2013")
+    m = TF_CONTRACT.search(txt)
+    if not m:
+        return None
+    verb, lo, hi, qn, yy = m.groups()
+    direction = ("rise" if verb.lower() in ("rise", "increase", "climb", "grow")
+                 else "flat" if verb.lower().startswith("remain") else "fall")
+    d = re.search(r"/(\d{4})(\d{2})(\d{2})-", path)
+    return {"quarter": f"{qn}Q{yy}", "direction": direction,
+            "lo": int(lo) if lo else (int(hi) if hi else None), "hi": int(hi) if hi else None,
+            "published": "-".join(d.groups()) if d else None, "source": "trendforce-press",
+            "url": "https://www.trendforce.com" + path if path else None}
+
+
+def newest_quarter(cands):
+    """Latest target quarter wins; for the same quarter, the latest release (a revision)."""
+    key = lambda c: (int(c["quarter"][2:]), int(c["quarter"][0]), c.get("published") or "")
+    return max(cands, key=key) if cands else None
+
+
+def scan_trendforce():
+    cands, bodies = [], 0
+    for page in range(1, TF_PAGES + 1):
+        for path, title in tf_list(get(TF_NEWS + (f"?page={page}" if page > 1 else ""))):
+            if bodies >= TF_MAX_BODIES:
+                break
+            if not TF_TITLE.search(title):
+                continue
+            bodies += 1
+            got = tf_contract(get("https://www.trendforce.com" + path), path)
+            if got:
+                cands.append(got)
+    return newest_quarter(cands)
+
+
+def pick_contract(fresh, prev, manual):
+    """Fresh scan, else the newer of the carried value and the MANUAL seed (a hand
+    update must be able to overtake a stale scanned value, and vice versa)."""
+    if fresh:
+        return fresh
+    return newest_quarter([c for c in (prev, manual) if c and c.get("quarter")])
+
+
+def korea_pulse(k, today):
+    """MANUAL korea row + its age; stale once older than KOREA_STALE_DAYS."""
+    if not k or k.get("chip_exports_yoy_pct") is None or not k.get("asof"):
+        return None
+    age = (today - datetime.date.fromisoformat(k["asof"])).days
+    return {"yoy_pct": k["chip_exports_yoy_pct"], "usd_b": k.get("chip_exports_usd_b"),
+            "window": k.get("window"), "asof": k["asof"], "age_days": age,
+            "stale": age > KOREA_STALE_DAYS, "src": k.get("src")}
+
+
+def memory_pulse(prev_mem, now=None):
+    now = now or datetime.datetime.now(datetime.timezone.utc)
+    prev_mem = prev_mem or {}
+    fresh, checked = None, prev_mem.get("checked")
+    last = datetime.datetime.fromisoformat(checked.replace("Z", "+00:00")) if checked else None
+    if last is None or (now - last).total_seconds() > TF_SCAN_HOURS * 3600:
+        try:
+            fresh = scan_trendforce()
+            checked = now.strftime("%Y-%m-%dT%H:%M:%SZ")
+        except Exception as e:
+            print(f"  memory: TrendForce scan failed ({e}) - carrying", file=sys.stderr)
+    man = MANUAL["memory"]
+    return {"dram_contract": pick_contract(fresh, prev_mem.get("dram_contract"), man["dram_contract"]),
+            "hbm": man["hbm"], "dram_spot": man["dram_spot"],
+            "korea": korea_pulse(MANUAL["korea"], now.date()), "checked": checked}
+
+
 # ---------- EIA-860M generator pipeline (keyless monthly workbook) ----------
 
 XL = "{http://schemas.openxmlformats.org/spreadsheetml/2006/main}"
@@ -588,109 +691,6 @@ def fetch_capex_gdp():
             "pct_gdp": capex_gdp_pct(dc["dc_saar_musd"], comp["v"], gdp["v"])}
 
 
-# ---------- memory pulse (DRAM/HBM contract direction, Korea chip exports) ----------
-# The memory market - LTA game theory, soaring DRAM/HBM contract prices - is a core leg
-# of the AI-cycle read, and the tape's only memory signals were MU's drawdown and a
-# never-filled Korea row. TrendForce's free press releases carry the quarterly contract
-# forecast in a regular sentence ("Conventional DRAM contract prices are forecast to rise
-# 13-18% QoQ in 3Q26"); the headline often has no number, so the body is read. Scanned at
-# most once per TF_SCAN_HOURS - the refresh runs ~33x/day and TrendForce is not an API.
-TF_NEWS = "https://www.trendforce.com/presscenter/news"
-TF_PAGES = 2
-TF_MAX_BODIES = 4
-TF_SCAN_HOURS = 20
-TF_TITLE = re.compile(r"DRAM|memory prices?|contract prices?", re.I)
-TF_CONTRACT = re.compile(
-    r"conventional DRAM contract prices?\s+(?:are|is)\s+(?:forecast|expected|projected|set|likely)\s+to\s+"
-    r"(rise|increase|climb|grow|fall|decline|drop|remain flat)(?:\s+by)?"
-    r"(?:\s+(?:(\d+)\s*[\u2013-]\s*)?(\d+)%)?(?:\s+QoQ)?\s+in\s+(\d)Q(\d{2})", re.I)
-KOREA_STALE_DAYS = 15
-
-
-def tf_list(page_html):
-    """TrendForce press-center page -> [(path, title)] in page order, de-duplicated."""
-    out, seen = [], set()
-    for href, inner in re.findall(r'<a[^>]+href="(/presscenter/news/\d{8}-\d+\.html)"[^>]*>(.*?)</a>',
-                                  page_html, re.S):
-        title = re.sub(r"\s+", " ", re.sub(r"<[^>]+>", " ", inner)).strip()
-        if title and href not in seen:
-            seen.add(href)
-            out.append((href, title))
-    return out
-
-
-def tf_contract(body_html, path=""):
-    """Release body -> {quarter, direction, lo, hi, published, url} or None."""
-    txt = re.sub(r"\s+", " ", re.sub(r"<[^>]+>", " ", body_html)).replace("&ndash;", "\u2013")
-    m = TF_CONTRACT.search(txt)
-    if not m:
-        return None
-    verb, lo, hi, qn, yy = m.groups()
-    direction = ("rise" if verb.lower() in ("rise", "increase", "climb", "grow")
-                 else "flat" if verb.lower().startswith("remain") else "fall")
-    d = re.search(r"/(\d{4})(\d{2})(\d{2})-", path)
-    return {"quarter": f"{qn}Q{yy}", "direction": direction,
-            "lo": int(lo) if lo else (int(hi) if hi else None), "hi": int(hi) if hi else None,
-            "published": "-".join(d.groups()) if d else None, "source": "trendforce-press",
-            "url": "https://www.trendforce.com" + path if path else None}
-
-
-def newest_quarter(cands):
-    """Latest target quarter wins; for the same quarter, the latest release (a revision)."""
-    key = lambda c: (int(c["quarter"][2:]), int(c["quarter"][0]), c.get("published") or "")
-    return max(cands, key=key) if cands else None
-
-
-def scan_trendforce():
-    cands, bodies = [], 0
-    for page in range(1, TF_PAGES + 1):
-        for path, title in tf_list(get(TF_NEWS + (f"?page={page}" if page > 1 else ""))):
-            if bodies >= TF_MAX_BODIES:
-                break
-            if not TF_TITLE.search(title):
-                continue
-            bodies += 1
-            got = tf_contract(get("https://www.trendforce.com" + path), path)
-            if got:
-                cands.append(got)
-    return newest_quarter(cands)
-
-
-def pick_contract(fresh, prev, manual):
-    """Fresh scan, else the newer of the carried value and the MANUAL seed (a hand
-    update must be able to overtake a stale scanned value, and vice versa)."""
-    if fresh:
-        return fresh
-    return newest_quarter([c for c in (prev, manual) if c and c.get("quarter")])
-
-
-def korea_pulse(k, today):
-    """MANUAL korea row + its age; stale once older than KOREA_STALE_DAYS."""
-    if not k or k.get("chip_exports_yoy_pct") is None or not k.get("asof"):
-        return None
-    age = (today - datetime.date.fromisoformat(k["asof"])).days
-    return {"yoy_pct": k["chip_exports_yoy_pct"], "usd_b": k.get("chip_exports_usd_b"),
-            "window": k.get("window"), "asof": k["asof"], "age_days": age,
-            "stale": age > KOREA_STALE_DAYS, "src": k.get("src")}
-
-
-def memory_pulse(prev_mem, now=None):
-    now = now or datetime.datetime.now(datetime.timezone.utc)
-    prev_mem = prev_mem or {}
-    fresh, checked = None, prev_mem.get("checked")
-    last = datetime.datetime.fromisoformat(checked.replace("Z", "+00:00")) if checked else None
-    if last is None or (now - last).total_seconds() > TF_SCAN_HOURS * 3600:
-        try:
-            fresh = scan_trendforce()
-            checked = now.strftime("%Y-%m-%dT%H:%M:%SZ")
-        except Exception as e:
-            print(f"  memory: TrendForce scan failed ({e}) - carrying", file=sys.stderr)
-    man = MANUAL["memory"]
-    return {"dram_contract": pick_contract(fresh, prev_mem.get("dram_contract"), man["dram_contract"]),
-            "hbm": man["hbm"], "dram_spot": man["dram_spot"],
-            "korea": korea_pulse(MANUAL["korea"], now.date()), "checked": checked}
-
-
 # ---------- assembly ----------
 
 def snapshot_row(payload):
@@ -731,9 +731,9 @@ def refresh():
     live_ok = False
     for name, fn in (("tsmc", fetch_tsmc), ("issuance", fetch_issuance),
                      ("ramp", fetch_ramp), ("aei", fetch_aei),
+                     ("memory", lambda: memory_pulse(prev.get("memory"))),
                      ("eia", fetch_860m), ("capex_gdp", fetch_capex_gdp),
-                     ("agents", lambda: fetch_agents(prev.get("agents"))),
-                     ("memory", lambda: memory_pulse(prev.get("memory")))):
+                     ("agents", lambda: fetch_agents(prev.get("agents")))):
         try:
             payload[name] = fn()
         except Exception as e:
@@ -751,9 +751,9 @@ def refresh():
         append_snapshot(payload)
     print(f"wrote {OUT.name}: tsmc={bool(payload['tsmc'])} "
           f"issuance={bool(payload['issuance'])} ramp={bool(payload['ramp'])} "
+          f"memory={bool(payload['memory'])} "
           f"aei={bool(payload['aei'])} eia={bool(payload['eia'])} "
           f"capex_gdp={bool(payload['capex_gdp'])} agents={bool(payload['agents'])} "
-          f"memory={bool(payload['memory'])} "
           f"snapshot={'appended' if live_ok else 'skipped (all feeds down)'}")
 
 

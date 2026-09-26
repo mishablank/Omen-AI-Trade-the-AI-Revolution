@@ -150,6 +150,7 @@ def test_append_snapshot_creates_header_then_appends(tmp_path, monkeypatch):
 
 def test_refresh_survives_failing_fetchers_and_writes_json(tmp_path, monkeypatch, capsys):
     monkeypatch.setattr(ucd, "OUT", tmp_path / "capex-data.json")
+    monkeypatch.setattr(ucd, "memory_pulse", lambda prev=None: None)
     monkeypatch.setattr(ucd, "SNAP", tmp_path / "capex-snapshots.csv")
     monkeypatch.setattr(ucd, "fetch_tsmc", lambda: {"asof": "2026-06", "rev_ntd_b": 442.7})
     monkeypatch.setattr(ucd, "fetch_issuance", lambda: (_ for _ in ()).throw(OSError("down")))
@@ -158,7 +159,6 @@ def test_refresh_survives_failing_fetchers_and_writes_json(tmp_path, monkeypatch
     monkeypatch.setattr(ucd, "fetch_860m", lambda: None)
     monkeypatch.setattr(ucd, "fetch_capex_gdp", lambda: None)
     monkeypatch.setattr(ucd, "fetch_agents", lambda prev=None: None)
-    monkeypatch.setattr(ucd, "memory_pulse", lambda prev=None: None)
     ucd.refresh()
     import json
     d = json.loads((tmp_path / "capex-data.json").read_text())
@@ -197,12 +197,12 @@ def test_fetch_issuance_carries_none_counts_without_crashing(monkeypatch):
 
 def test_refresh_eia_failure_is_null_not_a_crash(tmp_path, monkeypatch, capsys):
     monkeypatch.setattr(ucd, "OUT", tmp_path / "capex-data.json")
+    monkeypatch.setattr(ucd, "memory_pulse", lambda prev=None: None)
     monkeypatch.setattr(ucd, "SNAP", tmp_path / "capex-snapshots.csv")
     for n in ("fetch_tsmc", "fetch_issuance", "fetch_ramp", "fetch_aei",
               "fetch_capex_gdp"):
         monkeypatch.setattr(ucd, n, lambda: None)
     monkeypatch.setattr(ucd, "fetch_agents", lambda prev=None: None)
-    monkeypatch.setattr(ucd, "memory_pulse", lambda prev=None: None)
     monkeypatch.setattr(ucd, "fetch_860m", lambda: (_ for _ in ()).throw(OSError("down")))
     ucd.refresh()
     import json
@@ -219,6 +219,7 @@ def test_refresh_carries_forward_prev_on_failure(tmp_path, monkeypatch):
         "issuance": {"cur": {"debt": 20}}, "aei": {"latest_release": "old"},
     }))
     monkeypatch.setattr(ucd, "OUT", out)
+    monkeypatch.setattr(ucd, "memory_pulse", lambda prev=None: None)
     monkeypatch.setattr(ucd, "SNAP", tmp_path / "capex-snapshots.csv")
     monkeypatch.setattr(ucd, "fetch_tsmc", lambda: {"asof": "2026-06", "rev_ntd_b": 442.7})
     monkeypatch.setattr(ucd, "fetch_issuance", lambda: (_ for _ in ()).throw(OSError("down")))
@@ -227,7 +228,6 @@ def test_refresh_carries_forward_prev_on_failure(tmp_path, monkeypatch):
     monkeypatch.setattr(ucd, "fetch_860m", lambda: None)
     monkeypatch.setattr(ucd, "fetch_capex_gdp", lambda: None)
     monkeypatch.setattr(ucd, "fetch_agents", lambda prev=None: None)
-    monkeypatch.setattr(ucd, "memory_pulse", lambda prev=None: None)
     ucd.refresh()
     d = json.loads(out.read_text())
     assert d["tsmc"]["rev_ntd_b"] == 442.7          # live value wins
@@ -238,12 +238,12 @@ def test_refresh_carries_forward_prev_on_failure(tmp_path, monkeypatch):
 
 def test_refresh_skips_snapshot_when_all_feeds_down(tmp_path, monkeypatch):
     monkeypatch.setattr(ucd, "OUT", tmp_path / "capex-data.json")
+    monkeypatch.setattr(ucd, "memory_pulse", lambda prev=None: None)
     monkeypatch.setattr(ucd, "SNAP", tmp_path / "capex-snapshots.csv")
     for n in ("fetch_tsmc", "fetch_issuance", "fetch_ramp", "fetch_aei",
               "fetch_860m", "fetch_capex_gdp"):
         monkeypatch.setattr(ucd, n, lambda: None)
     monkeypatch.setattr(ucd, "fetch_agents", lambda prev=None: None)
-    monkeypatch.setattr(ucd, "memory_pulse", lambda prev=None: None)
     ucd.refresh()
     assert not (tmp_path / "capex-snapshots.csv").exists()  # no blank history row
 
@@ -515,6 +515,74 @@ def test_fetch_860m_all_candidates_missing_is_none(monkeypatch):
     assert ucd.fetch_860m(ref=datetime.date(2026, 8, 2)) is None
 
 
+# ---------- memory pulse ----------
+
+TF_BODY = ("<h1>AI Server Demand Continues to Support Memory Prices in 3Q26</h1><p>TrendForce "
+           "Conventional DRAM contract prices are forecast to rise 13&ndash;18% QoQ in 3Q26, while "
+           "NAND Flash contract prices are expected to increase 10&ndash;15%</p>")
+
+
+def test_tf_contract_reads_the_release_sentence_not_the_headline():
+    got = ucd.tf_contract(TF_BODY, "/presscenter/news/20260703-13134.html")
+    assert got == {"quarter": "3Q26", "direction": "rise", "lo": 13, "hi": 18,
+                   "published": "2026-07-03", "source": "trendforce-press",
+                   "url": "https://www.trendforce.com/presscenter/news/20260703-13134.html"}
+
+
+def test_tf_contract_directions_and_single_figures():
+    down = ucd.tf_contract("Conventional DRAM contract prices are expected to decline 5% QoQ in 1Q27")
+    assert (down["direction"], down["lo"], down["hi"], down["quarter"]) == ("fall", 5, 5, "1Q27")
+    flat = ucd.tf_contract("Conventional DRAM contract prices are projected to remain flat in 2Q27")
+    assert flat["direction"] == "flat" and flat["hi"] is None
+    assert ucd.tf_contract("NAND Flash contract prices are forecast to rise 10% QoQ in 3Q26") is None
+
+
+def test_tf_list_parses_press_center_links_once():
+    page = ('<a href="/presscenter/news/20260922-13249.html">DRAM Module Revenue Surges</a>'
+            '<a href="/presscenter/news/20260922-13249.html"><img/></a>'
+            '<a href="/presscenter/news/20260921-13247.html"> Panel <b>Fab</b> Utilization </a>')
+    assert ucd.tf_list(page) == [("/presscenter/news/20260922-13249.html", "DRAM Module Revenue Surges"),
+                                 ("/presscenter/news/20260921-13247.html", "Panel Fab Utilization")]
+
+
+def test_pick_contract_prefers_fresh_then_the_newer_quarter():
+    seed = {"quarter": "3Q26", "published": "2026-07-03", "source": "manual"}
+    carried = {"quarter": "4Q26", "published": "2026-10-02", "source": "trendforce-press"}
+    fresh = {"quarter": "4Q26", "published": "2026-10-20", "source": "trendforce-press"}
+    assert ucd.pick_contract(fresh, carried, seed) is fresh
+    assert ucd.pick_contract(None, carried, seed) is carried     # scan quiet: keep the newer
+    assert ucd.pick_contract(None, None, seed) is seed
+    assert ucd.newest_quarter([{"quarter": "4Q26"}, {"quarter": "1Q27"}])["quarter"] == "1Q27"
+
+
+def test_korea_pulse_enforces_the_asof():
+    k = {"chip_exports_yoy_pct": 259.0, "chip_exports_usd_b": 34.1, "window": "Sep 1-20",
+         "asof": "2026-09-21"}
+    assert ucd.korea_pulse(k, datetime.date(2026, 9, 26))["stale"] is False
+    late = ucd.korea_pulse(k, datetime.date(2026, 10, 15))
+    assert late["stale"] is True and late["age_days"] == 24
+    assert ucd.korea_pulse({"chip_exports_yoy_pct": None, "asof": None}, datetime.date(2026, 9, 26)) is None
+
+
+def test_memory_pulse_scans_at_most_once_per_window(monkeypatch):
+    calls = []
+    monkeypatch.setattr(ucd, "scan_trendforce", lambda: calls.append(1) or None)
+    now = datetime.datetime(2026, 9, 26, 12, tzinfo=datetime.timezone.utc)
+    out = ucd.memory_pulse({}, now)
+    assert calls == [1] and out["checked"] == "2026-09-26T12:00:00Z"
+    assert out["dram_contract"]["quarter"] == ucd.MANUAL["memory"]["dram_contract"]["quarter"]
+    again = ucd.memory_pulse(out, now + datetime.timedelta(hours=3))
+    assert calls == [1] and again["checked"] == out["checked"]    # inside the window: no scan
+    ucd.memory_pulse(out, now + datetime.timedelta(hours=ucd.TF_SCAN_HOURS + 1))
+    assert calls == [1, 1]
+
+
+def test_memory_pulse_survives_a_failed_scan(monkeypatch):
+    monkeypatch.setattr(ucd, "scan_trendforce", lambda: (_ for _ in ()).throw(OSError("down")))
+    out = ucd.memory_pulse({"dram_contract": {"quarter": "4Q26", "published": "2026-10-02"}})
+    assert out["dram_contract"]["quarter"] == "4Q26" and out["checked"] is None
+
+
 # ---------- Census C30 data-center construction + capex/GDP ----------
 
 def _c30_blob():
@@ -638,70 +706,3 @@ def test_fetch_agents_totals_npm_and_extends_series(monkeypatch):
     assert out["series"][0] == ["2000-01-01", 1]           # prior history kept
     assert out["series"][-1][1] == out["npm_total_wk"]     # today appended
 
-
-# ---------- memory pulse ----------
-
-TF_BODY = ("<h1>AI Server Demand Continues to Support Memory Prices in 3Q26</h1><p>TrendForce "
-           "Conventional DRAM contract prices are forecast to rise 13&ndash;18% QoQ in 3Q26, while "
-           "NAND Flash contract prices are expected to increase 10&ndash;15%</p>")
-
-
-def test_tf_contract_reads_the_release_sentence_not_the_headline():
-    got = ucd.tf_contract(TF_BODY, "/presscenter/news/20260703-13134.html")
-    assert got == {"quarter": "3Q26", "direction": "rise", "lo": 13, "hi": 18,
-                   "published": "2026-07-03", "source": "trendforce-press",
-                   "url": "https://www.trendforce.com/presscenter/news/20260703-13134.html"}
-
-
-def test_tf_contract_directions_and_single_figures():
-    down = ucd.tf_contract("Conventional DRAM contract prices are expected to decline 5% QoQ in 1Q27")
-    assert (down["direction"], down["lo"], down["hi"], down["quarter"]) == ("fall", 5, 5, "1Q27")
-    flat = ucd.tf_contract("Conventional DRAM contract prices are projected to remain flat in 2Q27")
-    assert flat["direction"] == "flat" and flat["hi"] is None
-    assert ucd.tf_contract("NAND Flash contract prices are forecast to rise 10% QoQ in 3Q26") is None
-
-
-def test_tf_list_parses_press_center_links_once():
-    page = ('<a href="/presscenter/news/20260922-13249.html">DRAM Module Revenue Surges</a>'
-            '<a href="/presscenter/news/20260922-13249.html"><img/></a>'
-            '<a href="/presscenter/news/20260921-13247.html"> Panel <b>Fab</b> Utilization </a>')
-    assert ucd.tf_list(page) == [("/presscenter/news/20260922-13249.html", "DRAM Module Revenue Surges"),
-                                 ("/presscenter/news/20260921-13247.html", "Panel Fab Utilization")]
-
-
-def test_pick_contract_prefers_fresh_then_the_newer_quarter():
-    seed = {"quarter": "3Q26", "published": "2026-07-03", "source": "manual"}
-    carried = {"quarter": "4Q26", "published": "2026-10-02", "source": "trendforce-press"}
-    fresh = {"quarter": "4Q26", "published": "2026-10-20", "source": "trendforce-press"}
-    assert ucd.pick_contract(fresh, carried, seed) is fresh
-    assert ucd.pick_contract(None, carried, seed) is carried     # scan quiet: keep the newer
-    assert ucd.pick_contract(None, None, seed) is seed
-    assert ucd.newest_quarter([{"quarter": "4Q26"}, {"quarter": "1Q27"}])["quarter"] == "1Q27"
-
-
-def test_korea_pulse_enforces_the_asof():
-    k = {"chip_exports_yoy_pct": 259.0, "chip_exports_usd_b": 34.1, "window": "Sep 1-20",
-         "asof": "2026-09-21"}
-    assert ucd.korea_pulse(k, datetime.date(2026, 9, 26))["stale"] is False
-    late = ucd.korea_pulse(k, datetime.date(2026, 10, 15))
-    assert late["stale"] is True and late["age_days"] == 24
-    assert ucd.korea_pulse({"chip_exports_yoy_pct": None, "asof": None}, datetime.date(2026, 9, 26)) is None
-
-
-def test_memory_pulse_scans_at_most_once_per_window(monkeypatch):
-    calls = []
-    monkeypatch.setattr(ucd, "scan_trendforce", lambda: calls.append(1) or None)
-    now = datetime.datetime(2026, 9, 26, 12, tzinfo=datetime.timezone.utc)
-    out = ucd.memory_pulse({}, now)
-    assert calls == [1] and out["checked"] == "2026-09-26T12:00:00Z"
-    assert out["dram_contract"]["quarter"] == ucd.MANUAL["memory"]["dram_contract"]["quarter"]
-    again = ucd.memory_pulse(out, now + datetime.timedelta(hours=3))
-    assert calls == [1] and again["checked"] == out["checked"]    # inside the window: no scan
-    ucd.memory_pulse(out, now + datetime.timedelta(hours=ucd.TF_SCAN_HOURS + 1))
-    assert calls == [1, 1]
-
-
-def test_memory_pulse_survives_a_failed_scan(monkeypatch):
-    monkeypatch.setattr(ucd, "scan_trendforce", lambda: (_ for _ in ()).throw(OSError("down")))
-    out = ucd.memory_pulse({"dram_contract": {"quarter": "4Q26", "published": "2026-10-02"}})
-    assert out["dram_contract"]["quarter"] == "4Q26" and out["checked"] is None
