@@ -16,8 +16,8 @@ node_modules/
 #   Committed every run — bundled static assets, NOT in R2, so the committed copy is
 #   the only copy the site ever serves:
 #     china-data.json, china-history.json, app-charts.json
-#     (influencers.json and capex-data.json are in R2, but are ~KB, so they are
-#      committed every run too and stay a warm fallback)
+#     (capex-data.json is in R2, but is ~KB, so it is committed every run
+#      too and stays a warm fallback)
 #
 #   Bootstrap seed, refreshed periodically rather than per run:
 #     market-data.json — 171 KB rewritten every 30 min and served live from R2, so

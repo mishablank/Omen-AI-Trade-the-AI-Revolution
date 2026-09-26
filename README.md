@@ -80,7 +80,6 @@ The regime chip always states *which threshold fired*, in plain English, with th
 | [**indexes.html**](omen/indexes.html) | **The indexes.** Bull and Bear as one two-sided market that always sums to 1. Bull splits TECH vs CAP; Bear splits MKT vs GOV — because technology progress can survive a financial unwind, and a regulatory clampdown is not a crash. |
 | [**ai-capex.html**](omen/ai-capex.html) | **AI capex.** Eight fundamentals theses — debt saturation, credit stress, equity raises, capex vs GDP, stranded >1 GW projects, the dark-fiber overcapacity analogy, FCF erosion, reflexive treasury vehicles — plus a live tape. |
 | [**china-ai-monitor.html**](omen/china-ai-monitor.html) | **China substitution.** Demand for Chinese LLMs (DeepSeek, Qwen, GLM, Kimi, MiniMax, MiMo) as a leading indicator of substitution pressure on US AI equities. |
-| [**influencers.html**](omen/influencers.html) | **KOL board.** Curated editorial snapshot, or auto-scored −100…+100 with evidence when `XAI_API_KEY` is set. |
 | [**methodology.html**](omen/methodology.html) | **Methodology** — including the honesty section on what none of this can prove. |
 
 ## 🔌 Where the numbers come from
@@ -133,7 +132,6 @@ omen-ai/
     ├── indexes.html                Bull/Bear as one two-sided market
     ├── ai-capex.html               capex theses + the live tape
     ├── china-ai-monitor.html       Chinese-model substitution demand
-    ├── influencers.html            the KOL board
     ├── methodology.html            method, and what none of it can prove
     │
     │  ── shared front end ──
@@ -146,7 +144,6 @@ omen-ai/
     ├── update-market-data.py ...... the main one; gauge, regime, alerts
     ├── update-china-data.py ....... China substitution monitor
     ├── update-capex-data.py ....... AI capex live tape
-    ├── update-influencers.py ...... KOL scoring (needs XAI_API_KEY)
     ├── app-charts-serpapi.mjs ..... keyed Play-charts fallback (SERPAPI_KEY, no deps)
     ├── update-app-charts.mjs ...... Play charts (the only Node dep)
     ├── aa_data.py ................. the one Artificial Analysis request per run,
@@ -164,7 +161,6 @@ omen-ai/
     ├── test_gauge_parity.py ....... server gauge vs the shared fixture
     ├── test_gauge_refs.py ......... the Python range mirror vs OMEN.GAUGE_REFS
     ├── test_docs_truth.py ......... this tree, and no unverifiable doc claims
-    ├── test_update_influencers.py .. the KOL scorer's containment rules
     ├── test_deploy_guard.py, test_seed_market_data.py
     ├── test_documented_secrets.py, test_mobile_nav.py
     ├── test_regime_explainer.py ... runs every Node suite under pytest
@@ -243,7 +239,7 @@ flowchart LR
     D --> E["🖥️ browser"]
 ```
 
-`worker.js` runs **first** for `/market-data.json`, `/snapshots.csv`, `/influencers.json`, `/capex-data.json` and `/china-data.json` (declared under `assets.run_worker_first` in [`wrangler.jsonc`](wrangler.jsonc)) and streams them from R2 — so the dashboard is current with **no redeploy**. On an R2 miss it falls back to the bundled copy, so the site never hard-breaks during bootstrap.
+`worker.js` runs **first** for `/market-data.json`, `/snapshots.csv`, `/capex-data.json`, `/china-data.json` and `/china-metrics.csv` (declared under `assets.run_worker_first` in [`wrangler.jsonc`](wrangler.jsonc)) and streams them from R2 — so the dashboard is current with **no redeploy**. On an R2 miss it falls back to the bundled copy, so the site never hard-breaks during bootstrap.
 
 It also routes the monitor's five views: `/polymarket-ai-index/<view>` serves the same document for every allowlisted view and lets the page read `location.pathname`. One fetch, instant view switching, real shareable URLs.
 
@@ -258,7 +254,7 @@ fetch ──> snapshot ──> alert ──> upload to R2 ──> commit
 <details>
 <summary><b>What gets committed each run, and why it differs per file</b></summary>
 
-- **Every run** — `*-snapshots.csv` (append-only history that exists nowhere else), `alert-state.json` (dedup state; ephemeral CI would re-alert without it), `china-data.json` / `china-history.json` / `app-charts.json` (bundled-asset-only, so the committed copy *is* the copy the site serves), `influencers.json` / `capex-data.json` (in R2, but kilobytes, kept as a warm fallback).
+- **Every run** — `*-snapshots.csv` (append-only history that exists nowhere else), `alert-state.json` (dedup state; ephemeral CI would re-alert without it), `china-data.json` / `china-history.json` / `app-charts.json` (bundled-asset-only, so the committed copy *is* the copy the site serves), `capex-data.json` (in R2, but kilobytes, kept as a warm fallback).
 - **~Weekly** — `market-data.json`. It's 171 KB rewritten in full every 30 minutes and served live from R2 anyway; committing it per run was 86% of all data churn and had pushed bot commits to 74% of repo history. It stays tracked because the Worker's R2-miss fallback needs a bundled copy at deploy time, so the Action re-seeds it only once the committed copy is over 7 days old.
 - **Never** — `market-data.js`, the hand-refreshed `file://` bundle.
 
@@ -286,7 +282,6 @@ Every secret is optional. Without it the relevant panel degrades to a dated snap
 | `TELEGRAM_BOT_TOKEN` + `TELEGRAM_CHAT_ID` | Regime-escalation alerts |
 | `NTFY_TOPIC` | …or ntfy.sh instead |
 | `METACULUS_TOKEN` | Forecaster-crowd panel (free account) |
-| `XAI_API_KEY` | Auto-scored KOL board |
 | `ARTIFICIAL_ANALYSIS_API_KEY` | AA scores on the China monitor |
 | `CF_RADAR_TOKEN` | Cloudflare Radar panel |
 | `SERPAPI_KEY` | Android app-chart fallback when the Play scraper breaks (free tier) |

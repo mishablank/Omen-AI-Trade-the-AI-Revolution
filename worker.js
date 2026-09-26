@@ -25,7 +25,6 @@ const DASHBOARD_VIEWS = new Set([
 const DATA_FILES = {
   "/market-data.json": { key: "market-data.json", type: "application/json" },
   "/snapshots.csv":    { key: "snapshots.csv",    type: "text/csv" },
-  "/influencers.json": { key: "influencers.json", type: "application/json" },
   "/capex-data.json":  { key: "capex-data.json",  type: "application/json" },
   "/china-data.json":  { key: "china-data.json",  type: "application/json" },
   "/china-metrics.csv": { key: "china-metrics.csv", type: "text/csv" },

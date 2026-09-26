@@ -32,7 +32,6 @@ jobs:
     # presence flags for the `if:` conditions; the secret values themselves are set on
     # the individual steps that need them, and nowhere else.
     env:
-      HAS_XAI: ${{ secrets.XAI_API_KEY != '' }}
       HAS_CLOUDFLARE: ${{ secrets.CLOUDFLARE_API_TOKEN != '' }}
       HAS_SERPAPI: ${{ secrets.SERPAPI_KEY != '' }}
     steps:
@@ -80,14 +79,6 @@ jobs:
           NTFY_TOPIC: ${{ secrets.NTFY_TOPIC }}
           METACULUS_TOKEN: ${{ secrets.METACULUS_TOKEN }}
         run: python3 omen/update-market-data.py --snapshot --alert
-
-      - name: Refresh influencer sentiment (optional; needs XAI_API_KEY)
-        # HAS_XAI is the job-level presence flag (a string "true"/"false"); the key
-        # itself is injected here only.
-        if: ${{ env.HAS_XAI == 'true' }}
-        env:
-          XAI_API_KEY: ${{ secrets.XAI_API_KEY }}
-        run: python3 omen/update-influencers.py
 
       - name: Fetch Android app charts (best-effort; feeds the consumer-app family)
         # Play has no key-free charts API, so google-play-scraper writes app-charts.json,
@@ -160,8 +151,8 @@ jobs:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
         run: |
-          # A missing optional file (e.g. influencers.json without XAI_API_KEY) must skip,
-          # not fail the step — otherwise `bash -e` would kill the run and skip the commit.
+          # A missing optional file must skip, not fail the step — otherwise `bash -e`
+          # would kill the run and skip the commit.
           # A real upload failure still propagates and fails the step.
           put() {
             [ -f "omen/$1" ] || { echo "omen/$1 absent — skipping"; return 0; }
@@ -169,7 +160,6 @@ jobs:
           }
           put market-data.json "application/json"
           put snapshots.csv    "text/csv"
-          put influencers.json "application/json"
           put capex-data.json  "application/json"
           put china-data.json  "application/json"
           put china-metrics.csv "text/csv"
@@ -242,8 +232,8 @@ jobs:
           # Everything else stays a per-run commit: the append-only *-snapshots.csv history,
           # the alert dedup state, and the small JSON files that are bundled-asset-only
           # (china-history, china-snapshots, app-charts) or cheap enough to keep as a warm
-          # fallback for an R2 miss (china-data now, like influencers). All 1–10 KB.
-          for f in omen/snapshots.csv omen/alert-state.json omen/influencers.json \
+          # fallback for an R2 miss (china-data, capex-data). All 1–10 KB.
+          for f in omen/snapshots.csv omen/alert-state.json \
                    omen/china-data.json omen/china-history.json omen/china-snapshots.csv \
                    omen/china-metrics.csv \
                    omen/app-charts.json omen/capex-data.json omen/capex-snapshots.csv; do
