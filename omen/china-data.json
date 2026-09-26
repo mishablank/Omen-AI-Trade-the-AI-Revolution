@@ -1,5 +1,5 @@
 {
- "updated": "2026-09-26T16:50:22Z",
+ "updated": "2026-09-26T19:30:21Z",
  "snapshot_date": "2026-09-26",
  "artificial_analysis": {
   "cn_best": "GLM-5.2",
@@ -700,40 +700,40 @@
  },
  "openrouter_week": {
   "week": "2026-09-21",
-  "cn_share": 0.5405,
+  "cn_share": 0.5381,
   "us_share": 0.2565,
-  "spi": 2.107,
-  "total_tokens": 118754784064932
+  "spi": 2.098,
+  "total_tokens": 121520932511952
  },
  "vercel_gateway": {
   "asof": "2026-09-26",
-  "cn_share": 80.8,
-  "us_share": 18.75,
-  "spi": 4.309,
+  "cn_share": 80.49,
+  "us_share": 19.0,
+  "spi": 4.236,
   "top_cn": [
    {
     "lab": "deepseek",
-    "share": 68.62
+    "share": 67.85
    },
    {
     "lab": "zai",
-    "share": 5.45
+    "share": 5.92
    },
    {
     "lab": "moonshotai",
-    "share": 2.58
+    "share": 2.6
    },
    {
     "lab": "stepfun",
-    "share": 2.04
+    "share": 2.08
    },
    {
     "lab": "xiaomi",
-    "share": 1.39
+    "share": 1.33
    },
    {
     "lab": "alibaba",
-    "share": 0.31
+    "share": 0.32
    }
   ],
   "series": [
@@ -1039,15 +1039,15 @@
    },
    {
     "d": "2026-09-26",
-    "cn": 80.8,
-    "us": 18.75
+    "cn": 80.49,
+    "us": 19.0
    }
   ],
   "license": "AI Gateway Leaderboard Data (c) Vercel, CC BY 4.0"
  },
  "ollama": {
-  "cn": 305476699,
-  "us": 478312499,
+  "cn": 305679099,
+  "us": 478416999,
   "cn_top": [
    {
     "name": "deepseek-r1",
@@ -1059,7 +1059,7 @@
    },
    {
     "name": "qwen3",
-    "pulls": 38000000
+    "pulls": 38100000
    },
    {
     "name": "qwen2.5-coder",
@@ -1096,7 +1096,7 @@
   "markets": [
    {
     "label": "Will a Chinese AI model be #1 this year?",
-    "p": 0.09,
+    "p": 0.11,
     "ticker": "KXBESTLLMCHINA-27",
     "series": "kxbestllmchina"
    },
@@ -1108,7 +1108,7 @@
    },
    {
     "label": "Best AI at end of 2026: Ernie",
-    "p": 0.001,
+    "p": 0.002,
     "ticker": "KXLLM1-26DEC31-BAID",
     "series": "kxllm1"
    },
@@ -1120,7 +1120,7 @@
    },
    {
     "label": "Best AI at end of 2026: Claude",
-    "p": 0.748,
+    "p": 0.741,
     "ticker": "KXLLM1-26DEC31-A",
     "series": "kxllm1"
    }
@@ -1130,7 +1130,7 @@
   "cn": [
    {
     "base": "Qwen/Qwen3-8B",
-    "n": 2108
+    "n": 2109
    },
    {
     "base": "deepseek-ai/DeepSeek-R1",
@@ -1163,7 +1163,7 @@
     "n": 115
    }
   ],
-  "cn_total": 2491,
+  "cn_total": 2492,
   "us_total": 2565,
   "asof": "2026-09-26"
  },
