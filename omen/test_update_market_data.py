@@ -1562,3 +1562,349 @@ def test_every_pruned_fred_name_is_a_real_series():
     live = set(umd.FRED.values())
     assert umd.FRED_SUMMARY_ONLY <= live, umd.FRED_SUMMARY_ONLY - live
     assert umd.TRANSIENT_EQUITY <= set(umd.SECTORS) | set(umd.FROTH) | set(umd.ROTATION)
+
+
+# ---------- Berg turning-point metrics (handover 2026-08-13) ----------
+# Bar shape throughout: {"d","o","h","l","c","v"}. `bar()` defaults to a flat doji so a
+# test overrides only the leg it exercises.
+def bar(d, c, o=None, h=None, l=None, v=1000):
+    return {"d": d, "o": c if o is None else o, "h": c if h is None else h,
+            "l": c if l is None else l, "c": c, "v": v}
+
+
+def ramp(start_day, closes, **kw):
+    return [bar(f"2026-{(start_day + i) // 28 + 1:02d}-{(start_day + i) % 28 + 1:02d}", c, **kw)
+            for i, c in enumerate(closes)]
+
+# ---------- §2 sanity filter ----------
+def test_clean_bars_clamps_a_bad_intraday_tick_to_the_close():
+    bars = [bar("2026-01-02", 100.0, l=99.0, h=101.0),
+            bar("2026-01-03", 100.0, l=10.0, h=101.0)]   # 90% below close = bad print
+    out, repaired = umd.clean_bars(bars)
+    assert repaired == 1
+    assert out[0]["l"] == 99.0            # good bar untouched
+    assert out[1]["l"] == 100.0           # bad low clamped to its own close
+    assert out[1]["h"] == 101.0           # the sane extreme on that bar survives
+
+
+def test_clean_bars_keeps_a_violent_but_plausible_bar():
+    # -14% intraday is a real panic bar, not a bad tick: must survive the 15% filter
+    bars = [bar("2026-01-02", 100.0, l=86.0, h=100.0)]
+    out, repaired = umd.clean_bars(bars)
+    assert repaired == 0 and out[0]["l"] == 86.0
+
+
+def test_clean_bars_never_drops_a_session():
+    bars = ramp(1, [100.0] * 5)
+    bars[2]["h"] = 900.0
+    out, _ = umd.clean_bars(bars)
+    assert len(out) == len(bars)
+    assert [b["d"] for b in out] == [b["d"] for b in bars]
+
+
+def test_clean_bars_does_not_mutate_its_input():
+    bars = [bar("2026-01-02", 100.0, l=10.0)]
+    umd.clean_bars(bars)
+    assert bars[0]["l"] == 10.0
+
+
+# ---------- A1 crash-low integrity ----------
+def _panic_series():
+    """100 -> 84 over 12 sessions (-16%), trough bar prints an intraday 80, then a
+    bounce to 92. Panic low = index 12."""
+    down = [100.0, 99.0, 97.0, 95.0, 93.0, 92.0, 90.0, 89.0, 88.0, 87.0, 86.0, 85.0, 84.0]
+    up = [86.0, 88.0, 89.0, 90.0, 91.0, 92.0]
+    bars = ramp(1, down + up)
+    bars[12]["l"] = 80.0          # intraday capitulation wick
+    return bars
+
+
+def test_crash_low_finds_the_panic_trough_and_reports_both_levels():
+    r = umd.crash_low_integrity(_panic_series())
+    assert r["index"] == 12
+    assert r["close_low"] == 84.0
+    assert r["intraday_low"] == 80.0
+
+
+def test_crash_low_distances_are_measured_from_spot():
+    r = umd.crash_low_integrity(_panic_series())
+    # spot 92: close low 84 is 8.70% below, intraday low 80 is 13.04% below
+    assert r["to_close_low_pct"] == pytest.approx(-8.70, abs=1e-2)
+    assert r["to_intraday_low_pct"] == pytest.approx(-13.04, abs=1e-2)
+
+
+def test_crash_low_reports_intact_when_neither_level_is_broken():
+    r = umd.crash_low_integrity(_panic_series())
+    assert r["close_low_violated"] is False
+    assert r["intraday_low_violated"] is False
+
+
+def test_a_closing_break_that_holds_the_intraday_low_is_a_test_not_an_invalidation():
+    """Berg's rule: crash lows get tested on a closing basis – that is normal."""
+    bars = _panic_series() + ramp(20, [83.0])     # under the 84 close low, over the 80 low
+    r = umd.crash_low_integrity(bars)
+    assert r["close_low_violated"] is True
+    assert r["intraday_low_violated"] is False
+    assert r["regime_change"] is False
+
+
+def test_breaking_the_intraday_low_flags_a_regime_change():
+    bars = _panic_series() + ramp(20, [79.0])
+    r = umd.crash_low_integrity(bars)
+    assert r["intraday_low_violated"] is True
+    assert r["regime_change"] is True
+
+
+def test_crash_low_returns_none_without_a_qualifying_decline():
+    assert umd.crash_low_integrity(ramp(1, [100.0 + i * 0.1 for i in range(60)])) is None
+
+
+def test_crash_low_threshold_is_configurable():
+    gentle = ramp(1, [100.0, 98.0, 96.0, 94.0, 92.0, 91.0, 93.0, 95.0])
+    assert umd.crash_low_integrity(gentle, drop_pct=15.0) is None
+    assert umd.crash_low_integrity(gentle, drop_pct=8.0)["close_low"] == 91.0
+
+
+def test_crash_low_window_excludes_a_slow_grind_down():
+    """-16% is only a panic if it happens inside the window."""
+    slow = ramp(1, [100.0 - i * 0.4 for i in range(41)])   # -16% over 40 sessions
+    assert umd.crash_low_integrity(slow, drop_pct=15.0, window=30) is None
+    assert umd.crash_low_integrity(slow, drop_pct=15.0, window=45) is not None
+
+
+def test_crash_low_prefers_the_most_recent_panic():
+    first = [100.0, 95.0, 90.0, 85.0, 84.0] + [90.0] * 10
+    second = [100.0, 94.0, 88.0, 83.0, 82.0] + [88.0] * 5
+    r = umd.crash_low_integrity(ramp(1, first + second))
+    assert r["close_low"] == 82.0
+
+
+# ---------- A2 days-off-low ----------
+def test_days_off_low_counts_sessions_since_the_low():
+    r = umd.days_off_low(_panic_series(), 12)
+    assert r["days"] == 6 and r["intact"] is True
+
+
+def test_days_off_low_marks_berg_day_counts():
+    bars = _panic_series() + ramp(20, [93.0, 94.0])       # 8 sessions off the low
+    r = umd.days_off_low(bars, 12)
+    assert r["days"] == 8
+    assert r["milestone"] == 8
+
+
+def test_days_off_low_reports_no_milestone_between_marks():
+    bars = _panic_series() + ramp(20, [93.0, 94.0, 95.0, 96.0])   # 10 sessions
+    assert umd.days_off_low(bars, 12)["milestone"] is None
+
+
+def test_days_off_low_stops_counting_once_the_low_breaks():
+    bars = _panic_series() + ramp(20, [83.0, 85.0, 86.0])
+    r = umd.days_off_low(bars, 12)
+    assert r["intact"] is False
+    assert r["days"] == 6          # frozen at the session before the break
+
+
+# ---------- A3 up-days in window ----------
+def test_up_days_counts_up_closes_since_the_low():
+    r = umd.up_days_in_window(_panic_series(), 12, 6)
+    assert r == {"up": 6, "n": 6}      # every session off the low closed up
+
+
+def test_up_days_window_is_clipped_to_available_history():
+    r = umd.up_days_in_window(_panic_series(), 12, 19)
+    assert r["n"] == 6
+
+
+def test_up_days_ignores_flat_closes():
+    bars = ramp(1, [100.0, 101.0, 101.0, 102.0])
+    assert umd.up_days_in_window(bars, 0, 3) == {"up": 2, "n": 3}
+
+
+def test_up_day_triggers_fire_on_bergs_clusters():
+    assert umd.up_day_trigger(8, 8) == "8 of 8"
+    assert umd.up_day_trigger(8, 9) == "8 of 9"
+    assert umd.up_day_trigger(16, 19) == "16 of 19"
+    assert umd.up_day_trigger(5, 9) is None
+    assert umd.up_day_trigger(9, 9) == "8 of 9"     # better than the trigger still fires
+
+
+# ---------- A4 n-day ROC percentile ----------
+def test_roc_percentile_ranks_the_greatest_gain_at_the_top():
+    closes = [100.0] * 300 + [110.0]     # a 1-day 10% pop after 300 flat sessions
+    r = umd.roc_percentile(closes, 1, lookbacks=(252,))
+    assert r["roc"] == pytest.approx(10.0)
+    assert r["ranks"][252] == pytest.approx(100.0)
+
+
+def test_roc_percentile_ranks_a_typical_move_mid_pack():
+    closes = [100.0 + i for i in range(300)]     # steady climb: every 5d ROC similar
+    r = umd.roc_percentile(closes, 5, lookbacks=(252,))
+    assert 0.0 < r["ranks"][252] < 100.0
+
+
+def test_roc_percentile_flags_the_ninety_ninth_percentile():
+    closes = [100.0] * 300 + [130.0]
+    r = umd.roc_percentile(closes, 1, lookbacks=(252,))
+    assert r["extreme"] is True
+
+
+def test_roc_percentile_does_not_flag_an_ordinary_move():
+    closes = [100.0 + i for i in range(300)]
+    assert umd.roc_percentile(closes, 5, lookbacks=(252,))["extreme"] is False
+
+
+def test_roc_percentile_returns_none_for_a_lookback_it_cannot_fill():
+    r = umd.roc_percentile([100.0] * 60 + [105.0], 5, lookbacks=(252, 1260))
+    assert r["ranks"][252] is None and r["ranks"][1260] is None
+
+
+def test_roc_percentile_handles_a_short_series():
+    assert umd.roc_percentile([100.0, 101.0], 5) is None
+
+
+# ---------- B1/B3 gaps ----------
+def test_upside_gap_needs_the_low_to_hold_above_the_prior_high():
+    bars = [bar("2026-01-02", 100.0, h=101.0, l=99.0),
+            bar("2026-01-03", 104.0, o=102.0, h=105.0, l=101.5)]
+    g = umd.gap_events(bars)
+    assert len(g) == 1 and g[0]["dir"] == "up"
+
+
+def test_an_open_above_the_prior_high_that_fills_intraday_is_not_a_gap():
+    bars = [bar("2026-01-02", 100.0, h=101.0, l=99.0),
+            bar("2026-01-03", 102.0, o=102.0, h=103.0, l=100.5)]   # low back under 101
+    assert umd.gap_events(bars) == []
+
+
+def test_downside_gap_mirrors_the_definition():
+    bars = [bar("2026-01-02", 100.0, h=101.0, l=99.0),
+            bar("2026-01-03", 96.0, o=97.0, h=98.0, l=95.0)]
+    g = umd.gap_events(bars)
+    assert len(g) == 1 and g[0]["dir"] == "down"
+
+
+def test_gap_size_is_measured_off_the_prior_extreme():
+    bars = [bar("2026-01-02", 100.0, h=100.0, l=99.0),
+            bar("2026-01-03", 106.0, o=105.0, h=107.0, l=104.0)]
+    assert umd.gap_events(bars)[0]["size_pct"] == pytest.approx(4.0)   # 104 low vs 100 high
+
+
+def test_breakaway_gap_to_ath_fires_after_two_months_below_the_high():
+    closes = [100.0] + [90.0] * 50 + [95.0]
+    bars = ramp(1, closes, h=None)
+    for b in bars:
+        b["h"] = b["c"]
+        b["l"] = b["c"]
+    bars.append(bar("2026-06-01", 104.0, o=103.0, h=105.0, l=102.0))   # gaps over the 100 ATH
+    r = umd.breakaway_gap_to_ath(bars)
+    assert r is not None and r["days_below"] >= 42
+
+
+def test_breakaway_gap_does_not_fire_when_the_ath_was_recent():
+    bars = ramp(1, [100.0, 99.0, 98.0, 99.0])
+    for b in bars:
+        b["h"] = b["c"]
+        b["l"] = b["c"]
+    bars.append(bar("2026-02-10", 104.0, o=103.0, h=105.0, l=102.0))
+    assert umd.breakaway_gap_to_ath(bars) is None
+
+
+def test_breakaway_gap_requires_an_actual_gap_not_just_a_breakout():
+    closes = [100.0] + [90.0] * 50
+    bars = ramp(1, closes)
+    for b in bars:
+        b["h"] = b["c"]
+        b["l"] = b["c"]
+    bars.append(bar("2026-06-01", 104.0, o=89.5, h=105.0, l=88.0))   # drifts through, no gap
+    assert umd.breakaway_gap_to_ath(bars) is None
+
+
+# ---------- C1 equal-weight vs cap-weight ----------
+def test_rsp_spy_spread_joins_on_date_not_position():
+    """Either leg can be carried forward independently – same trap as the HY/IG ratio."""
+    rsp = [{"d": "2026-01-02", "c": 100.0}, {"d": "2026-01-05", "c": 102.0}]
+    spy = [{"d": "2026-01-02", "c": 200.0}, {"d": "2026-01-06", "c": 210.0}]
+    r = umd.rsp_spy_spread(rsp, spy)
+    assert len(r["series"]) == 1
+    assert r["series"][0]["d"] == "2026-01-02"
+
+
+def test_rsp_spy_spread_reports_days_since_each_ath():
+    rsp = [{"d": f"2026-01-{i:02d}", "c": c} for i, c in enumerate([100.0, 105.0, 103.0], 2)]
+    spy = [{"d": f"2026-01-{i:02d}", "c": c} for i, c in enumerate([200.0, 205.0, 215.0], 2)]
+    r = umd.rsp_spy_spread(rsp, spy)
+    assert r["days_since_ath"]["RSP"] == 1
+    assert r["days_since_ath"]["SPY"] == 0
+
+
+def test_rsp_spy_spread_reports_the_bottom_lead():
+    """Equal-weight bottoming before cap-weight is the lead signal C1 exists to catch."""
+    rsp = [{"d": f"2026-01-{i:02d}", "c": c}
+           for i, c in enumerate([100.0, 95.0, 96.0, 97.0, 98.0, 99.0], 2)]
+    spy = [{"d": f"2026-01-{i:02d}", "c": c}
+           for i, c in enumerate([200.0, 196.0, 194.0, 192.0, 195.0, 197.0], 2)]
+    r = umd.rsp_spy_spread(rsp, spy)
+    assert r["bottom_lead_days"] == 2      # RSP bottomed 2 sessions before SPY
+
+
+def test_rsp_spy_spread_bottoms_are_windowed_not_all_history():
+    """Unwindowed, 5y of real tape returns the 2022 bear lows – true and useless."""
+    old = [{"d": f"2022-01-{i:02d}", "c": c} for i, c in enumerate([50.0, 40.0], 2)]
+    new = [{"d": f"2026-01-{i:02d}", "c": c} for i, c in enumerate([100.0, 95.0, 99.0], 2)]
+    r = umd.rsp_spy_spread(old + new, old + new, bottom_window=3)
+    assert r["bottom_dates"]["RSP"] == "2026-01-03"
+
+
+def test_rsp_spy_spread_returns_none_without_overlap():
+    assert umd.rsp_spy_spread([{"d": "2026-01-02", "c": 1.0}],
+                             [{"d": "2026-02-02", "c": 1.0}]) is None
+
+
+# ---------- D1 divergence spread ----------
+def test_divergence_spread_reports_each_index_off_its_own_peak():
+    series = {
+        "^GSPC": [{"d": "2026-06-01", "c": 100.0}, {"d": "2026-08-01", "c": 100.0}],
+        "^NDX": [{"d": "2026-06-02", "c": 100.0}, {"d": "2026-08-01", "c": 96.98}],
+    }
+    r = umd.divergence_spread(series)
+    by = {x["sym"]: x for x in r}
+    assert by["^GSPC"]["off_peak_pct"] == pytest.approx(0.0)
+    assert by["^NDX"]["off_peak_pct"] == pytest.approx(-3.02, abs=1e-2)
+    assert by["^NDX"]["peak_date"] == "2026-06-02"
+
+
+def test_divergence_spread_sorts_worst_first():
+    series = {
+        "A": [{"d": "2026-01-02", "c": 100.0}, {"d": "2026-01-03", "c": 99.0}],
+        "B": [{"d": "2026-01-02", "c": 100.0}, {"d": "2026-01-03", "c": 80.0}],
+    }
+    assert [x["sym"] for x in umd.divergence_spread(series)] == ["B", "A"]
+
+
+def test_divergence_spread_skips_empty_series():
+    assert umd.divergence_spread({"A": [], "B": [{"d": "2026-01-02", "c": 1.0}]}) == [
+        {"sym": "B", "off_peak_pct": 0.0, "peak_date": "2026-01-02"}]
+
+
+# ---------- D2 VXN deviation from trend ----------
+def test_vxn_deviation_is_negative_when_short_vol_collapses():
+    closes = [30.0] * 15 + [18.0] * 4
+    r = umd.vxn_deviation(closes, short=4, long=15)
+    assert r["short_ma"] == pytest.approx(18.0)
+    assert r["dev_pct"] < 0
+
+
+def test_vxn_deviation_flags_complacency_past_the_threshold():
+    closes = [30.0] * 15 + [18.0] * 4
+    assert umd.vxn_deviation(closes, short=4, long=15)["complacent"] is True
+
+
+def test_vxn_deviation_is_quiet_in_a_flat_tape():
+    closes = [22.0] * 20
+    r = umd.vxn_deviation(closes, short=4, long=15)
+    assert r["dev_pct"] == pytest.approx(0.0)
+    assert r["complacent"] is False
+
+
+def test_vxn_deviation_returns_none_without_enough_history():
+    assert umd.vxn_deviation([20.0] * 5, short=4, long=15) is None
