@@ -337,6 +337,64 @@ def test_refresh_schedule_has_no_uncovered_hours():
     assert not gaps, f"hours with no refresh trigger (dow, hour UTC): {sorted(gaps)}"
 
 
+# ---------- US vs CN platform capex asymmetry ----------
+
+# refresh() runs every fetcher. No test in this file may reach EDGAR or FRED - including
+# refresh tests other changes add later, which cannot know to stub this one - so the
+# network entry point is stubbed file-wide. Nothing here tests it directly; the pure
+# pieces (parse_annual_cny, last_four_quarters, capex_asymmetry) are tested below.
+ucd.fetch_capex_asymmetry = lambda: None
+
+def test_parse_annual_cny_takes_the_latest_full_year_latest_filing():
+    j = {"units": {"CNY": [
+        {"start": "2024-01-01", "end": "2024-12-31", "val": 8134000000, "filed": "2025-03-28"},
+        {"start": "2025-01-01", "end": "2025-06-30", "val": 5000000000, "filed": "2025-08-20"},
+        {"start": "2025-01-01", "end": "2025-12-31", "val": 12000000000, "filed": "2026-03-01"},
+        {"start": "2025-01-01", "end": "2025-12-31", "val": 12073000000, "filed": "2026-03-17"},
+    ], "USD": [{"start": "2025-01-01", "end": "2025-12-31", "val": 1, "filed": "2026-03-17"}]}}
+    assert ucd.parse_annual_cny(j) == {"fy_end": "2025-12-31", "cny_b": 12.073}
+    assert ucd.parse_annual_cny({"units": {}}) is None
+
+
+def test_last_four_quarters_requires_four_consecutive():
+    q = {"2025Q2": 1.0, "2025Q3": 2.0, "2025Q4": 3.0, "2026Q1": 4.0, "2026Q2": 5.0}
+    assert ucd.last_four_quarters(q) == (["2025Q3", "2025Q4", "2026Q1", "2026Q2"], 14.0)
+    assert ucd.last_four_quarters({"2025Q3": 1, "2025Q4": 1, "2026Q2": 1, "2026Q3": 1}) is None
+    assert ucd.last_four_quarters({"2026Q1": 1, "2026Q2": 1}) is None
+
+
+US_FUND = {"asof": "2026-09-07", "per_filer": {
+    "per": {"MSFT": {"quarters": ["2025Q3", "2025Q4", "2026Q1", "2026Q2"]},
+            "ORCL": {"quarters": ["2025Q3", "2025Q4", "2026Q1", "2026Q2"]}},
+    "totals": {"capex_ttm_b": 500.0}}}
+CN_MANUAL = {"BABA": {"quarters": {"2025Q3": 30, "2025Q4": 30, "2026Q1": 30, "2026Q2": 70},
+                      "asof": "2026-08"},
+             "TCEHY": {"quarters": {"2026Q1": 30, "2026Q2": 50}, "asof": "2026-08"}}
+
+
+def test_capex_asymmetry_converts_cn_at_fred_rate_and_states_each_basis():
+    out = ucd.capex_asymmetry(US_FUND, CN_MANUAL, {"fy_end": "2025-12-31", "cny_b": 40.0},
+                              {"d": "2026-09-18", "v": 8.0})
+    assert out["cn_ttm_cny_b"] == 200.0 and out["cn_ttm_usd_b"] == 25.0
+    assert out["ratio"] == 20.0 and out["us_windows"] == ["2025Q3–2026Q2"]
+    syms = {c["sym"]: c for c in out["cn"]}
+    assert set(syms) == {"BABA", "BIDU"}          # TCEHY has only two quarters keyed: left out
+    assert syms["BIDU"]["basis"].startswith("latest fiscal year")
+
+
+def test_capex_asymmetry_none_without_us_side_or_fx():
+    fx = {"d": "2026-09-18", "v": 7.0}
+    assert ucd.capex_asymmetry(None, CN_MANUAL, None, fx) is None
+    assert ucd.capex_asymmetry(US_FUND, CN_MANUAL, None, None) is None
+    assert ucd.capex_asymmetry(US_FUND, {}, None, fx) is None
+
+
+def test_cn_capex_manual_entries_are_dated_and_sourced():
+    for sym, rec in ucd.MANUAL["cn_capex"].items():
+        assert rec["asof"] and rec["src"].startswith("https://"), sym
+        assert ucd.last_four_quarters(rec["quarters"]), f"{sym}: no four consecutive quarters"
+
+
 # ---------- EIA-860M monthly workbook (keyless) ----------
 
 def _xlsx(sheets):

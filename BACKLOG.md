@@ -289,7 +289,15 @@ substitution money moves first. Remaining gap #5 of 10 from the Aug-2026 survey.
 
 ## China AI Monitor — live capex asymmetry (US vs CN platforms)
 
-**Status:** Open
+**Status:** Done, with one deviation (2026-09-26, `feat/capex-asymmetry-us-cn`) – `capex_asymmetry` in
+`capex-data.json`: big-5 trailing-4Q capex (read from `market-data.json`'s XBRL fundamentals, written
+earlier in the same job) vs Alibaba + Tencent + Baidu, converted at FRED's `DEXCHUS`; a three-stat row
+in the China thesis section reading that feed, UBS kept as the framing citation, caveat in-panel.
+**Deviation:** Alibaba could not ride EDGAR – it tags its capex line with a company extension the
+`companyconcept` API does not serve (its us-gaap capex tag stops in 2020) – so it is hand-keyed in
+`MANUAL["cn_capex"]` beside Tencent, from each company's results release (8 quarters, 2025Q3–2026Q2,
+verified against the releases). Baidu is live but annual-only (20-F), labelled as such. Add each new
+quarter as Tencent/Alibaba report (mid-Nov next).
 **Component:** `update-capex-data.py`, `china-ai-monitor.html`, `ai-capex.html`
 **Priority:** Medium
 

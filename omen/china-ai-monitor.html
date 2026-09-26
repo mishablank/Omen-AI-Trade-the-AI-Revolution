@@ -443,7 +443,11 @@
   <h2>Why this matters for US AI stocks</h2>
   <div class="note" style="font-size:12.5px; margin-top:8px">
     <b>Enterprise switching is underway.</b> CNBC (2026-07-07): Coinbase cut AI spend nearly 50% by moving ~1,200 internal agents to GLM-5.2 and Kimi K2.7; Lindy migrated fully off Claude to DeepSeek; Uber capped engineer AI budgets at $1,500/month; Citi reportedly restricted access to the most expensive OpenAI/Anthropic tiers. Chinese models price 60&ndash;90% below US flagships for near-frontier quality.<br><br>
-    <b>The capex asymmetry is the exposure.</b> US hyperscaler capex was ~$400B in 2025 with &gt;$520B consensus for 2026, vs ~$57B for China's major platforms (UBS). If cheap open-weight models keep compressing inference pricing, the revenue side of that capex &ndash; and the margin structure of proprietary US model vendors &ndash; is what gets repriced. NVDA's China datacenter revenue already fell from ~$4.6B/yr to ~zero under export controls, so the remaining channel is margin pressure and demand-mix shifts, not lost China sales.<br><br>
+    <b>The capex asymmetry is the exposure.</b> The US hyperscalers out-spend China's major platforms by an order of magnitude &ndash; measured live below (UBS put a wider Chinese set, ByteDance included, at ~$57B for 2025, which is the framing, not the number). If cheap open-weight models keep compressing inference pricing, the revenue side of that capex &ndash; and the margin structure of proprietary US model vendors &ndash; is what gets repriced. NVDA's China datacenter revenue already fell from ~$4.6B/yr to ~zero under export controls, so the remaining channel is margin pressure and demand-mix shifts, not lost China sales.
+  </div>
+  <div class="statrow" id="caStats"><div class="stat"><div class="l">US vs Chinese platform capex</div><div class="v">&ndash;</div><div class="l">loads from the capex feed</div></div></div>
+  <div class="note" id="caNote"></div>
+  <div class="note" style="font-size:12.5px; margin-top:12px">
     <b>The counter-thesis is live too.</b> 2026 has produced no repeat of the Jan-2025 DeepSeek selloff: NVDA beat earnings through DeepSeek V4's launch window and made new highs after V4-Pro. Chinese labs remain export-control constrained, and US frontier models still hold the #1 spots on quality leaderboards. Watch this page for the divergence, not the conclusion.
   </div>
 </div>
@@ -452,6 +456,7 @@
   <h3>Methodology</h3>
   <b>Chinese AI Adoption Index</b> = &Sigma;(w<sub>i</sub>&middot;s<sub>i</sub>)/&Sigma;w<sub>i</sub> over available signal families, each normalized 0&ndash;100 against fixed reference ranges: router Chinese token share 0&rarr;70% (w=30; mean of the OpenRouter and Vercel-AI-Gateway normalized shares when both are available, OpenRouter alone otherwise), Hugging Face Chinese share of open-weight downloads 0&rarr;90% (w=20), GitHub star velocity across the flagship basket 0&rarr;300/day (w=15; the basket is rediscovered each run as the two most-starred repos per lab still pushed to within 180 days, so a new release enters it the week it lands), Ollama Chinese share of named-family pulls 0&rarr;70% (w=10), Western search/consumer interest share 0&rarr;50% (w=10), consumer-app Western top-chart presence 0&rarr;100 (basket-mean best top-100 rank, w=10), LMArena proximity 100&minus;Elo-gap, floored at 0 (w=5). Weights follow the source note's suggested scheme, extended with the local-adoption family; excluded families renormalize.
   <b>SPI</b> = Chinese-lab &divide; US-lab routed tokens (named authors) on OpenRouter, trailing week.
+  <b>Capex asymmetry</b> (thesis section) reads the capex tape's feed: the US side is audited XBRL, Alibaba and Tencent are hand-keyed from their quarterly results, Baidu is its latest annual 20-F, and ByteDance is absent &ndash; so the ratio is directional.
   <b>Histories</b>: the updater appends one row per UTC day to <code>china-metrics.csv</code> (composite index, SPI, router/HF/Ollama Chinese shares, GitHub star velocity, frontier price gap) &ndash; the small history lines across the page read from it, so they are server-durable rather than per-browser; Polymarket odds histories come live from the public CLOB <code>prices-history</code> endpoint.
   <b>Capital input</b> (supply-side, context only) = US and Chinese private AI investment for the latest calendar year from the Stanford AI Index, hand-refreshed each April when it ships; private investment only &ndash; China's state guidance funds sit outside it, so the ratio overstates the real gap.
   <b>Frontier price gap</b> = median output $/M of US flagship <i>lines</i> (GPT top/mid, Claude Opus/Sonnet, Gemini Pro/Flash) &divide; median of Chinese lines (DeepSeek pro/flash, GLM, Kimi and Kimi Code, MiniMax, Qwen Max). Each line resolves to its newest live model in OpenRouter's catalogue at page load rather than to a pinned version, so a launch or a price cut moves the gap the day it ships and a retired slug surfaces as a named warning instead of quietly leaving the median. Lines are matched on name, never on price: Chinese labs deliberately price their newest flagship <i>below</i> their previous one, so ranking by cost would pick the older model.
@@ -834,6 +839,24 @@ async function loadPM(){
       !ok ? "unavailable" : S.pm.some(r=>r.found) ? "live, incl. discovered" : "live");
 }
 /* ---------------- Equity (same-origin, generated server-side) ---------------- */
+async function loadCapexAsym(){
+  // The capex asymmetry's live numbers come from the capex tape's feed - the same
+  // cross-page pattern as the equity check reading market-data.json.
+  try{ S.capex = (await jget("capex-data.json", {cache:"no-store"})).capex_asymmetry || null; }catch(e){}
+}
+function renderCapexAsym(){
+  const ca = S.capex;
+  if(!ca){ $("caNote").textContent = "Capex feed not reachable from this origin – on the live site this loads automatically."; return; }
+  const b = v => "$"+(v>=100 ? v.toFixed(0) : v.toFixed(1))+"B";
+  const names = ca.cn.map(c => ({BABA:"Alibaba", TCEHY:"Tencent", BIDU:"Baidu"})[c.sym] || c.sym).join(", ");
+  $("caStats").innerHTML =
+    `<div class="stat"><div class="l">US big-5 capex, trailing 4 quarters</div><div class="v">${b(ca.us_ttm_usd_b)}</div><div class="l">${esc(ca.us_names.join(" · "))}, ${esc(ca.us_windows.join(", "))}</div></div>`
+    + `<div class="stat"><div class="l">Chinese platforms, latest disclosed year</div><div class="v">${b(ca.cn_ttm_usd_b)}</div><div class="l">${esc(names)} &ndash; &yen;${ca.cn_ttm_cny_b.toFixed(0)}B at ${ca.fx_cny_per_usd.toFixed(2)} CNY/USD</div></div>`
+    + `<div class="stat"><div class="l">US &divide; China</div><div class="v">${ca.ratio!=null ? ca.ratio.toFixed(0)+"x" : "&ndash;"}</div><div class="l">directional, not exact</div></div>`;
+  const basis = ca.cn.map(c => ({BABA:"Alibaba", TCEHY:"Tencent", BIDU:"Baidu"})[c.sym]+" "+c.window+" ("+c.basis+")").join("; ");
+  $("caNote").innerHTML = "Directional: Chinese disclosures lag a quarter or more, and the windows are not identical &ndash; "
+    + esc(basis) + ". US side is audited XBRL (as of " + esc(ca.us_asof || "?") + "); CNY converted at FRED's daily rate (" + esc(ca.fx_asof) + "). ByteDance is private and absent, so the Chinese total is a floor.";
+}
 async function loadEQ(){
   try{
     const d = await jget("market-data.json", {cache:"no-store"});
@@ -1508,7 +1531,7 @@ async function boot(){
   renderPM();   // Kalshi rows render immediately; Polymarket rows join once live
   renderInvestment();
   renderShareSparks();
-  await Promise.all([ loadOpenRouter().then(()=>{renderOR();renderTopModels();renderTrend();}), loadPrices().then(renderPrices), loadHF().then(renderHF), loadGH().then(renderGH), loadPM().then(renderPM), loadEQ().then(renderEQ) ]);
+  await Promise.all([ loadOpenRouter().then(()=>{renderOR();renderTopModels();renderTrend();}), loadPrices().then(renderPrices), loadHF().then(renderHF), loadGH().then(renderGH), loadPM().then(renderPM), loadEQ().then(renderEQ), loadCapexAsym().then(renderCapexAsym) ]);
   renderGauge();
   renderScatter();   // needs both the resolved price lines and the arena Elo list
 }
