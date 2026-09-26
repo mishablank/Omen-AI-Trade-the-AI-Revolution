@@ -1,5 +1,5 @@
 {
- "updated": "2026-09-26T19:30:21Z",
+ "updated": "2026-09-26T22:16:49Z",
  "snapshot_date": "2026-09-26",
  "artificial_analysis": {
   "cn_best": "GLM-5.2",
@@ -700,40 +700,40 @@
  },
  "openrouter_week": {
   "week": "2026-09-21",
-  "cn_share": 0.5381,
-  "us_share": 0.2565,
-  "spi": 2.098,
-  "total_tokens": 121520932511952
+  "cn_share": 0.5354,
+  "us_share": 0.257,
+  "spi": 2.084,
+  "total_tokens": 123924202162025
  },
  "vercel_gateway": {
   "asof": "2026-09-26",
-  "cn_share": 80.49,
-  "us_share": 19.0,
-  "spi": 4.236,
+  "cn_share": 79.82,
+  "us_share": 19.65,
+  "spi": 4.062,
   "top_cn": [
    {
     "lab": "deepseek",
-    "share": 67.85
+    "share": 66.56
    },
    {
     "lab": "zai",
-    "share": 5.92
+    "share": 6.39
    },
    {
     "lab": "moonshotai",
-    "share": 2.6
+    "share": 2.79
    },
    {
     "lab": "stepfun",
-    "share": 2.08
+    "share": 2.04
    },
    {
     "lab": "xiaomi",
-    "share": 1.33
+    "share": 1.31
    },
    {
     "lab": "alibaba",
-    "share": 0.32
+    "share": 0.33
    }
   ],
   "series": [
@@ -1039,15 +1039,15 @@
    },
    {
     "d": "2026-09-26",
-    "cn": 80.49,
-    "us": 19.0
+    "cn": 79.82,
+    "us": 19.65
    }
   ],
   "license": "AI Gateway Leaderboard Data (c) Vercel, CC BY 4.0"
  },
  "ollama": {
-  "cn": 305679099,
-  "us": 478416999,
+  "cn": 305681399,
+  "us": 478420599,
   "cn_top": [
    {
     "name": "deepseek-r1",
@@ -1096,7 +1096,7 @@
   "markets": [
    {
     "label": "Will a Chinese AI model be #1 this year?",
-    "p": 0.11,
+    "p": 0.06,
     "ticker": "KXBESTLLMCHINA-27",
     "series": "kxbestllmchina"
    },
@@ -1114,7 +1114,7 @@
    },
    {
     "label": "Best AI at end of 2026: Qwen",
-    "p": 0.006,
+    "p": 0.007,
     "ticker": "KXLLM1-26DEC31-ALI",
     "series": "kxllm1"
    },
@@ -1172,10 +1172,6 @@
    {
     "pkg": "dashscope",
     "wk": 586113
-   },
-   {
-    "pkg": "zhipuai",
-    "wk": 31340
    },
    {
     "pkg": "zai-sdk",
