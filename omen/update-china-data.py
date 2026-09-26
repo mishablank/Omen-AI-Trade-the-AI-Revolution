@@ -58,12 +58,6 @@ UA = {"User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) omen-china-
 MANUAL = {
     "artificial_analysis": {"cn_best": "GLM-5.2", "cn_score": 51,
                             "us_best": "Claude Fable 5", "us_score": 60, "asof": "2026-07-12"},
-    # static fallback only - google_trends() overrides this when it succeeds
-    "search_consumer": {"western_share_pct": 1, "asof": "2026-04",
-                        "note": "Goodie AI-referral report: DeepSeek+Qwen <1% of Western AI referral traffic."},
-    # static fallback only - compute_apps() (iOS RSS + Android Play charts) overrides this
-    "apps": {"score": 20, "asof": "2026-01",
-             "note": "Qwen app >200M MAU, Doubao >100M DAU, DeepSeek ~82M WAU - overwhelmingly domestic."},
     # Safety profile behind the ban-market row. Both sources are low-cadence and hand-keyed
     # on purpose: FLI publishes semiannually (Summer/Winter editions), and Concordia AI's
     # airiskmonitor.net bot-shields plain fetchers. Context only - no index weight.
@@ -90,6 +84,12 @@ MANUAL = {
                               "levels on several domains, mainly from stronger refusal of misuse "
                               "requests."},
     },
+    # static fallback only - google_trends() overrides this when it succeeds
+    "search_consumer": {"western_share_pct": 1, "asof": "2026-04",
+                        "note": "Goodie AI-referral report: DeepSeek+Qwen <1% of Western AI referral traffic."},
+    # static fallback only - compute_apps() (iOS RSS + Android Play charts) overrides this
+    "apps": {"score": 20, "asof": "2026-01",
+             "note": "Qwen app >200M MAU, Doubao >100M DAU, DeepSeek ~82M WAU - overwhelmingly domestic."},
 }
 
 # GitHub star velocity. The basket used to be a hardcoded list of flagship repos, which
