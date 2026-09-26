@@ -67,6 +67,7 @@ jobs:
           node --check worker.js
           node --check ci-branch-guard.mjs
           node --check omen/update-app-charts.mjs
+          node --check omen/app-charts-serpapi.mjs
           for f in omen/test-*.mjs; do
             node --check "$f"
           done

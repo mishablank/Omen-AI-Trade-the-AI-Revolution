@@ -776,3 +776,13 @@ def test_append_metrics_migrates_old_schema_rows_instead_of_discarding(tmp_path)
     assert lines[1].startswith("2026-08-04,59.8,")
     assert lines[1].count(",") == len(ucd.METRICS_COLS) - 1   # padded to new width
     assert lines[2].split(",")[ucd.METRICS_COLS.index("apps_score")] == "0"
+
+
+def test_app_basket_is_one_basket_across_python_and_both_js_fetchers():
+    # Three copies of the same five regexes: this file's APP_BASKET, update-app-charts.mjs
+    # and its SerpApi fallback. A drift means the two stores score different apps.
+    want = [(n, rx.pattern) for n, rx in ucd.APP_BASKET]
+    for name in ("update-app-charts.mjs", "app-charts-serpapi.mjs"):
+        src = (Path(__file__).parent / name).read_text()
+        got = re.findall(r'\["(\w+)", /(.+?)/i\]', src)
+        assert got == want, f"{name} basket drifted from APP_BASKET"

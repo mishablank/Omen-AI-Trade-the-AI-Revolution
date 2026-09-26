@@ -148,6 +148,7 @@ omen-ai/
     ├── update-capex-data.py ....... AI capex live tape
     ├── update-influencers.py ...... KOL scoring (needs XAI_API_KEY)
     ├── update-app-charts.mjs ...... Play charts (the only Node dep)
+    ├── app-charts-serpapi.mjs ..... keyed Play-charts fallback (SERPAPI_KEY, no deps)
     │
     │  ── guards ──
     ├── deploy-guard.py ............ refuses a hand-run deploy from a dirty tree
@@ -171,6 +172,7 @@ omen-ai/
     ├── test-verdict.mjs ........... all nine verdict cells
     ├── test-a11y.mjs .............. chart text alternatives, keyboard sorting
     ├── test-pure-helpers.mjs, test-china-helpers.mjs, test-ci-branch-guard.mjs
+    ├── test-app-charts.mjs ........ the SerpApi fallback's quota gate and schema
     │
     │  ── data (committed; see below) ──
     ├── market-data.json ........... full state — R2 seed, ~weekly
@@ -284,6 +286,7 @@ Every secret is optional. Without it the relevant panel degrades to a dated snap
 | `XAI_API_KEY` | Auto-scored KOL board |
 | `ARTIFICIAL_ANALYSIS_API_KEY` | AA scores on the China monitor |
 | `CF_RADAR_TOKEN` | Cloudflare Radar panel |
+| `SERPAPI_KEY` | Android app-chart fallback when the Play scraper breaks (free tier) |
 
 Secrets are scoped to the individual workflow steps that need them — the step that runs third-party scraper code deliberately runs with **none** in scope.
 

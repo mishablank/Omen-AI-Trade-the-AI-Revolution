@@ -26,7 +26,14 @@ It is excluded from the weighted composite and displayed as an empty row with a 
 
 ## China AI Monitor — SerpApi fallback for Android app charts (w=10, apps family)
 
-**Status:** Open
+**Status:** Built, waiting on the key (2026-09-26, `feat/app-charts-serpapi-fallback`) –
+`omen/app-charts-serpapi.mjs` (node built-ins only) runs as its own `refresh.yml` step, gated on
+`HAS_SERPAPI`, so the scraper step keeps running with no secrets in scope. Self-gating: skips when
+the scraper wrote this run, skips when its own last pull is <20h old, and pulls 3 core markets
+(US/GB/DE → ≈90 searches/month, quota math in the header). Same output schema; `depth: 50` records
+SerpApi's chart cap. Tests: `test-app-charts.mjs` (parsing, gate, schema) and a Python test holding
+all three basket copies in sync. **To go live:** add the `SERPAPI_KEY` secret. Known gap: the Python
+side's apps note still says "Play top-200" when the fallback wrote the file.
 **Component:** `update-app-charts.mjs`, `.github/workflows/refresh.yml`
 **Priority:** Low
 

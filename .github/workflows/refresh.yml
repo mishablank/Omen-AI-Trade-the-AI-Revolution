@@ -34,6 +34,7 @@ jobs:
     env:
       HAS_XAI: ${{ secrets.XAI_API_KEY != '' }}
       HAS_CLOUDFLARE: ${{ secrets.CLOUDFLARE_API_TOKEN != '' }}
+      HAS_SERPAPI: ${{ secrets.SERPAPI_KEY != '' }}
     steps:
       - uses: actions/checkout@v4
 
@@ -102,6 +103,19 @@ jobs:
           cd omen
           npm ci --silent && node update-app-charts.mjs \
             || echo "app-charts fetch failed — china-data will fall back"
+
+      - name: Android charts fallback via SerpApi (only when the scraper wrote nothing)
+        # google-play-scraper breaks when Play changes its internal payload; this keyed
+        # fallback keeps the Android half of the apps family alive meanwhile. A separate
+        # step on purpose: the scraper step above runs third-party code with no secrets in
+        # scope, and this one imports only node built-ins. The script gates itself (fresh
+        # scraper file -> skip; SerpApi pull <20h ago -> skip; 3 core markets) so the free
+        # tier's ~100 searches/month hold - quota math in the file header. Skipped entirely
+        # without the key, i.e. no behavioural change until SERPAPI_KEY exists.
+        if: ${{ env.HAS_SERPAPI == 'true' }}
+        env:
+          SERPAPI_KEY: ${{ secrets.SERPAPI_KEY }}
+        run: node omen/app-charts-serpapi.mjs || echo "serpapi fallback failed — china-data will fall back"
 
       - name: Refresh China AI monitor snapshot data
         # Slow-moving fields for china-ai-monitor.html (leaderboard ranks, GitHub star
