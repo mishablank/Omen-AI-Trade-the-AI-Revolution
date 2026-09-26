@@ -8,6 +8,9 @@ section of the otherwise hand-curated fundamentals page:
   - Issuance velocity (SEC EDGAR full-text search): FWP/424B debt events by the
     AI-capex issuers, S-1s and Form Ds mentioning "artificial intelligence"
   - Ramp AI Index (public CSV)                    : paid AI adoption by US firms
+  - US vs CN platform capex (EDGAR + FRED + MANUAL): big-5 trailing-4Q capex from
+    market-data.json against Alibaba + Tencent (hand-keyed) + Baidu (EDGAR 20-F),
+    converted at FRED's CNY/USD - the China monitor's "capex asymmetry"
   - Anthropic Economic Index (HF dataset meta)    : release freshness only
   - EIA-860M generator pipeline (monthly XLSX)    : operating vs planned vs under
     construction vs canceled nameplate GW; keyless
@@ -15,9 +18,6 @@ section of the otherwise hand-curated fundamentals page:
     computer-equipment investment as a share of nominal GDP
   - Agent-stack installs (npm + pypistats, keyless): weekly downloads of the agent
     CLIs and SDKs - the closest public proxy for agentic adoption
-  - US vs CN platform capex (EDGAR + FRED + MANUAL): big-5 trailing-4Q capex from
-    market-data.json against Alibaba + Tencent (hand-keyed) + Baidu (EDGAR 20-F),
-    converted at FRED's CNY/USD - the China monitor's "capex asymmetry"
 
 Not automated, kept in MANUAL below (no free machine-readable source):
   - Alibaba and Tencent quarterly capex (results releases; see MANUAL["cn_capex"])
@@ -316,6 +316,104 @@ def fetch_ramp():
     return parse_ramp_csv(get(RAMP_CSV_URL))
 
 
+# ---------- US vs CN platform capex asymmetry ----------
+# The China monitor's stated equity exposure is the capex asymmetry, and it used to be
+# prose with hand-typed numbers. The US half already exists as a live XBRL series (the
+# big-5 fundamentals in market-data.json, written earlier in the same refresh job); this
+# builds the China half next to it. Baidu is the one CN platform the API serves, and only
+# annually (20-F): its latest fiscal year stands in for its trailing four quarters, stated
+# as such - never interpolated into quarters it did not report.
+BIDU_CIK = "0001329099"
+CN_CAPEX_TAG = "PaymentsToAcquirePropertyPlantAndEquipment"
+FRED_CNY = "DEXCHUS"   # CNY per USD, daily noon buying rate
+
+
+def parse_annual_cny(j):
+    """companyconcept payload -> latest full-year CNY value {fy_end, cny_b}, or None.
+    Full year = a duration of ~a year (20-F and year-end 6-K re-filings both carry it;
+    the latest filing of the latest period wins)."""
+    best = None
+    for e in (j.get("units") or {}).get("CNY") or []:
+        try:
+            start = datetime.date.fromisoformat(e["start"])
+            end = datetime.date.fromisoformat(e["end"])
+            val = float(e["val"])
+        except (KeyError, TypeError, ValueError):
+            continue
+        if not 350 <= (end - start).days <= 380:
+            continue
+        key = (e["end"], e.get("filed") or "")
+        if best is None or key > best[0]:
+            best = (key, {"fy_end": e["end"], "cny_b": round(val / 1e9, 3)})
+    return best[1] if best else None
+
+
+def last_four_quarters(quarters):
+    """{'2026Q2': v, ...} -> (window list, sum) over the newest four CONSECUTIVE
+    quarters, or None - a gap means a quarter was never keyed, and summing across it
+    would quietly turn a trailing year into nine months."""
+    if len(quarters) < 4:
+        return None
+    ks = sorted(quarters)[-4:]
+    def idx(q):
+        return int(q[:4]) * 4 + int(q[-1])
+    if idx(ks[-1]) - idx(ks[0]) != 3:
+        return None
+    return ks, round(sum(quarters[k] for k in ks), 3)
+
+
+def capex_asymmetry(us_fund, cn_manual, bidu, fx):
+    """-> the capex_asymmetry block, or None when either side cannot be built.
+
+    us_fund: market-data.json's fundamentals block; cn_manual: MANUAL["cn_capex"];
+    bidu: parse_annual_cny() or None (the CN total is then two platforms, and says so);
+    fx: {"d", "v"} CNY per USD."""
+    tot = ((us_fund or {}).get("per_filer") or {}).get("totals") or {}
+    per = ((us_fund or {}).get("per_filer") or {}).get("per") or {}
+    if tot.get("capex_ttm_b") is None or not fx or not fx.get("v"):
+        return None
+    cn, cny_total = [], 0.0
+    for sym, rec in (cn_manual or {}).items():
+        got = last_four_quarters(rec.get("quarters") or {})
+        if not got:
+            continue
+        ks, cny_b = got
+        cn.append({"sym": sym, "cny_b": cny_b, "window": f"{ks[0]}–{ks[-1]}",
+                   "basis": "trailing 4Q, hand-keyed", "asof": rec.get("asof")})
+        cny_total += cny_b
+    if bidu:
+        cn.append({"sym": "BIDU", "cny_b": bidu["cny_b"], "window": "FY to " + bidu["fy_end"],
+                   "basis": "latest fiscal year, EDGAR 20-F", "asof": bidu["fy_end"][:7]})
+        cny_total += bidu["cny_b"]
+    if not cn:
+        return None
+    cn_usd = cny_total / fx["v"]
+    us_windows = sorted({f"{p['quarters'][0]}–{p['quarters'][-1]}"
+                         for p in per.values() if p.get("quarters")})
+    return {"asof": datetime.datetime.now(datetime.timezone.utc).strftime("%Y-%m-%d"),
+            "us_ttm_usd_b": rnd(tot["capex_ttm_b"], 1), "us_names": sorted(per),
+            "us_windows": us_windows, "us_asof": us_fund.get("asof"),
+            "cn_ttm_usd_b": rnd(cn_usd, 1), "cn_ttm_cny_b": rnd(cny_total, 1),
+            "cn": cn, "fx_cny_per_usd": fx["v"], "fx_asof": fx["d"],
+            "ratio": rnd(tot["capex_ttm_b"] / cn_usd, 1) if cn_usd else None}
+
+
+def fetch_capex_asymmetry():
+    try:
+        us_fund = json.loads((HERE / "market-data.json").read_text()).get("fundamentals")
+    except (OSError, ValueError):
+        us_fund = None
+    bidu = None
+    try:
+        bidu = parse_annual_cny(jget(
+            f"https://data.sec.gov/api/xbrl/companyconcept/CIK{BIDU_CIK}/us-gaap/{CN_CAPEX_TAG}.json",
+            headers=SEC_UA))
+    except Exception as e:
+        print(f"  capex_asymmetry: BIDU EDGAR fetch failed ({e}) - two platforms only",
+              file=sys.stderr)
+    return capex_asymmetry(us_fund, MANUAL["cn_capex"], bidu, fred_last(FRED_CNY))
+
+
 # ---------- Anthropic Economic Index ----------
 
 def parse_aei(meta):
@@ -587,104 +685,6 @@ def fetch_capex_gdp():
             "pct_gdp": capex_gdp_pct(dc["dc_saar_musd"], comp["v"], gdp["v"])}
 
 
-# ---------- US vs CN platform capex asymmetry ----------
-# The China monitor's stated equity exposure is the capex asymmetry, and it used to be
-# prose with hand-typed numbers. The US half already exists as a live XBRL series (the
-# big-5 fundamentals in market-data.json, written earlier in the same refresh job); this
-# builds the China half next to it. Baidu is the one CN platform the API serves, and only
-# annually (20-F): its latest fiscal year stands in for its trailing four quarters, stated
-# as such - never interpolated into quarters it did not report.
-BIDU_CIK = "0001329099"
-CN_CAPEX_TAG = "PaymentsToAcquirePropertyPlantAndEquipment"
-FRED_CNY = "DEXCHUS"   # CNY per USD, daily noon buying rate
-
-
-def parse_annual_cny(j):
-    """companyconcept payload -> latest full-year CNY value {fy_end, cny_b}, or None.
-    Full year = a duration of ~a year (20-F and year-end 6-K re-filings both carry it;
-    the latest filing of the latest period wins)."""
-    best = None
-    for e in (j.get("units") or {}).get("CNY") or []:
-        try:
-            start = datetime.date.fromisoformat(e["start"])
-            end = datetime.date.fromisoformat(e["end"])
-            val = float(e["val"])
-        except (KeyError, TypeError, ValueError):
-            continue
-        if not 350 <= (end - start).days <= 380:
-            continue
-        key = (e["end"], e.get("filed") or "")
-        if best is None or key > best[0]:
-            best = (key, {"fy_end": e["end"], "cny_b": round(val / 1e9, 3)})
-    return best[1] if best else None
-
-
-def last_four_quarters(quarters):
-    """{'2026Q2': v, ...} -> (window list, sum) over the newest four CONSECUTIVE
-    quarters, or None - a gap means a quarter was never keyed, and summing across it
-    would quietly turn a trailing year into nine months."""
-    if len(quarters) < 4:
-        return None
-    ks = sorted(quarters)[-4:]
-    def idx(q):
-        return int(q[:4]) * 4 + int(q[-1])
-    if idx(ks[-1]) - idx(ks[0]) != 3:
-        return None
-    return ks, round(sum(quarters[k] for k in ks), 3)
-
-
-def capex_asymmetry(us_fund, cn_manual, bidu, fx):
-    """-> the capex_asymmetry block, or None when either side cannot be built.
-
-    us_fund: market-data.json's fundamentals block; cn_manual: MANUAL["cn_capex"];
-    bidu: parse_annual_cny() or None (the CN total is then two platforms, and says so);
-    fx: {"d", "v"} CNY per USD."""
-    tot = ((us_fund or {}).get("per_filer") or {}).get("totals") or {}
-    per = ((us_fund or {}).get("per_filer") or {}).get("per") or {}
-    if tot.get("capex_ttm_b") is None or not fx or not fx.get("v"):
-        return None
-    cn, cny_total = [], 0.0
-    for sym, rec in (cn_manual or {}).items():
-        got = last_four_quarters(rec.get("quarters") or {})
-        if not got:
-            continue
-        ks, cny_b = got
-        cn.append({"sym": sym, "cny_b": cny_b, "window": f"{ks[0]}–{ks[-1]}",
-                   "basis": "trailing 4Q, hand-keyed", "asof": rec.get("asof")})
-        cny_total += cny_b
-    if bidu:
-        cn.append({"sym": "BIDU", "cny_b": bidu["cny_b"], "window": "FY to " + bidu["fy_end"],
-                   "basis": "latest fiscal year, EDGAR 20-F", "asof": bidu["fy_end"][:7]})
-        cny_total += bidu["cny_b"]
-    if not cn:
-        return None
-    cn_usd = cny_total / fx["v"]
-    us_windows = sorted({f"{p['quarters'][0]}–{p['quarters'][-1]}"
-                         for p in per.values() if p.get("quarters")})
-    return {"asof": datetime.datetime.now(datetime.timezone.utc).strftime("%Y-%m-%d"),
-            "us_ttm_usd_b": rnd(tot["capex_ttm_b"], 1), "us_names": sorted(per),
-            "us_windows": us_windows, "us_asof": us_fund.get("asof"),
-            "cn_ttm_usd_b": rnd(cn_usd, 1), "cn_ttm_cny_b": rnd(cny_total, 1),
-            "cn": cn, "fx_cny_per_usd": fx["v"], "fx_asof": fx["d"],
-            "ratio": rnd(tot["capex_ttm_b"] / cn_usd, 1) if cn_usd else None}
-
-
-def fetch_capex_asymmetry():
-    try:
-        us_fund = json.loads((HERE / "market-data.json").read_text()).get("fundamentals")
-    except (OSError, ValueError):
-        us_fund = None
-    bidu = None
-    try:
-        bidu = parse_annual_cny(jget(
-            f"https://data.sec.gov/api/xbrl/companyconcept/CIK{BIDU_CIK}/us-gaap/{CN_CAPEX_TAG}.json",
-            headers=SEC_UA))
-    except Exception as e:
-        print(f"  capex_asymmetry: BIDU EDGAR fetch failed ({e}) - two platforms only",
-              file=sys.stderr)
-    return capex_asymmetry(us_fund, MANUAL["cn_capex"], bidu, fred_last(FRED_CNY))
-
-
 # ---------- assembly ----------
 
 def snapshot_row(payload):
@@ -724,10 +724,10 @@ def refresh():
                .strftime("%Y-%m-%dT%H:%M:%SZ")}
     live_ok = False
     for name, fn in (("tsmc", fetch_tsmc), ("issuance", fetch_issuance),
+                     ("capex_asymmetry", fetch_capex_asymmetry),
                      ("ramp", fetch_ramp), ("aei", fetch_aei),
                      ("eia", fetch_860m), ("capex_gdp", fetch_capex_gdp),
-                     ("agents", lambda: fetch_agents(prev.get("agents"))),
-                     ("capex_asymmetry", fetch_capex_asymmetry)):
+                     ("agents", lambda: fetch_agents(prev.get("agents")))):
         try:
             payload[name] = fn()
         except Exception as e:
@@ -744,10 +744,10 @@ def refresh():
     if live_ok:
         append_snapshot(payload)
     print(f"wrote {OUT.name}: tsmc={bool(payload['tsmc'])} "
+          f"capex_asymmetry={bool(payload['capex_asymmetry'])} "
           f"issuance={bool(payload['issuance'])} ramp={bool(payload['ramp'])} "
           f"aei={bool(payload['aei'])} eia={bool(payload['eia'])} "
           f"capex_gdp={bool(payload['capex_gdp'])} agents={bool(payload['agents'])} "
-          f"capex_asymmetry={bool(payload['capex_asymmetry'])} "
           f"snapshot={'appended' if live_ok else 'skipped (all feeds down)'}")
 
 
