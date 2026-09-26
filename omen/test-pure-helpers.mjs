@@ -327,5 +327,55 @@ console.log("pure helpers — mnum / xlink / fetcherStale / viewFromPath / claim
 }
 
 
+/* ---------- lab economics: EV/ARR anchor for the valuation brackets ---------- */
+{
+  const code = slice("/* ================= Lab economics: pure helpers",
+                     "/* ================= Claims watch: pure helpers");
+  const { ladderMedian, labEcon, labRowAt, LAB_ECON, valBracket, fmtVal } =
+    build(code, ["ladderMedian", "labEcon", "labRowAt", "LAB_ECON", "valBracket", "fmtVal"]);
+  // the Sep-2026 question format that broke the old "$X billion"-only parser
+  const hi = valBracket("Will OpenAI's valuation hit (HIGH) $1.25T by December 31?");
+  eq("valBracket/HIGH trillions -> upside rung in $B", hi.lo, 1250);
+  eq("valBracket/HIGH is not a downside rung", hi.low, false);
+  const lo = valBracket("Will OpenAI's valuation hit (LOW) $800B by December 31?");
+  eq("valBracket/LOW -> downside rung, level in hi", lo.hi, 800);
+  eq("valBracket/LOW has no upside threshold", lo.lo, null);
+  eq("valBracket/LOW flagged", lo.low, true);
+  eq("valBracket/old '$500 billion' shape still parses", valBracket("Will OpenAI hit $500 billion?").lo, 500);
+  eq("valBracket/between", valBracket("Valued between $300 and $400 billion?").hi, 400);
+  eq("valBracket/unparseable -> null", valBracket("Will OpenAI IPO?"), null);
+  eq("fmtVal/trillions", fmtVal(1250), "$1.25T");
+  eq("fmtVal/billions", fmtVal(800), "$800B");
+  // the live ladder as of 2026-09-26: HIGH rungs with a 0.25c tail inversion, LOW rungs beside
+  const live = [[1000, .875], [1250, .625], [1500, .315], [1750, .135], [2000, .115], [2500, .046],
+                [3000, .023], [4000, .0255], [5000, .019]].map(([x, p]) => ({ lo: x, hi: null, low: false, p }))
+    .concat([[800, .145], [750, .115], [700, .0555]].map(([x, p]) => ({ lo: null, hi: x, low: true, p })));
+  const m = ladderMedian(live);
+  ok("ladder/live HIGH ladder reads through tail noise, LOW rungs ignored", m && Math.round(m.b) === 1351, JSON.stringify(m));
+  const L = (pairs) => pairs.map(([lo, p]) => ({ lo, hi: null, p }));
+  eq("ladder/interpolates the 50% crossing", ladderMedian(L([[500, 0.9], [700, 0.6], [900, 0.4]])).b, 800);
+  eq("ladder/sorts before reading", ladderMedian(L([[900, 0.4], [500, 0.9], [700, 0.6]])).b, 800);
+  eq("ladder/all above 50% -> above the top rung", ladderMedian(L([[500, 0.9], [700, 0.7]])).above, 700);
+  eq("ladder/all below 50% -> below the bottom rung", ladderMedian(L([[500, 0.3], [700, 0.1]])).below, 500);
+  eq("ladder/non-monotonic is refused, not read", ladderMedian(L([[500, 0.4], [700, 0.6]])), null);
+  eq("ladder/empty", ladderMedian([]), null);
+  eq("ladder/ignores cap-only ('< $X') rungs", ladderMedian([{ lo: null, hi: 300, p: 0.2 }, ...L([[500, 0.8], [700, 0.2]])]).b, 600);
+
+  eq("rows/newest at or before a month", labRowAt(LAB_ECON.arr, "OpenAI", "2026-03").b, 24);
+  const econ = { arr: [{ lab: "OpenAI", d: "2026-01", b: 20 }, { lab: "OpenAI", d: "2026-06", b: 40 }],
+                 rounds: [{ lab: "OpenAI", d: "2026-03", b: 800 }] };
+  const firms = [{ name: "OpenAI", brackets: L([[600, 0.8], [1000, 0.2]]) }];
+  const r = labEcon(econ, firms).find((x) => x.lab === "OpenAI");
+  eq("econ/multiple at the round uses the ARR known then", r.xRound, 40);
+  eq("econ/multiple now uses the latest ARR (denominator catching up)", r.xNow, 20);
+  eq("econ/market multiple moves with the ladder", r.xMkt, 20);
+  const none = labEcon(econ, null).find((x) => x.lab === "OpenAI");
+  eq("econ/no ladder -> no market multiple, table still renders", none.xMkt, null);
+  eq("econ/labs without rows stay in the table", labEcon(econ, null).length, 3);
+  ok("econ/every curated row is sourced and dated",
+     [...LAB_ECON.arr, ...LAB_ECON.rounds].every((x) => /^https:\/\//.test(x.src) && /^\d{4}-\d{2}$/.test(x.d)));
+  console.log("  lab economics");
+}
+
 console.log(failures ? `\n${failures} assertion(s) FAILED` : "\nall assertions passed");
 process.exit(failures ? 1 : 0);
