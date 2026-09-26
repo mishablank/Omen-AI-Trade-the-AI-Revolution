@@ -269,9 +269,20 @@ footer{border-top:1px solid var(--line);padding:56px 0 40px;background:var(--bg2
         <tr><th>Series</th><th>Reads on</th><th class="num">Latest</th><th class="num">Δ</th></tr>
         <tr><td>TSMC monthly revenue (<span class="ltAsof" id="ltTsmcAsof2">–</span>)</td><td data-l="Reads on">Realized AI-silicon demand, ~10-day lag</td><td data-l="Latest" class="num" id="ltTsmcRev">–</td><td data-l="Δ" class="num" id="ltTsmcDelta">–</td></tr>
         <tr><td>TSMC revenue, YTD vs prior year</td><td data-l="Reads on">Trend, strips the monthly noise</td><td data-l="Latest" class="num" id="ltTsmcYtd">–</td><td data-l="Δ" class="num"></td></tr>
-        <tr><td>Korea semiconductor exports, 20-day</td><td data-l="Reads on">HBM/memory pulse every ~10 days – the classic cycle canary</td><td data-l="Latest" class="num" id="ltKorea">manual</td><td data-l="Δ" class="num"></td></tr>
       </table>
-      <div class="srcline"><b>METRIC</b> – monthly and YTD revenue growth at the fab that makes every AI accelerator; a Korea 20-day print that rolls over flags memory demand cracking before any earnings call. &nbsp;<b>SOURCE</b> – <a href="https://openapi.twse.com.tw/" target="_blank" rel="noopener">TWSE OpenAPI</a> (live) · <a href="https://www.customs.go.kr" target="_blank" rel="noopener">Korea Customs 20-day release</a> (hand-updated; no keyless API)</div>
+      <div class="srcline"><b>METRIC</b> – monthly and YTD revenue growth at the fab that makes every AI accelerator. The Korea 20-day chip-export print moved to the memory pulse below. &nbsp;<b>SOURCE</b> – <a href="https://openapi.twse.com.tw/" target="_blank" rel="noopener">TWSE OpenAPI</a> (live)</div>
+    </div>
+    <div class="panel rv">
+      <h3>Memory pulse</h3>
+      <span class="cap">The memory leg of the cycle · DRAM/HBM contract direction and the Korea 20-day canary</span>
+      <table class="dt">
+        <tr><th>Series</th><th>Reads on</th><th class="num">Latest</th><th class="num">As of</th></tr>
+        <tr><td>Korea semiconductor exports, 20-day <span id="mpKoreaWin"></span></td><td data-l="Reads on">HBM/memory pulse every ~10 days – the classic cycle canary; a print that rolls over flags memory demand cracking before any earnings call</td><td data-l="Latest" class="num" id="ltKorea">manual – pending</td><td data-l="As of" class="num" id="mpKoreaAsof">–</td></tr>
+        <tr><td>Conventional DRAM contract, latest quarterly forecast</td><td data-l="Reads on">TrendForce's quarterly forecast – the LTA game in one number: suppliers pricing up while buyers lock volume</td><td data-l="Latest" class="num" id="mpDram">–</td><td data-l="As of" class="num" id="mpDramAsof">–</td></tr>
+        <tr><td>HBM contract direction <small>curated</small></td><td data-l="Reads on">The AI-specific memory line – 2027 HBM4 contracts are where pricing power is being negotiated now</td><td data-l="Latest" class="num" id="mpHbm">–</td><td data-l="As of" class="num" id="mpHbmAsof">–</td></tr>
+        <tr><td>DRAM spot trend <small>curated</small></td><td data-l="Reads on">Spot leads contract by a quarter or so; direction only – see the paywall note</td><td data-l="Latest" class="num" id="mpSpot">–</td><td data-l="As of" class="num" id="mpSpotAsof">–</td></tr>
+      </table>
+      <div class="srcline"><b>METRIC</b> – direction and QoQ range of the latest quarterly DRAM contract forecast, HBM contract direction, spot trend, and the Korea 20-day chip-export print (YoY); a contract forecast that flips to "fall" while capex keeps accelerating is the memory leg cracking first. &nbsp;<b>PAYWALL BOUNDARY</b> – DRAM spot and contract <i>levels</i> are TrendForce data (history paywalled, the daily table not licensed for republication), so they are not shown: direction and YoY are the tracked metric until a licensed feed exists. &nbsp;<b>SOURCE</b> – <a href="https://www.trendforce.com/presscenter/news" target="_blank" rel="noopener">TrendForce press releases</a> (contract forecast scanned daily by the updater; HBM and spot direction hand-curated) · <a href="https://www.customs.go.kr" target="_blank" rel="noopener">Korea Customs 20-day release</a> (hand-updated ~1st/11th/21st; flagged <b>stale</b> after 15 days)</div>
     </div>
     <div class="panel rv">
       <h3>Issuance velocity</h3>
@@ -738,8 +749,24 @@ async function liveTape(){
     put("ltTsmcDelta",[sn(t.mom_pct,1,"% MoM"),sn(t.yoy_pct,1,"% YoY")].filter(Boolean).join(" · "));
     put("ltTsmcYtd",sn(t.ytd_yoy_pct,1,"%"));
   }
-  const kor=(man.korea||{});
-  put("ltKorea",kor.chip_exports_yoy_pct!=null?sn(kor.chip_exports_yoy_pct,1,"% ("+kor.asof+")"):"manual – pending");
+  // memory pulse: the updater's memory block owns freshness (Korea's asof is enforced there)
+  const mp=d.memory||{};
+  const kp=mp.korea;
+  if(kp){
+    put("ltKorea",sn(kp.yoy_pct,0,"% YoY")+(kp.usd_b!=null?" · $"+kp.usd_b.toFixed(1)+"B":""),kp.yoy_pct>=0?"up":"down");
+    put("mpKoreaAsof",kp.asof+(kp.stale?" · STALE":""),kp.stale?"down":null);
+    if(kp.window) put("mpKoreaWin","("+kp.window+")");
+  }
+  const dc=mp.dram_contract;
+  if(dc){
+    const rng=dc.lo!=null?(dc.hi!=null&&dc.hi!==dc.lo?dc.lo+"–"+dc.hi:dc.lo)+"% QoQ":"";
+    const word={rise:"↑",fall:"↓",flat:"→ flat"}[dc.direction]||dc.direction;
+    put("mpDram",word+" "+rng+" · "+dc.quarter,dc.direction==="rise"?"up":dc.direction==="fall"?"down":null);
+    put("mpDramAsof",(dc.published||"–")+(dc.source==="manual"?" · seed":""));
+  }
+  const arrow=x=>({up:"↑ up",down:"↓ down",flat:"→ flat"})[x]||x;
+  if(mp.hbm){ put("mpHbm",arrow(mp.hbm.direction)); put("mpHbmAsof",mp.hbm.asof); }
+  if(mp.dram_spot){ put("mpSpot",arrow(mp.dram_spot.direction)+(mp.dram_spot.basis?" "+mp.dram_spot.basis:"")); put("mpSpotAsof",mp.dram_spot.asof); }
   if(rp){
     put("ltRampAdopt",rp.adoption_pct.toFixed(1)+"%",rp.mom_pp==null||rp.mom_pp>=0?"up":"down");
     put("ltRampAsof",rp.asof); put("ltRampAsof2",rp.asof);
