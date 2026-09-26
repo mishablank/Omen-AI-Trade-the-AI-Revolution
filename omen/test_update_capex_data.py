@@ -135,7 +135,6 @@ def test_snapshot_row_tolerates_missing_blocks():
 
 def test_append_snapshot_creates_header_then_appends(tmp_path, monkeypatch):
     monkeypatch.setattr(ucd, "SNAP", tmp_path / "capex-snapshots.csv")
-    monkeypatch.setattr(ucd, "fetch_capex_asymmetry", lambda: None)
     payload = {"updated": "2026-07-19T12:00:00Z",
                "tsmc": {"rev_ntd_b": 442.7, "yoy_pct": 67.9},
                "ramp": {"adoption_pct": 55.0},
@@ -152,7 +151,6 @@ def test_append_snapshot_creates_header_then_appends(tmp_path, monkeypatch):
 def test_refresh_survives_failing_fetchers_and_writes_json(tmp_path, monkeypatch, capsys):
     monkeypatch.setattr(ucd, "OUT", tmp_path / "capex-data.json")
     monkeypatch.setattr(ucd, "SNAP", tmp_path / "capex-snapshots.csv")
-    monkeypatch.setattr(ucd, "fetch_capex_asymmetry", lambda: None)
     monkeypatch.setattr(ucd, "fetch_tsmc", lambda: {"asof": "2026-06", "rev_ntd_b": 442.7})
     monkeypatch.setattr(ucd, "fetch_issuance", lambda: (_ for _ in ()).throw(OSError("down")))
     monkeypatch.setattr(ucd, "fetch_ramp", lambda: None)
@@ -199,7 +197,6 @@ def test_fetch_issuance_carries_none_counts_without_crashing(monkeypatch):
 def test_refresh_eia_failure_is_null_not_a_crash(tmp_path, monkeypatch, capsys):
     monkeypatch.setattr(ucd, "OUT", tmp_path / "capex-data.json")
     monkeypatch.setattr(ucd, "SNAP", tmp_path / "capex-snapshots.csv")
-    monkeypatch.setattr(ucd, "fetch_capex_asymmetry", lambda: None)
     for n in ("fetch_tsmc", "fetch_issuance", "fetch_ramp", "fetch_aei",
               "fetch_capex_gdp"):
         monkeypatch.setattr(ucd, n, lambda: None)
@@ -221,7 +218,6 @@ def test_refresh_carries_forward_prev_on_failure(tmp_path, monkeypatch):
     }))
     monkeypatch.setattr(ucd, "OUT", out)
     monkeypatch.setattr(ucd, "SNAP", tmp_path / "capex-snapshots.csv")
-    monkeypatch.setattr(ucd, "fetch_capex_asymmetry", lambda: None)
     monkeypatch.setattr(ucd, "fetch_tsmc", lambda: {"asof": "2026-06", "rev_ntd_b": 442.7})
     monkeypatch.setattr(ucd, "fetch_issuance", lambda: (_ for _ in ()).throw(OSError("down")))
     monkeypatch.setattr(ucd, "fetch_ramp", lambda: None)
@@ -240,7 +236,6 @@ def test_refresh_carries_forward_prev_on_failure(tmp_path, monkeypatch):
 def test_refresh_skips_snapshot_when_all_feeds_down(tmp_path, monkeypatch):
     monkeypatch.setattr(ucd, "OUT", tmp_path / "capex-data.json")
     monkeypatch.setattr(ucd, "SNAP", tmp_path / "capex-snapshots.csv")
-    monkeypatch.setattr(ucd, "fetch_capex_asymmetry", lambda: None)
     for n in ("fetch_tsmc", "fetch_issuance", "fetch_ramp", "fetch_aei",
               "fetch_860m", "fetch_capex_gdp"):
         monkeypatch.setattr(ucd, n, lambda: None)
@@ -339,6 +334,12 @@ def test_refresh_schedule_has_no_uncovered_hours():
 
 
 # ---------- US vs CN platform capex asymmetry ----------
+
+# refresh() runs every fetcher. No test in this file may reach EDGAR or FRED - including
+# refresh tests other changes add later, which cannot know to stub this one - so the
+# network entry point is stubbed file-wide. Nothing here tests it directly; the pure
+# pieces (parse_annual_cny, last_four_quarters, capex_asymmetry) are tested below.
+ucd.fetch_capex_asymmetry = lambda: None
 
 def test_parse_annual_cny_takes_the_latest_full_year_latest_filing():
     j = {"units": {"CNY": [
