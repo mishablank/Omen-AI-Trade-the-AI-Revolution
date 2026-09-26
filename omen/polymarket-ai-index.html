@@ -521,8 +521,12 @@
     <h2>AI valuation brackets <span class="sub" style="font-weight:400">&ndash; OpenAI &amp; Anthropic euphoria gauge</span></h2>
     <div class="vline" id="valVerdict"></div>
     <div id="valDist"></div>
+    <div class="tscroll"><table id="labEconTable"></table></div>
+    <div class="note" id="labEconNote"></div>
     <details class="howto"><summary>How to read this</summary>
       <div class="cap">Polymarket valuation bracket markets. When extreme valuations (> $500B for OpenAI) carry high probability, that's euphoric sentiment. Declining probabilities signal the funding window tightening.</div>
+      <div class="cap">The EV/ARR table is the revenue anchor the brackets lack. <b>At round</b> = the priced round ÷ the run-rate disclosed at or before it; <b>now</b> = the same round ÷ the latest run-rate (falling means the denominator is catching up); <b>market</b> = where the bracket ladder crosses 50% ÷ the latest run-rate, so it moves with the odds between disclosures. A "hit $X by date" ladder prices the peak valuation reached by that date, not today's mark, and the interpolation between thresholds is linear &ndash; read it as a direction. Press-reported ARR is unaudited, often one month annualized, and labs choose when to leak it: directional, not accounting.</div>
+      <div class="note" id="labEconHist"></div>
       <div class="note" id="valNote"></div>
     </details>
   </div>
@@ -848,6 +852,59 @@ async function fetchValuations(){
   }
   valuations = firms.length?{firms}:null;
 }
+
+/* ================= Lab economics: pure helpers ================= */
+// The valuation brackets price OpenAI/Anthropic odds with no revenue anchor, so on their
+// own they cannot say whether multiples are expanding or the denominator is catching up.
+// LAB_ECON is that anchor, curated: every disclosure is a row, appended and never
+// overwritten, so the table can show the multiple at the round AND on today's run-rate.
+// ARR is press-reported (unaudited, often a single month annualized, leaked when the lab
+// chooses) - the page says so. Add rows; do not edit old ones.
+const LAB_ECON = {
+  arr: [
+    {lab:"OpenAI", d:"2025-12", b:20, src:"https://techcrunch.com/2026/08/17/anthropics-annualized-revenue-surges-to-65b/"},
+    {lab:"OpenAI", d:"2026-03", b:24, src:"https://www.cnbc.com/2026/03/31/openai-funding-round-ipo.html", note:"~$2B/month at the round"},
+    {lab:"OpenAI", d:"2026-07", b:40, src:"https://www.bloomberg.com/news/articles/2026-08-13/openai-s-revenue-run-rate-tops-40-billion-ahead-of-ipo"},
+    {lab:"Anthropic", d:"2025-12", b:9, src:"https://techcrunch.com/2026/08/17/anthropics-annualized-revenue-surges-to-65b/"},
+    {lab:"Anthropic", d:"2026-05", b:47, src:"https://techcrunch.com/2026/08/17/anthropics-annualized-revenue-surges-to-65b/"},
+    {lab:"Anthropic", d:"2026-07", b:65, src:"https://techcrunch.com/2026/08/17/anthropics-annualized-revenue-surges-to-65b/"},
+    {lab:"xAI", d:"2025-12", b:0.5, src:"https://sacra.com/c/xai/", note:"standalone estimate, ex-X advertising"},
+  ],
+  rounds: [
+    {lab:"OpenAI", d:"2026-03", b:852, what:"$122B round, post-money", src:"https://www.cnbc.com/2026/03/31/openai-funding-round-ipo.html"},
+    {lab:"Anthropic", d:"2026-05", b:965, what:"$65B round", src:"https://techcrunch.com/2026/08/17/anthropics-annualized-revenue-surges-to-65b/"},
+    {lab:"xAI", d:"2026-01", b:230, what:"Series E; merged into SpaceX 2026-02, no standalone mark since", src:"https://sacra.com/c/xai/", stale:true},
+  ],
+};
+const LAB_ECON_LABS = ["OpenAI", "Anthropic", "xAI"];
+// newest row for a lab, optionally at or before month d
+const labRowAt = (rows, lab, d) => (rows||[]).filter(r => r.lab === lab && (!d || r.d <= d))
+  .sort((a,b) => a.d < b.d ? -1 : a.d > b.d ? 1 : 0).at(-1) || null;
+// Where a nested "hit $X by date" ladder crosses 50%, linearly interpolated between
+// thresholds. null for an empty or non-monotonic ladder (the same consistency rule the
+// bracket verdict applies); {below} / {above} when the crossing is off either end.
+const ladderMedian = (brackets) => {
+  const lad = (brackets||[]).filter(b => b && b.lo != null && b.p != null).sort((a,b) => a.lo - b.lo);
+  if(!lad.length) return null;
+  if(!lad.every((b,i) => i === 0 || b.p <= lad[i-1].p + 1e-9)) return null;
+  if(lad[0].p < 0.5) return {below: lad[0].lo};
+  if(lad.at(-1).p >= 0.5) return {above: lad.at(-1).lo};
+  for(let i = 1; i < lad.length; i++){
+    const a = lad[i-1], b = lad[i];
+    if(b.p < 0.5) return {b: a.lo + (a.p - 0.5) / (a.p - b.p) * (b.lo - a.lo)};
+  }
+  return null;
+};
+const labEcon = (econ, firms) => LAB_ECON_LABS.map(lab => {
+  const arr = labRowAt(econ.arr, lab), round = labRowAt(econ.rounds, lab);
+  const arrAtRound = round ? labRowAt(econ.arr, lab, round.d) : null;
+  const firm = (firms||[]).find(f => f.name === lab) || null;
+  const med = firm ? ladderMedian(firm.brackets) : null;
+  return { lab, arr, round, firm, med,
+           xRound: round && arrAtRound ? round.b / arrAtRound.b : null,
+           xNow: round && arr ? round.b / arr.b : null,
+           xMkt: med && med.b != null && arr ? med.b / arr.b : null };
+});
 
 /* ================= Claims watch: pure helpers ================= */
 // The economic-singularity thesis (Raoul Pal, Real Vision, Jul 2026) made five falsifiable
@@ -2003,6 +2060,25 @@ function renderValuations(){
     'These nested “hit $X” markets should fall as the threshold rises, and they do not. The bracket parse or the feed is off; treat this panel as unreliable until it is reconciled.';
   valUnreliable = euphoric!=null && !monotonic;
 }
+function renderLabEcon(){
+  const rows = labEcon(LAB_ECON, valuations?.firms);
+  const usd = v => v >= 100 ? "$"+Math.round(v)+"B" : "$"+(+v.toFixed(1))+"B";
+  const x = v => v == null ? "&ndash;" : Math.round(v)+"&times;";
+  const mkt = r => !r.firm ? '<span class="sub">no live ladder</span>'
+    : !r.med ? '<span class="sub">ladder unreliable</span>'
+    : r.med.below != null ? `&lt; ${usd(r.med.below)}` : r.med.above != null ? `&ge; ${usd(r.med.above)}`
+    : `${usd(r.med.b)} &rarr; ${x(r.xMkt)}`;
+  $("labEconTable").innerHTML = `<tr><th>Lab</th><th class="num">ARR run-rate</th><th class="num">Last priced round</th><th class="num">EV/ARR at round</th><th class="num">now</th><th class="num">market-implied</th></tr>`
+    + rows.map(r => `<tr><td><strong>${esc(r.lab)}</strong></td>`
+      + `<td class="num">${r.arr ? usd(r.arr.b)+' <span class="sub">'+esc(r.arr.d)+'</span>' : "&ndash;"}</td>`
+      + `<td class="num">${r.round ? usd(r.round.b)+' <span class="sub">'+esc(r.round.d)+(r.round.stale ? " · stale" : "")+'</span>' : "&ndash;"}</td>`
+      + `<td class="num">${x(r.xRound)}</td><td class="num">${x(r.xNow)}</td><td class="num">${mkt(r)}</td></tr>`).join("");
+  $("labEconNote").innerHTML = "EV/ARR on press-reported run-rates &ndash; unaudited, often one month annualized, leaked when the lab chooses: a direction, not accounting. "
+    + "Market-implied = where the valuation ladder above crosses 50%. xAI's last standalone mark predates its merger into SpaceX.";
+  $("labEconHist").innerHTML = "<b>Disclosure history</b> (curated rows, never overwritten): "
+    + LAB_ECON.arr.map(r => `${esc(r.lab)} ${esc(r.d)} ARR ${usd(r.b)} (<a href="${safeUrl(r.src)}" target="_blank" rel="noopener">src</a>)`).join(" · ")
+    + " · " + LAB_ECON.rounds.map(r => `${esc(r.lab)} ${esc(r.d)} round ${usd(r.b)}, ${esc(r.what)} (<a href="${safeUrl(r.src)}" target="_blank" rel="noopener">src</a>)`).join(" · ");
+}
 function renderLeaps(){
   const T=mkt?.tail;
   if(!T||!Object.keys(T).length){ $("leapsStats").innerHTML='<div class="sub">Run the fetcher (with the updated script) to enable LEAPS tail probabilities.</div>'; $("leapsBars").innerHTML=""; $("leapsNote").innerHTML=""; $("leapsVerdict").innerHTML=""; return; }
@@ -2696,7 +2772,7 @@ function renderAll(){
   computeSignals();
   renderGauge(); renderTiles(); renderRegime(); renderStack(); renderMomentum();
   renderVol(); renderCredit(); renderBreadth(); renderInsiders();
-  renderCrown(); renderNvda(); renderH100(); renderB200(); renderKalshiGpu(); renderValuations(); renderLeaps(); renderFundamentals(); renderMacro(); renderDepreciation(); renderBacklog(); renderCot(); renderShortInterest(); renderAiCredit(); renderPower(); renderCrossVenue(); renderClaims();
+  renderCrown(); renderNvda(); renderH100(); renderB200(); renderKalshiGpu(); renderValuations(); renderLabEcon(); renderLeaps(); renderFundamentals(); renderMacro(); renderDepreciation(); renderBacklog(); renderCot(); renderShortInterest(); renderAiCredit(); renderPower(); renderCrossVenue(); renderClaims();
   renderMainChart(); renderEquity(); renderLeadLag();
   for(const s of SIDES) renderTable(s);
   renderWhatChanged(); renderNavCards();
