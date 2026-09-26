@@ -331,7 +331,27 @@ console.log("pure helpers — mnum / xlink / fetcherStale / viewFromPath / claim
 {
   const code = slice("/* ================= Lab economics: pure helpers",
                      "/* ================= Claims watch: pure helpers");
-  const { ladderMedian, labEcon, labRowAt, LAB_ECON } = build(code, ["ladderMedian", "labEcon", "labRowAt", "LAB_ECON"]);
+  const { ladderMedian, labEcon, labRowAt, LAB_ECON, valBracket, fmtVal } =
+    build(code, ["ladderMedian", "labEcon", "labRowAt", "LAB_ECON", "valBracket", "fmtVal"]);
+  // the Sep-2026 question format that broke the old "$X billion"-only parser
+  const hi = valBracket("Will OpenAI's valuation hit (HIGH) $1.25T by December 31?");
+  eq("valBracket/HIGH trillions -> upside rung in $B", hi.lo, 1250);
+  eq("valBracket/HIGH is not a downside rung", hi.low, false);
+  const lo = valBracket("Will OpenAI's valuation hit (LOW) $800B by December 31?");
+  eq("valBracket/LOW -> downside rung, level in hi", lo.hi, 800);
+  eq("valBracket/LOW has no upside threshold", lo.lo, null);
+  eq("valBracket/LOW flagged", lo.low, true);
+  eq("valBracket/old '$500 billion' shape still parses", valBracket("Will OpenAI hit $500 billion?").lo, 500);
+  eq("valBracket/between", valBracket("Valued between $300 and $400 billion?").hi, 400);
+  eq("valBracket/unparseable -> null", valBracket("Will OpenAI IPO?"), null);
+  eq("fmtVal/trillions", fmtVal(1250), "$1.25T");
+  eq("fmtVal/billions", fmtVal(800), "$800B");
+  // the live ladder as of 2026-09-26: HIGH rungs with a 0.25c tail inversion, LOW rungs beside
+  const live = [[1000, .875], [1250, .625], [1500, .315], [1750, .135], [2000, .115], [2500, .046],
+                [3000, .023], [4000, .0255], [5000, .019]].map(([x, p]) => ({ lo: x, hi: null, low: false, p }))
+    .concat([[800, .145], [750, .115], [700, .0555]].map(([x, p]) => ({ lo: null, hi: x, low: true, p })));
+  const m = ladderMedian(live);
+  ok("ladder/live HIGH ladder reads through tail noise, LOW rungs ignored", m && Math.round(m.b) === 1351, JSON.stringify(m));
   const L = (pairs) => pairs.map(([lo, p]) => ({ lo, hi: null, p }));
   eq("ladder/interpolates the 50% crossing", ladderMedian(L([[500, 0.9], [700, 0.6], [900, 0.4]])).b, 800);
   eq("ladder/sorts before reading", ladderMedian(L([[900, 0.4], [500, 0.9], [700, 0.6]])).b, 800);
