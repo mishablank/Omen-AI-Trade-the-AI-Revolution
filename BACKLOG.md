@@ -2,7 +2,10 @@
 
 ## China AI Monitor — Community Mentions (w=10)
 
-**Status:** Open
+**Status:** Open – blocked on Reddit/X API credentials, and the premise below is stale: the null
+`IDX.social` row it describes was removed from the index on 2026-07-18 (dc77942), so doing this
+now means adding an eighth family – pick its weight and reference range when credentials exist
+(weights renormalize, so w=10 alone would not break the composite). Noted 2026-09-26.
 **Component:** `china-ai-monitor.html`, `update-china-data.py`
 **Priority:** Medium
 
