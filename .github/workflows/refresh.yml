@@ -109,7 +109,10 @@ jobs:
         # odds, fine-tune trees, SDK installs, consumer-app chart presence). The page
         # fetches the fast data live in-browser; this only regenerates china-data.json.
         # Both keys are optional: without ARTIFICIAL_ANALYSIS_API_KEY the AA scores stay
-        # a dated snapshot; without CF_RADAR_TOKEN the Radar panel stays hidden.
+        # a dated snapshot; without CF_RADAR_TOKEN the Radar panel stays hidden. The AA
+        # key is injected here and nowhere else: this step spends the run's one AA request
+        # (free tier: 100/day, ~33 runs/day) and aa_data.py caches the response in the
+        # runner's temp dir for the capex step below.
         #
         # GITHUB_TOKEN is the run's own ephemeral token, not a stored secret. Shared
         # runner IPs exhaust the 60 req/hr unauthenticated limit on api.github.com, and
@@ -129,6 +132,8 @@ jobs:
         # capex-vs-GDP -> capex-data.json for ai-capex.html. All keyless: the 860M
         # block used to need EIA_API_KEY and is now read from the published monthly
         # workbook, which also carries the planned and canceled sheets the API lacked.
+        # The token-price block reads the AA response the China step just cached - it
+        # never makes its own request, so it needs no key and must run after that step.
         run: python3 omen/update-capex-data.py
 
       # Push the fresh data straight to R2 so the Worker serves it live, with no redeploy.

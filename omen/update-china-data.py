@@ -55,6 +55,11 @@ from datetime import datetime, timezone
 from pathlib import Path
 
 HERE = Path(__file__).parent
+# aa_data is a sibling module, not a package. A script run puts its own directory on
+# sys.path already; the tests load this file by path, so say it once explicitly.
+sys.path.insert(0, str(HERE))
+import aa_data
+from aa_data import AA_FRONTIER_SINCE, aa_points, aa_side, month_add, months_between
 UA = {"User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) omen-china-monitor/1.0"}
 
 # ---- fields with no machine-readable source: update by hand when re-verified ----
@@ -907,16 +912,10 @@ def sdk_downloads():
 
 # ---- Artificial Analysis Data API ------------------------------------------------
 # Replaces the hand-refreshed MANUAL snapshot when ARTIFICIAL_ANALYSIS_API_KEY is set
-# (free tier: 1,000 req/day, attribution required). Without the key the MANUAL value
-# or the previous API-sourced value is carried, same pattern as trends/apps.
-AA_URL = "https://artificialanalysis.ai/api/v2/data/llms/models"
-AA_CN_CREATORS = re.compile(r"deepseek|alibaba|qwen|z\.?ai|zhipu|moonshot|minimax|xiaomi|tencent|stepfun|baidu|bytedance|01\.?ai", re.I)
-AA_US_CREATORS = re.compile(r"openai|anthropic|google|xai|meta|amazon|nvidia|microsoft", re.I)
-
-
-def aa_side(creator):
-    """AA creator name -> 'cn' | 'us' | None."""
-    return "cn" if AA_CN_CREATORS.search(creator) else "us" if AA_US_CREATORS.search(creator) else None
+# (free tier: 100 requests per 24h, attribution required; one per run, shared with the
+# capex updater through aa_data's cache - see that module). Without the key the MANUAL
+# value or the previous API-sourced value is carried, same pattern as trends/apps. The
+# fetch, the endpoint choice and the row parser (aa_points) live in aa_data.py.
 
 
 def aa_best(models):
@@ -940,47 +939,9 @@ def aa_best(models):
 
 # ---- AA frontier gap: the same API call, cut by country over time -----------------
 # The gap SNAPSHOT above says where the race is today; the series below says which way
-# it is moving, which is the actual thesis variable. Series start pinned to the modern
-# index era - AA re-bases its index every major version, so pre-2024 scores are not
-# comparable and a longer window would fabricate a trend.
-AA_FRONTIER_SINCE = "2024-01"
+# it is moving, which is the actual thesis variable. The window starts at
+# aa_data.AA_FRONTIER_SINCE, the modern index era.
 AA_VALUE_BAND = 3   # "near-frontier" = within this many index points of a side's frontier
-
-
-def month_add(m, n=1):
-    """'2026-01' + n months -> 'YYYY-MM'."""
-    y, mo = int(m[:4]), int(m[5:7]) - 1 + n
-    return f"{y + mo // 12:04d}-{mo % 12 + 1:02d}"
-
-
-def months_between(a, b):
-    """Whole months from month a to month b (positive when b is later)."""
-    return (int(b[:4]) - int(a[:4])) * 12 + (int(b[5:7]) - int(a[5:7]))
-
-
-def aa_points(models):
-    """AA model list -> [{side, d:'YYYY-MM', idx, name, usd}] for dated, scored models.
-
-    usd is the blended $/1M tokens: the API's 3:1 blend when present, else recomputed
-    from input/output prices, else None (the model still counts for the frontier, just
-    not for the price pick)."""
-    pts = []
-    for m in models:
-        creator = ((m.get("model_creator") or {}).get("name")) or ""
-        side = aa_side(creator)
-        idx = (m.get("evaluations") or {}).get("artificial_analysis_intelligence_index")
-        d = (m.get("release_date") or m.get("first_release_date") or "")[:7]
-        if not side or idx is None or len(d) != 7:
-            continue
-        p = m.get("pricing") or {}
-        usd = p.get("price_1m_blended_3_to_1")
-        if usd is None and p.get("price_1m_input_tokens") is not None \
-                and p.get("price_1m_output_tokens") is not None:
-            usd = (3 * float(p["price_1m_input_tokens"]) + float(p["price_1m_output_tokens"])) / 4
-        pts.append({"side": side, "d": d, "idx": float(idx),
-                    "name": m.get("name") or m.get("id"),
-                    "usd": round(float(usd), 2) if usd is not None else None})
-    return pts
 
 
 def aa_value(pts, last):
@@ -1053,11 +1014,12 @@ def artificial_analysis():
     shown, and the frontier series. The series needs release_date and pricing fields
     the snapshot never used, so it degrades separately - a schema drift there must not
     take down the score snapshot."""
-    key = os.environ.get("ARTIFICIAL_ANALYSIS_API_KEY")
-    if not key:
+    got = aa_data.fetch_models()
+    if not got:
         return None
-    models = jget(AA_URL, timeout=60, headers={"x-api-key": key}).get("data") or []
+    models, endpoint = got
     best = aa_best(models)
+    best["endpoint"] = endpoint
     try:
         frontier = aa_frontier(models)
     except Exception as e:

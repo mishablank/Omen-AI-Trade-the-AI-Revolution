@@ -148,6 +148,8 @@ omen-ai/
     ├── update-capex-data.py ....... AI capex live tape
     ├── update-influencers.py ...... KOL scoring (needs XAI_API_KEY)
     ├── update-app-charts.mjs ...... Play charts (the only Node dep)
+    ├── aa_data.py ................. the one Artificial Analysis request per run,
+    │                                shared by the China and capex updaters
     │
     │  ── guards ──
     ├── deploy-guard.py ............ refuses a hand-run deploy from a dirty tree
@@ -157,6 +159,7 @@ omen-ai/
     ├── test_update_market_data.py . parsers, gauge, retry, carry-forward
     ├── test_update_china_data.py
     ├── test_update_capex_data.py
+    ├── test_aa_data.py ............ AA cache, endpoint fallback, one request per run
     ├── test_gauge_parity.py ....... server gauge vs the shared fixture
     ├── test_gauge_refs.py ......... the Python range mirror vs OMEN.GAUGE_REFS
     ├── test_docs_truth.py ......... this tree, and no unverifiable doc claims

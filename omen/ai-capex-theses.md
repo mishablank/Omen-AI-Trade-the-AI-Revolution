@@ -4,7 +4,7 @@ Source video: Paul Kedrosky on Ed Zitron's *Better Offline* — <https://www.you
 
 These are candidate signals for OMEN, mapped from the episode's arguments. OMEN today prices the cycle through *market sentiment* (Polymarket indexes + a crash-pressure gauge on options skew, credit, volatility, drawdowns). Kedrosky's case is that stress shows up first in *fundamentals and financing plumbing* — token unit economics, debt issuance, equity raises, filings — which these rows fill in.
 
-Rows 1–5 are shipped on the [AI CapEx page](ai-capex.html). Rows 6–12 remain backlog.
+Rows 3, 4, 5, 7 and 9 are shipped on the [AI CapEx page](ai-capex.html) (the live tape and the thesis sections). Row 1 is in flight: the `token_prices` block is built and tested, and renders once the Artificial Analysis key is live. Rows 2, 6, 8 and 10–12 remain backlog.
 
 | # | Thesis (from the episode) | Metric | Data source |
 |---|---|---|---|
@@ -26,4 +26,4 @@ Rows 1–5 are shipped on the [AI CapEx page](ai-capex.html). Rows 6–12 remain
 - **Cheapest wins first**: rows 6 and 9 are largely new Polymarket/Kalshi markets, which slot straight into the existing Bear index and Gamma API pipeline. Row 7 mostly extends the EDGAR capex work OMEN already does.
 - **New signal family**: rows 1–5 justify a sixth crash-gauge family ("Financing stress") — the leading indicator Kedrosky argues the market-based signals will lag. OMEN's own disclaimer already admits the bear markets show "no statistically significant lead" over drawdowns.
 - **Hardest rows**: 2, 8 and 10 lack clean free APIs and need light scraping or manual/monthly refresh — flag as "curated" rather than live.
-- **Shipped subset**: the [AI CapEx page](ai-capex.html) implements rows 3, 4, 5, 7, 9 as curated snapshots.
+- **Shipped subset**: the [AI CapEx page](ai-capex.html) implements rows 3, 4, 5, 7, 9 – curated snapshots, with live tape rows (EDGAR, XBRL, EIA-860M) where a free source exists. Row 1 (`token_prices` in `capex-data.json`, from the same AA request the China page uses) is in flight, blocked only on the key.
