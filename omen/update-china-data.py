@@ -64,6 +64,14 @@ MANUAL = {
     # static fallback only - compute_apps() (iOS RSS + Android Play charts) overrides this
     "apps": {"score": 20, "asof": "2026-01",
              "note": "Qwen app >200M MAU, Doubao >100M DAU, DeepSeek ~82M WAU - overwhelmingly domestic."},
+    # Capital-input gap: why Chinese labs play the open-weights game at all. Annual and
+    # hand-refreshed on purpose - there is no feed, the AI Index ships each April (next:
+    # 2027-04, for calendar 2026). Private investment only: China's state guidance funds
+    # sit outside it, which is the caveat, not a footnote.
+    "investment": {"year": 2025, "us_usd_b": 285.9, "cn_usd_b": 12.4, "asof": "2026-04",
+                   "source": "Stanford AI Index 2026, Economy chapter",
+                   "caveat": "Excludes China's government guidance funds: ~$184B invested in "
+                             "AI firms 2000-2023 (Stanford SCCEI), none of it counted as private."},
 }
 
 # GitHub star velocity. The basket used to be a hardcoded list of flagship repos, which

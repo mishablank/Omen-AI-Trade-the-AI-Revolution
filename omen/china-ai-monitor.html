@@ -405,6 +405,13 @@
   <div class="note">Quarterly accelerator output in H100-equivalents (median estimates, wide confidence intervals), US designers (NVIDIA, AMD, Google, Amazon) vs Chinese (Huawei, Cambricon), from <a href="https://epoch.ai/data/ai-chip-sales" target="_blank" rel="noopener">Epoch AI's chip-sales dataset</a> (CC BY 4.0). The series ends at the last quarter with estimates for both sides &ndash; Chinese estimates lag Nvidia's by a couple of quarters. Domestic designs are not China's whole compute inflow: Epoch separately <a href="https://epoch.ai/publications/chip-smuggling" target="_blank" rel="noopener">estimates</a> a median ~660k H100e were smuggled into China through end-2025 (90% CI 290k&ndash;1.6M), roughly a third of China's stock &ndash; so this panel understates what Chinese labs can actually train and serve on.</div>
 </div>
 
+<!-- ============ SUPPLY-SIDE: CAPITAL INPUT (annual, hand-refreshed) ============ -->
+<div class="card">
+  <h2>Capital input &ndash; private AI investment <span class="sub" id="ivAsof">&ndash; annual</span></h2>
+  <div class="statrow" id="ivStats"></div>
+  <div class="note">Why the Chinese labs play the open-weights game this page measures: they are competing on a fraction of the private capital. Figures from the <a href="https://hai.stanford.edu/ai-index/2026-ai-index-report/economy" target="_blank" rel="noopener">Stanford AI Index</a> (Economy chapter; cross-check: <a href="https://cat.eto.tech/" target="_blank" rel="noopener">ETO's Country Activity Tracker</a>, Crunchbase-derived). The big caveat is structural, not statistical: China's state <a href="https://sccei.fsi.stanford.edu/china-briefs/government-venture-capital-and-ai-development-china" target="_blank" rel="noopener">guidance funds</a> put roughly $184B into AI firms over 2000&ndash;2023 and none of it counts as private investment, so the true capital gap is much narrower than the ratio says. Annual, hand-refreshed each April when the AI Index ships &ndash; the year is in the label so a stale figure looks stale.</div>
+</div>
+
 <!-- ============ PREDICTION MARKETS ============ -->
 <div class="card">
   <h2>Prediction markets &ndash; Chinese AI leadership <span class="sub">&ndash; live Polymarket odds + Kalshi (batch, daily)</span></h2>
@@ -435,9 +442,9 @@
   <b>SPI</b> = Chinese-lab &divide; US-lab routed tokens (named authors) on OpenRouter, trailing week.
   <b>Histories</b>: the updater appends one row per UTC day to <code>china-metrics.csv</code> (composite index, SPI, router/HF/Ollama Chinese shares, GitHub star velocity, frontier price gap) &ndash; the small history lines across the page read from it, so they are server-durable rather than per-browser; Polymarket odds histories come live from the public CLOB <code>prices-history</code> endpoint.
   <b>Frontier price gap</b> = median output $/M of US flagship <i>lines</i> (GPT top/mid, Claude Opus/Sonnet, Gemini Pro/Flash) &divide; median of Chinese lines (DeepSeek pro/flash, GLM, Kimi and Kimi Code, MiniMax, Qwen Max). Each line resolves to its newest live model in OpenRouter's catalogue at page load rather than to a pinned version, so a launch or a price cut moves the gap the day it ships and a retired slug surfaces as a named warning instead of quietly leaving the median. Lines are matched on name, never on price: Chinese labs deliberately price their newest flagship <i>below</i> their previous one, so ranking by cost would pick the older model.
-  <b>Supply-side panels</b> (frontier gap, compute stock, chip supply, release cadence) are context, not index inputs &ndash; they carry no weight in the adoption index. Frontier gap = best AA Intelligence Index score per lab country, monthly since 2024; lag = months between a US model first reaching today's best Chinese score and the Chinese frontier getting there; near-frontier price ratio = cheapest blended $/M within 3 index points of each side's frontier, US &divide; Chinese.
+  <b>Supply-side panels</b> (frontier gap, compute stock, chip supply, release cadence, capital input) are context, not index inputs &ndash; they carry no weight in the adoption index. Frontier gap = best AA Intelligence Index score per lab country, monthly since 2024; lag = months between a US model first reaching today's best Chinese score and the Chinese frontier getting there; near-frontier price ratio = cheapest blended $/M within 3 index points of each side's frontier, US &divide; Chinese.
   <h3>Caveats</h3>
-  OpenRouter sees only routed traffic &ndash; it overstates Chinese share of the total market (first-party US API traffic is invisible) but is the best public real-time proxy for the substitutable segment; the Vercel AI Gateway cross-check (production apps, export cached 24h) partially corrects that bias and currently reads much lower. HF download totals mix model generations and exclude derivative quantizations. Ollama pulls are lifetime cumulative, so they lag shifts; the derived daily rate is the leading part. Fine-tune-tree counts depend on authors declaring <code>base_model</code> metadata. PyPI SDK installs undercount the Chinese side badly (OpenAI-compatible APIs ride the <code>openai</code> package). Leaderboard (LMArena official dataset, arena.ai scrape fallback), search interest (Google Trends), consumer-app chart presence (Apple RSS + Google Play), Vercel, Ollama, Kalshi, fine-tune trees and SDK installs are all refreshed by <code>update-china-data.py</code>; Artificial-Analysis scores refresh live when the updater has an <code>ARTIFICIAL_ANALYSIS_API_KEY</code>, else they remain a dated snapshot, and the Cloudflare-Radar consumer-traffic panel appears only when a <code>CF_RADAR_TOKEN</code> is configured (see freshness strip). Prediction-market prices are thin in places; Kalshi quotes are daily-batch, not live, and the discovered (<span class="tag src">AUTO</span>) leadership rows rotate as each monthly cohort resolves, so that block is not a fixed panel across visits. The supply-side panels inherit their sources' blind spots: Epoch's cluster dataset covers an estimated 10&ndash;20% of world capacity and anonymizes Chinese systems (the split understates China); chip-sales figures are median estimates with wide confidence intervals, count designs rather than China's smuggled-in NVIDIA inflow, and lag ~2 quarters on the Chinese side; notable-model counts backfill for weeks after a release; the AA frontier series is rebuilt from the current catalogue, so delisted models silently leave its history, and it appears only when the updater has an <code>ARTIFICIAL_ANALYSIS_API_KEY</code>. Epoch CSVs are refetched weekly, not per-run. Nothing here is a validated forecast of equity returns &ndash; the companion monitor's own lead-lag test is honest about that.
+  OpenRouter sees only routed traffic &ndash; it overstates Chinese share of the total market (first-party US API traffic is invisible) but is the best public real-time proxy for the substitutable segment; the Vercel AI Gateway cross-check (production apps, export cached 24h) partially corrects that bias and currently reads much lower. HF download totals mix model generations and exclude derivative quantizations. Ollama pulls are lifetime cumulative, so they lag shifts; the derived daily rate is the leading part. Fine-tune-tree counts depend on authors declaring <code>base_model</code> metadata. PyPI SDK installs undercount the Chinese side badly (OpenAI-compatible APIs ride the <code>openai</code> package). Leaderboard (LMArena official dataset, arena.ai scrape fallback), search interest (Google Trends), consumer-app chart presence (Apple RSS + Google Play), Vercel, Ollama, Kalshi, fine-tune trees and SDK installs are all refreshed by <code>update-china-data.py</code>; Artificial-Analysis scores refresh live when the updater has an <code>ARTIFICIAL_ANALYSIS_API_KEY</code>, else they remain a dated snapshot, and the Cloudflare-Radar consumer-traffic panel appears only when a <code>CF_RADAR_TOKEN</code> is configured (see freshness strip). Prediction-market prices are thin in places; Kalshi quotes are daily-batch, not live, and the discovered (<span class="tag src">AUTO</span>) leadership rows rotate as each monthly cohort resolves, so that block is not a fixed panel across visits. The supply-side panels inherit their sources' blind spots: Epoch's cluster dataset covers an estimated 10&ndash;20% of world capacity and anonymizes Chinese systems (the split understates China); chip-sales figures are median estimates with wide confidence intervals, count designs rather than China's smuggled-in NVIDIA inflow, and lag ~2 quarters on the Chinese side; notable-model counts backfill for weeks after a release; the AA frontier series is rebuilt from the current catalogue, so delisted models silently leave its history, and it appears only when the updater has an <code>ARTIFICIAL_ANALYSIS_API_KEY</code>. Epoch CSVs are refetched weekly, not per-run. The capital-input figures are annual and hand-refreshed each April when the Stanford AI Index ships, and count private investment only &ndash; China's state guidance funds are outside them. Nothing here is a validated forecast of equity returns &ndash; the companion monitor's own lead-lag test is honest about that.
   <h3>Sources</h3>
   <a href="https://openrouter.ai/rankings" target="_blank" rel="noopener">OpenRouter rankings</a> &middot;
   <a href="https://vercel.com/ai-gateway/leaderboards/models" target="_blank" rel="noopener">Vercel AI Gateway leaderboards</a> (data &copy; Vercel, CC BY 4.0) &middot;
@@ -907,6 +914,7 @@ async function loadSnap(){
   dot("sn", "warn", parts.join(" · ") || "embedded snapshot");
   const sup=[]; if(snap.epoch_compute?.asof) sup.push("epoch "+snap.epoch_compute.asof);
   if(snap.aa_frontier?.asof) sup.push("aa gap "+snap.aa_frontier.asof);
+  if(snap.investment?.year) sup.push("investment "+snap.investment.year);
   dot("ep", "warn", sup.join(" · ") || "awaiting first refresh");
 }
 /* ---------------- renderers ---------------- */
@@ -1272,8 +1280,9 @@ function renderRadar(){
 /* ---------------- supply-side panels (china-data.json, see updater) ----------------
  * Context, not index inputs: none of these write IDX. The demand families above say
  * who is winning adoption; these say who can scale it - capability trend, compute
- * stock, chip flow, release cadence. All four render from batch keys and degrade to
- * the same "appears after the next refresh" note as the other batch panels.
+ * stock, chip flow, release cadence, and (annually) the private capital behind it. All
+ * render from batch keys and degrade to the same "appears after the next refresh" note
+ * as the other batch panels.
  */
 function lineChart(el, s, lines, yLabel, opts){
   // Shared mini line chart: s = [{x, ...vals}], lines = [{key, color}]. Skips null
@@ -1357,6 +1366,16 @@ function renderEpochChips(){
   $("epTop").innerHTML = (ep.cn_top||[]).map(c =>
     `<div class="hbar"><span class="k"><span class="tag cn">CN</span> ${esc(c.chip)}</span><span class="track"><i style="width:${c.h100e/mx*100}%"></i></span><span class="v">${fmtT(c.h100e)} H100e/qtr</span></div>`).join("");
 }
+function renderInvestment(){
+  // Annual MANUAL family from the updater: no fetcher, no chart - three dated numbers.
+  const iv = snap.investment;
+  if(!iv){ $("ivStats").innerHTML = '<div class="note">No investment figures yet &ndash; appear after the next server-side refresh.</div>'; return; }
+  $("ivAsof").textContent = "– calendar "+iv.year+", "+iv.source+" ("+iv.asof+")";
+  $("ivStats").innerHTML =
+    `<div class="stat"><div class="l">US private AI investment, ${iv.year}</div><div class="v">$${iv.us_usd_b.toFixed(1)}B</div><div class="l">private funding into AI companies</div></div>`
+    + `<div class="stat"><div class="l">China private AI investment, ${iv.year}</div><div class="v">$${iv.cn_usd_b.toFixed(1)}B</div><div class="l">excludes state guidance funds</div></div>`
+    + `<div class="stat"><div class="l">US &divide; China</div><div class="v">${Math.round(iv.us_usd_b/iv.cn_usd_b)}x</div><div class="l">private capital only &ndash; overstates the real gap</div></div>`;
+}
 function renderEQ(){
   const g = $("eqGrid");
   if(!S.eq?.equity){ g.innerHTML = '<div class="note">Equity feed not reachable from this origin - on the live site this loads automatically.</div>'; return; }
@@ -1428,7 +1447,7 @@ async function boot(){
   await Promise.all([ loadSnap(), loadMetrics() ]);
   renderSnapshotPanels();
   renderVercel(); renderOllama(); renderFinetunes(); renderSDK(); renderRadar();
-  renderAAFrontier(); renderEpochCompute(); renderEpochModels(); renderEpochChips();
+  renderAAFrontier(); renderEpochCompute(); renderEpochModels(); renderEpochChips(); renderInvestment();
   renderPM();   // Kalshi rows render immediately; Polymarket rows join once live
   renderShareSparks();
   await Promise.all([ loadOpenRouter().then(()=>{renderOR();renderTopModels();renderTrend();}), loadPrices().then(renderPrices), loadHF().then(renderHF), loadGH().then(renderGH), loadPM().then(renderPM), loadEQ().then(renderEQ) ]);
