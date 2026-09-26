@@ -135,6 +135,7 @@ jobs:
       # Skips cleanly if the Cloudflare secrets aren't set (the site then falls back to
       # the bundled copy, i.e. previous behaviour).
       - name: Upload data to R2
+        id: r2put
         if: ${{ env.HAS_CLOUDFLARE == 'true' }}
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
@@ -154,7 +155,23 @@ jobs:
           put china-data.json  "application/json"
           put china-metrics.csv "text/csv"
 
+      # A failed R2 upload must not also throw away the run's data.
+      #
+      # This step used to carry no `if:`, i.e. the implicit success(), so an R2 failure
+      # skipped it. From 2026-09-11 every run failed at the upload (`10042: Please enable
+      # R2 through the Cloudflare Dashboard`) and, for over two weeks, not one refresh
+      # landed anywhere: not in R2, and not in git either — the append-only
+      # snapshots.csv / capex-snapshots.csv / china-metrics.csv histories simply stopped,
+      # and those rows cannot be refetched after the fact.
+      #
+      # Now: commit when everything before succeeded, *or* when the only thing that failed
+      # was the R2 upload. A fetcher failure still skips the commit (the R2 step is then
+      # `skipped`, not `failure`), and the job still goes red on an R2 failure, so the
+      # outage stays visible — it just stops costing history.
       - name: Commit refreshed data
+        if: ${{ !cancelled() && (success() || steps.r2put.outcome == 'failure') }}
+        env:
+          R2_PUT: ${{ steps.r2put.outcome }}
         run: |
           git config user.name "ai-crash-monitor bot"
           git config user.email "actions@github.com"
@@ -167,6 +184,17 @@ jobs:
           # re-commit it only when the committed copy is over 7 days old, which is ~1
           # commit/week instead of ~48/day.
           SEED_MAX_AGE=$((7 * 24 * 60 * 60))
+          # ...unless R2 just refused the upload. Then git *is* the only store: the next
+          # run's "Seed fetcher baseline from R2" misses too and falls back to this
+          # committed copy, so a week-old seed would rebuild the rolling skew/term/tail/gpu
+          # histories on a week-old baseline and drop every day in between (the
+          # 2026-08-02 bug the seed step exists to prevent). Those histories hold one point
+          # per day, so a daily re-seed keeps every day while bounding the churn to ~1
+          # commit/day rather than ~48.
+          if [ "$R2_PUT" = "failure" ]; then
+            SEED_MAX_AGE=$((20 * 60 * 60))
+            echo "R2 upload failed this run — re-seeding market-data.json daily until it recovers"
+          fi
           seed_ts=""
           if [ "$(git rev-parse --is-shallow-repository)" = "false" ]; then
             seed_ts="$(git log -1 --format=%ct -- omen/market-data.json)"

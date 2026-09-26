@@ -1,5 +1,40 @@
 # Backlog
 
+## Cloudflare R2 is disabled on the account – uploads *and* deploys fail
+
+**Status:** Open – needs the Cloudflare dashboard; no code change can fix it
+**Component:** Cloudflare account, `wrangler.jsonc` (`r2_buckets` → `omen-data`), `.github/workflows/refresh.yml`, `.github/workflows/deploy.yml`
+**Priority:** Critical
+
+### Problem
+
+Since 2026-09-11 every `refresh.yml` run fails at "Upload data to R2" with
+`10042: Please enable R2 through the Cloudflare Dashboard`, and the one production deploy
+since then (2026-09-20, the AA backlog commit) failed at "Deploy the Worker" with the same
+cause from the other side: `R2 binding error for bucket 'omen-data': Please enable R2
+through the Cloudflare Dashboard. [code: 10136]`. So the live site is frozen twice over:
+the Worker cannot read fresh data out of R2, and no deploy can ship a newer bundled
+fallback because the Worker's R2 binding itself is rejected. Every merge to `main` will
+go red at deploy until this is fixed.
+
+The data half is now contained in git (`fix/commit-data-when-r2-fails`): the commit step
+runs when the R2 upload is the only failure, and re-seeds `market-data.json` daily
+instead of weekly while R2 is down. The site itself stays frozen until R2 is back.
+
+### Acceptance Criteria
+
+- [ ] Re-enable R2 on the Cloudflare account (Dashboard → R2 → enable / accept terms), or
+      find out why it was turned off (billing lapse? plan change?). The bucket name the
+      Worker binds is `omen-data`.
+- [ ] Confirm the bucket and its objects survived; if not, the next refresh re-creates
+      every object, and `seed-market-data.py` already treats a missing R2 copy as
+      "keep the committed seed".
+- [ ] Re-run the latest failed Deploy (`gh run rerun --failed <id>`) and one manual
+      `refresh.yml` dispatch; both should go green.
+- [ ] Only if R2 is being abandoned on purpose: make `worker.js` tolerate a missing
+      `env.DATA` binding and drop `r2_buckets` from `wrangler.jsonc` – a production
+      architecture change, deliberately not made unattended.
+
 ## China AI Monitor — Community Mentions (w=10)
 
 **Status:** Open
@@ -385,8 +420,9 @@ checks auth before routing and returns `401 Invalid API key` for every path, rea
       ratio – not merely that the JSON key appeared.
 - [ ] Note the prerequisite: `refresh.yml` has failed every run since 2026-09-11 at "Upload
       data to R2" (`10042: Please enable R2 through the Cloudflare Dashboard`), and the
-      commit step runs after it under `bash -e`, so no refreshed data has landed in nine
-      days. Adding the key changes nothing on the live site until that is fixed.
+      commit step used to be skipped with it, so no refreshed data landed for over two
+      weeks. The commit is now decoupled from the upload (see the R2 item at the top), but
+      adding the key still changes nothing on the live site until R2 is re-enabled.
 
 ## AI CapEx – token-price deflation from the AA Data API (thesis #1)
 
