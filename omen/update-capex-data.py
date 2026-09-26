@@ -741,7 +741,7 @@ def refresh():
             payload[name] = None
         if payload[name] is None:
             payload[name] = prev.get(name)  # carry last good value forward
-        else:
+        elif name != "memory":   # rebuilt from MANUAL every run - not evidence a feed is up
             live_ok = True
     payload["manual"] = MANUAL
     OUT.write_text(json.dumps(payload, ensure_ascii=False, indent=1) + "\n")
