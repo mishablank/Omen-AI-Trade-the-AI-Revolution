@@ -15,6 +15,9 @@ section of the otherwise hand-curated fundamentals page:
     computer-equipment investment as a share of nominal GDP
   - Agent-stack installs (npm + pypistats, keyless): weekly downloads of the agent
     CLIs and SDKs - the closest public proxy for agentic adoption
+  - Token-price deflation (Artificial Analysis)   : cheapest blended $/1M tokens per
+    fixed capability band, by month, + YoY - thesis #1. Reads the response the China
+    step already fetched (aa_data's cache); never spends a request or needs the key
 
 Not automated, kept in MANUAL below (no free machine-readable source):
   - Korea 20-day semiconductor exports (customs.go.kr press releases)
@@ -42,6 +45,8 @@ from pathlib import Path
 from xml.etree import ElementTree as ET
 
 HERE = Path(__file__).parent
+sys.path.insert(0, str(HERE))   # aa_data is a sibling module; the tests load this file by path
+import aa_data
 OUT = HERE / "capex-data.json"
 SNAP = HERE / "capex-snapshots.csv"
 UA = {"User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) omen-capex-tape/1.0"}
@@ -567,6 +572,76 @@ def fetch_capex_gdp():
             "pct_gdp": capex_gdp_pct(dc["dc_saar_musd"], comp["v"], gdp["v"])}
 
 
+# ---------- token-price deflation (thesis #1, Artificial Analysis) ----------
+# Kedrosky's duration mismatch: the debt that funds the buildout carries a fixed coupon,
+# while the revenue per unit of intelligence that services it keeps falling. This is the
+# second line of that pair. Same catalogue and same parser as the China page's frontier
+# series (aa_data.aa_points); the cut is by capability band instead of by country, and
+# every lab counts - a French or Korean token deflates the price just the same.
+#
+# Honest limits, all repeated on the page: AA's catalogue is current-only, so a delisted
+# model vanishes from history and the reconstruction is survivorship-biased toward what
+# is still sold, at today's list price; AA re-bases the index across major versions, so a
+# fixed band is only comparable inside the AA_FRONTIER_SINCE window; blended 3:1
+# input:output is a convention, not anyone's bill.
+TOKEN_BANDS = (60, 50, 40)   # "at least this AA Intelligence Index"
+
+
+def token_price_bands(models, today=None, bands=TOKEN_BANDS):
+    """AA model list -> the token_prices block, or None when no band has a price.
+
+    For each band and month: the cheapest blended $/1M among models released by that
+    month scoring at or above the band. Zero-priced entries are dropped (a free tier is
+    a promo, not a price - same rule as the China page's value ratio). YoY compares the
+    latest month with the same month a year earlier; tokens_per_coupon is its inverse
+    read: how many times more tokens the same fixed debt service now has to be earned on."""
+    pts = [p for p in aa_data.aa_points(models, sided=False) if p["usd"]]
+    if not pts:
+        return None
+    today = today or datetime.datetime.now(datetime.timezone.utc).strftime("%Y-%m")
+    months, m = [], max(aa_data.AA_FRONTIER_SINCE, min(p["d"] for p in pts))
+    while m <= today:
+        months.append(m)
+        m = aa_data.month_add(m)
+    out_bands = []
+    for band in bands:
+        series, now = [], None
+        for mo in months:
+            c = [p for p in pts if p["idx"] >= band and p["d"] <= mo]
+            if c:
+                now = min(c, key=lambda p: p["usd"])
+                series.append([mo, now["usd"]])
+        if not series:
+            continue
+        last_m, last_usd = series[-1]
+        ago = dict(series).get(aa_data.month_add(last_m, -12))
+        row = {"min_idx": band, "series": series,
+               "now": {"name": now["name"], "idx": round(now["idx"], 1), "usd": last_usd},
+               "yr_ago_usd": ago, "yoy_pct": None, "tokens_per_coupon": None}
+        if ago:
+            row["yoy_pct"] = rnd((last_usd / ago - 1) * 100, 1)
+            row["tokens_per_coupon"] = rnd(ago / last_usd, 1)
+        out_bands.append(row)
+    if not out_bands:
+        return None
+    return {"asof": datetime.datetime.now(datetime.timezone.utc).strftime("%Y-%m-%d"),
+            "since": aa_data.AA_FRONTIER_SINCE, "source": "aa-api",
+            "attribution": "Source: Artificial Analysis (artificialanalysis.ai)",
+            "bands": out_bands}
+
+
+def fetch_token_prices():
+    """None (carry forward) unless the China step left a fresh AA response in the
+    cache. The key is not injected into this step on purpose - see aa_data."""
+    got = aa_data.fetch_models(key="")   # "" = cache only, never a request from here
+    if not got:
+        return None
+    out = token_price_bands(got[0])
+    if out:
+        out["endpoint"] = got[1]
+    return out
+
+
 # ---------- assembly ----------
 
 def snapshot_row(payload):
@@ -608,7 +683,8 @@ def refresh():
     for name, fn in (("tsmc", fetch_tsmc), ("issuance", fetch_issuance),
                      ("ramp", fetch_ramp), ("aei", fetch_aei),
                      ("eia", fetch_860m), ("capex_gdp", fetch_capex_gdp),
-                     ("agents", lambda: fetch_agents(prev.get("agents")))):
+                     ("agents", lambda: fetch_agents(prev.get("agents"))),
+                     ("token_prices", fetch_token_prices)):
         try:
             payload[name] = fn()
         except Exception as e:
@@ -628,6 +704,7 @@ def refresh():
           f"issuance={bool(payload['issuance'])} ramp={bool(payload['ramp'])} "
           f"aei={bool(payload['aei'])} eia={bool(payload['eia'])} "
           f"capex_gdp={bool(payload['capex_gdp'])} agents={bool(payload['agents'])} "
+          f"token_prices={bool(payload['token_prices'])} "
           f"snapshot={'appended' if live_ok else 'skipped (all feeds down)'}")
 
 

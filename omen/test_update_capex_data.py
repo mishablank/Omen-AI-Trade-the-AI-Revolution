@@ -158,6 +158,7 @@ def test_refresh_survives_failing_fetchers_and_writes_json(tmp_path, monkeypatch
     monkeypatch.setattr(ucd, "fetch_860m", lambda: None)
     monkeypatch.setattr(ucd, "fetch_capex_gdp", lambda: None)
     monkeypatch.setattr(ucd, "fetch_agents", lambda prev=None: None)
+    monkeypatch.setattr(ucd, "fetch_token_prices", lambda: None)
     ucd.refresh()
     import json
     d = json.loads((tmp_path / "capex-data.json").read_text())
@@ -201,6 +202,7 @@ def test_refresh_eia_failure_is_null_not_a_crash(tmp_path, monkeypatch, capsys):
               "fetch_capex_gdp"):
         monkeypatch.setattr(ucd, n, lambda: None)
     monkeypatch.setattr(ucd, "fetch_agents", lambda prev=None: None)
+    monkeypatch.setattr(ucd, "fetch_token_prices", lambda: None)
     monkeypatch.setattr(ucd, "fetch_860m", lambda: (_ for _ in ()).throw(OSError("down")))
     ucd.refresh()
     import json
@@ -225,6 +227,7 @@ def test_refresh_carries_forward_prev_on_failure(tmp_path, monkeypatch):
     monkeypatch.setattr(ucd, "fetch_860m", lambda: None)
     monkeypatch.setattr(ucd, "fetch_capex_gdp", lambda: None)
     monkeypatch.setattr(ucd, "fetch_agents", lambda prev=None: None)
+    monkeypatch.setattr(ucd, "fetch_token_prices", lambda: None)
     ucd.refresh()
     d = json.loads(out.read_text())
     assert d["tsmc"]["rev_ntd_b"] == 442.7          # live value wins
@@ -240,6 +243,7 @@ def test_refresh_skips_snapshot_when_all_feeds_down(tmp_path, monkeypatch):
               "fetch_860m", "fetch_capex_gdp"):
         monkeypatch.setattr(ucd, n, lambda: None)
     monkeypatch.setattr(ucd, "fetch_agents", lambda prev=None: None)
+    monkeypatch.setattr(ucd, "fetch_token_prices", lambda: None)
     ucd.refresh()
     assert not (tmp_path / "capex-snapshots.csv").exists()  # no blank history row
 
@@ -633,3 +637,78 @@ def test_fetch_agents_totals_npm_and_extends_series(monkeypatch):
     assert all(v == 7 for v in out["pypi"].values())
     assert out["series"][0] == ["2000-01-01", 1]           # prior history kept
     assert out["series"][-1][1] == out["npm_total_wk"]     # today appended
+
+
+# ---------- token-price deflation (AA, thesis #1) ----------
+
+def aa_m(name, creator, idx, d, usd):
+    return {"name": name, "model_creator": {"name": creator},
+            "evaluations": {"artificial_analysis_intelligence_index": idx},
+            "release_date": d, "pricing": {"price_1m_blended_3_to_1": usd}}
+
+
+TOKEN_FIXTURE = [
+    aa_m("old-frontier", "OpenAI", 61, "2025-01-10", 10.0),
+    aa_m("mid-a", "Anthropic", 52, "2025-03-01", 6.0),
+    aa_m("cheap-mid", "Mistral", 51, "2025-09-01", 1.5),      # neither US nor CN: counts
+    aa_m("new-frontier", "Google", 63, "2026-02-01", 4.0),
+    aa_m("free-promo", "DeepSeek", 62, "2026-03-01", 0),       # zero price: excluded
+    aa_m("cn-cheap", "DeepSeek", 60, "2026-04-01", 2.5),
+]
+
+
+def test_token_price_bands_cheapest_per_band_and_yoy():
+    out = ucd.token_price_bands(TOKEN_FIXTURE, today="2026-04", bands=(60, 50))
+    b60, b50 = out["bands"]
+    assert b60["min_idx"] == 60 and b60["now"] == {"name": "cn-cheap", "idx": 60.0, "usd": 2.5}
+    assert b60["yr_ago_usd"] == 10.0                 # 2025-04: only old-frontier
+    assert b60["yoy_pct"] == -75.0 and b60["tokens_per_coupon"] == 4.0
+    assert b50["now"]["name"] == "cheap-mid"         # the Mistral model sets the floor
+    assert b50["yr_ago_usd"] == 6.0 and b50["yoy_pct"] == -75.0
+
+
+def test_token_price_bands_series_never_rises_on_a_current_catalogue():
+    # a reconstruction from today's catalogue can only add cheaper options over time -
+    # which is exactly the survivorship caveat the page states
+    for b in ucd.token_price_bands(TOKEN_FIXTURE, today="2026-04")["bands"]:
+        prices = [v for _, v in b["series"]]
+        assert prices == sorted(prices, reverse=True)
+        assert all(v > 0 for v in prices)
+
+
+def test_token_price_bands_without_a_year_of_history_has_no_yoy():
+    out = ucd.token_price_bands([aa_m("x", "OpenAI", 65, "2026-01-01", 3.0)], today="2026-04")
+    b = out["bands"][0]
+    assert b["yoy_pct"] is None and b["tokens_per_coupon"] is None
+    assert [r["min_idx"] for r in out["bands"]] == [60, 50, 40]
+
+
+def test_token_price_bands_none_when_nothing_is_priced():
+    assert ucd.token_price_bands([aa_m("x", "OpenAI", 65, "2026-01-01", 0)]) is None
+
+
+def test_fetch_token_prices_reads_the_cache_and_never_the_network(monkeypatch):
+    seen = {}
+    def fake(key=None, **kw):
+        seen["key"] = key
+        return TOKEN_FIXTURE, "https://aa/endpoint"
+    monkeypatch.setattr(ucd.aa_data, "fetch_models", fake)
+    out = ucd.fetch_token_prices()
+    assert seen["key"] == ""                      # cache only, even if a key is set
+    assert out["endpoint"] == "https://aa/endpoint" and out["bands"]
+    monkeypatch.setattr(ucd.aa_data, "fetch_models", lambda key=None, **kw: None)
+    assert ucd.fetch_token_prices() is None       # -> refresh() carries the previous value
+
+
+def test_refresh_carries_token_prices_forward_without_the_cache(tmp_path, monkeypatch):
+    import json
+    out = tmp_path / "capex-data.json"
+    out.write_text(json.dumps({"token_prices": {"asof": "2026-09-01", "bands": [1]}}))
+    monkeypatch.setattr(ucd, "OUT", out)
+    monkeypatch.setattr(ucd, "SNAP", tmp_path / "capex-snapshots.csv")
+    for n in ("fetch_tsmc", "fetch_issuance", "fetch_ramp", "fetch_aei",
+              "fetch_860m", "fetch_capex_gdp", "fetch_token_prices"):
+        monkeypatch.setattr(ucd, n, lambda: None)
+    monkeypatch.setattr(ucd, "fetch_agents", lambda prev=None: None)
+    ucd.refresh()
+    assert json.loads(out.read_text())["token_prices"]["asof"] == "2026-09-01"

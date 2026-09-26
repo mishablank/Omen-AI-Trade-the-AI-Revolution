@@ -327,7 +327,11 @@ pairing this monitor exists to show. Remaining gap #10 of 10 from the Aug-2026 s
 
 ## Artificial Analysis – the Data API is written but was never connected
 
-**Status:** Open
+**Status:** Open – blocked on the key and the redistribution answer; the code side is ready
+(2026-09-26, `feat/aa-shared-module-token-prices`): the fetch moved to `omen/aa_data.py`, which
+tries the documented `/api/v2/language/models` first and falls back to the legacy path on a 404
+only, logs per-field coverage of the four fields the code reads, and records the endpoint that
+answered – so the first keyed run pins the URL question in its own log.
 **Component:** `omen/update-china-data.py`, `.github/workflows/refresh.yml`, repo secrets
 **Priority:** High
 
@@ -375,7 +379,9 @@ checks auth before routing and returns `401 Invalid API key` for every path, rea
       use. The site already credits and links AA, which covers attribution but not
       redistribution. Get it in writing, or keep the panel to derived statistics (gap, lag,
       ratio) rather than republishing AA's scores as a table.
-- [ ] Fix the `1,000 req/day` comment; one daily run is one request, and the ceiling is 100.
+- [x] Fix the `1,000 req/day` comment; one daily run is one request, and the ceiling is 100.
+      (Done: the real cadence is ~33 runs/day, one request each, and the capex updater now
+      reads the China step's cached response instead of spending a second one.)
 - [ ] Decide `MANUAL["artificial_analysis"]`'s fate once the feed is live. `pick_aa` keeps it
       as a last-resort fallback, but a dated 2026-07 literal silently standing in for a live
       feed is exactly the drift `test_docs_truth.py` and `test_documented_secrets.py` exist to
@@ -390,7 +396,13 @@ checks auth before routing and returns `401 Invalid API key` for every path, rea
 
 ## AI CapEx – token-price deflation from the AA Data API (thesis #1)
 
-**Status:** Open
+**Status:** Built, waiting on the key (2026-09-26, `feat/aa-shared-module-token-prices`) – shared
+`aa_data.py` (one keyed request per run: the China step fetches and caches in the runner's temp
+dir, outside the assets directory; the capex step reads the cache and never holds the key),
+`token_prices` block (bands ≥60/≥50/≥40, cheapest blended $/M by month, YoY, and "tokens per
+coupon $"), carry-forward and tests, a hidden-until-data "Token deflation vs fixed debt" panel on
+the live tape with all three caveats, and the theses-doc contradiction fixed (row 1 marked in
+flight). **Still open:** first render on a real payload once the key exists.
 **Component:** `omen/update-capex-data.py`, `omen/ai-capex.html`, `omen/update-china-data.py`
 **Priority:** Medium
 

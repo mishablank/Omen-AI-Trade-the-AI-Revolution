@@ -341,6 +341,15 @@ footer{border-top:1px solid var(--line);padding:56px 0 40px;background:var(--bg2
       </table>
       <div class="srcline"><b>METRIC</b> – implied gross margin = 1 − serving-cost floor ÷ price, with margins quoted at the 1.0M tok/GPU-hr midpoint; a bounding exercise, not a P&amp;L – batch efficiency, MoE routing and first-party hardware all move the true number. &nbsp;<b>SOURCE</b> – <a href="https://openrouter.ai/api/v1/models" target="_blank" rel="noopener">OpenRouter models API</a> (live, newest priced model per line) · <a href="https://vast.ai" target="_blank" rel="noopener">vast.ai</a> (live, via market-data.json)</div>
     </div>
+    <div class="panel rv" id="tpPanel" style="display:none">
+      <h3>Token deflation vs fixed debt</h3>
+      <span class="cap">Thesis #1, the duration mismatch · the price of a fixed unit of intelligence, against a coupon that does not deflate (<span id="tpAsof">–</span>)</span>
+      <table class="dt">
+        <thead><tr><th>Capability band</th><th>Reads on</th><th class="num">Cheapest now</th><th class="num">YoY</th><th class="num">Tokens / coupon $</th></tr></thead>
+        <tbody id="tpRows"></tbody>
+      </table>
+      <div class="srcline"><b>METRIC</b> – for each fixed Artificial Analysis Intelligence Index band, the cheapest blended $/1M tokens (3:1 input:output) among models released by that month, and its change over a year. The debt side is <a href="#debt">thesis i</a>'s issuance wave: a coupon priced at issue stays fixed for 5–30 years, so a −75% YoY here means each coupon dollar now has to be earned on 4× the tokens (the last column) – unless volume outgrows the price fall, which is the bull case's whole bet. &nbsp;<b>CAVEATS</b> – AA's catalogue is current-only, so delisted models vanish and the history is survivorship-biased toward what is still sold, at today's list prices; AA re-bases its index across major versions, so the bands are only comparable since <span id="tpSince">2024-01</span>; blended 3:1 is a convention, not anyone's bill. &nbsp;<b>SOURCE</b> – <a href="https://artificialanalysis.ai/" target="_blank" rel="noopener">Artificial Analysis</a> Data API (one keyed request per run, shared with <a href="china-ai-monitor.html">China Watch</a>'s frontier panel)</div>
+    </div>
     <div class="panel rv">
       <h3>Generator pipeline</h3>
       <span class="cap">The stranded-GW thesis in federal data · EIA-860M inventory by status</span>
@@ -774,6 +783,22 @@ async function liveTape(){
     }
     const pv=Object.values(ag.pypi||{}).filter(v=>v!=null);
     if(pv.length) put("ltAgPypi",k(pv.reduce((a,b)=>a+b,0))+"/wk");
+  }
+  // Thesis #1: hidden until the updater has AA data (the key is still pending), same
+  // rule as China Watch's frontier card - an all-dash panel would look like a failure.
+  const tp=d.token_prices;
+  if(tp&&tp.bands&&tp.bands.length){
+    const reads={60:"Frontier tier – where pricing power is supposed to live",
+                 50:"Near-frontier – the segment open weights substitute into",
+                 40:"Commodity tier – where the price floor gets set"};
+    const usd=v=>v==null?"–":"$"+v.toFixed(2);
+    $("tpRows").innerHTML=tp.bands.map(b=>
+      `<tr><td>AA index ≥ ${+b.min_idx}</td><td data-l="Reads on">${reads[b.min_idx]||"Fixed capability band"}</td>`
+      +`<td data-l="Cheapest now" class="num">${usd(b.now.usd)}<br><small>${esc(b.now.name)}</small></td>`
+      +`<td data-l="YoY" class="num${b.yoy_pct<0?" down":""}">${b.yoy_pct==null?"–":sn(b.yoy_pct,0,"%")+"<br><small>from "+usd(b.yr_ago_usd)+"</small>"}</td>`
+      +`<td data-l="Tokens / coupon $" class="num">${b.tokens_per_coupon==null?"–":"×"+b.tokens_per_coupon.toFixed(1)}</td></tr>`).join("");
+    put("tpAsof",tp.asof); if(tp.since) put("tpSince",tp.since);
+    $("tpPanel").style.display="";
   }
   const upd=$("ltUpdated"); if(upd&&d.updated) upd.textContent="live tape "+d.updated.slice(0,16).replace("T"," ")+"Z";
 }
