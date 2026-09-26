@@ -2,7 +2,7 @@
 
 ## Cloudflare R2 is disabled on the account – uploads *and* deploys fail
 
-**Status:** Open – needs the Cloudflare dashboard; no code change can fix it
+**Status:** In progress – R2 re-enabled in the dashboard on 2026-09-26; deploy and refresh still to be confirmed green
 **Component:** Cloudflare account, `wrangler.jsonc` (`r2_buckets` → `omen-data`), `.github/workflows/refresh.yml`, `.github/workflows/deploy.yml`
 **Priority:** Critical
 
@@ -23,7 +23,7 @@ instead of weekly while R2 is down. The site itself stays frozen until R2 is bac
 
 ### Acceptance Criteria
 
-- [ ] Re-enable R2 on the Cloudflare account (Dashboard → R2 → enable / accept terms), or
+- [x] Re-enable R2 on the Cloudflare account (Dashboard → R2 → enable / accept terms), or
       find out why it was turned off (billing lapse? plan change?). The bucket name the
       Worker binds is `omen-data`.
 - [ ] Confirm the bucket and its objects survived; if not, the next refresh re-creates
