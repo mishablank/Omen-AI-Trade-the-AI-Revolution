@@ -562,6 +562,27 @@ def test_pick_aa_carries_forward_api_value_only():
     assert ucd.pick_aa(None, manual_prev, ucd.MANUAL["artificial_analysis"]) == ucd.MANUAL["artificial_analysis"]
 
 
+# ---- safety profile (hand-keyed, semiannual/quarterly context) ----------------------
+
+def test_safety_manual_has_cn_labs_and_two_us_anchors_with_dated_editions():
+    sf = ucd.MANUAL["safety"]
+    labs = sf["fli"]["labs"]
+    assert sum(1 for x in labs if x["cn"]) >= 3 and sum(1 for x in labs if not x["cn"]) >= 2
+    assert sf["fli"]["edition"] and len(sf["fli"]["published"]) == 7
+    assert sf["concordia"]["report"] and sf["concordia"]["src"].startswith("https://")
+    grades = {"A+", "A", "A-", "B+", "B", "B-", "C+", "C", "C-", "D+", "D", "D-", "F"}
+    for x in labs:
+        assert {x["grade"], x["current_harms"], x["existential"]} <= grades, x["lab"]
+    # grade points rank the same way as the letters
+    ordered = sorted(labs, key=lambda x: -x["score"])
+    order = ["A+", "A", "A-", "B+", "B", "B-", "C+", "C", "C-", "D+", "D", "D-", "F"]
+    assert [order.index(x["grade"]) for x in ordered] == sorted(order.index(x["grade"]) for x in ordered)
+
+
+def test_safety_carries_no_index_weight():
+    assert ucd.compute_index({"safety": ucd.MANUAL["safety"]}) == ucd.compute_index({})
+
+
 def test_radar_rows_marks_cn_services_and_tolerates_shapes():
     got = ucd.radar_rows({"top_0": [{"rank": 1, "service": "ChatGPT"},
                                     {"rank": 9, "service": "DeepSeek"}]})

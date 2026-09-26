@@ -431,6 +431,14 @@
   <div class="note">Polymarket leadership markets resolve on <a href="https://arena.ai/leaderboard/text" target="_blank" rel="noopener">arena.ai</a> rankings; <a href="https://kalshi.com/markets/kxbestllmchina/chinese-llm-best" target="_blank" rel="noopener">Kalshi</a> is a CFTC-regulated exchange with deeper AI books, fetched by the daily updater (no CORS API). These are the market's own probabilities that Chinese labs take or hold the frontier &ndash; the cleanest forward-looking read in this monitor. Rows tagged <span class="tag src">AUTO</span> were found by searching Polymarket's active markets rather than pinned by id, so the monthly "best Chinese AI model" cohort keeps refreshing as each one resolves; only markets above $5k volume are admitted, which excludes the unnamed placeholder outcomes that sit at 50&cent;.</div>
 </div>
 
+<!-- ============ SAFETY PROFILE (hand-keyed, low cadence) ============ -->
+<div class="card">
+  <h2>Safety profile behind the ban market <span class="sub" id="sfAsof">&ndash; semiannual / quarterly</span></h2>
+  <table id="sfTable"><thead><tr><th>Lab</th><th></th><th class="num">FLI grade</th><th class="num">Current harms</th><th class="num">Existential safety</th></tr></thead><tbody id="sfBody"></tbody></table>
+  <div class="note" id="sfConcordia"></div>
+  <div class="note">The market above prices a US move to cut public access to a major Chinese model; this is the safety record such a move would cite. Letter grades and grade points from the <a href="https://futureoflife.org/ai-safety-index-summer-2026/" target="_blank" rel="noopener">FLI AI Safety Index</a> (semiannual, 37 indicators across six domains; two US labs shown as anchors), plus the headline of Concordia AI's quarterly <a href="https://airiskmonitor.net/doc/en/about" target="_blank" rel="noopener">Frontier AI Risk Monitor</a>. Both are hand-keyed, low-cadence and methodology-churning between editions &ndash; compare within an edition, not across. Context only &ndash; no index weight.</div>
+</div>
+
 <!-- ============ EQUITY ============ -->
 <div class="card">
   <h2>US AI equity check <span class="sub" id="eqAsof">&ndash; the stocks this pressure would show up in</span></h2>
@@ -476,6 +484,7 @@
   <a href="https://artificialanalysis.ai/" target="_blank" rel="noopener">Artificial Analysis</a> &middot;
   <a href="https://epoch.ai/data" target="_blank" rel="noopener">Epoch AI data</a> (<a href="https://epoch.ai/data/gpu-clusters" target="_blank" rel="noopener">GPU clusters</a>, <a href="https://epoch.ai/data/ai-chip-sales" target="_blank" rel="noopener">chip sales</a>, <a href="https://epoch.ai/data/ai-models" target="_blank" rel="noopener">AI models</a>; CC BY 4.0) &middot;
   <a href="https://pypistats.org" target="_blank" rel="noopener">pypistats.org</a> &middot;
+  <a href="https://futureoflife.org/ai-safety-index-summer-2026/" target="_blank" rel="noopener">FLI AI Safety Index</a> and <a href="https://airiskmonitor.net/doc/en/about" target="_blank" rel="noopener">Concordia AI Frontier AI Risk Monitor</a> (safety profile; hand-keyed, semiannual/quarterly, no index weight) &middot;
   <a href="https://radar.cloudflare.com/ai-insights" target="_blank" rel="noopener">Cloudflare Radar AI Insights</a> &middot;
   <a href="https://www.cnbc.com/2026/07/07/chinese-ai-models-costs-us-openai-anthropic.html" target="_blank" rel="noopener">CNBC 2026-07-07</a>
   <br><br>Built as part of <a href="index.html">OMEN</a>. Not investment advice.
@@ -1522,6 +1531,22 @@ function renderGauge(){
     + "Bar thickness = weight; the +pt figures are each family's contribution and sum to the index.";
   renderIdxSpark();
 }
+function renderSafety(){
+  // Hand-keyed MANUAL family from the updater (FLI semiannual + Concordia quarterly).
+  const sf = snap.safety;
+  if(!sf?.fli?.labs?.length){ $("sfBody").innerHTML = '<tr><td colspan="5" class="note">No safety data yet &ndash; appears after the next server-side refresh.</td></tr>'; return; }
+  $("sfAsof").textContent = "– FLI "+sf.fli.edition+(sf.concordia ? " · Concordia "+sf.concordia.report : "");
+  $("sfBody").innerHTML = sf.fli.labs.map(x =>
+    `<tr><td>${esc(x.lab)}</td><td><span class="tag ${x.cn?"cn":"us"}">${x.cn?"CN":"US"}</span></td>`
+    + `<td class="num"><b>${esc(x.grade)}</b> <span class="sub">${x.score.toFixed(2)}</span></td>`
+    + `<td class="num">${esc(x.current_harms)}</td><td class="num">${esc(x.existential)}</td></tr>`).join("");
+  const c = sf.concordia;
+  if(c?.yoy_multiple){
+    const m = c.yoy_multiple;
+    $("sfConcordia").innerHTML = `<b>Concordia AI, ${esc(c.report)}</b> (${esc(c.published)}): average Risk Index across evaluated models, year on year &ndash; cyber offense ${m.cyber}&times;, biological ${m.bio}&times;, loss of control ${m.loss_of_control}&times;. ${esc(c.note.split(". ").slice(1).join(". "))}`
+      + (c.per_model ? "" : " Per-model indices are not keyed yet.");
+  }
+}
 /* ---------------- boot ---------------- */
 async function boot(){
   await Promise.all([ loadSnap(), loadMetrics() ]);
@@ -1533,6 +1558,7 @@ async function boot(){
   renderShareSparks();
   await Promise.all([ loadOpenRouter().then(()=>{renderOR();renderTopModels();renderTrend();}), loadPrices().then(renderPrices), loadHF().then(renderHF), loadGH().then(renderGH), loadPM().then(renderPM), loadEQ().then(renderEQ), loadCapexAsym().then(renderCapexAsym) ]);
   renderGauge();
+  renderSafety();
   renderScatter();   // needs both the resolved price lines and the arena Elo list
 }
 boot();
