@@ -297,7 +297,14 @@ Metrics on Zenodo) — this is a once-a-year hand refresh, not a feed. Remaining
 
 ## China AI Monitor — Chinese frontier-model safety/risk scores
 
-**Status:** Open
+**Status:** Partly done (2026-09-26, `feat/china-safety-grades`) – `MANUAL["safety"]`: FLI AI Safety Index
+Summer 2026 (Z.ai D- 0.88, Alibaba Cloud D- 0.87, DeepSeek F 0.47; anchors Anthropic C+ 2.66, OpenAI
+C 2.28; plus current-harms and existential-safety domain grades – verified against FLI's page) and
+Concordia AI's 2026 Q2 headline (average Risk Index YoY: cyber 4.4×, bio 6.6×, loss-of-control 2.4×).
+Rendered as a compact table directly under the prediction-markets card; cadence, method churn and
+no-weight caveats in-panel and in the footer. **Still open:** Concordia's per-model Risk Index values –
+airiskmonitor.net refused an automated fetch (as expected), so the ~8 numbers need keying by hand into
+`MANUAL["safety"]["concordia"]["per_model"]`; the page already notes they are pending.
 **Component:** `update-china-data.py`, `china-ai-monitor.html`
 **Priority:** Low
 

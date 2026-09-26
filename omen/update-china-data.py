@@ -64,6 +64,32 @@ MANUAL = {
     # static fallback only - compute_apps() (iOS RSS + Android Play charts) overrides this
     "apps": {"score": 20, "asof": "2026-01",
              "note": "Qwen app >200M MAU, Doubao >100M DAU, DeepSeek ~82M WAU - overwhelmingly domestic."},
+    # Safety profile behind the ban-market row. Both sources are low-cadence and hand-keyed
+    # on purpose: FLI publishes semiannually (Summer/Winter editions), and Concordia AI's
+    # airiskmonitor.net bot-shields plain fetchers. Context only - no index weight.
+    "safety": {
+        "fli": {"edition": "Summer 2026", "published": "2026-07",
+                "src": "https://futureoflife.org/ai-safety-index-summer-2026/",
+                # overall letter grade + grade points, and the two domains closest to the
+                # regulatory-risk question (current harms, existential safety)
+                "labs": [
+                    {"lab": "Z.ai", "cn": True, "grade": "D-", "score": 0.88, "current_harms": "C-", "existential": "F"},
+                    {"lab": "Alibaba Cloud", "cn": True, "grade": "D-", "score": 0.87, "current_harms": "C-", "existential": "F"},
+                    {"lab": "DeepSeek", "cn": True, "grade": "F", "score": 0.47, "current_harms": "D-", "existential": "F"},
+                    {"lab": "Anthropic", "cn": False, "grade": "C+", "score": 2.66, "current_harms": "B-", "existential": "D+"},
+                    {"lab": "OpenAI", "cn": False, "grade": "C", "score": 2.28, "current_harms": "C", "existential": "D+"},
+                ]},
+        # Per-model Risk Index values sit behind the platform's bot shield; until they are
+        # keyed by hand from airiskmonitor.net, carry the report's published headline.
+        "concordia": {"report": "2026 Q2", "published": "2026-07-19",
+                      "src": "https://aisafetychina.substack.com/p/frontier-ai-risk-monitor-update-risk",
+                      "yoy_multiple": {"cyber": 4.4, "bio": 6.6, "loss_of_control": 2.4},
+                      "per_model": None,
+                      "note": "Average Risk Index change across all evaluated models, year on year "
+                              "(Risk Index v2.0). The latest Chinese releases showed lower risk "
+                              "levels on several domains, mainly from stronger refusal of misuse "
+                              "requests."},
+    },
 }
 
 # GitHub star velocity. The basket used to be a hardcoded list of flagship repos, which
