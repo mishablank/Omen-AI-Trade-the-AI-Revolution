@@ -705,4 +705,3 @@ def test_fetch_agents_totals_npm_and_extends_series(monkeypatch):
     assert all(v == 7 for v in out["pypi"].values())
     assert out["series"][0] == ["2000-01-01", 1]           # prior history kept
     assert out["series"][-1][1] == out["npm_total_wk"]     # today appended
-
