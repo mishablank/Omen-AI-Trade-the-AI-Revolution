@@ -613,6 +613,16 @@ def full_out():
     }
 
 
+def test_app_basket_is_one_basket_across_python_and_both_js_fetchers():
+    # Three copies of the same five regexes: this file's APP_BASKET, update-app-charts.mjs
+    # and its SerpApi fallback. A drift means the two stores score different apps.
+    want = [(n, rx.pattern) for n, rx in ucd.APP_BASKET]
+    for name in ("update-app-charts.mjs", "app-charts-serpapi.mjs"):
+        src = (Path(__file__).parent / name).read_text()
+        got = re.findall(r'\["(\w+)", /(.+?)/i\]', src)
+        assert got == want, f"{name} basket drifted from APP_BASKET"
+
+
 def test_compute_index_matches_documented_normalizations():
     idx, fams = ucd.compute_index(full_out())
     # each family sits exactly halfway up its documented reference range
