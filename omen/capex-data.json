@@ -1,5 +1,5 @@
 {
- "updated": "2026-09-11T22:22:46Z",
+ "updated": "2026-09-26T12:12:17Z",
  "tsmc": {
   "asof": "2026-08",
   "rev_ntd_b": 514.8,
@@ -11,19 +11,63 @@
  "issuance": {
   "days": 90,
   "cur": {
-   "from": "2026-06-14",
-   "to": "2026-09-11",
+   "from": "2026-06-29",
+   "to": "2026-09-26",
    "debt": 11,
-   "s1_ai": 295,
-   "formd_ai": 6
+   "s1_ai": 320,
+   "formd_ai": 5
   },
   "prev": {
-   "from": "2026-03-16",
-   "to": "2026-06-13",
-   "debt": 25,
+   "from": "2026-03-31",
+   "to": "2026-06-28",
+   "debt": 26,
    "s1_ai": 412,
    "formd_ai": 5
   }
+ },
+ "capex_asymmetry": {
+  "asof": "2026-09-26",
+  "us_ttm_usd_b": 586.3,
+  "us_names": [
+   "AMZN",
+   "GOOGL",
+   "META",
+   "MSFT",
+   "ORCL"
+  ],
+  "us_windows": [
+   "2025Q3–2026Q2",
+   "2025Q4–2026Q3"
+  ],
+  "us_asof": "2026-09-26",
+  "cn_ttm_usd_b": 42.5,
+  "cn_ttm_cny_b": 284.4,
+  "cn": [
+   {
+    "sym": "BABA",
+    "cny_b": 155.065,
+    "window": "2025Q3–2026Q2",
+    "basis": "trailing 4Q, hand-keyed",
+    "asof": "2026-08"
+   },
+   {
+    "sym": "TCEHY",
+    "cny_b": 117.3,
+    "window": "2025Q3–2026Q2",
+    "basis": "trailing 4Q, hand-keyed",
+    "asof": "2026-08"
+   },
+   {
+    "sym": "BIDU",
+    "cny_b": 12.073,
+    "window": "FY to 2025-12-31",
+    "basis": "latest fiscal year, EDGAR 20-F",
+    "asof": "2025-12"
+   }
+  ],
+  "fx_cny_per_usd": 6.6975,
+  "fx_asof": "2026-09-18",
+  "ratio": 13.8
  },
  "ramp": {
   "asof": "2026-08",
@@ -135,13 +179,47 @@
   "last_modified": "2026-06-26",
   "latest_release": "2026-06-26"
  },
+ "memory": {
+  "dram_contract": {
+   "quarter": "3Q26",
+   "direction": "rise",
+   "lo": 13,
+   "hi": 18,
+   "published": "2026-07-03",
+   "source": "manual",
+   "url": "https://www.trendforce.com/presscenter/news/20260703-13134.html"
+  },
+  "hbm": {
+   "direction": "up",
+   "asof": "2026-06-02",
+   "detail": "2027 HBM4 contract prices expected to surge multiples higher; 2026 HBM3e ASPs roughly flat to slightly up after an expected decline narrowed",
+   "src": "https://www.trendforce.com/presscenter/news/20260602-13074.html"
+  },
+  "dram_spot": {
+   "direction": "up",
+   "basis": "YoY",
+   "asof": "2026-09-24",
+   "detail": "DDR5/DDR4 spot far above year-ago levels; level not republished",
+   "src": "https://www.trendforce.com/price/dram/dram_spot"
+  },
+  "korea": {
+   "yoy_pct": 259.0,
+   "usd_b": 34.12,
+   "window": "Sep 1-20",
+   "asof": "2026-09-21",
+   "age_days": 5,
+   "stale": false,
+   "src": "https://www.koreatimes.co.kr/economy/20260921/exports-up-78-in-first-20-days-of-sept-on-robust-chip-shipments"
+  },
+  "checked": "2026-09-26T12:12:32Z"
+ },
  "eia": {
-  "operating_gw": 1382.1,
-  "planned_gw": 192.7,
-  "under_construction_gw": 98.4,
-  "canceled_gw": 184.1,
-  "asof": "2026-07",
-  "src": "https://www.eia.gov/electricity/data/eia860m/xls/july_generator2026.xlsx"
+  "operating_gw": 1385.0,
+  "planned_gw": 189.8,
+  "under_construction_gw": 98.7,
+  "canceled_gw": 185.1,
+  "asof": "2026-08",
+  "src": "https://www.eia.gov/electricity/data/eia860m/xls/august_generator2026.xlsx"
  },
  "capex_gdp": {
   "dc_construction_saar_b": 75.2,
@@ -153,22 +231,18 @@
   "pct_gdp": 1.46
  },
  "agents": {
-  "asof": "2026-09-11",
+  "asof": "2026-09-26",
   "npm": {
-   "@anthropic-ai/claude-code": 11400831,
-   "@openai/codex": 17360262,
-   "@google/gemini-cli": 312297
+   "@anthropic-ai/claude-code": 11936572,
+   "@openai/codex": 18949447,
+   "@google/gemini-cli": 364209
   },
   "pypi": {
-   "claude-agent-sdk": null,
-   "openai-agents": 2685453
+   "claude-agent-sdk": 6116753,
+   "openai-agents": 3018052
   },
-  "npm_total_wk": 29073390,
+  "npm_total_wk": 31250228,
   "series": [
-   [
-    "2026-08-17",
-    33737053
-   ],
    [
     "2026-08-18",
     33737053
@@ -268,15 +342,46 @@
    [
     "2026-09-11",
     29073390
+   ],
+   [
+    "2026-09-26",
+    31250228
    ]
   ]
  },
+ "token_prices": null,
  "manual": {
   "korea": {
-   "chip_exports_yoy_pct": null,
-   "asof": null,
+   "chip_exports_yoy_pct": 259.0,
+   "chip_exports_usd_b": 34.12,
+   "window": "Sep 1-20",
+   "asof": "2026-09-21",
    "note": "Korea Customs 20-day export release (~1st/11th/21st); no keyless API - update by hand from the release coverage.",
-   "src": "https://www.customs.go.kr"
+   "src": "https://www.koreatimes.co.kr/economy/20260921/exports-up-78-in-first-20-days-of-sept-on-robust-chip-shipments"
+  },
+  "memory": {
+   "dram_contract": {
+    "quarter": "3Q26",
+    "direction": "rise",
+    "lo": 13,
+    "hi": 18,
+    "published": "2026-07-03",
+    "source": "manual",
+    "url": "https://www.trendforce.com/presscenter/news/20260703-13134.html"
+   },
+   "hbm": {
+    "direction": "up",
+    "asof": "2026-06-02",
+    "detail": "2027 HBM4 contract prices expected to surge multiples higher; 2026 HBM3e ASPs roughly flat to slightly up after an expected decline narrowed",
+    "src": "https://www.trendforce.com/presscenter/news/20260602-13074.html"
+   },
+   "dram_spot": {
+    "direction": "up",
+    "basis": "YoY",
+    "asof": "2026-09-24",
+    "detail": "DDR5/DDR4 spot far above year-ago levels; level not republished",
+    "src": "https://www.trendforce.com/price/dram/dram_spot"
+   }
   },
   "moea_orders": {
    "asof": null,
@@ -303,6 +408,28 @@
    "auto_pct": 43,
    "asof": "2025-02",
    "note": "Anthropic Economic Index first report: augmentation vs automation share of Claude usage."
+  },
+  "cn_capex": {
+   "BABA": {
+    "quarters": {
+     "2025Q3": 31.501,
+     "2025Q4": 28.999,
+     "2026Q1": 26.887,
+     "2026Q2": 67.678
+    },
+    "asof": "2026-08",
+    "src": "https://www.alibabagroup.com/en-US/ir-financial-reports-quarterly-results"
+   },
+   "TCEHY": {
+    "quarters": {
+     "2025Q3": 13.0,
+     "2025Q4": 19.6,
+     "2026Q1": 31.9,
+     "2026Q2": 52.8
+    },
+    "asof": "2026-08",
+    "src": "https://www.tencent.com/en-us/investors/financial-news.html"
+   }
   }
  }
 }
