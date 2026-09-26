@@ -315,7 +315,11 @@ Remaining gap #7 of 10 from the Aug-2026 survey.
 
 ## China AI Monitor — private AI investment gap (annual context stat)
 
-**Status:** Open
+**Status:** Done (2026-09-26, `feat/china-investment-gap`) — `MANUAL["investment"]` (US $285.9B vs
+CN $12.4B, calendar 2025, AI Index 2026, figures re-verified against the report) with the
+guidance-fund caveat (~$184B 2000–2023, Stanford SCCEI) carried in the data itself; rendered as a
+three-stat "Capital input" card in the supply-side block, year + edition date in the label; April
+refresh documented in the caveats footer. Next refresh: April 2027 (calendar 2026).
 **Component:** `update-china-data.py`, `china-ai-monitor.html`
 **Priority:** Low
 

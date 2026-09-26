@@ -417,6 +417,13 @@
   <div class="note">Quarterly accelerator output in H100-equivalents (median estimates, wide confidence intervals), US designers (NVIDIA, AMD, Google, Amazon) vs Chinese (Huawei, Cambricon), from <a href="https://epoch.ai/data/ai-chip-sales" target="_blank" rel="noopener">Epoch AI's chip-sales dataset</a> (CC BY 4.0). The series ends at the last quarter with estimates for both sides &ndash; Chinese estimates lag Nvidia's by a couple of quarters. Domestic designs are not China's whole compute inflow: Epoch separately <a href="https://epoch.ai/publications/chip-smuggling" target="_blank" rel="noopener">estimates</a> a median ~660k H100e were smuggled into China through end-2025 (90% CI 290k&ndash;1.6M), roughly a third of China's stock &ndash; so this panel understates what Chinese labs can actually train and serve on.</div>
 </div>
 
+<!-- ============ SUPPLY-SIDE: CAPITAL INPUT (annual, hand-refreshed) ============ -->
+<div class="card">
+  <h2>Capital input &ndash; private AI investment <span class="sub" id="ivAsof">&ndash; annual</span></h2>
+  <div class="statrow" id="ivStats"></div>
+  <div class="note">Why the Chinese labs play the open-weights game this page measures: they are competing on a fraction of the private capital. Figures from the <a href="https://hai.stanford.edu/ai-index/2026-ai-index-report/economy" target="_blank" rel="noopener">Stanford AI Index</a> (Economy chapter; cross-check: <a href="https://cat.eto.tech/" target="_blank" rel="noopener">ETO's Country Activity Tracker</a>, Crunchbase-derived). The big caveat is structural, not statistical: China's state <a href="https://sccei.fsi.stanford.edu/china-briefs/government-venture-capital-and-ai-development-china" target="_blank" rel="noopener">guidance funds</a> put roughly $184B into AI firms over 2000&ndash;2023 and none of it counts as private investment, so the true capital gap is much narrower than the ratio says. Annual, hand-refreshed each April when the AI Index ships &ndash; the year is in the label so a stale figure looks stale.</div>
+</div>
+
 <!-- ============ PREDICTION MARKETS ============ -->
 <div class="card">
   <h2>Prediction markets &ndash; Chinese AI leadership <span class="sub">&ndash; live Polymarket odds + Kalshi (batch, daily)</span></h2>
@@ -446,6 +453,7 @@
   <b>Chinese AI Adoption Index</b> = &Sigma;(w<sub>i</sub>&middot;s<sub>i</sub>)/&Sigma;w<sub>i</sub> over available signal families, each normalized 0&ndash;100 against fixed reference ranges: router Chinese token share 0&rarr;70% (w=30; mean of the OpenRouter and Vercel-AI-Gateway normalized shares when both are available, OpenRouter alone otherwise), Hugging Face Chinese share of open-weight downloads 0&rarr;90% (w=20), GitHub star velocity across the flagship basket 0&rarr;300/day (w=15; the basket is rediscovered each run as the two most-starred repos per lab still pushed to within 180 days, so a new release enters it the week it lands), Ollama Chinese share of named-family pulls 0&rarr;70% (w=10), Western search/consumer interest share 0&rarr;50% (w=10), consumer-app Western top-chart presence 0&rarr;100 (basket-mean best top-100 rank, w=10), LMArena proximity 100&minus;Elo-gap, floored at 0 (w=5). Weights follow the source note's suggested scheme, extended with the local-adoption family; excluded families renormalize.
   <b>SPI</b> = Chinese-lab &divide; US-lab routed tokens (named authors) on OpenRouter, trailing week.
   <b>Histories</b>: the updater appends one row per UTC day to <code>china-metrics.csv</code> (composite index, SPI, router/HF/Ollama Chinese shares, GitHub star velocity, frontier price gap) &ndash; the small history lines across the page read from it, so they are server-durable rather than per-browser; Polymarket odds histories come live from the public CLOB <code>prices-history</code> endpoint.
+  <b>Capital input</b> (supply-side, context only) = US and Chinese private AI investment for the latest calendar year from the Stanford AI Index, hand-refreshed each April when it ships; private investment only &ndash; China's state guidance funds sit outside it, so the ratio overstates the real gap.
   <b>Frontier price gap</b> = median output $/M of US flagship <i>lines</i> (GPT top/mid, Claude Opus/Sonnet, Gemini Pro/Flash) &divide; median of Chinese lines (DeepSeek pro/flash, GLM, Kimi and Kimi Code, MiniMax, Qwen Max). Each line resolves to its newest live model in OpenRouter's catalogue at page load rather than to a pinned version, so a launch or a price cut moves the gap the day it ships and a retired slug surfaces as a named warning instead of quietly leaving the median. Lines are matched on name, never on price: Chinese labs deliberately price their newest flagship <i>below</i> their previous one, so ranking by cost would pick the older model.
   <b>Coding, agentic and media boards</b> (the WebDev/Agent row on the leaderboard card and the media-arenas table) are context, not index inputs: each reports the best Chinese entry's rank and its distance to the best non-Chinese entry on that board, plus the Chinese count in the top 10. The LMArena-proximity family (w=5) still reads the overall text arena only.
   <b>Supply-side panels</b> (frontier gap, compute stock, chip supply, release cadence) are context, not index inputs &ndash; they carry no weight in the adoption index. Frontier gap = best AA Intelligence Index score per lab country, monthly since 2024; lag = months between a US model first reaching today's best Chinese score and the Chinese frontier getting there; near-frontier price ratio = cheapest blended $/M within 3 index points of each side's frontier, US &divide; Chinese.
@@ -920,6 +928,7 @@ async function loadSnap(){
   dot("sn", "warn", parts.join(" · ") || "embedded snapshot");
   const sup=[]; if(snap.epoch_compute?.asof) sup.push("epoch "+snap.epoch_compute.asof);
   if(snap.aa_frontier?.asof) sup.push("aa gap "+snap.aa_frontier.asof);
+  if(snap.investment?.year) sup.push("investment "+snap.investment.year);
   dot("ep", "warn", sup.join(" · ") || "awaiting first refresh");
 }
 /* ---------------- renderers ---------------- */
@@ -1285,8 +1294,9 @@ function renderRadar(){
 /* ---------------- supply-side panels (china-data.json, see updater) ----------------
  * Context, not index inputs: none of these write IDX. The demand families above say
  * who is winning adoption; these say who can scale it - capability trend, compute
- * stock, chip flow, release cadence. All four render from batch keys and degrade to
- * the same "appears after the next refresh" note as the other batch panels.
+ * stock, chip flow, release cadence, and (annually) the private capital behind it. All
+ * render from batch keys and degrade to the same "appears after the next refresh" note
+ * as the other batch panels.
  */
 function lineChart(el, s, lines, yLabel, opts){
   // Shared mini line chart: s = [{x, ...vals}], lines = [{key, color}]. Skips null
@@ -1369,6 +1379,16 @@ function renderEpochChips(){
   const mx = ep.cn_top?.[0]?.h100e || 1;
   $("epTop").innerHTML = (ep.cn_top||[]).map(c =>
     `<div class="hbar"><span class="k"><span class="tag cn">CN</span> ${esc(c.chip)}</span><span class="track"><i style="width:${c.h100e/mx*100}%"></i></span><span class="v">${fmtT(c.h100e)} H100e/qtr</span></div>`).join("");
+}
+function renderInvestment(){
+  // Annual MANUAL family from the updater: no fetcher, no chart - three dated numbers.
+  const iv = snap.investment;
+  if(!iv){ $("ivStats").innerHTML = '<div class="note">No investment figures yet &ndash; appear after the next server-side refresh.</div>'; return; }
+  $("ivAsof").textContent = "– calendar "+iv.year+", "+iv.source+" ("+iv.asof+")";
+  $("ivStats").innerHTML =
+    `<div class="stat"><div class="l">US private AI investment, ${iv.year}</div><div class="v">$${iv.us_usd_b.toFixed(1)}B</div><div class="l">private funding into AI companies</div></div>`
+    + `<div class="stat"><div class="l">China private AI investment, ${iv.year}</div><div class="v">$${iv.cn_usd_b.toFixed(1)}B</div><div class="l">excludes state guidance funds</div></div>`
+    + `<div class="stat"><div class="l">US &divide; China</div><div class="v">${Math.round(iv.us_usd_b/iv.cn_usd_b)}x</div><div class="l">private capital only &ndash; overstates the real gap</div></div>`;
 }
 function renderEQ(){
   const g = $("eqGrid");
@@ -1486,6 +1506,7 @@ async function boot(){
   renderVercel(); renderOllama(); renderFinetunes(); renderSDK(); renderRadar();
   renderAAFrontier(); renderEpochCompute(); renderEpochModels(); renderEpochChips();
   renderPM();   // Kalshi rows render immediately; Polymarket rows join once live
+  renderInvestment();
   renderShareSparks();
   await Promise.all([ loadOpenRouter().then(()=>{renderOR();renderTopModels();renderTrend();}), loadPrices().then(renderPrices), loadHF().then(renderHF), loadGH().then(renderGH), loadPM().then(renderPM), loadEQ().then(renderEQ) ]);
   renderGauge();

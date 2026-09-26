@@ -878,3 +878,23 @@ def test_append_metrics_migrates_old_schema_rows_instead_of_discarding(tmp_path)
     assert lines[1].startswith("2026-08-04,59.8,")
     assert lines[1].count(",") == len(ucd.METRICS_COLS) - 1   # padded to new width
     assert lines[2].split(",")[ucd.METRICS_COLS.index("apps_score")] == "0"
+
+
+# ---- capital-input gap (annual MANUAL context stat) ---------------------------------
+
+def test_investment_manual_entry_carries_what_the_page_renders():
+    inv = ucd.MANUAL["investment"]
+    assert inv["us_usd_b"] > inv["cn_usd_b"] > 0
+    assert isinstance(inv["year"], int)
+    # dated in the label so staleness is visible: the page prints year + asof
+    assert len(inv["asof"]) == 7 and int(inv["asof"][:4]) == inv["year"] + 1
+    assert "guidance fund" in inv["caveat"]
+
+
+def test_run_surfaces_every_manual_family_as_is():
+    # run() seeds out with **MANUAL; investment has no fetcher, so it must ride that
+    # spread untouched rather than being overwritten by a pick_* helper.
+    import inspect
+    src = inspect.getsource(ucd.run)
+    assert "**MANUAL" in src
+    assert 'out["investment"]' not in src
