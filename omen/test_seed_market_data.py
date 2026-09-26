@@ -88,3 +88,50 @@ def test_main_leaves_the_seed_alone_when_the_download_is_absent(tmp_path):
 
 def test_main_rejects_bad_arg_counts():
     assert smd.main(["seed-market-data.py"]) == 2
+
+
+# ---------- refresh.yml: the commit step survives an R2 outage ----------
+
+def _refresh_steps():
+    """refresh.yml's steps as {name: body}. A regex split rather than a YAML parser: the
+    repo is stdlib-only, and the step list is flat enough that '- name:' at step indent
+    is an unambiguous boundary."""
+    import re
+    wf = (Path(__file__).resolve().parents[1] / ".github/workflows/refresh.yml").read_text()
+    parts = re.split(r"^      - (?=name:|uses:)", wf, flags=re.M)[1:]
+    steps = {}
+    for p in parts:
+        m = re.match(r"name:\s*(.+)", p)
+        if m:
+            steps[m.group(1).strip()] = p
+    return steps
+
+
+def test_commit_step_still_runs_when_only_the_r2_upload_failed():
+    """From 2026-09-11 R2 refused every upload and, because the commit step carried the
+    implicit success() condition, no refresh landed in git either for over two weeks -
+    the append-only history CSVs just stopped. Pin the fix: the commit runs when the
+    upload is the thing that failed, and nothing looser than that."""
+    steps = _refresh_steps()
+    upload, commit = steps["Upload data to R2"], steps["Commit refreshed data"]
+    assert "id: r2put" in upload
+    cond = next(ln for ln in commit.splitlines() if ln.strip().startswith("if:"))
+    assert "steps.r2put.outcome == 'failure'" in cond
+    assert "!cancelled()" in cond
+    # a bare always() would also commit after a *fetcher* failure - half-written data
+    assert "always()" not in cond
+
+
+def test_commit_step_reseeds_market_data_daily_while_r2_is_down():
+    """With R2 down the next run seeds from git, so the weekly re-seed would rebuild the
+    rolling histories on a week-old baseline. The step must shorten the window when the
+    upload failed."""
+    commit = _refresh_steps()["Commit refreshed data"]
+    assert "R2_PUT: ${{ steps.r2put.outcome }}" in commit
+    assert '[ "$R2_PUT" = "failure" ]' in commit
+    assert "SEED_MAX_AGE=$((20 * 60 * 60))" in commit
+
+
+def test_commit_step_runs_after_the_upload():
+    names = list(_refresh_steps())
+    assert names.index("Commit refreshed data") > names.index("Upload data to R2")
