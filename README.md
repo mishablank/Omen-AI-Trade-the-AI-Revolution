@@ -147,8 +147,8 @@ omen-ai/
     ├── update-china-data.py ....... China substitution monitor
     ├── update-capex-data.py ....... AI capex live tape
     ├── update-influencers.py ...... KOL scoring (needs XAI_API_KEY)
-    ├── update-app-charts.mjs ...... Play charts (the only Node dep)
     ├── app-charts-serpapi.mjs ..... keyed Play-charts fallback (SERPAPI_KEY, no deps)
+    ├── update-app-charts.mjs ...... Play charts (the only Node dep)
     │
     │  ── guards ──
     ├── deploy-guard.py ............ refuses a hand-run deploy from a dirty tree
