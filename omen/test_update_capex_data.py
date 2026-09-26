@@ -150,7 +150,6 @@ def test_append_snapshot_creates_header_then_appends(tmp_path, monkeypatch):
 
 def test_refresh_survives_failing_fetchers_and_writes_json(tmp_path, monkeypatch, capsys):
     monkeypatch.setattr(ucd, "OUT", tmp_path / "capex-data.json")
-    monkeypatch.setattr(ucd, "memory_pulse", lambda prev=None: None)
     monkeypatch.setattr(ucd, "SNAP", tmp_path / "capex-snapshots.csv")
     monkeypatch.setattr(ucd, "fetch_tsmc", lambda: {"asof": "2026-06", "rev_ntd_b": 442.7})
     monkeypatch.setattr(ucd, "fetch_issuance", lambda: (_ for _ in ()).throw(OSError("down")))
@@ -197,7 +196,6 @@ def test_fetch_issuance_carries_none_counts_without_crashing(monkeypatch):
 
 def test_refresh_eia_failure_is_null_not_a_crash(tmp_path, monkeypatch, capsys):
     monkeypatch.setattr(ucd, "OUT", tmp_path / "capex-data.json")
-    monkeypatch.setattr(ucd, "memory_pulse", lambda prev=None: None)
     monkeypatch.setattr(ucd, "SNAP", tmp_path / "capex-snapshots.csv")
     for n in ("fetch_tsmc", "fetch_issuance", "fetch_ramp", "fetch_aei",
               "fetch_capex_gdp"):
@@ -219,7 +217,6 @@ def test_refresh_carries_forward_prev_on_failure(tmp_path, monkeypatch):
         "issuance": {"cur": {"debt": 20}}, "aei": {"latest_release": "old"},
     }))
     monkeypatch.setattr(ucd, "OUT", out)
-    monkeypatch.setattr(ucd, "memory_pulse", lambda prev=None: None)
     monkeypatch.setattr(ucd, "SNAP", tmp_path / "capex-snapshots.csv")
     monkeypatch.setattr(ucd, "fetch_tsmc", lambda: {"asof": "2026-06", "rev_ntd_b": 442.7})
     monkeypatch.setattr(ucd, "fetch_issuance", lambda: (_ for _ in ()).throw(OSError("down")))
@@ -238,7 +235,6 @@ def test_refresh_carries_forward_prev_on_failure(tmp_path, monkeypatch):
 
 def test_refresh_skips_snapshot_when_all_feeds_down(tmp_path, monkeypatch):
     monkeypatch.setattr(ucd, "OUT", tmp_path / "capex-data.json")
-    monkeypatch.setattr(ucd, "memory_pulse", lambda prev=None: None)
     monkeypatch.setattr(ucd, "SNAP", tmp_path / "capex-snapshots.csv")
     for n in ("fetch_tsmc", "fetch_issuance", "fetch_ramp", "fetch_aei",
               "fetch_860m", "fetch_capex_gdp"):
@@ -516,6 +512,11 @@ def test_fetch_860m_all_candidates_missing_is_none(monkeypatch):
 
 
 # ---------- memory pulse ----------
+
+# refresh() runs every fetcher. No test in this file may reach TrendForce - including
+# refresh tests other changes add later - so the scan is stubbed file-wide; memory_pulse
+# then runs offline on the MANUAL seed. Tests that exercise the scan gate re-patch it.
+ucd.scan_trendforce = lambda: None
 
 TF_BODY = ("<h1>AI Server Demand Continues to Support Memory Prices in 3Q26</h1><p>TrendForce "
            "Conventional DRAM contract prices are forecast to rise 13&ndash;18% QoQ in 3Q26, while "
