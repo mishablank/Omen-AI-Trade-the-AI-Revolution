@@ -445,7 +445,7 @@
   <b>Frontier price gap</b> = median output $/M of US flagship <i>lines</i> (GPT top/mid, Claude Opus/Sonnet, Gemini Pro/Flash) &divide; median of Chinese lines (DeepSeek pro/flash, GLM, Kimi and Kimi Code, MiniMax, Qwen Max). Each line resolves to its newest live model in OpenRouter's catalogue at page load rather than to a pinned version, so a launch or a price cut moves the gap the day it ships and a retired slug surfaces as a named warning instead of quietly leaving the median. Lines are matched on name, never on price: Chinese labs deliberately price their newest flagship <i>below</i> their previous one, so ranking by cost would pick the older model.
   <b>Supply-side panels</b> (frontier gap, compute stock, chip supply, release cadence) are context, not index inputs &ndash; they carry no weight in the adoption index. Frontier gap = best AA Intelligence Index score per lab country, monthly since 2024; lag = months between a US model first reaching today's best Chinese score and the Chinese frontier getting there; near-frontier price ratio = cheapest blended $/M within 3 index points of each side's frontier, US &divide; Chinese.
   <h3>Caveats</h3>
-  OpenRouter sees only routed traffic &ndash; it overstates Chinese share of the total market (first-party US API traffic is invisible) but is the best public real-time proxy for the substitutable segment; the Vercel AI Gateway cross-check (production apps, export cached 24h) partially corrects that bias and currently reads much lower. HF download totals mix model generations and exclude derivative quantizations. Ollama pulls are lifetime cumulative, so they lag shifts; the derived daily rate is the leading part. Fine-tune-tree counts depend on authors declaring <code>base_model</code> metadata. PyPI SDK installs undercount the Chinese side badly (OpenAI-compatible APIs ride the <code>openai</code> package). Leaderboard (LMArena official dataset, arena.ai scrape fallback), search interest (Google Trends), consumer-app chart presence (Apple RSS + Google Play), Vercel, Ollama, Kalshi, fine-tune trees and SDK installs are all refreshed by <code>update-china-data.py</code>; Artificial-Analysis scores refresh live when the updater has an <code>ARTIFICIAL_ANALYSIS_API_KEY</code>, else they remain a dated snapshot, and the Cloudflare-Radar consumer-traffic panel appears only when a <code>CF_RADAR_TOKEN</code> is configured (see freshness strip). Prediction-market prices are thin in places; Kalshi quotes are daily-batch, not live, and the discovered (<span class="tag src">AUTO</span>) leadership rows rotate as each monthly cohort resolves, so that block is not a fixed panel across visits. The supply-side panels inherit their sources' blind spots: Epoch's cluster dataset covers an estimated 10&ndash;20% of world capacity and anonymizes Chinese systems (the split understates China); chip-sales figures are median estimates with wide confidence intervals, count designs rather than China's smuggled-in NVIDIA inflow, and lag ~2 quarters on the Chinese side; notable-model counts backfill for weeks after a release; the AA frontier series is rebuilt from the current catalogue, so delisted models silently leave its history, and it appears only when the updater has an <code>ARTIFICIAL_ANALYSIS_API_KEY</code>. Epoch CSVs are refetched weekly, not per-run. The safety-profile rows are hand-keyed from FLI's semiannual AI Safety Index and Concordia AI's quarterly risk monitor; both change method between editions and carry no index weight. Nothing here is a validated forecast of equity returns &ndash; the companion monitor's own lead-lag test is honest about that.
+  OpenRouter sees only routed traffic &ndash; it overstates Chinese share of the total market (first-party US API traffic is invisible) but is the best public real-time proxy for the substitutable segment; the Vercel AI Gateway cross-check (production apps, export cached 24h) partially corrects that bias and currently reads much lower. HF download totals mix model generations and exclude derivative quantizations. Ollama pulls are lifetime cumulative, so they lag shifts; the derived daily rate is the leading part. Fine-tune-tree counts depend on authors declaring <code>base_model</code> metadata. PyPI SDK installs undercount the Chinese side badly (OpenAI-compatible APIs ride the <code>openai</code> package). Leaderboard (LMArena official dataset, arena.ai scrape fallback), search interest (Google Trends), consumer-app chart presence (Apple RSS + Google Play), Vercel, Ollama, Kalshi, fine-tune trees and SDK installs are all refreshed by <code>update-china-data.py</code>; Artificial-Analysis scores refresh live when the updater has an <code>ARTIFICIAL_ANALYSIS_API_KEY</code>, else they remain a dated snapshot, and the Cloudflare-Radar consumer-traffic panel appears only when a <code>CF_RADAR_TOKEN</code> is configured (see freshness strip). Prediction-market prices are thin in places; Kalshi quotes are daily-batch, not live, and the discovered (<span class="tag src">AUTO</span>) leadership rows rotate as each monthly cohort resolves, so that block is not a fixed panel across visits. The supply-side panels inherit their sources' blind spots: Epoch's cluster dataset covers an estimated 10&ndash;20% of world capacity and anonymizes Chinese systems (the split understates China); chip-sales figures are median estimates with wide confidence intervals, count designs rather than China's smuggled-in NVIDIA inflow, and lag ~2 quarters on the Chinese side; notable-model counts backfill for weeks after a release; the AA frontier series is rebuilt from the current catalogue, so delisted models silently leave its history, and it appears only when the updater has an <code>ARTIFICIAL_ANALYSIS_API_KEY</code>. Epoch CSVs are refetched weekly, not per-run. Nothing here is a validated forecast of equity returns &ndash; the companion monitor's own lead-lag test is honest about that.
   <h3>Sources</h3>
   <a href="https://openrouter.ai/rankings" target="_blank" rel="noopener">OpenRouter rankings</a> &middot;
   <a href="https://vercel.com/ai-gateway/leaderboards/models" target="_blank" rel="noopener">Vercel AI Gateway leaderboards</a> (data &copy; Vercel, CC BY 4.0) &middot;
@@ -458,6 +458,7 @@
   <a href="https://artificialanalysis.ai/" target="_blank" rel="noopener">Artificial Analysis</a> &middot;
   <a href="https://epoch.ai/data" target="_blank" rel="noopener">Epoch AI data</a> (<a href="https://epoch.ai/data/gpu-clusters" target="_blank" rel="noopener">GPU clusters</a>, <a href="https://epoch.ai/data/ai-chip-sales" target="_blank" rel="noopener">chip sales</a>, <a href="https://epoch.ai/data/ai-models" target="_blank" rel="noopener">AI models</a>; CC BY 4.0) &middot;
   <a href="https://pypistats.org" target="_blank" rel="noopener">pypistats.org</a> &middot;
+  <a href="https://futureoflife.org/ai-safety-index-summer-2026/" target="_blank" rel="noopener">FLI AI Safety Index</a> and <a href="https://airiskmonitor.net/doc/en/about" target="_blank" rel="noopener">Concordia AI Frontier AI Risk Monitor</a> (safety profile; hand-keyed, semiannual/quarterly, no index weight) &middot;
   <a href="https://radar.cloudflare.com/ai-insights" target="_blank" rel="noopener">Cloudflare Radar AI Insights</a> &middot;
   <a href="https://www.cnbc.com/2026/07/07/chinese-ai-models-costs-us-openai-anthropic.html" target="_blank" rel="noopener">CNBC 2026-07-07</a>
   <br><br>Built as part of <a href="index.html">OMEN</a>. Not investment advice.
@@ -1365,22 +1366,6 @@ function renderEpochChips(){
   $("epTop").innerHTML = (ep.cn_top||[]).map(c =>
     `<div class="hbar"><span class="k"><span class="tag cn">CN</span> ${esc(c.chip)}</span><span class="track"><i style="width:${c.h100e/mx*100}%"></i></span><span class="v">${fmtT(c.h100e)} H100e/qtr</span></div>`).join("");
 }
-function renderSafety(){
-  // Hand-keyed MANUAL family from the updater (FLI semiannual + Concordia quarterly).
-  const sf = snap.safety;
-  if(!sf?.fli?.labs?.length){ $("sfBody").innerHTML = '<tr><td colspan="5" class="note">No safety data yet &ndash; appears after the next server-side refresh.</td></tr>'; return; }
-  $("sfAsof").textContent = "– FLI "+sf.fli.edition+(sf.concordia ? " · Concordia "+sf.concordia.report : "");
-  $("sfBody").innerHTML = sf.fli.labs.map(x =>
-    `<tr><td>${esc(x.lab)}</td><td><span class="tag ${x.cn?"cn":"us"}">${x.cn?"CN":"US"}</span></td>`
-    + `<td class="num"><b>${esc(x.grade)}</b> <span class="sub">${x.score.toFixed(2)}</span></td>`
-    + `<td class="num">${esc(x.current_harms)}</td><td class="num">${esc(x.existential)}</td></tr>`).join("");
-  const c = sf.concordia;
-  if(c?.yoy_multiple){
-    const m = c.yoy_multiple;
-    $("sfConcordia").innerHTML = `<b>Concordia AI, ${esc(c.report)}</b> (${esc(c.published)}): average Risk Index across evaluated models, year on year &ndash; cyber offense ${m.cyber}&times;, biological ${m.bio}&times;, loss of control ${m.loss_of_control}&times;. ${esc(c.note.split(". ").slice(1).join(". "))}`
-      + (c.per_model ? "" : " Per-model indices are not keyed yet.");
-  }
-}
 function renderEQ(){
   const g = $("eqGrid");
   if(!S.eq?.equity){ g.innerHTML = '<div class="note">Equity feed not reachable from this origin - on the live site this loads automatically.</div>'; return; }
@@ -1447,16 +1432,33 @@ function renderGauge(){
     + "Bar thickness = weight; the +pt figures are each family's contribution and sum to the index.";
   renderIdxSpark();
 }
+function renderSafety(){
+  // Hand-keyed MANUAL family from the updater (FLI semiannual + Concordia quarterly).
+  const sf = snap.safety;
+  if(!sf?.fli?.labs?.length){ $("sfBody").innerHTML = '<tr><td colspan="5" class="note">No safety data yet &ndash; appears after the next server-side refresh.</td></tr>'; return; }
+  $("sfAsof").textContent = "– FLI "+sf.fli.edition+(sf.concordia ? " · Concordia "+sf.concordia.report : "");
+  $("sfBody").innerHTML = sf.fli.labs.map(x =>
+    `<tr><td>${esc(x.lab)}</td><td><span class="tag ${x.cn?"cn":"us"}">${x.cn?"CN":"US"}</span></td>`
+    + `<td class="num"><b>${esc(x.grade)}</b> <span class="sub">${x.score.toFixed(2)}</span></td>`
+    + `<td class="num">${esc(x.current_harms)}</td><td class="num">${esc(x.existential)}</td></tr>`).join("");
+  const c = sf.concordia;
+  if(c?.yoy_multiple){
+    const m = c.yoy_multiple;
+    $("sfConcordia").innerHTML = `<b>Concordia AI, ${esc(c.report)}</b> (${esc(c.published)}): average Risk Index across evaluated models, year on year &ndash; cyber offense ${m.cyber}&times;, biological ${m.bio}&times;, loss of control ${m.loss_of_control}&times;. ${esc(c.note.split(". ").slice(1).join(". "))}`
+      + (c.per_model ? "" : " Per-model indices are not keyed yet.");
+  }
+}
 /* ---------------- boot ---------------- */
 async function boot(){
   await Promise.all([ loadSnap(), loadMetrics() ]);
   renderSnapshotPanels();
   renderVercel(); renderOllama(); renderFinetunes(); renderSDK(); renderRadar();
-  renderAAFrontier(); renderEpochCompute(); renderEpochModels(); renderEpochChips(); renderSafety();
+  renderAAFrontier(); renderEpochCompute(); renderEpochModels(); renderEpochChips();
   renderPM();   // Kalshi rows render immediately; Polymarket rows join once live
   renderShareSparks();
   await Promise.all([ loadOpenRouter().then(()=>{renderOR();renderTopModels();renderTrend();}), loadPrices().then(renderPrices), loadHF().then(renderHF), loadGH().then(renderGH), loadPM().then(renderPM), loadEQ().then(renderEQ) ]);
   renderGauge();
+  renderSafety();
   renderScatter();   // needs both the resolved price lines and the arena Elo list
 }
 boot();
