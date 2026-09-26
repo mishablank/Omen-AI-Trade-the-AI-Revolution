@@ -121,7 +121,6 @@ console.log("worker — routing, R2-first data, etag/304, fallbacks\n");
   const CONTRACT = [
     ["/market-data.json", "market-data.json", "application/json"],
     ["/snapshots.csv", "snapshots.csv", "text/csv"],
-    ["/influencers.json", "influencers.json", "application/json"],
     ["/capex-data.json", "capex-data.json", "application/json"],
     ["/china-data.json", "china-data.json", "application/json"],
     ["/china-metrics.csv", "china-metrics.csv", "text/csv"],

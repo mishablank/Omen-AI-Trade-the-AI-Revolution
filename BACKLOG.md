@@ -81,7 +81,7 @@ The consumer-app family now pulls Android chart presence from `update-app-charts
 
 ### Acceptance Criteria
 
-- [ ] Add SerpApi's Google Play engine (`engine=google_play`, `store=apps`) as a keyed fallback for `update-app-charts.mjs`: try `google-play-scraper` first, fall back to SerpApi when it returns zero countries, gate on a `SERPAPI_KEY` secret (surface it in `refresh.yml`'s job env like `XAI_API_KEY`).
+- [ ] Add SerpApi's Google Play engine (`engine=google_play`, `store=apps`) as a keyed fallback for `update-app-charts.mjs`: try `google-play-scraper` first, fall back to SerpApi when it returns zero countries, gate on a `SERPAPI_KEY` secret (surface it in `refresh.yml`'s job env like the other keyed steps).
 - [ ] SerpApi's free tier is ~100 searches/month; one daily 10-country pull ≈ 300/month, so either cap the fallback to the core markets (US/GB/DE/JP) or run it only when the primary scraper is down. Document the quota math in a comment.
 - [ ] Keep the output schema identical (`{ hits: [{label, store:"android", country, rank, appId, title}] }`) so `android_hits()` in `update-china-data.py` needs no change.
 - [ ] No behavioural change when `SERPAPI_KEY` is unset — the primary scraper path must stay the default.

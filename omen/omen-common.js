@@ -27,7 +27,7 @@
 
   // esc() makes a string safe *inside* an attribute; it does not make it safe *as a URL*.
   // An escaped "javascript:alert(1)" is still a live URL, and these hrefs are built from
-  // remote data — Polymarket event slugs, influencers.json, Kalshi/Metaculus/Manifold rows.
+  // remote data — Polymarket event slugs, Kalshi/Metaculus/Manifold rows.
   // safeUrl allowlists the two schemes the site ever links with and sends anything else to
   // "#". Relative URLs have no scheme, are same-origin by construction, and are passed
   // through unchanged so internal links keep their exact form.

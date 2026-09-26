@@ -36,7 +36,6 @@ else comes from `market-data.json`, produced by `update-market-data.py`.
   structure, AI-complex breadth (basket vs SPY, % above 50-DMA), SEC Form 4 insider net-selling,
   H100 rent *implied vs realized* (vast.ai), Kalshi/Metaculus/Manifold cross-venue,
   bubble-market order-book depth, per-index concentration (effective N).
-- **Influencer board** — curated editorial snapshot, or auto-scored (see below).
 
 ## Local use
 
@@ -66,7 +65,7 @@ are no longer copy-pasted per page:
   Every `href` built from remote data goes through `safeUrl`, which allowlists http/https —
   `esc` makes a string safe *inside* an attribute but does nothing about a `javascript:`
   scheme.
-- **`omen.css`** — the design tokens, previously re-declared in all eight pages.
+- **`omen.css`** — the design tokens, previously re-declared in every page.
 
 Both are plain files with no imports, so the Node suites load them the same way they load
 the pages' inline code.
@@ -94,9 +93,10 @@ The site is deployed as a **Cloudflare Worker with static assets**, and the data
 served **live from an R2 bucket** so they're always current with no redeploy.
 
 - Static files live in `omen/` and are served by the `[assets]` binding (`wrangler.jsonc`).
-- `worker.js` runs first for `/market-data.json`, `/snapshots.csv` and `/influencers.json`
-  (via `assets.run_worker_first`) and streams them from the R2 bucket `omen-data`, falling
-  back to the bundled copy only on a miss — so nothing breaks before the first upload.
+- `worker.js` runs first for `/market-data.json`, `/snapshots.csv`, `/capex-data.json`,
+  `/china-data.json` and `/china-metrics.csv` (via `assets.run_worker_first`) and streams
+  them from the R2 bucket `omen-data`, falling back to the bundled copy only on a miss — so
+  nothing breaks before the first upload.
 - **GitHub Action** (`.github/workflows/refresh.yml`) runs `omen/update-market-data.py
   --snapshot --alert` every ~30 min, commits the data back (durable history) **and uploads
   it to R2** (when the Cloudflare secrets are set), which the live Worker picks up instantly.
@@ -155,12 +155,6 @@ Set repo **Secrets → Actions**:
 
 State is deduped in `alert-state.json` so you get one ping per escalation, not one per run.
 
-### Auto-scored influencers (optional)
-
-Set `XAI_API_KEY` as a repo secret. `update-influencers.py` then reads each voice's recent
-posts via Grok Live Search, scores −100…+100 with evidence, and writes `influencers.json`,
-which the dashboard prefers over its inline fallback. Without the key, the curated snapshot stands.
-
 ## Repo
 
 Lives at `mishablank/ai-crash-monitor` (private). Push data/code as usual:
@@ -171,7 +165,7 @@ git push
 ```
 
 Optional Action secrets (Settings → Secrets and variables → Actions): the two `CLOUDFLARE_*`
-above for R2, plus `TELEGRAM_*` / `NTFY_TOPIC` for alerts, `XAI_API_KEY` for influencer scoring,
+above for R2, plus `TELEGRAM_*` / `NTFY_TOPIC` for alerts,
 and `METACULUS_TOKEN` for the Metaculus cross-venue panel (free account; token on the profile page).
 
 Not investment advice.

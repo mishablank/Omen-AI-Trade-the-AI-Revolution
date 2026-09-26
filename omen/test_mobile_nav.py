@@ -15,8 +15,8 @@ import pytest
 
 HERE = Path(__file__).parent
 
-# The pages that share the marketing-site nav (logo · link row · monitor CTA). The three
-# dashboards (monitor, china, influencers) have their own chrome and no .links row.
+# The pages that share the marketing-site nav (logo · link row · monitor CTA). The two
+# dashboards (monitor, china) have their own chrome and no .links row.
 NAV_PAGES = ["index.html", "indexes.html", "gauge.html", "methodology.html", "ai-capex.html"]
 
 
@@ -77,10 +77,10 @@ def test_landing_page_has_no_layout_wider_than_a_phone():
     )
 
 
-# Every page that ships to a phone. The three dashboards have their own chrome and are
+# Every page that ships to a phone. The two dashboards have their own chrome and are
 # absent from NAV_PAGES, but they overflowed just as badly, so width is checked site-wide.
 ALL_PAGES = NAV_PAGES + [
-    "polymarket-ai-index.html", "china-ai-monitor.html", "influencers.html",
+    "polymarket-ai-index.html", "china-ai-monitor.html",
 ]
 
 
