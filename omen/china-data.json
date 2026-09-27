@@ -1,5 +1,5 @@
 {
- "updated": "2026-09-27T06:28:54Z",
+ "updated": "2026-09-27T12:55:46Z",
  "snapshot_date": "2026-09-27",
  "artificial_analysis": {
   "cn_best": "GLM-5.2",
@@ -96,7 +96,14 @@
   "score": 0,
   "asof": "2026-09-27",
   "source": "app-charts",
-  "best": [],
+  "best": [
+   {
+    "label": "MiniMax",
+    "rank": 199,
+    "store": "android",
+    "country": "kr"
+   }
+  ],
   "markets": [
    "us",
    "gb",
@@ -109,7 +116,7 @@
    "au",
    "kr"
   ],
-  "detail": "no Chinese AI app in any iOS or Play top-100; basket-mean Western top-100 presence 0/100 across 10 markets",
+  "detail": "no Chinese AI app in any iOS or Play top-100 (nearest: MiniMax #199 (KR Play)); basket-mean Western top-100 presence 0/100 across 10 markets",
   "note": "iOS Apple RSS top-100 + Android Play top-200 across 10 markets; presence = basket-mean of best top-100 chart rank (DeepSeek/Qwen/Doubao/Kimi/MiniMax), #1=100 #100=1; ranks past top-100 score 0."
  },
  "investment": {
@@ -620,90 +627,91 @@
   "source": "search",
   "asof": "2026-09-27",
   "vel": {
-   "MiniMax-AI/MiniMax-H3": 50.6,
-   "MiniMax-AI/skills": 7.1,
-   "MoonshotAI/Kimi-K3": 6.7,
-   "MoonshotAI/kimi-cli": 5.9,
-   "QwenLM/qwen-code": 24.6,
-   "XiaomiMiMo/MiMo-Audio": 0.2,
-   "XiaomiMiMo/MiMo-Code": 28.8,
-   "deepseek-ai/FlashMLA": 2.6,
-   "deepseek-ai/deepseek-harness": 1113.4,
-   "zai-org/GLM-5": 4.6,
-   "zai-org/GLM-OCR": 3.5
+   "MiniMax-AI/MiniMax-H3": 38.8,
+   "MiniMax-AI/skills": 0.0,
+   "MoonshotAI/Kimi-K3": 7.8,
+   "MoonshotAI/kimi-cli": 0.0,
+   "QwenLM/Qwen3.8": 4.8,
+   "QwenLM/qwen-code": 10.7,
+   "XiaomiMiMo/MiMo-Audio": 0.0,
+   "XiaomiMiMo/MiMo-Code": 16.5,
+   "deepseek-ai/FlashMLA": -1.0,
+   "deepseek-ai/deepseek-harness": 825.2,
+   "zai-org/GLM-5": 4.8,
+   "zai-org/GLM-OCR": 1.9
   }
  },
- "github_stars_per_day": 1248.2,
+ "github_stars_per_day": 909.5,
  "hf": {
   "cnOrgs": [
    {
     "org": "Qwen",
-    "dl": 242093077
+    "dl": 239458198
    },
    {
     "org": "deepseek-ai",
-    "dl": 24122874
+    "dl": 24346301
    },
    {
     "org": "zai-org",
-    "dl": 12799265
+    "dl": 13097134
    },
    {
     "org": "MiniMaxAI",
-    "dl": 5902358
+    "dl": 5915010
    },
    {
     "org": "moonshotai",
-    "dl": 3546336
+    "dl": 3483874
    },
    {
     "org": "tencent",
-    "dl": 2150872
+    "dl": 2236672
    },
    {
     "org": "stepfun-ai",
-    "dl": 1223174
+    "dl": 1228320
    },
    {
     "org": "XiaomiMiMo",
-    "dl": 552091
+    "dl": 543237
    }
   ],
   "usOrgs": [
    {
     "org": "google",
-    "dl": 49571943
+    "dl": 49655857
    },
    {
     "org": "meta-llama",
-    "dl": 26596104
+    "dl": 26200071
    },
    {
     "org": "nvidia",
-    "dl": 20578369
+    "dl": 20451352
    },
    {
     "org": "openai",
-    "dl": 11369485
+    "dl": 11286467
    },
    {
     "org": "microsoft",
-    "dl": 3527078
+    "dl": 3478901
    },
    {
     "org": "allenai",
-    "dl": 2978988
+    "dl": 2871738
    }
   ],
-  "cn": 292390047,
-  "us": 114621967
+  "cn": 290308746,
+  "us": 113944386
  },
  "openrouter_week": {
   "week": "2026-09-21",
-  "cn_share": 0.5306,
-  "us_share": 0.2571,
-  "spi": 2.064,
-  "total_tokens": 129659369790022
+  "cn_share": 0.5282,
+  "us_share": 0.2564,
+  "spi": 2.06,
+  "total_tokens": 134834067244547
  },
  "vercel_gateway": {
   "asof": "2026-09-27",
@@ -1046,8 +1054,8 @@
   "license": "AI Gateway Leaderboard Data (c) Vercel, CC BY 4.0"
  },
  "ollama": {
-  "cn": 305689299,
-  "us": 478632299,
+  "cn": 305894699,
+  "us": 478741299,
   "cn_top": [
    {
     "name": "deepseek-r1",
@@ -1055,7 +1063,7 @@
    },
    {
     "name": "qwen2.5",
-    "pulls": 41000000
+    "pulls": 41100000
    },
    {
     "name": "qwen3",
@@ -1089,7 +1097,9 @@
    }
   ],
   "n_models": 238,
-  "asof": "2026-09-27"
+  "asof": "2026-09-27",
+  "cn_per_day": 508082,
+  "us_per_day": 421415
  },
  "kalshi": {
   "asof": "2026-09-27",
@@ -1130,7 +1140,7 @@
   "cn": [
    {
     "base": "Qwen/Qwen3-8B",
-    "n": 2106
+    "n": 2111
    },
    {
     "base": "deepseek-ai/DeepSeek-R1",
@@ -1163,7 +1173,7 @@
     "n": 115
    }
   ],
-  "cn_total": 2489,
+  "cn_total": 2494,
   "us_total": 2564,
   "asof": "2026-09-27"
  },
