@@ -1,5 +1,5 @@
 {
- "updated": "2026-09-27T17:22:41Z",
+ "updated": "2026-09-27T20:38:09Z",
  "source": "google-play-scraper",
  "store": "android",
  "depth": 200,
@@ -9,7 +9,7 @@
    "label": "MiniMax",
    "store": "android",
    "country": "us",
-   "rank": 181,
+   "rank": 128,
    "appId": "ai.hailuo.video",
    "title": "Hailuo AI: Image&Video Maker"
   },
@@ -17,7 +17,7 @@
    "label": "MiniMax",
    "store": "android",
    "country": "br",
-   "rank": 131,
+   "rank": 120,
    "appId": "ai.hailuo.video",
    "title": "Hailuo AI: Image&Video Maker"
   },
@@ -25,7 +25,7 @@
    "label": "MiniMax",
    "store": "android",
    "country": "kr",
-   "rank": 140,
+   "rank": 144,
    "appId": "ai.hailuo.video",
    "title": "Hailuo AI: Image&Video Maker"
   }
