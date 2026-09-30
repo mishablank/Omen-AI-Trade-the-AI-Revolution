@@ -1,5 +1,5 @@
 {
- "updated": "2026-09-30T15:49:32Z",
+ "updated": "2026-09-30T18:19:49Z",
  "snapshot_date": "2026-09-30",
  "artificial_analysis": {
   "cn_best": "GLM-5.2",
@@ -708,36 +708,36 @@
  },
  "openrouter_week": {
   "week": "2026-09-28",
-  "cn_share": 0.4516,
-  "us_share": 0.2467,
-  "spi": 1.83,
-  "total_tokens": 64914276597467
+  "cn_share": 0.4509,
+  "us_share": 0.2471,
+  "spi": 1.825,
+  "total_tokens": 67106532498355
  },
  "vercel_gateway": {
   "asof": "2026-09-30",
-  "cn_share": 66.12,
-  "us_share": 32.76,
-  "spi": 2.018,
+  "cn_share": 65.02,
+  "us_share": 33.85,
+  "spi": 1.921,
   "top_cn": [
    {
     "lab": "deepseek",
-    "share": 43.44
+    "share": 42.46
    },
    {
     "lab": "zai",
-    "share": 10.41
+    "share": 10.56
    },
    {
     "lab": "moonshotai",
-    "share": 6.94
+    "share": 6.74
    },
    {
     "lab": "stepfun",
-    "share": 2.59
+    "share": 2.53
    },
    {
     "lab": "xiaomi",
-    "share": 1.45
+    "share": 1.39
    },
    {
     "lab": "alibaba",
@@ -1047,15 +1047,15 @@
    },
    {
     "d": "2026-09-30",
-    "cn": 66.12,
-    "us": 32.76
+    "cn": 65.02,
+    "us": 33.85
    }
   ],
   "license": "AI Gateway Leaderboard Data (c) Vercel, CC BY 4.0"
  },
  "ollama": {
-  "cn": 307750998,
-  "us": 480361099,
+  "cn": 307752299,
+  "us": 480564899,
   "cn_top": [
    {
     "name": "deepseek-r1",
@@ -1089,7 +1089,7 @@
    },
    {
     "name": "llama3.2",
-    "pulls": 84600000
+    "pulls": 84700000
    },
    {
     "name": "gemma3",
@@ -1097,9 +1097,7 @@
    }
   ],
   "n_models": 240,
-  "asof": "2026-09-30",
-  "cn_per_day": 414451,
-  "us_per_day": 235127
+  "asof": "2026-09-30"
  },
  "kalshi": {
   "asof": "2026-09-30",
@@ -1124,13 +1122,13 @@
    },
    {
     "label": "Best AI at end of 2026: Qwen",
-    "p": 0.005,
+    "p": 0.004,
     "ticker": "KXLLM1-26DEC31-ALI",
     "series": "kxllm1"
    },
    {
     "label": "Best AI at end of 2026: Claude",
-    "p": 0.745,
+    "p": 0.746,
     "ticker": "KXLLM1-26DEC31-A",
     "series": "kxllm1"
    }
@@ -1200,6 +1198,10 @@
    {
     "pkg": "anthropic",
     "wk": 37768326
+   },
+   {
+    "pkg": "google-genai",
+    "wk": 32928433
    }
   ],
   "asof": "2026-09-30"
