@@ -1,5 +1,5 @@
 {
- "updated": "2026-09-30T08:21:49Z",
+ "updated": "2026-09-30T15:52:45Z",
  "tsmc": {
   "asof": "2026-08",
   "rev_ntd_b": 514.8,
@@ -14,14 +14,14 @@
    "from": "2026-07-03",
    "to": "2026-09-30",
    "debt": 11,
-   "s1_ai": 300,
+   "s1_ai": 301,
    "formd_ai": 3
   },
   "prev": {
    "from": "2026-04-04",
    "to": "2026-07-02",
    "debt": 26,
-   "s1_ai": null,
+   "s1_ai": 423,
    "formd_ai": 7
   }
  },
@@ -181,13 +181,13 @@
  },
  "memory": {
   "dram_contract": {
-   "quarter": "3Q26",
+   "quarter": "4Q26",
    "direction": "rise",
-   "lo": 13,
-   "hi": 18,
-   "published": "2026-07-03",
-   "source": "manual",
-   "url": "https://www.trendforce.com/presscenter/news/20260703-13134.html"
+   "lo": 10,
+   "hi": 15,
+   "published": "2026-09-30",
+   "source": "trendforce-press",
+   "url": "https://www.trendforce.com/presscenter/news/20260930-13258.html"
   },
   "hbm": {
    "direction": "up",
@@ -211,7 +211,7 @@
    "stale": false,
    "src": "https://www.koreatimes.co.kr/economy/20260921/exports-up-78-in-first-20-days-of-sept-on-robust-chip-shipments"
   },
-  "checked": "2026-09-29T15:42:39Z"
+  "checked": "2026-09-30T15:53:07Z"
  },
  "eia": {
   "operating_gw": 1385.0,
@@ -225,10 +225,10 @@
   "dc_construction_saar_b": 75.2,
   "dc_yoy_pct": 57.2,
   "dc_asof": "2026-07",
-  "computers_saar_b": 400.6,
-  "gdp_saar_b": 32486.1,
+  "computers_saar_b": 420.1,
+  "gdp_saar_b": 32563.0,
   "gdp_asof": "2026-04-01",
-  "pct_gdp": 1.46
+  "pct_gdp": 1.52
  },
  "agents": {
   "asof": "2026-09-30",
@@ -238,7 +238,7 @@
    "@google/gemini-cli": 437794
   },
   "pypi": {
-   "claude-agent-sdk": 6776210,
+   "claude-agent-sdk": null,
    "openai-agents": null
   },
   "npm_total_wk": 39538206,
