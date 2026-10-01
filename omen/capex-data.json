@@ -1,5 +1,5 @@
 {
- "updated": "2026-10-01T16:20:47Z",
+ "updated": "2026-10-01T18:46:44Z",
  "tsmc": {
   "asof": "2026-08",
   "rev_ntd_b": 514.8,
@@ -239,7 +239,7 @@
   },
   "pypi": {
    "claude-agent-sdk": 6889556,
-   "openai-agents": null
+   "openai-agents": 3051260
   },
   "npm_total_wk": 40599286,
   "series": [
