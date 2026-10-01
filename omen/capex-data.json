@@ -1,5 +1,5 @@
 {
- "updated": "2026-09-30T22:34:26Z",
+ "updated": "2026-10-01T01:14:03Z",
  "tsmc": {
   "asof": "2026-08",
   "rev_ntd_b": 514.8,
@@ -11,22 +11,22 @@
  "issuance": {
   "days": 90,
   "cur": {
-   "from": "2026-07-03",
-   "to": "2026-09-30",
+   "from": "2026-07-04",
+   "to": "2026-10-01",
    "debt": 11,
    "s1_ai": 302,
    "formd_ai": 3
   },
   "prev": {
-   "from": "2026-04-04",
-   "to": "2026-07-02",
+   "from": "2026-04-05",
+   "to": "2026-07-03",
    "debt": 26,
    "s1_ai": 423,
    "formd_ai": 7
   }
  },
  "capex_asymmetry": {
-  "asof": "2026-09-30",
+  "asof": "2026-10-01",
   "us_ttm_usd_b": 586.3,
   "us_names": [
    "AMZN",
@@ -39,7 +39,7 @@
    "2025Q3–2026Q2",
    "2025Q4–2026Q3"
   ],
-  "us_asof": "2026-09-30",
+  "us_asof": "2026-10-01",
   "cn_ttm_usd_b": 42.4,
   "cn_ttm_cny_b": 284.4,
   "cn": [
@@ -207,7 +207,7 @@
    "usd_b": 34.12,
    "window": "Sep 1-20",
    "asof": "2026-09-21",
-   "age_days": 9,
+   "age_days": 10,
    "stale": false,
    "src": "https://www.koreatimes.co.kr/economy/20260921/exports-up-78-in-first-20-days-of-sept-on-robust-chip-shipments"
   },
@@ -231,22 +231,18 @@
   "pct_gdp": 1.52
  },
  "agents": {
-  "asof": "2026-09-30",
+  "asof": "2026-10-01",
   "npm": {
-   "@anthropic-ai/claude-code": 13976059,
-   "@openai/codex": 25124353,
-   "@google/gemini-cli": 437794
+   "@anthropic-ai/claude-code": 14495496,
+   "@openai/codex": 25653416,
+   "@google/gemini-cli": 450374
   },
   "pypi": {
-   "claude-agent-sdk": 6776210,
-   "openai-agents": 3045541
+   "claude-agent-sdk": null,
+   "openai-agents": null
   },
-  "npm_total_wk": 39538206,
+  "npm_total_wk": 40599286,
   "series": [
-   [
-    "2026-08-22",
-    38427429
-   ],
    [
     "2026-08-23",
     38774395
@@ -346,6 +342,10 @@
    [
     "2026-09-30",
     39538206
+   ],
+   [
+    "2026-10-01",
+    40599286
    ]
   ]
  },
