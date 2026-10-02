@@ -1,5 +1,5 @@
 {
- "updated": "2026-10-02T15:40:08Z",
+ "updated": "2026-10-02T18:17:05Z",
  "snapshot_date": "2026-10-02",
  "artificial_analysis": {
   "cn_best": "GLM-5.2",
@@ -708,40 +708,40 @@
  },
  "openrouter_week": {
   "week": "2026-09-28",
-  "cn_share": 0.4415,
-  "us_share": 0.2487,
-  "spi": 1.775,
-  "total_tokens": 110993979806955
+  "cn_share": 0.441,
+  "us_share": 0.2481,
+  "spi": 1.778,
+  "total_tokens": 114470878996848
  },
  "vercel_gateway": {
   "asof": "2026-10-02",
-  "cn_share": 52.34,
-  "us_share": 36.25,
-  "spi": 1.444,
+  "cn_share": 49.95,
+  "us_share": 36.05,
+  "spi": 1.386,
   "top_cn": [
    {
     "lab": "deepseek",
-    "share": 30.15
+    "share": 29.2
    },
    {
     "lab": "zai",
-    "share": 13.48
+    "share": 12.81
    },
    {
     "lab": "moonshotai",
-    "share": 2.82
+    "share": 2.51
    },
    {
     "lab": "stepfun",
-    "share": 2.4
+    "share": 2.17
    },
    {
     "lab": "xiaomi",
-    "share": 1.68
+    "share": 1.6
    },
    {
     "lab": "alibaba",
-    "share": 0.91
+    "share": 0.86
    }
   ],
   "series": [
@@ -1047,19 +1047,19 @@
    },
    {
     "d": "2026-10-02",
-    "cn": 52.34,
-    "us": 36.25
+    "cn": 49.95,
+    "us": 36.05
    }
   ],
   "license": "AI Gateway Leaderboard Data (c) Vercel, CC BY 4.0"
  },
  "ollama": {
-  "cn": 308972700,
-  "us": 481124199,
+  "cn": 309073900,
+  "us": 481228399,
   "cn_top": [
    {
     "name": "deepseek-r1",
-    "pulls": 93300000
+    "pulls": 93400000
    },
    {
     "name": "qwen2.5",
@@ -1089,7 +1089,7 @@
    },
    {
     "name": "llama3.2",
-    "pulls": 84700000
+    "pulls": 84800000
    },
    {
     "name": "gemma3",
@@ -1097,9 +1097,7 @@
    }
   ],
   "n_models": 240,
-  "asof": "2026-10-02",
-  "cn_per_day": 626293,
-  "us_per_day": 338972
+  "asof": "2026-10-02"
  },
  "kalshi": {
   "asof": "2026-10-02",
@@ -1124,13 +1122,13 @@
    },
    {
     "label": "Best AI at end of 2026: Qwen",
-    "p": 0.005,
+    "p": 0.009,
     "ticker": "KXLLM1-26DEC31-ALI",
     "series": "kxllm1"
    },
    {
     "label": "Best AI at end of 2026: Claude",
-    "p": 0.518,
+    "p": 0.511,
     "ticker": "KXLLM1-26DEC31-A",
     "series": "kxllm1"
    }
@@ -1162,7 +1160,7 @@
    },
    {
     "base": "google/gemma-3-12b-it",
-    "n": 429
+    "n": 422
    },
    {
     "base": "openai/gpt-oss-20b",
@@ -1174,7 +1172,7 @@
    }
   ],
   "cn_total": 2532,
-  "us_total": 2598,
+  "us_total": 2591,
   "asof": "2026-10-02"
  },
  "sdk": {
@@ -1193,6 +1191,10 @@
    }
   ],
   "us": [
+   {
+    "pkg": "openai",
+    "wk": 72270103
+   },
    {
     "pkg": "anthropic",
     "wk": 38950397
