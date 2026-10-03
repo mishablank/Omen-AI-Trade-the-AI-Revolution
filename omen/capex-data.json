@@ -1,5 +1,5 @@
 {
- "updated": "2026-10-03T07:57:08Z",
+ "updated": "2026-10-03T13:18:47Z",
  "tsmc": {
   "asof": "2026-08",
   "rev_ntd_b": 514.8,
@@ -211,7 +211,7 @@
    "stale": false,
    "src": "https://www.koreatimes.co.kr/economy/20260921/exports-up-78-in-first-20-days-of-sept-on-robust-chip-shipments"
   },
-  "checked": "2026-10-02T15:42:45Z"
+  "checked": "2026-10-03T13:18:53Z"
  },
  "eia": {
   "operating_gw": 1385.0,
@@ -239,7 +239,7 @@
   },
   "pypi": {
    "claude-agent-sdk": 7221562,
-   "openai-agents": 3011261
+   "openai-agents": null
   },
   "npm_total_wk": 41126997,
   "series": [
