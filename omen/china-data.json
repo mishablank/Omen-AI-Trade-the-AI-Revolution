@@ -1,6 +1,6 @@
 {
- "updated": "2026-10-03T22:33:57Z",
- "snapshot_date": "2026-10-03",
+ "updated": "2026-10-04T00:27:46Z",
+ "snapshot_date": "2026-10-04",
  "artificial_analysis": {
   "cn_best": "GLM-5.2",
   "cn_score": 51,
@@ -94,12 +94,12 @@
  },
  "apps": {
   "score": 0,
-  "asof": "2026-10-03",
+  "asof": "2026-10-04",
   "source": "app-charts",
   "best": [
    {
     "label": "MiniMax",
-    "rank": 101,
+    "rank": 102,
     "store": "android",
     "country": "us"
    }
@@ -116,7 +116,7 @@
    "au",
    "kr"
   ],
-  "detail": "no Chinese AI app in any iOS or Play top-100 (nearest: MiniMax #101 (US Play)); basket-mean Western top-100 presence 0/100 across 10 markets",
+  "detail": "no Chinese AI app in any iOS or Play top-100 (nearest: MiniMax #102 (US Play)); basket-mean Western top-100 presence 0/100 across 10 markets",
   "note": "iOS Apple RSS top-100 + Android Play top-200 across 10 markets; presence = basket-mean of best top-100 chart rank (DeepSeek/Qwen/Doubao/Kimi/MiniMax), #1=100 #100=1; ranks past top-100 score 0."
  },
  "investment": {
@@ -502,7 +502,7 @@
   "source": "lmarena-dataset"
  },
  "arena_boards": {
-  "asof": "2026-10-03",
+  "asof": "2026-10-04",
   "boards": {
    "webdev": {
     "metric": "elo",
@@ -625,7 +625,7 @@
    "zai-org/ZCode"
   ],
   "source": "search",
-  "asof": "2026-10-03",
+  "asof": "2026-10-04",
   "vel": {
    "MiniMax-AI/MiniMax-H3": 34.4,
    "MiniMax-AI/skills": 1.1,
@@ -708,10 +708,10 @@
  },
  "openrouter_week": {
   "week": "2026-09-28",
-  "cn_share": 0.4391,
-  "us_share": 0.2405,
-  "spi": 1.826,
-  "total_tokens": 141130306669078
+  "cn_share": 0.4386,
+  "us_share": 0.2398,
+  "spi": 1.829,
+  "total_tokens": 143383417925921
  },
  "vercel_gateway": {
   "asof": "2026-10-03",
@@ -1054,8 +1054,8 @@
   "license": "AI Gateway Leaderboard Data (c) Vercel, CC BY 4.0"
  },
  "ollama": {
-  "cn": 309587300,
-  "us": 481770499,
+  "cn": 309587900,
+  "us": 481772799,
   "cn_top": [
    {
     "name": "deepseek-r1",
@@ -1097,14 +1097,14 @@
    }
   ],
   "n_models": 242,
-  "asof": "2026-10-03"
+  "asof": "2026-10-04"
  },
  "kalshi": {
-  "asof": "2026-10-03",
+  "asof": "2026-10-04",
   "markets": [
    {
     "label": "Will a Chinese AI model be #1 this year?",
-    "p": 0.05,
+    "p": 0.09,
     "ticker": "KXBESTLLMCHINA-27",
     "series": "kxbestllmchina"
    },
@@ -1116,7 +1116,7 @@
    },
    {
     "label": "Best AI at end of 2026: Ernie",
-    "p": 0.001,
+    "p": 0.002,
     "ticker": "KXLLM1-26DEC31-BAID",
     "series": "kxllm1"
    },
@@ -1128,7 +1128,7 @@
    },
    {
     "label": "Best AI at end of 2026: Claude",
-    "p": 0.522,
+    "p": 0.521,
     "ticker": "KXLLM1-26DEC31-A",
     "series": "kxllm1"
    }
@@ -1138,7 +1138,7 @@
   "cn": [
    {
     "base": "Qwen/Qwen3-8B",
-    "n": 2152
+    "n": 2153
    },
    {
     "base": "deepseek-ai/DeepSeek-R1",
@@ -1171,9 +1171,9 @@
     "n": 119
    }
   ],
-  "cn_total": 2536,
+  "cn_total": 2537,
   "us_total": 2593,
-  "asof": "2026-10-03"
+  "asof": "2026-10-04"
  },
  "sdk": {
   "cn": [
@@ -1198,9 +1198,13 @@
    {
     "pkg": "anthropic",
     "wk": 39519372
+   },
+   {
+    "pkg": "google-genai",
+    "wk": 33976466
    }
   ],
-  "asof": "2026-10-03"
+  "asof": "2026-10-04"
  },
  "epoch_compute": {
   "us_share": 79.5,
