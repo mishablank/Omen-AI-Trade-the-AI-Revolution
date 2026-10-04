@@ -1,5 +1,5 @@
 {
- "updated": "2026-10-04T06:43:58Z",
+ "updated": "2026-10-04T13:08:14Z",
  "snapshot_date": "2026-10-04",
  "artificial_analysis": {
   "cn_best": "GLM-5.2",
@@ -627,91 +627,91 @@
   "source": "search",
   "asof": "2026-10-04",
   "vel": {
-   "MiniMax-AI/MiniMax-H3": 34.4,
-   "MiniMax-AI/skills": 1.1,
-   "MoonshotAI/Kimi-K3": 4.4,
-   "MoonshotAI/kimi-cli": 2.2,
-   "QwenLM/Qwen3.8": 8.9,
-   "QwenLM/qwen-code": 14.4,
+   "MiniMax-AI/MiniMax-H3": 32.2,
+   "MiniMax-AI/skills": 2.0,
+   "MoonshotAI/Kimi-K3": 4.0,
+   "MoonshotAI/kimi-cli": 0.0,
+   "QwenLM/Qwen3.8": 8.0,
+   "QwenLM/qwen-code": 17.1,
    "XiaomiMiMo/MiMo-Audio": 0.0,
-   "XiaomiMiMo/MiMo-Code": 13.3,
-   "deepseek-ai/FlashMLA": 2.2,
-   "deepseek-ai/deepseek-harness": 557.8,
-   "zai-org/GLM-OCR": 1.1,
-   "zai-org/ZCode": 38.9
+   "XiaomiMiMo/MiMo-Code": 7.0,
+   "deepseek-ai/FlashMLA": 6.0,
+   "deepseek-ai/deepseek-harness": 497.6,
+   "zai-org/GLM-OCR": 1.0,
+   "zai-org/ZCode": 30.2
   }
  },
- "github_stars_per_day": 678.9,
+ "github_stars_per_day": 605.2,
  "hf": {
   "cnOrgs": [
    {
     "org": "Qwen",
-    "dl": 226605670
+    "dl": 222793278
    },
    {
     "org": "deepseek-ai",
-    "dl": 25254677
+    "dl": 25264648
    },
    {
     "org": "zai-org",
-    "dl": 14320197
+    "dl": 14537885
    },
    {
     "org": "MiniMaxAI",
-    "dl": 5738478
+    "dl": 5713102
    },
    {
     "org": "moonshotai",
-    "dl": 3218384
+    "dl": 3217862
    },
    {
     "org": "tencent",
-    "dl": 2763055
+    "dl": 2866437
    },
    {
     "org": "stepfun-ai",
-    "dl": 1279125
+    "dl": 1272007
    },
    {
     "org": "XiaomiMiMo",
-    "dl": 593991
+    "dl": 593312
    }
   ],
   "usOrgs": [
    {
     "org": "google",
-    "dl": 50527986
+    "dl": 50325605
    },
    {
     "org": "meta-llama",
-    "dl": 25224680
+    "dl": 24841767
    },
    {
     "org": "nvidia",
-    "dl": 18078065
+    "dl": 17601856
    },
    {
     "org": "openai",
-    "dl": 11095554
+    "dl": 10918242
    },
    {
     "org": "microsoft",
-    "dl": 3502259
+    "dl": 3440877
    },
    {
     "org": "allenai",
-    "dl": 2931845
+    "dl": 2840459
    }
   ],
-  "cn": 279773577,
-  "us": 111360389
+  "cn": 276258531,
+  "us": 109968806
  },
  "openrouter_week": {
   "week": "2026-09-28",
-  "cn_share": 0.4376,
-  "us_share": 0.238,
-  "spi": 1.839,
-  "total_tokens": 148881890216084
+  "cn_share": 0.4368,
+  "us_share": 0.2362,
+  "spi": 1.849,
+  "total_tokens": 154061732276899
  },
  "vercel_gateway": {
   "asof": "2026-10-03",
@@ -1054,8 +1054,8 @@
   "license": "AI Gateway Leaderboard Data (c) Vercel, CC BY 4.0"
  },
  "ollama": {
-  "cn": 309690400,
-  "us": 481778999,
+  "cn": 309800500,
+  "us": 482087299,
   "cn_top": [
    {
     "name": "deepseek-r1",
@@ -1067,7 +1067,7 @@
    },
    {
     "name": "qwen3",
-    "pulls": 38800000
+    "pulls": 38900000
    },
    {
     "name": "qwen2.5-coder",
@@ -1085,7 +1085,7 @@
   "us_top": [
    {
     "name": "llama3.1",
-    "pulls": 120000000
+    "pulls": 120100000
    },
    {
     "name": "llama3.2",
@@ -1097,7 +1097,9 @@
    }
   ],
   "n_models": 242,
-  "asof": "2026-10-04"
+  "asof": "2026-10-04",
+  "cn_per_day": 320226,
+  "us_per_day": 734300
  },
  "kalshi": {
   "asof": "2026-10-04",
@@ -1128,7 +1130,7 @@
    },
    {
     "label": "Best AI at end of 2026: Claude",
-    "p": 0.509,
+    "p": 0.504,
     "ticker": "KXLLM1-26DEC31-A",
     "series": "kxllm1"
    }
