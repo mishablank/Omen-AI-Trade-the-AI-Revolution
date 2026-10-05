@@ -1,5 +1,5 @@
 {
- "updated": "2026-10-05T15:49:40Z",
+ "updated": "2026-10-05T21:01:20Z",
  "snapshot_date": "2026-10-05",
  "artificial_analysis": {
   "cn_best": "GLM-5.2",
@@ -99,7 +99,7 @@
   "best": [
    {
     "label": "MiniMax",
-    "rank": 131,
+    "rank": 161,
     "store": "android",
     "country": "us"
    }
@@ -116,7 +116,7 @@
    "au",
    "kr"
   ],
-  "detail": "no Chinese AI app in any iOS or Play top-100 (nearest: MiniMax #131 (US Play)); basket-mean Western top-100 presence 0/100 across 10 markets",
+  "detail": "no Chinese AI app in any iOS or Play top-100 (nearest: MiniMax #161 (US Play)); basket-mean Western top-100 presence 0/100 across 10 markets",
   "note": "iOS Apple RSS top-100 + Android Play top-200 across 10 markets; presence = basket-mean of best top-100 chart rank (DeepSeek/Qwen/Doubao/Kimi/MiniMax), #1=100 #100=1; ranks past top-100 score 0."
  },
  "investment": {
@@ -708,40 +708,40 @@
  },
  "openrouter_week": {
   "week": "2026-10-05",
-  "cn_share": 0.4898,
-  "us_share": 0.1859,
-  "spi": 2.635,
-  "total_tokens": 16433003075189
+  "cn_share": 0.5192,
+  "us_share": 0.1983,
+  "spi": 2.619,
+  "total_tokens": 22765410530540
  },
  "vercel_gateway": {
   "asof": "2026-10-05",
-  "cn_share": 56.11,
-  "us_share": 42.99,
-  "spi": 1.305,
+  "cn_share": 54.29,
+  "us_share": 44.97,
+  "spi": 1.207,
   "top_cn": [
    {
     "lab": "deepseek",
-    "share": 31.38
+    "share": 30.17
    },
    {
     "lab": "zai",
-    "share": 16.65
+    "share": 16.09
    },
    {
     "lab": "moonshotai",
-    "share": 2.12
-   },
-   {
-    "lab": "xiaomi",
-    "share": 1.91
+    "share": 2.07
    },
    {
     "lab": "stepfun",
-    "share": 1.71
+    "share": 1.87
+   },
+   {
+    "lab": "xiaomi",
+    "share": 1.74
    },
    {
     "lab": "inclusionai",
-    "share": 1.12
+    "share": 1.21
    }
   ],
   "series": [
@@ -1047,15 +1047,15 @@
    },
    {
     "d": "2026-10-05",
-    "cn": 56.11,
-    "us": 42.99
+    "cn": 54.29,
+    "us": 44.97
    }
   ],
   "license": "AI Gateway Leaderboard Data (c) Vercel, CC BY 4.0"
  },
  "ollama": {
-  "cn": 310615500,
-  "us": 482427599,
+  "cn": 310722000,
+  "us": 482438499,
   "cn_top": [
    {
     "name": "deepseek-r1",
@@ -1097,9 +1097,7 @@
    }
   ],
   "n_models": 242,
-  "asof": "2026-10-05",
-  "cn_per_day": 732847,
-  "us_per_day": 305997
+  "asof": "2026-10-05"
  },
  "kalshi": {
   "asof": "2026-10-05",
@@ -1118,19 +1116,19 @@
    },
    {
     "label": "Best AI at end of 2026: Ernie",
-    "p": 0.001,
+    "p": 0.002,
     "ticker": "KXLLM1-26DEC31-BAID",
     "series": "kxllm1"
    },
    {
     "label": "Best AI at end of 2026: Qwen",
-    "p": 0.007,
+    "p": 0.005,
     "ticker": "KXLLM1-26DEC31-ALI",
     "series": "kxllm1"
    },
    {
     "label": "Best AI at end of 2026: Claude",
-    "p": 0.505,
+    "p": 0.51,
     "ticker": "KXLLM1-26DEC31-A",
     "series": "kxllm1"
    }
@@ -1140,7 +1138,7 @@
   "cn": [
    {
     "base": "Qwen/Qwen3-8B",
-    "n": 2155
+    "n": 2157
    },
    {
     "base": "deepseek-ai/DeepSeek-R1",
@@ -1173,25 +1171,29 @@
     "n": 119
    }
   ],
-  "cn_total": 2539,
+  "cn_total": 2541,
   "us_total": 2593,
   "asof": "2026-10-05"
  },
  "sdk": {
   "cn": [
    {
-    "pkg": "dashscope",
-    "wk": 435766
-   },
-   {
-    "pkg": "zhipuai",
-    "wk": 21013
+    "pkg": "zai-sdk",
+    "wk": 20790
    }
   ],
   "us": [
    {
+    "pkg": "openai",
+    "wk": 73705000
+   },
+   {
     "pkg": "anthropic",
     "wk": 40152274
+   },
+   {
+    "pkg": "google-genai",
+    "wk": 34103565
    }
   ],
   "asof": "2026-10-05"
