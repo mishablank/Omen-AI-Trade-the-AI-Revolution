@@ -1,5 +1,5 @@
 {
- "updated": "2026-10-06T01:51:07Z",
+ "updated": "2026-10-06T02:10:17Z",
  "snapshot_date": "2026-10-06",
  "artificial_analysis": {
   "cn_best": "GLM-5.2",
@@ -99,7 +99,7 @@
   "best": [
    {
     "label": "MiniMax",
-    "rank": 154,
+    "rank": 157,
     "store": "android",
     "country": "us"
    }
@@ -116,7 +116,7 @@
    "au",
    "kr"
   ],
-  "detail": "no Chinese AI app in any iOS or Play top-100 (nearest: MiniMax #154 (US Play)); basket-mean Western top-100 presence 0/100 across 10 markets",
+  "detail": "no Chinese AI app in any iOS or Play top-100 (nearest: MiniMax #157 (US Play)); basket-mean Western top-100 presence 0/100 across 10 markets",
   "note": "iOS Apple RSS top-100 + Android Play top-200 across 10 markets; presence = basket-mean of best top-100 chart rank (DeepSeek/Qwen/Doubao/Kimi/MiniMax), #1=100 #100=1; ranks past top-100 score 0."
  },
  "investment": {
@@ -1054,8 +1054,8 @@
   "license": "AI Gateway Leaderboard Data (c) Vercel, CC BY 4.0"
  },
  "ollama": {
-  "cn": 310923999,
-  "us": 482545199,
+  "cn": 310924199,
+  "us": 482545399,
   "cn_top": [
    {
     "name": "deepseek-r1",
@@ -1128,7 +1128,7 @@
    },
    {
     "label": "Best AI at end of 2026: Claude",
-    "p": 0.507,
+    "p": 0.509,
     "ticker": "KXLLM1-26DEC31-A",
     "series": "kxllm1"
    }
@@ -1191,6 +1191,10 @@
    }
   ],
   "us": [
+   {
+    "pkg": "openai",
+    "wk": 74156620
+   },
    {
     "pkg": "anthropic",
     "wk": 40268700
