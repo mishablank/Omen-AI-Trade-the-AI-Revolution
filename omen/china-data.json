@@ -1,5 +1,5 @@
 {
- "updated": "2026-10-07T16:18:31Z",
+ "updated": "2026-10-07T19:16:29Z",
  "snapshot_date": "2026-10-07",
  "artificial_analysis": {
   "cn_best": "GLM-5.2",
@@ -701,39 +701,39 @@
  },
  "openrouter_week": {
   "week": "2026-10-05",
-  "cn_share": 0.5752,
-  "us_share": 0.2464,
-  "spi": 2.335,
-  "total_tokens": 65457749110708
+  "cn_share": 0.5751,
+  "us_share": 0.2483,
+  "spi": 2.316,
+  "total_tokens": 68577067937584
  },
  "vercel_gateway": {
   "asof": "2026-10-07",
-  "cn_share": 56.17,
-  "us_share": 41.97,
-  "spi": 1.338,
+  "cn_share": 55.22,
+  "us_share": 43.17,
+  "spi": 1.279,
   "top_cn": [
    {
     "lab": "deepseek",
-    "share": 30.72
+    "share": 30.17
    },
    {
     "lab": "zai",
-    "share": 15.05
+    "share": 15.22
    },
    {
     "lab": "moonshotai",
-    "share": 3.44
+    "share": 3.2
    },
    {
     "lab": "stepfun",
-    "share": 2.76
+    "share": 2.52
    },
    {
     "lab": "xiaomi",
-    "share": 1.8
+    "share": 1.69
    },
    {
-    "lab": "inclusionai",
+    "lab": "alibaba",
     "share": 1.02
    }
   ],
@@ -1040,15 +1040,15 @@
    },
    {
     "d": "2026-10-07",
-    "cn": 56.17,
-    "us": 41.97
+    "cn": 55.22,
+    "us": 43.17
    }
   ],
   "license": "AI Gateway Leaderboard Data (c) Vercel, CC BY 4.0"
  },
  "ollama": {
-  "cn": 311749100,
-  "us": 483409237,
+  "cn": 311852700,
+  "us": 483515185,
   "cn_top": [
    {
     "name": "deepseek-r1",
@@ -1064,7 +1064,7 @@
    },
    {
     "name": "qwen2.5-coder",
-    "pulls": 22100000
+    "pulls": 22200000
    },
    {
     "name": "qwen3.5",
@@ -1090,9 +1090,7 @@
    }
   ],
   "n_models": 245,
-  "asof": "2026-10-07",
-  "cn_per_day": 427809,
-  "us_per_day": 353537
+  "asof": "2026-10-07"
  },
  "kalshi": {
   "asof": "2026-10-07",
@@ -1123,7 +1121,7 @@
    },
    {
     "label": "Best AI at end of 2026: Claude",
-    "p": 0.458,
+    "p": 0.461,
     "ticker": "KXLLM1-26DEC31-A",
     "series": "kxllm1"
    }
@@ -1159,7 +1157,7 @@
    },
    {
     "base": "openai/gpt-oss-20b",
-    "n": 556
+    "n": 557
    },
    {
     "base": "microsoft/phi-4",
@@ -1167,7 +1165,7 @@
    }
   ],
   "cn_total": 2543,
-  "us_total": 2595,
+  "us_total": 2596,
   "asof": "2026-10-07"
  },
  "sdk": {
@@ -1179,10 +1177,6 @@
    {
     "pkg": "zhipuai",
     "wk": 18248
-   },
-   {
-    "pkg": "zai-sdk",
-    "wk": 19639
    }
   ],
   "us": [
