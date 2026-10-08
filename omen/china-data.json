@@ -1,5 +1,5 @@
 {
- "updated": "2026-10-08T16:21:00Z",
+ "updated": "2026-10-08T19:12:32Z",
  "snapshot_date": "2026-10-08",
  "artificial_analysis": {
   "cn_best": "GLM-5.2",
@@ -586,19 +586,19 @@
    "image_edit": {
     "metric": "elo",
     "best_model": "seedream-5.0-pro",
-    "best_org": "Bytedance",
+    "best_org": "bytedance",
     "best_rank": 10,
     "best_score": 1394,
     "other_model": "gpt-image-2.5-sunburst",
-    "other_org": "OpenAI",
+    "other_org": "openai",
     "other_rank": 1,
     "other_score": 1524,
     "gap": 130,
     "cn_leads": false,
     "top10": 1,
     "n": 59,
-    "asof": "2026-10-08",
-    "source": "arena-scrape"
+    "asof": "2026-10-06",
+    "source": "lmarena-dataset"
    }
   }
  },
@@ -701,40 +701,40 @@
  },
  "openrouter_week": {
   "week": "2026-10-05",
-  "cn_share": 0.5761,
-  "us_share": 0.2565,
-  "spi": 2.246,
-  "total_tokens": 88938318553658
+  "cn_share": 0.5744,
+  "us_share": 0.2578,
+  "spi": 2.228,
+  "total_tokens": 92041667027208
  },
  "vercel_gateway": {
   "asof": "2026-10-08",
-  "cn_share": 59.49,
-  "us_share": 38.05,
-  "spi": 1.563,
+  "cn_share": 57.63,
+  "us_share": 39.9,
+  "spi": 1.444,
   "top_cn": [
    {
     "lab": "deepseek",
-    "share": 34.82
+    "share": 33.57
    },
    {
     "lab": "zai",
-    "share": 15.45
+    "share": 15.2
    },
    {
     "lab": "moonshotai",
-    "share": 3.62
+    "share": 3.52
    },
    {
     "lab": "xiaomi",
-    "share": 1.89
+    "share": 1.83
    },
    {
     "lab": "stepfun",
-    "share": 1.7
+    "share": 1.37
    },
    {
     "lab": "inclusionai",
-    "share": 0.97
+    "share": 1.0
    }
   ],
   "series": [
@@ -1040,15 +1040,15 @@
    },
    {
     "d": "2026-10-08",
-    "cn": 59.49,
-    "us": 38.05
+    "cn": 57.63,
+    "us": 39.9
    }
   ],
   "license": "AI Gateway Leaderboard Data (c) Vercel, CC BY 4.0"
  },
  "ollama": {
-  "cn": 312261900,
-  "us": 483851600,
+  "cn": 312363200,
+  "us": 483957600,
   "cn_top": [
    {
     "name": "deepseek-r1",
@@ -1068,7 +1068,7 @@
    },
    {
     "name": "qwen3.5",
-    "pulls": 21800000
+    "pulls": 21900000
    },
    {
     "name": "qwen3-coder",
@@ -1078,7 +1078,7 @@
   "us_top": [
    {
     "name": "llama3.1",
-    "pulls": 120100000
+    "pulls": 120200000
    },
    {
     "name": "llama3.2",
@@ -1090,9 +1090,7 @@
    }
   ],
   "n_models": 245,
-  "asof": "2026-10-08",
-  "cn_per_day": 511996,
-  "us_per_day": 441670
+  "asof": "2026-10-08"
  },
  "kalshi": {
   "asof": "2026-10-08",
@@ -1123,7 +1121,7 @@
    },
    {
     "label": "Best AI at end of 2026: Gemini",
-    "p": 0.438,
+    "p": 0.42,
     "ticker": "KXLLM1-26DEC31-GOOG",
     "series": "kxllm1"
    }
