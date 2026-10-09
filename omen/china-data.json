@@ -1,5 +1,5 @@
 {
- "updated": "2026-10-09T16:04:59Z",
+ "updated": "2026-10-09T18:43:13Z",
  "snapshot_date": "2026-10-09",
  "artificial_analysis": {
   "cn_best": "GLM-5.2",
@@ -701,40 +701,40 @@
  },
  "openrouter_week": {
   "week": "2026-10-05",
-  "cn_share": 0.5634,
-  "us_share": 0.259,
-  "spi": 2.176,
-  "total_tokens": 115595758466443
+  "cn_share": 0.5626,
+  "us_share": 0.2593,
+  "spi": 2.17,
+  "total_tokens": 118003934775579
  },
  "vercel_gateway": {
   "asof": "2026-10-09",
-  "cn_share": 59.64,
-  "us_share": 38.54,
-  "spi": 1.547,
+  "cn_share": 58.94,
+  "us_share": 39.34,
+  "spi": 1.498,
   "top_cn": [
    {
     "lab": "deepseek",
-    "share": 36.18
+    "share": 34.9
    },
    {
     "lab": "zai",
-    "share": 14.09
+    "share": 15.09
    },
    {
     "lab": "moonshotai",
-    "share": 4.36
+    "share": 4.07
    },
    {
     "lab": "xiaomi",
-    "share": 2.09
+    "share": 2.02
    },
    {
     "lab": "inclusionai",
-    "share": 1.31
+    "share": 1.24
    },
    {
     "lab": "alibaba",
-    "share": 0.98
+    "share": 1.01
    }
   ],
   "series": [
@@ -1040,15 +1040,15 @@
    },
    {
     "d": "2026-10-09",
-    "cn": 59.64,
-    "us": 38.54
+    "cn": 58.94,
+    "us": 39.34
    }
   ],
   "license": "AI Gateway Leaderboard Data (c) Vercel, CC BY 4.0"
  },
  "ollama": {
-  "cn": 312772500,
-  "us": 484390100,
+  "cn": 312873900,
+  "us": 484494500,
   "cn_top": [
    {
     "name": "deepseek-r1",
@@ -1090,9 +1090,7 @@
    }
   ],
   "n_models": 245,
-  "asof": "2026-10-09",
-  "cn_per_day": 516256,
-  "us_per_day": 544465
+  "asof": "2026-10-09"
  },
  "kalshi": {
   "asof": "2026-10-09",
@@ -1123,7 +1121,7 @@
    },
    {
     "label": "Best AI at end of 2026: Claude",
-    "p": 0.428,
+    "p": 0.425,
     "ticker": "KXLLM1-26DEC31-A",
     "series": "kxllm1"
    }
@@ -1133,7 +1131,7 @@
   "cn": [
    {
     "base": "Qwen/Qwen3-8B",
-    "n": 2163
+    "n": 2164
    },
    {
     "base": "deepseek-ai/DeepSeek-R1",
@@ -1151,7 +1149,7 @@
   "us": [
    {
     "base": "meta-llama/Llama-3.1-8B",
-    "n": 1498
+    "n": 1500
    },
    {
     "base": "google/gemma-3-12b-it",
@@ -1163,11 +1161,11 @@
    },
    {
     "base": "microsoft/phi-4",
-    "n": 121
+    "n": 120
    }
   ],
-  "cn_total": 2547,
-  "us_total": 2601,
+  "cn_total": 2548,
+  "us_total": 2602,
   "asof": "2026-10-09"
  },
  "sdk": {
