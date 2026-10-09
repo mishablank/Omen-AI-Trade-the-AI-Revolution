@@ -1,5 +1,5 @@
 {
- "updated": "2026-10-09T08:51:48Z",
+ "updated": "2026-10-09T16:04:59Z",
  "snapshot_date": "2026-10-09",
  "artificial_analysis": {
   "cn_best": "GLM-5.2",
@@ -620,60 +620,60 @@
   "source": "search",
   "asof": "2026-10-09",
   "vel": {
-   "MiniMax-AI/MiniMax-H3": 46.9,
-   "MiniMax-AI/skills": 5.0,
-   "MoonshotAI/Kimi-K3": 6.0,
-   "MoonshotAI/kimi-cli": -1.0,
-   "QwenLM/Qwen3.8": 4.0,
-   "QwenLM/qwen-code": 21.0,
+   "MiniMax-AI/MiniMax-H3": 39.4,
+   "MiniMax-AI/skills": 2.0,
+   "MoonshotAI/Kimi-K3": -2.0,
+   "MoonshotAI/kimi-cli": 1.0,
+   "QwenLM/Qwen3.8": 8.1,
+   "QwenLM/qwen-code": 17.2,
    "XiaomiMiMo/MiMo-Audio": 0.0,
-   "XiaomiMiMo/MiMo-Code": 9.0,
-   "deepseek-ai/FlashMLA": 9.0,
-   "deepseek-ai/deepseek-harness": 708.7,
-   "zai-org/GLM-OCR": -2.0,
-   "zai-org/ZCode": 42.9
+   "XiaomiMiMo/MiMo-Code": 6.1,
+   "deepseek-ai/FlashMLA": 7.1,
+   "deepseek-ai/deepseek-harness": 473.3,
+   "zai-org/GLM-OCR": 0.0,
+   "zai-org/ZCode": 52.6
   }
  },
- "github_stars_per_day": 849.5,
+ "github_stars_per_day": 604.7,
  "hf": {
   "cnOrgs": [
    {
     "org": "Qwen",
-    "dl": 215539211
+    "dl": 214343109
    },
    {
     "org": "deepseek-ai",
-    "dl": 26039646
+    "dl": 25944913
    },
    {
     "org": "zai-org",
-    "dl": 15348713
+    "dl": 15495537
    },
    {
     "org": "MiniMaxAI",
-    "dl": 5699814
+    "dl": 5612188
    },
    {
     "org": "moonshotai",
-    "dl": 3262738
+    "dl": 3197937
    },
    {
     "org": "tencent",
-    "dl": 3103341
+    "dl": 3163005
    },
    {
     "org": "stepfun-ai",
-    "dl": 1137087
+    "dl": 1130957
    },
    {
     "org": "XiaomiMiMo",
-    "dl": 582110
+    "dl": 577151
    }
   ],
   "usOrgs": [
    {
     "org": "google",
-    "dl": 48296485
+    "dl": 47934354
    },
    {
     "org": "meta-llama",
@@ -681,7 +681,7 @@
    },
    {
     "org": "nvidia",
-    "dl": 16399928
+    "dl": 15942340
    },
    {
     "org": "openai",
@@ -693,48 +693,48 @@
    },
    {
     "org": "allenai",
-    "dl": 2689402
+    "dl": 2689984
    }
   ],
-  "cn": 270712660,
-  "us": 104299818
+  "cn": 269464797,
+  "us": 103480681
  },
  "openrouter_week": {
   "week": "2026-10-05",
-  "cn_share": 0.565,
-  "us_share": 0.2599,
-  "spi": 2.174,
-  "total_tokens": 106755058690905
+  "cn_share": 0.5634,
+  "us_share": 0.259,
+  "spi": 2.176,
+  "total_tokens": 115595758466443
  },
  "vercel_gateway": {
   "asof": "2026-10-09",
-  "cn_share": 58.31,
-  "us_share": 39.62,
-  "spi": 1.472,
+  "cn_share": 59.64,
+  "us_share": 38.54,
+  "spi": 1.547,
   "top_cn": [
    {
     "lab": "deepseek",
-    "share": 34.78
+    "share": 36.18
    },
    {
     "lab": "zai",
-    "share": 12.36
+    "share": 14.09
    },
    {
     "lab": "moonshotai",
-    "share": 5.2
+    "share": 4.36
    },
    {
     "lab": "xiaomi",
-    "share": 2.43
+    "share": 2.09
    },
    {
     "lab": "inclusionai",
-    "share": 1.55
+    "share": 1.31
    },
    {
     "lab": "alibaba",
-    "share": 1.05
+    "share": 0.98
    }
   ],
   "series": [
@@ -1040,15 +1040,15 @@
    },
    {
     "d": "2026-10-09",
-    "cn": 58.31,
-    "us": 39.62
+    "cn": 59.64,
+    "us": 38.54
    }
   ],
   "license": "AI Gateway Leaderboard Data (c) Vercel, CC BY 4.0"
  },
  "ollama": {
-  "cn": 312568600,
-  "us": 484176399,
+  "cn": 312772500,
+  "us": 484390100,
   "cn_top": [
    {
     "name": "deepseek-r1",
@@ -1060,7 +1060,7 @@
    },
    {
     "name": "qwen3",
-    "pulls": 39400000
+    "pulls": 39500000
    },
    {
     "name": "qwen2.5-coder",
@@ -1090,14 +1090,16 @@
    }
   ],
   "n_models": 245,
-  "asof": "2026-10-09"
+  "asof": "2026-10-09",
+  "cn_per_day": 516256,
+  "us_per_day": 544465
  },
  "kalshi": {
   "asof": "2026-10-09",
   "markets": [
    {
     "label": "Will a Chinese AI model be #1 this year?",
-    "p": 0.05,
+    "p": 0.12,
     "ticker": "KXBESTLLMCHINA-27",
     "series": "kxbestllmchina"
    },
@@ -1121,7 +1123,7 @@
    },
    {
     "label": "Best AI at end of 2026: Claude",
-    "p": 0.424,
+    "p": 0.428,
     "ticker": "KXLLM1-26DEC31-A",
     "series": "kxllm1"
    }
@@ -1157,15 +1159,15 @@
    },
    {
     "base": "openai/gpt-oss-20b",
-    "n": 558
+    "n": 560
    },
    {
     "base": "microsoft/phi-4",
-    "n": 120
+    "n": 121
    }
   ],
   "cn_total": 2547,
-  "us_total": 2598,
+  "us_total": 2601,
   "asof": "2026-10-09"
  },
  "sdk": {
