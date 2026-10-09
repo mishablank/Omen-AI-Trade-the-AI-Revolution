@@ -1,5 +1,5 @@
 {
- "updated": "2026-10-09T18:43:13Z",
+ "updated": "2026-10-09T23:06:42Z",
  "snapshot_date": "2026-10-09",
  "artificial_analysis": {
   "cn_best": "GLM-5.2",
@@ -701,40 +701,40 @@
  },
  "openrouter_week": {
   "week": "2026-10-05",
-  "cn_share": 0.5626,
-  "us_share": 0.2593,
-  "spi": 2.17,
-  "total_tokens": 118003934775579
+  "cn_share": 0.5586,
+  "us_share": 0.2609,
+  "spi": 2.141,
+  "total_tokens": 123202136929667
  },
  "vercel_gateway": {
   "asof": "2026-10-09",
-  "cn_share": 58.94,
-  "us_share": 39.34,
-  "spi": 1.498,
+  "cn_share": 57.87,
+  "us_share": 40.48,
+  "spi": 1.43,
   "top_cn": [
    {
     "lab": "deepseek",
-    "share": 34.9
+    "share": 32.62
    },
    {
     "lab": "zai",
-    "share": 15.09
+    "share": 16.59
    },
    {
     "lab": "moonshotai",
-    "share": 4.07
+    "share": 3.92
    },
    {
     "lab": "xiaomi",
-    "share": 2.02
+    "share": 1.88
    },
    {
     "lab": "inclusionai",
-    "share": 1.24
+    "share": 1.16
    },
    {
     "lab": "alibaba",
-    "share": 1.01
+    "share": 1.06
    }
   ],
   "series": [
@@ -1040,15 +1040,15 @@
    },
    {
     "d": "2026-10-09",
-    "cn": 58.94,
-    "us": 39.34
+    "cn": 57.87,
+    "us": 40.48
    }
   ],
   "license": "AI Gateway Leaderboard Data (c) Vercel, CC BY 4.0"
  },
  "ollama": {
-  "cn": 312873900,
-  "us": 484494500,
+  "cn": 312975900,
+  "us": 484500600,
   "cn_top": [
    {
     "name": "deepseek-r1",
@@ -1072,7 +1072,7 @@
    },
    {
     "name": "qwen3-coder",
-    "pulls": 9800000
+    "pulls": 9900000
    }
   ],
   "us_top": [
@@ -1121,7 +1121,7 @@
    },
    {
     "label": "Best AI at end of 2026: Claude",
-    "p": 0.425,
+    "p": 0.421,
     "ticker": "KXLLM1-26DEC31-A",
     "series": "kxllm1"
    }
@@ -1131,7 +1131,7 @@
   "cn": [
    {
     "base": "Qwen/Qwen3-8B",
-    "n": 2164
+    "n": 2165
    },
    {
     "base": "deepseek-ai/DeepSeek-R1",
@@ -1164,7 +1164,7 @@
     "n": 120
    }
   ],
-  "cn_total": 2548,
+  "cn_total": 2549,
   "us_total": 2602,
   "asof": "2026-10-09"
  },
