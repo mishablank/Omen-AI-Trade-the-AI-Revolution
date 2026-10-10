@@ -1,5 +1,5 @@
 {
- "updated": "2026-10-10T15:13:06Z",
+ "updated": "2026-10-10T17:33:23Z",
  "snapshot_date": "2026-10-10",
  "artificial_analysis": {
   "cn_best": "GLM-5.2",
@@ -701,40 +701,40 @@
  },
  "openrouter_week": {
   "week": "2026-10-05",
-  "cn_share": 0.5913,
-  "us_share": 0.2587,
-  "spi": 2.285,
-  "total_tokens": 138478652910725
+  "cn_share": 0.5926,
+  "us_share": 0.2581,
+  "spi": 2.296,
+  "total_tokens": 141243714045684
  },
  "vercel_gateway": {
   "asof": "2026-10-10",
-  "cn_share": 66.12,
-  "us_share": 31.83,
-  "spi": 2.077,
+  "cn_share": 65.98,
+  "us_share": 31.95,
+  "spi": 2.065,
   "top_cn": [
    {
     "lab": "deepseek",
-    "share": 41.35
+    "share": 41.2
    },
    {
     "lab": "zai",
-    "share": 17.05
+    "share": 16.68
    },
    {
     "lab": "moonshotai",
-    "share": 4.13
+    "share": 4.44
    },
    {
     "lab": "xiaomi",
-    "share": 2.1
+    "share": 2.11
    },
    {
     "lab": "alibaba",
-    "share": 0.87
+    "share": 0.92
    },
    {
-    "lab": "inclusionai",
-    "share": 0.28
+    "lab": "minimax",
+    "share": 0.29
    }
   ],
   "series": [
@@ -1040,15 +1040,15 @@
    },
    {
     "d": "2026-10-10",
-    "cn": 66.12,
-    "us": 31.83
+    "cn": 65.98,
+    "us": 31.95
    }
   ],
   "license": "AI Gateway Leaderboard Data (c) Vercel, CC BY 4.0"
  },
  "ollama": {
-  "cn": 313482799,
-  "us": 484823300,
+  "cn": 313484399,
+  "us": 484827900,
   "cn_top": [
    {
     "name": "deepseek-r1",
@@ -1090,9 +1090,7 @@
    }
   ],
   "n_models": 245,
-  "asof": "2026-10-10",
-  "cn_per_day": 737244,
-  "us_per_day": 449633
+  "asof": "2026-10-10"
  },
  "kalshi": {
   "asof": "2026-10-10",
@@ -1117,13 +1115,13 @@
    },
    {
     "label": "Best AI at end of 2026: Qwen",
-    "p": 0.009,
+    "p": 0.008,
     "ticker": "KXLLM1-26DEC31-ALI",
     "series": "kxllm1"
    },
    {
     "label": "Best AI at end of 2026: Claude",
-    "p": 0.441,
+    "p": 0.422,
     "ticker": "KXLLM1-26DEC31-A",
     "series": "kxllm1"
    }
@@ -1133,7 +1131,7 @@
   "cn": [
    {
     "base": "Qwen/Qwen3-8B",
-    "n": 2170
+    "n": 2171
    },
    {
     "base": "deepseek-ai/DeepSeek-R1",
@@ -1159,15 +1157,15 @@
    },
    {
     "base": "openai/gpt-oss-20b",
-    "n": 560
+    "n": 559
    },
    {
     "base": "microsoft/phi-4",
     "n": 122
    }
   ],
-  "cn_total": 2554,
-  "us_total": 2608,
+  "cn_total": 2555,
+  "us_total": 2607,
   "asof": "2026-10-10"
  },
  "sdk": {
