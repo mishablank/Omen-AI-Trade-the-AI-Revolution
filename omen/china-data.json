@@ -1,5 +1,5 @@
 {
- "updated": "2026-10-11T00:47:37Z",
+ "updated": "2026-10-11T06:59:23Z",
  "snapshot_date": "2026-10-11",
  "artificial_analysis": {
   "cn_best": "GLM-5.2",
@@ -701,10 +701,10 @@
  },
  "openrouter_week": {
   "week": "2026-10-05",
-  "cn_share": 0.594,
-  "us_share": 0.2581,
-  "spi": 2.302,
-  "total_tokens": 148087538008478
+  "cn_share": 0.5954,
+  "us_share": 0.2579,
+  "spi": 2.308,
+  "total_tokens": 153567526646401
  },
  "vercel_gateway": {
   "asof": "2026-10-10",
@@ -1047,8 +1047,8 @@
   "license": "AI Gateway Leaderboard Data (c) Vercel, CC BY 4.0"
  },
  "ollama": {
-  "cn": 313588100,
-  "us": 484839100,
+  "cn": 313690199,
+  "us": 484848199,
   "cn_top": [
    {
     "name": "deepseek-r1",
@@ -1121,7 +1121,7 @@
    },
    {
     "label": "Best AI at end of 2026: Claude",
-    "p": 0.424,
+    "p": 0.438,
     "ticker": "KXLLM1-26DEC31-A",
     "series": "kxllm1"
    }
@@ -1131,7 +1131,7 @@
   "cn": [
    {
     "base": "Qwen/Qwen3-8B",
-    "n": 2171
+    "n": 2172
    },
    {
     "base": "deepseek-ai/DeepSeek-R1",
@@ -1164,7 +1164,7 @@
     "n": 122
    }
   ],
-  "cn_total": 2555,
+  "cn_total": 2556,
   "us_total": 2606,
   "asof": "2026-10-11"
  },
@@ -1172,29 +1172,29 @@
   "cn": [
    {
     "pkg": "dashscope",
-    "wk": 440204
+    "wk": 467772
    },
    {
     "pkg": "zhipuai",
-    "wk": 21351
+    "wk": 22807
    },
    {
     "pkg": "zai-sdk",
-    "wk": 23644
+    "wk": 25982
    }
   ],
   "us": [
    {
     "pkg": "openai",
-    "wk": 75062896
+    "wk": 75605389
    },
    {
     "pkg": "anthropic",
-    "wk": 40914713
+    "wk": 41365220
    },
    {
     "pkg": "google-genai",
-    "wk": 34145903
+    "wk": 34253247
    }
   ],
   "asof": "2026-10-11"
