@@ -1,5 +1,5 @@
 {
- "updated": "2026-10-11T13:56:43Z",
+ "updated": "2026-10-11T17:51:56Z",
  "snapshot_date": "2026-10-11",
  "artificial_analysis": {
   "cn_best": "GLM-5.2",
@@ -701,10 +701,10 @@
  },
  "openrouter_week": {
   "week": "2026-10-05",
-  "cn_share": 0.5987,
-  "us_share": 0.2565,
-  "spi": 2.334,
-  "total_tokens": 161000719269153
+  "cn_share": 0.6009,
+  "us_share": 0.2554,
+  "spi": 2.353,
+  "total_tokens": 165628618448979
  },
  "vercel_gateway": {
   "asof": "2026-10-10",
@@ -1047,8 +1047,8 @@
   "license": "AI Gateway Leaderboard Data (c) Vercel, CC BY 4.0"
  },
  "ollama": {
-  "cn": 313893299,
-  "us": 484960400,
+  "cn": 314095499,
+  "us": 485067000,
   "cn_top": [
    {
     "name": "deepseek-r1",
@@ -1056,11 +1056,11 @@
    },
    {
     "name": "qwen2.5",
-    "pulls": 42100000
+    "pulls": 42200000
    },
    {
     "name": "qwen3",
-    "pulls": 39600000
+    "pulls": 39700000
    },
    {
     "name": "qwen2.5-coder",
@@ -1090,9 +1090,7 @@
    }
   ],
   "n_models": 245,
-  "asof": "2026-10-11",
-  "cn_per_day": 433768,
-  "us_per_day": 144871
+  "asof": "2026-10-11"
  },
  "kalshi": {
   "asof": "2026-10-11",
@@ -1117,13 +1115,13 @@
    },
    {
     "label": "Best AI at end of 2026: Qwen",
-    "p": 0.008,
+    "p": 0.009,
     "ticker": "KXLLM1-26DEC31-ALI",
     "series": "kxllm1"
    },
    {
     "label": "Best AI at end of 2026: Claude",
-    "p": 0.444,
+    "p": 0.441,
     "ticker": "KXLLM1-26DEC31-A",
     "series": "kxllm1"
    }
@@ -1133,7 +1131,7 @@
   "cn": [
    {
     "base": "Qwen/Qwen3-8B",
-    "n": 2173
+    "n": 2174
    },
    {
     "base": "deepseek-ai/DeepSeek-R1",
@@ -1166,7 +1164,7 @@
     "n": 122
    }
   ],
-  "cn_total": 2557,
+  "cn_total": 2558,
   "us_total": 2608,
   "asof": "2026-10-11"
  },
