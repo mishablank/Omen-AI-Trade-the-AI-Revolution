@@ -1,5 +1,5 @@
 {
- "updated": "2026-10-11T06:59:23Z",
+ "updated": "2026-10-11T13:56:43Z",
  "snapshot_date": "2026-10-11",
  "artificial_analysis": {
   "cn_best": "GLM-5.2",
@@ -70,7 +70,7 @@
   }
  },
  "search_consumer": {
-  "western_share_pct": 2.5,
+  "western_share_pct": 2.4,
   "asof": "2026-10",
   "source": "google-trends",
   "terms_us": [
@@ -90,7 +90,7 @@
    "Seed 1.6",
    "Seed 2.0"
   ],
-  "note": "Google Trends US, 90-day avg: 8 Chinese AI terms = 2.5% of AI-assistant search interest vs ChatGPT+Gemini+Claude+Llama AI+Meta AI."
+  "note": "Google Trends US, 90-day avg: 8 Chinese AI terms = 2.4% of AI-assistant search interest vs ChatGPT+Gemini+Claude+Llama AI+Meta AI."
  },
  "apps": {
   "score": 0,
@@ -620,91 +620,91 @@
   "source": "search",
   "asof": "2026-10-11",
   "vel": {
-   "MiniMax-AI/MiniMax-H3": 41.5,
-   "MiniMax-AI/skills": 6.2,
-   "MoonshotAI/Kimi-K3": 4.1,
-   "MoonshotAI/kimi-cli": -1.0,
-   "QwenLM/Qwen3.8": 6.2,
-   "QwenLM/qwen-code": 20.7,
+   "MiniMax-AI/MiniMax-H3": 33.8,
+   "MiniMax-AI/skills": 7.4,
+   "MoonshotAI/Kimi-K3": 6.3,
+   "MoonshotAI/kimi-cli": -1.1,
+   "QwenLM/Qwen3.8": 9.5,
+   "QwenLM/qwen-code": 12.7,
    "XiaomiMiMo/MiMo-Audio": 0.0,
-   "XiaomiMiMo/MiMo-Code": -3.1,
-   "deepseek-ai/FlashMLA": 3.1,
-   "deepseek-ai/deepseek-harness": 620.4,
-   "zai-org/GLM-OCR": 3.1,
-   "zai-org/ZCode": 52.9
+   "XiaomiMiMo/MiMo-Code": 6.3,
+   "deepseek-ai/FlashMLA": 2.1,
+   "deepseek-ai/deepseek-harness": 524.8,
+   "zai-org/GLM-OCR": 1.1,
+   "zai-org/ZCode": 27.5
   }
  },
- "github_stars_per_day": 754.2,
+ "github_stars_per_day": 630.4,
  "hf": {
   "cnOrgs": [
    {
     "org": "Qwen",
-    "dl": 213283451
+    "dl": 212632167
    },
    {
     "org": "deepseek-ai",
-    "dl": 25924690
+    "dl": 25681097
    },
    {
     "org": "zai-org",
-    "dl": 15551747
+    "dl": 15580009
    },
    {
     "org": "MiniMaxAI",
-    "dl": 5604096
+    "dl": 5559532
    },
    {
     "org": "tencent",
-    "dl": 3158474
+    "dl": 3189851
    },
    {
     "org": "moonshotai",
-    "dl": 3149116
+    "dl": 3068034
    },
    {
     "org": "stepfun-ai",
-    "dl": 1115356
+    "dl": 1089499
    },
    {
     "org": "XiaomiMiMo",
-    "dl": 573898
+    "dl": 567522
    }
   ],
   "usOrgs": [
    {
     "org": "google",
-    "dl": 47704942
+    "dl": 47197175
    },
    {
     "org": "meta-llama",
-    "dl": 23207798
+    "dl": 22803758
    },
    {
     "org": "nvidia",
-    "dl": 15810811
+    "dl": 15727612
    },
    {
     "org": "openai",
-    "dl": 9832836
+    "dl": 9668982
    },
    {
     "org": "microsoft",
-    "dl": 3225192
+    "dl": 3181042
    },
    {
     "org": "allenai",
-    "dl": 2630124
+    "dl": 2588802
    }
   ],
-  "cn": 268360828,
-  "us": 102411703
+  "cn": 267367711,
+  "us": 101167371
  },
  "openrouter_week": {
   "week": "2026-10-05",
-  "cn_share": 0.5954,
-  "us_share": 0.2579,
-  "spi": 2.308,
-  "total_tokens": 153567526646401
+  "cn_share": 0.5987,
+  "us_share": 0.2565,
+  "spi": 2.334,
+  "total_tokens": 161000719269153
  },
  "vercel_gateway": {
   "asof": "2026-10-10",
@@ -1047,8 +1047,8 @@
   "license": "AI Gateway Leaderboard Data (c) Vercel, CC BY 4.0"
  },
  "ollama": {
-  "cn": 313690199,
-  "us": 484848199,
+  "cn": 313893299,
+  "us": 484960400,
   "cn_top": [
    {
     "name": "deepseek-r1",
@@ -1068,7 +1068,7 @@
    },
    {
     "name": "qwen3.5",
-    "pulls": 22000000
+    "pulls": 22100000
    },
    {
     "name": "qwen3-coder",
@@ -1086,11 +1086,13 @@
    },
    {
     "name": "gemma3",
-    "pulls": 41000000
+    "pulls": 41100000
    }
   ],
   "n_models": 245,
-  "asof": "2026-10-11"
+  "asof": "2026-10-11",
+  "cn_per_day": 433768,
+  "us_per_day": 144871
  },
  "kalshi": {
   "asof": "2026-10-11",
@@ -1121,7 +1123,7 @@
    },
    {
     "label": "Best AI at end of 2026: Claude",
-    "p": 0.438,
+    "p": 0.444,
     "ticker": "KXLLM1-26DEC31-A",
     "series": "kxllm1"
    }
@@ -1131,7 +1133,7 @@
   "cn": [
    {
     "base": "Qwen/Qwen3-8B",
-    "n": 2172
+    "n": 2173
    },
    {
     "base": "deepseek-ai/DeepSeek-R1",
@@ -1153,19 +1155,19 @@
    },
    {
     "base": "google/gemma-3-12b-it",
-    "n": 422
+    "n": 423
    },
    {
     "base": "openai/gpt-oss-20b",
-    "n": 558
+    "n": 559
    },
    {
     "base": "microsoft/phi-4",
     "n": 122
    }
   ],
-  "cn_total": 2556,
-  "us_total": 2606,
+  "cn_total": 2557,
+  "us_total": 2608,
   "asof": "2026-10-11"
  },
  "sdk": {
