@@ -1,5 +1,5 @@
 {
- "updated": "2026-10-12T01:10:17Z",
+ "updated": "2026-10-12T09:01:05Z",
  "snapshot_date": "2026-10-12",
  "artificial_analysis": {
   "cn_best": "GLM-5.2",
@@ -639,72 +639,72 @@
   "cnOrgs": [
    {
     "org": "Qwen",
-    "dl": 212632167
+    "dl": 212091308
    },
    {
     "org": "deepseek-ai",
-    "dl": 25681097
+    "dl": 25699990
    },
    {
     "org": "zai-org",
-    "dl": 15580009
+    "dl": 15537653
    },
    {
     "org": "MiniMaxAI",
-    "dl": 5559532
+    "dl": 5525257
    },
    {
     "org": "tencent",
-    "dl": 3189851
+    "dl": 3165118
    },
    {
     "org": "moonshotai",
-    "dl": 3068034
+    "dl": 3045772
    },
    {
     "org": "stepfun-ai",
-    "dl": 1089499
+    "dl": 1082235
    },
    {
     "org": "XiaomiMiMo",
-    "dl": 567522
+    "dl": 559943
    }
   ],
   "usOrgs": [
    {
     "org": "google",
-    "dl": 47197175
+    "dl": 46728375
    },
    {
     "org": "meta-llama",
-    "dl": 22803758
+    "dl": 22435368
    },
    {
     "org": "nvidia",
-    "dl": 15727612
+    "dl": 15662169
    },
    {
     "org": "openai",
-    "dl": 9668982
+    "dl": 9574271
    },
    {
     "org": "microsoft",
-    "dl": 3181042
+    "dl": 3183803
    },
    {
     "org": "allenai",
-    "dl": 2588802
+    "dl": 2651624
    }
   ],
-  "cn": 267367711,
-  "us": 101167371
+  "cn": 266707276,
+  "us": 100235610
  },
  "openrouter_week": {
   "week": "2026-10-12",
-  "cn_share": 0.5522,
-  "us_share": 0.2913,
-  "spi": 1.896,
-  "total_tokens": 164628730220
+  "cn_share": 0.6139,
+  "us_share": 0.2549,
+  "spi": 2.409,
+  "total_tokens": 8200772691906
  },
  "vercel_gateway": {
   "asof": "2026-10-11",
@@ -1047,8 +1047,8 @@
   "license": "AI Gateway Leaderboard Data (c) Vercel, CC BY 4.0"
  },
  "ollama": {
-  "cn": 314098898,
-  "us": 485279800,
+  "cn": 314203299,
+  "us": 485392400,
   "cn_top": [
    {
     "name": "deepseek-r1",
@@ -1097,7 +1097,7 @@
   "markets": [
    {
     "label": "Will a Chinese AI model be #1 this year?",
-    "p": 0.05,
+    "p": 0.03,
     "ticker": "KXBESTLLMCHINA-27",
     "series": "kxbestllmchina"
    },
@@ -1121,7 +1121,7 @@
    },
    {
     "label": "Best AI at end of 2026: Claude",
-    "p": 0.44,
+    "p": 0.439,
     "ticker": "KXLLM1-26DEC31-A",
     "series": "kxllm1"
    }
@@ -1131,7 +1131,7 @@
   "cn": [
    {
     "base": "Qwen/Qwen3-8B",
-    "n": 2174
+    "n": 2177
    },
    {
     "base": "deepseek-ai/DeepSeek-R1",
@@ -1153,7 +1153,7 @@
    },
    {
     "base": "google/gemma-3-12b-it",
-    "n": 423
+    "n": 424
    },
    {
     "base": "openai/gpt-oss-20b",
@@ -1164,37 +1164,37 @@
     "n": 122
    }
   ],
-  "cn_total": 2558,
-  "us_total": 2608,
+  "cn_total": 2561,
+  "us_total": 2609,
   "asof": "2026-10-12"
  },
  "sdk": {
   "cn": [
    {
     "pkg": "dashscope",
-    "wk": 467772
+    "wk": 466428
    },
    {
     "pkg": "zhipuai",
-    "wk": 22807
+    "wk": 24379
    },
    {
     "pkg": "zai-sdk",
-    "wk": 25982
+    "wk": 26453
    }
   ],
   "us": [
    {
     "pkg": "openai",
-    "wk": 75605389
+    "wk": 76138589
    },
    {
     "pkg": "anthropic",
-    "wk": 41365220
+    "wk": 41718558
    },
    {
     "pkg": "google-genai",
-    "wk": 34253247
+    "wk": 34468136
    }
   ],
   "asof": "2026-10-12"
