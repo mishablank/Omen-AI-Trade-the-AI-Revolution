@@ -1,6 +1,6 @@
 {
- "updated": "2026-10-11T21:16:21Z",
- "snapshot_date": "2026-10-11",
+ "updated": "2026-10-12T01:10:17Z",
+ "snapshot_date": "2026-10-12",
  "artificial_analysis": {
   "cn_best": "GLM-5.2",
   "cn_score": 51,
@@ -94,7 +94,7 @@
  },
  "apps": {
   "score": 0,
-  "asof": "2026-10-11",
+  "asof": "2026-10-12",
   "source": "app-charts",
   "best": [],
   "markets": [
@@ -495,7 +495,7 @@
   "source": "lmarena-dataset"
  },
  "arena_boards": {
-  "asof": "2026-10-11",
+  "asof": "2026-10-12",
   "boards": {
    "webdev": {
     "metric": "elo",
@@ -618,7 +618,7 @@
    "zai-org/ZCode"
   ],
   "source": "search",
-  "asof": "2026-10-11",
+  "asof": "2026-10-12",
   "vel": {
    "MiniMax-AI/MiniMax-H3": 33.8,
    "MiniMax-AI/skills": 7.4,
@@ -700,11 +700,11 @@
   "us": 101167371
  },
  "openrouter_week": {
-  "week": "2026-10-05",
-  "cn_share": 0.601,
-  "us_share": 0.2556,
-  "spi": 2.351,
-  "total_tokens": 168782600810249
+  "week": "2026-10-12",
+  "cn_share": 0.5522,
+  "us_share": 0.2913,
+  "spi": 1.896,
+  "total_tokens": 164628730220
  },
  "vercel_gateway": {
   "asof": "2026-10-11",
@@ -1047,8 +1047,8 @@
   "license": "AI Gateway Leaderboard Data (c) Vercel, CC BY 4.0"
  },
  "ollama": {
-  "cn": 314097198,
-  "us": 485173000,
+  "cn": 314098898,
+  "us": 485279800,
   "cn_top": [
    {
     "name": "deepseek-r1",
@@ -1082,7 +1082,7 @@
    },
    {
     "name": "llama3.2",
-    "pulls": 85200000
+    "pulls": 85300000
    },
    {
     "name": "gemma3",
@@ -1090,10 +1090,10 @@
    }
   ],
   "n_models": 245,
-  "asof": "2026-10-11"
+  "asof": "2026-10-12"
  },
  "kalshi": {
-  "asof": "2026-10-11",
+  "asof": "2026-10-12",
   "markets": [
    {
     "label": "Will a Chinese AI model be #1 this year?",
@@ -1166,7 +1166,7 @@
   ],
   "cn_total": 2558,
   "us_total": 2608,
-  "asof": "2026-10-11"
+  "asof": "2026-10-12"
  },
  "sdk": {
   "cn": [
@@ -1197,7 +1197,7 @@
     "wk": 34253247
    }
   ],
-  "asof": "2026-10-11"
+  "asof": "2026-10-12"
  },
  "epoch_compute": {
   "us_share": 79.5,
