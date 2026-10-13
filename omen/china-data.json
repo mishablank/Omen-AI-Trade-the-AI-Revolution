@@ -1,5 +1,5 @@
 {
- "updated": "2026-10-13T18:06:13Z",
+ "updated": "2026-10-13T19:48:09Z",
  "snapshot_date": "2026-10-13",
  "artificial_analysis": {
   "cn_best": "GLM-5.2",
@@ -701,32 +701,32 @@
  },
  "openrouter_week": {
   "week": "2026-10-12",
-  "cn_share": 0.628,
-  "us_share": 0.248,
-  "spi": 2.533,
-  "total_tokens": 46869760487034
+  "cn_share": 0.627,
+  "us_share": 0.2488,
+  "spi": 2.52,
+  "total_tokens": 48042804096038
  },
  "vercel_gateway": {
   "asof": "2026-10-13",
-  "cn_share": 59.46,
-  "us_share": 37.84,
-  "spi": 1.571,
+  "cn_share": 58.69,
+  "us_share": 38.69,
+  "spi": 1.517,
   "top_cn": [
    {
     "lab": "deepseek",
-    "share": 33.48
+    "share": 32.81
    },
    {
     "lab": "zai",
-    "share": 19.95
+    "share": 19.93
    },
    {
     "lab": "moonshotai",
-    "share": 2.96
+    "share": 2.93
    },
    {
     "lab": "xiaomi",
-    "share": 1.83
+    "share": 1.78
    },
    {
     "lab": "alibaba",
@@ -1040,15 +1040,15 @@
    },
    {
     "d": "2026-10-13",
-    "cn": 59.46,
-    "us": 37.84
+    "cn": 58.69,
+    "us": 38.69
    }
   ],
   "license": "AI Gateway Leaderboard Data (c) Vercel, CC BY 4.0"
  },
  "ollama": {
-  "cn": 315320000,
-  "us": 486457900,
+  "cn": 315321200,
+  "us": 486462500,
   "cn_top": [
    {
     "name": "deepseek-r1",
@@ -1090,9 +1090,7 @@
    }
   ],
   "n_models": 248,
-  "asof": "2026-10-13",
-  "cn_per_day": 548750,
-  "us_per_day": 800912
+  "asof": "2026-10-13"
  },
  "kalshi": {
   "asof": "2026-10-13",
@@ -1117,13 +1115,13 @@
    },
    {
     "label": "Best AI at end of 2026: Qwen",
-    "p": 0.008,
+    "p": 0.009,
     "ticker": "KXLLM1-26DEC31-ALI",
     "series": "kxllm1"
    },
    {
     "label": "Best AI at end of 2026: Claude",
-    "p": 0.422,
+    "p": 0.425,
     "ticker": "KXLLM1-26DEC31-A",
     "series": "kxllm1"
    }
@@ -1159,7 +1157,7 @@
    },
    {
     "base": "openai/gpt-oss-20b",
-    "n": 561
+    "n": 562
    },
    {
     "base": "microsoft/phi-4",
@@ -1167,7 +1165,7 @@
    }
   ],
   "cn_total": 2571,
-  "us_total": 2612,
+  "us_total": 2613,
   "asof": "2026-10-13"
  },
  "sdk": {
