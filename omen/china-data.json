@@ -1,5 +1,5 @@
 {
- "updated": "2026-10-13T02:57:53Z",
+ "updated": "2026-10-13T10:25:52Z",
  "snapshot_date": "2026-10-13",
  "artificial_analysis": {
   "cn_best": "GLM-5.2",
@@ -519,17 +519,17 @@
     "best_model": "Deepseek V4.1 Flash (Max)",
     "best_org": "deepseek",
     "best_rank": 16,
-    "best_score": 0.038,
-    "other_model": "Claude Opus 5.5 (High)",
+    "best_score": 0.0334,
+    "other_model": "Claude Opus 5.5 (Max)",
     "other_org": "anthropic",
     "other_rank": 1,
-    "other_score": 0.1433,
-    "gap": 0.1053,
+    "other_score": 0.1789,
+    "gap": 0.1455,
     "cn_leads": false,
     "top10": 0,
     "n": 52,
-    "pct_of_other": 27,
-    "asof": "2026-10-08",
+    "pct_of_other": 19,
+    "asof": "2026-10-12",
     "source": "lmarena-dataset"
    },
    "text_to_video": {
@@ -639,102 +639,102 @@
   "cnOrgs": [
    {
     "org": "Qwen",
-    "dl": 212229094
+    "dl": 212716735
    },
    {
     "org": "deepseek-ai",
-    "dl": 25500615
+    "dl": 25393438
    },
    {
     "org": "zai-org",
-    "dl": 15447125
+    "dl": 15533877
    },
    {
     "org": "MiniMaxAI",
-    "dl": 5528279
+    "dl": 5645660
    },
    {
     "org": "tencent",
-    "dl": 3218120
+    "dl": 3289819
    },
    {
     "org": "moonshotai",
-    "dl": 3037075
+    "dl": 3024609
    },
    {
     "org": "stepfun-ai",
-    "dl": 1070998
+    "dl": 1054948
    },
    {
     "org": "XiaomiMiMo",
-    "dl": 563734
+    "dl": 566603
    }
   ],
   "usOrgs": [
    {
     "org": "google",
-    "dl": 46817049
+    "dl": 46595340
    },
    {
     "org": "meta-llama",
-    "dl": 22435368
+    "dl": 22105491
    },
    {
     "org": "nvidia",
-    "dl": 15677534
+    "dl": 15917904
    },
    {
     "org": "openai",
-    "dl": 9574271
+    "dl": 9560096
    },
    {
     "org": "microsoft",
-    "dl": 3183803
+    "dl": 3184353
    },
    {
     "org": "allenai",
-    "dl": 2651688
+    "dl": 2642170
    }
   ],
-  "cn": 266595040,
-  "us": 100339713
+  "cn": 267225689,
+  "us": 100005354
  },
  "openrouter_week": {
   "week": "2026-10-12",
-  "cn_share": 0.6326,
+  "cn_share": 0.6316,
   "us_share": 0.2437,
-  "spi": 2.596,
-  "total_tokens": 28791311549383
+  "spi": 2.591,
+  "total_tokens": 36456447668022
  },
  "vercel_gateway": {
   "asof": "2026-10-13",
-  "cn_share": 54.61,
-  "us_share": 40.37,
-  "spi": 1.353,
+  "cn_share": 60.86,
+  "us_share": 35.67,
+  "spi": 1.706,
   "top_cn": [
    {
     "lab": "deepseek",
-    "share": 29.62
+    "share": 35.75
    },
    {
     "lab": "zai",
-    "share": 21.19
-   },
-   {
-    "lab": "xiaomi",
-    "share": 1.6
+    "share": 19.21
    },
    {
     "lab": "moonshotai",
-    "share": 1.35
+    "share": 2.68
+   },
+   {
+    "lab": "xiaomi",
+    "share": 2.04
    },
    {
     "lab": "alibaba",
-    "share": 0.59
+    "share": 0.81
    },
    {
     "lab": "minimax",
-    "share": 0.15
+    "share": 0.24
    }
   ],
   "series": [
@@ -1040,19 +1040,19 @@
    },
    {
     "d": "2026-10-13",
-    "cn": 54.61,
-    "us": 40.37
+    "cn": 60.86,
+    "us": 35.67
    }
   ],
   "license": "AI Gateway Leaderboard Data (c) Vercel, CC BY 4.0"
  },
  "ollama": {
-  "cn": 315011799,
-  "us": 485922500,
+  "cn": 315116299,
+  "us": 486140400,
   "cn_top": [
    {
     "name": "deepseek-r1",
-    "pulls": 93600000
+    "pulls": 93700000
    },
    {
     "name": "qwen2.5",
@@ -1089,7 +1089,7 @@
     "pulls": 41100000
    }
   ],
-  "n_models": 246,
+  "n_models": 248,
   "asof": "2026-10-13"
  },
  "kalshi": {
@@ -1097,7 +1097,7 @@
   "markets": [
    {
     "label": "Will a Chinese AI model be #1 this year?",
-    "p": 0.1,
+    "p": 0.03,
     "ticker": "KXBESTLLMCHINA-27",
     "series": "kxbestllmchina"
    },
