@@ -1,5 +1,5 @@
 {
- "updated": "2026-10-13T10:25:52Z",
+ "updated": "2026-10-13T18:06:13Z",
  "snapshot_date": "2026-10-13",
  "artificial_analysis": {
   "cn_best": "GLM-5.2",
@@ -620,21 +620,21 @@
   "source": "search",
   "asof": "2026-10-13",
   "vel": {
-   "MiniMax-AI/MiniMax-H3": 34.6,
-   "MiniMax-AI/skills": 0.8,
-   "MoonshotAI/Kimi-K3": 2.4,
-   "MoonshotAI/kimi-cli": -3.2,
-   "QwenLM/Qwen3.8": 2.4,
-   "QwenLM/qwen-code": 31.4,
-   "XiaomiMiMo/MiMo-Audio": 0.8,
-   "XiaomiMiMo/MiMo-Code": 12.9,
-   "deepseek-ai/FlashMLA": 2.4,
-   "deepseek-ai/deepseek-harness": 664.2,
-   "zai-org/GLM-OCR": 1.6,
-   "zai-org/ZCode": 40.3
+   "MiniMax-AI/MiniMax-H3": 53.7,
+   "MiniMax-AI/skills": 1.1,
+   "MoonshotAI/Kimi-K3": 2.1,
+   "MoonshotAI/kimi-cli": 2.1,
+   "QwenLM/Qwen3.8": 3.2,
+   "QwenLM/qwen-code": 12.9,
+   "XiaomiMiMo/MiMo-Audio": 0.0,
+   "XiaomiMiMo/MiMo-Code": 10.7,
+   "deepseek-ai/FlashMLA": 5.4,
+   "deepseek-ai/deepseek-harness": 777.4,
+   "zai-org/GLM-OCR": 8.6,
+   "zai-org/ZCode": 51.5
   }
  },
- "github_stars_per_day": 790.7,
+ "github_stars_per_day": 928.8,
  "hf": {
   "cnOrgs": [
    {
@@ -701,40 +701,40 @@
  },
  "openrouter_week": {
   "week": "2026-10-12",
-  "cn_share": 0.6316,
-  "us_share": 0.2437,
-  "spi": 2.591,
-  "total_tokens": 36456447668022
+  "cn_share": 0.628,
+  "us_share": 0.248,
+  "spi": 2.533,
+  "total_tokens": 46869760487034
  },
  "vercel_gateway": {
   "asof": "2026-10-13",
-  "cn_share": 60.86,
-  "us_share": 35.67,
-  "spi": 1.706,
+  "cn_share": 59.46,
+  "us_share": 37.84,
+  "spi": 1.571,
   "top_cn": [
    {
     "lab": "deepseek",
-    "share": 35.75
+    "share": 33.48
    },
    {
     "lab": "zai",
-    "share": 19.21
+    "share": 19.95
    },
    {
     "lab": "moonshotai",
-    "share": 2.68
+    "share": 2.96
    },
    {
     "lab": "xiaomi",
-    "share": 2.04
+    "share": 1.83
    },
    {
     "lab": "alibaba",
-    "share": 0.81
+    "share": 0.78
    },
    {
     "lab": "minimax",
-    "share": 0.24
+    "share": 0.32
    }
   ],
   "series": [
@@ -1040,15 +1040,15 @@
    },
    {
     "d": "2026-10-13",
-    "cn": 60.86,
-    "us": 35.67
+    "cn": 59.46,
+    "us": 37.84
    }
   ],
   "license": "AI Gateway Leaderboard Data (c) Vercel, CC BY 4.0"
  },
  "ollama": {
-  "cn": 315116299,
-  "us": 486140400,
+  "cn": 315320000,
+  "us": 486457900,
   "cn_top": [
    {
     "name": "deepseek-r1",
@@ -1060,7 +1060,7 @@
    },
    {
     "name": "qwen3",
-    "pulls": 39800000
+    "pulls": 39900000
    },
    {
     "name": "qwen2.5-coder",
@@ -1082,7 +1082,7 @@
    },
    {
     "name": "llama3.2",
-    "pulls": 85300000
+    "pulls": 85400000
    },
    {
     "name": "gemma3",
@@ -1090,7 +1090,9 @@
    }
   ],
   "n_models": 248,
-  "asof": "2026-10-13"
+  "asof": "2026-10-13",
+  "cn_per_day": 548750,
+  "us_per_day": 800912
  },
  "kalshi": {
   "asof": "2026-10-13",
@@ -1121,7 +1123,7 @@
    },
    {
     "label": "Best AI at end of 2026: Claude",
-    "p": 0.424,
+    "p": 0.422,
     "ticker": "KXLLM1-26DEC31-A",
     "series": "kxllm1"
    }
@@ -1131,7 +1133,7 @@
   "cn": [
    {
     "base": "Qwen/Qwen3-8B",
-    "n": 2182
+    "n": 2188
    },
    {
     "base": "deepseek-ai/DeepSeek-R1",
@@ -1143,7 +1145,7 @@
    },
    {
     "base": "moonshotai/Kimi-K2-Instruct",
-    "n": 18
+    "n": 17
    }
   ],
   "us": [
@@ -1157,15 +1159,15 @@
    },
    {
     "base": "openai/gpt-oss-20b",
-    "n": 560
+    "n": 561
    },
    {
     "base": "microsoft/phi-4",
     "n": 122
    }
   ],
-  "cn_total": 2566,
-  "us_total": 2611,
+  "cn_total": 2571,
+  "us_total": 2612,
   "asof": "2026-10-13"
  },
  "sdk": {
