@@ -1,5 +1,5 @@
 {
- "updated": "2026-10-14T13:35:29Z",
+ "updated": "2026-10-14T17:51:47Z",
  "snapshot_date": "2026-10-14",
  "artificial_analysis": {
   "cn_best": "GLM-5.2",
@@ -70,7 +70,7 @@
   }
  },
  "search_consumer": {
-  "western_share_pct": 2.4,
+  "western_share_pct": 2.3,
   "asof": "2026-10",
   "source": "google-trends",
   "terms_us": [
@@ -90,7 +90,7 @@
    "Seed 1.6",
    "Seed 2.0"
   ],
-  "note": "Google Trends US, 90-day avg: 8 Chinese AI terms = 2.4% of AI-assistant search interest vs ChatGPT+Gemini+Claude+Llama AI+Meta AI."
+  "note": "Google Trends US, 90-day avg: 8 Chinese AI terms = 2.3% of AI-assistant search interest vs ChatGPT+Gemini+Claude+Llama AI+Meta AI."
  },
  "apps": {
   "score": 0,
@@ -620,21 +620,21 @@
   "source": "search",
   "asof": "2026-10-14",
   "vel": {
-   "MiniMax-AI/MiniMax-H3": 53.7,
-   "MiniMax-AI/skills": 1.1,
-   "MoonshotAI/Kimi-K3": 2.1,
-   "MoonshotAI/kimi-cli": 2.1,
-   "QwenLM/Qwen3.8": 3.2,
-   "QwenLM/qwen-code": 12.9,
-   "XiaomiMiMo/MiMo-Audio": 0.0,
-   "XiaomiMiMo/MiMo-Code": 10.7,
-   "deepseek-ai/FlashMLA": 5.4,
-   "deepseek-ai/deepseek-harness": 777.4,
-   "zai-org/GLM-OCR": 8.6,
-   "zai-org/ZCode": 51.5
+   "MiniMax-AI/MiniMax-H3": 62.6,
+   "MiniMax-AI/skills": 7.1,
+   "MoonshotAI/Kimi-K3": 4.0,
+   "MoonshotAI/kimi-cli": 1.0,
+   "QwenLM/Qwen3.8": 8.1,
+   "QwenLM/qwen-code": 20.2,
+   "XiaomiMiMo/MiMo-Audio": 2.0,
+   "XiaomiMiMo/MiMo-Code": 5.1,
+   "deepseek-ai/FlashMLA": 3.0,
+   "deepseek-ai/deepseek-harness": 718.2,
+   "zai-org/GLM-OCR": 2.0,
+   "zai-org/ZCode": 54.5
   }
  },
- "github_stars_per_day": 928.8,
+ "github_stars_per_day": 887.9,
  "hf": {
   "cnOrgs": [
    {
@@ -701,40 +701,40 @@
  },
  "openrouter_week": {
   "week": "2026-10-12",
-  "cn_share": 0.619,
-  "us_share": 0.2543,
-  "spi": 2.435,
-  "total_tokens": 67109055156031
+  "cn_share": 0.62,
+  "us_share": 0.2542,
+  "spi": 2.439,
+  "total_tokens": 71721576637253
  },
  "vercel_gateway": {
   "asof": "2026-10-14",
-  "cn_share": 58.19,
-  "us_share": 38.38,
-  "spi": 1.516,
+  "cn_share": 56.12,
+  "us_share": 40.64,
+  "spi": 1.381,
   "top_cn": [
    {
     "lab": "deepseek",
-    "share": 30.42
+    "share": 29.22
    },
    {
     "lab": "zai",
-    "share": 21.88
+    "share": 21.48
    },
    {
     "lab": "moonshotai",
-    "share": 2.92
+    "share": 2.56
    },
    {
     "lab": "xiaomi",
-    "share": 1.5
+    "share": 1.44
    },
    {
     "lab": "alibaba",
-    "share": 1.14
+    "share": 1.07
    },
    {
     "lab": "minimax",
-    "share": 0.23
+    "share": 0.27
    }
   ],
   "series": [
@@ -1040,15 +1040,15 @@
    },
    {
     "d": "2026-10-14",
-    "cn": 58.19,
-    "us": 38.38
+    "cn": 56.12,
+    "us": 40.64
    }
   ],
   "license": "AI Gateway Leaderboard Data (c) Vercel, CC BY 4.0"
  },
  "ollama": {
-  "cn": 315829300,
-  "us": 486795600,
+  "cn": 315831599,
+  "us": 487004400,
   "cn_top": [
    {
     "name": "deepseek-r1",
@@ -1090,7 +1090,9 @@
    }
   ],
   "n_models": 248,
-  "asof": "2026-10-14"
+  "asof": "2026-10-14",
+  "cn_per_day": 517274,
+  "us_per_day": 552562
  },
  "kalshi": {
   "asof": "2026-10-14",
@@ -1115,13 +1117,13 @@
    },
    {
     "label": "Best AI at end of 2026: Qwen",
-    "p": 0.008,
+    "p": 0.006,
     "ticker": "KXLLM1-26DEC31-ALI",
     "series": "kxllm1"
    },
    {
     "label": "Best AI at end of 2026: Claude",
-    "p": 0.442,
+    "p": 0.439,
     "ticker": "KXLLM1-26DEC31-A",
     "series": "kxllm1"
    }
@@ -1131,7 +1133,7 @@
   "cn": [
    {
     "base": "Qwen/Qwen3-8B",
-    "n": 2193
+    "n": 2194
    },
    {
     "base": "deepseek-ai/DeepSeek-R1",
@@ -1164,7 +1166,7 @@
     "n": 122
    }
   ],
-  "cn_total": 2576,
+  "cn_total": 2577,
   "us_total": 2613,
   "asof": "2026-10-14"
  },
@@ -1208,7 +1210,7 @@
   "us_n": 118,
   "cn_n": 175,
   "n": 460,
-  "asof": "2026-10-08",
+  "asof": "2026-10-14",
   "attribution": "Epoch AI (epoch.ai/data), CC BY 4.0"
  },
  "epoch_chips": {
@@ -1280,7 +1282,7 @@
     "h100e": 12365
    }
   ],
-  "asof": "2026-10-08",
+  "asof": "2026-10-14",
   "attribution": "Epoch AI (epoch.ai/data), CC BY 4.0"
  },
  "epoch_models": {
@@ -1362,9 +1364,9 @@
    }
   ],
   "us_12mo": 72,
-  "cn_12mo": 37,
+  "cn_12mo": 36,
   "latest_q": "2026Q3",
-  "asof": "2026-10-08",
+  "asof": "2026-10-14",
   "attribution": "Epoch AI (epoch.ai/data), CC BY 4.0"
  }
 }
