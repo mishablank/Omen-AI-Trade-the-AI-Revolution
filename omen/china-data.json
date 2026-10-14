@@ -1,6 +1,6 @@
 {
- "updated": "2026-10-13T23:40:01Z",
- "snapshot_date": "2026-10-13",
+ "updated": "2026-10-14T01:04:26Z",
+ "snapshot_date": "2026-10-14",
  "artificial_analysis": {
   "cn_best": "GLM-5.2",
   "cn_score": 51,
@@ -94,7 +94,7 @@
  },
  "apps": {
   "score": 0,
-  "asof": "2026-10-13",
+  "asof": "2026-10-14",
   "source": "app-charts",
   "best": [],
   "markets": [
@@ -495,7 +495,7 @@
   "source": "lmarena-dataset"
  },
  "arena_boards": {
-  "asof": "2026-10-13",
+  "asof": "2026-10-14",
   "boards": {
    "webdev": {
     "metric": "elo",
@@ -618,7 +618,7 @@
    "zai-org/ZCode"
   ],
   "source": "search",
-  "asof": "2026-10-13",
+  "asof": "2026-10-14",
   "vel": {
    "MiniMax-AI/MiniMax-H3": 53.7,
    "MiniMax-AI/skills": 1.1,
@@ -701,10 +701,10 @@
  },
  "openrouter_week": {
   "week": "2026-10-12",
-  "cn_share": 0.6228,
-  "us_share": 0.2515,
-  "spi": 2.476,
-  "total_tokens": 52327647095532
+  "cn_share": 0.6217,
+  "us_share": 0.2522,
+  "spi": 2.465,
+  "total_tokens": 53198991445997
  },
  "vercel_gateway": {
   "asof": "2026-10-13",
@@ -1047,8 +1047,8 @@
   "license": "AI Gateway Leaderboard Data (c) Vercel, CC BY 4.0"
  },
  "ollama": {
-  "cn": 315522500,
-  "us": 486469600,
+  "cn": 315623500,
+  "us": 486472700,
   "cn_top": [
    {
     "name": "deepseek-r1",
@@ -1056,7 +1056,7 @@
    },
    {
     "name": "qwen2.5",
-    "pulls": 42300000
+    "pulls": 42400000
    },
    {
     "name": "qwen3",
@@ -1090,10 +1090,10 @@
    }
   ],
   "n_models": 248,
-  "asof": "2026-10-13"
+  "asof": "2026-10-14"
  },
  "kalshi": {
-  "asof": "2026-10-13",
+  "asof": "2026-10-14",
   "markets": [
    {
     "label": "Will a Chinese AI model be #1 this year?",
@@ -1121,7 +1121,7 @@
    },
    {
     "label": "Best AI at end of 2026: Claude",
-    "p": 0.434,
+    "p": 0.433,
     "ticker": "KXLLM1-26DEC31-A",
     "series": "kxllm1"
    }
@@ -1166,7 +1166,7 @@
   ],
   "cn_total": 2571,
   "us_total": 2613,
-  "asof": "2026-10-13"
+  "asof": "2026-10-14"
  },
  "sdk": {
   "cn": [
@@ -1197,7 +1197,7 @@
     "wk": 34513111
    }
   ],
-  "asof": "2026-10-13"
+  "asof": "2026-10-14"
  },
  "epoch_compute": {
   "us_share": 79.5,
