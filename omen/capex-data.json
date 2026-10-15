@@ -1,5 +1,5 @@
 {
- "updated": "2026-10-14T21:26:12Z",
+ "updated": "2026-10-15T00:04:20Z",
  "tsmc": {
   "asof": "2026-09",
   "rev_ntd_b": 511.9,
@@ -11,22 +11,22 @@
  "issuance": {
   "days": 90,
   "cur": {
-   "from": "2026-07-17",
-   "to": "2026-10-14",
+   "from": "2026-07-18",
+   "to": "2026-10-15",
    "debt": 8,
-   "s1_ai": 305,
+   "s1_ai": 293,
    "formd_ai": 3
   },
   "prev": {
-   "from": "2026-04-18",
-   "to": "2026-07-16",
+   "from": "2026-04-19",
+   "to": "2026-07-17",
    "debt": 29,
-   "s1_ai": 390,
+   "s1_ai": 402,
    "formd_ai": 8
   }
  },
  "capex_asymmetry": {
-  "asof": "2026-10-14",
+  "asof": "2026-10-15",
   "us_ttm_usd_b": 586.3,
   "us_names": [
    "AMZN",
@@ -39,7 +39,7 @@
    "2025Q3–2026Q2",
    "2025Q4–2026Q3"
   ],
-  "us_asof": "2026-10-14",
+  "us_asof": "2026-10-15",
   "cn_ttm_usd_b": 42.5,
   "cn_ttm_cny_b": 284.4,
   "cn": [
@@ -207,7 +207,7 @@
    "usd_b": 34.12,
    "window": "Sep 1-20",
    "asof": "2026-09-21",
-   "age_days": 23,
+   "age_days": 24,
    "stale": true,
    "src": "https://www.koreatimes.co.kr/economy/20260921/exports-up-78-in-first-20-days-of-sept-on-robust-chip-shipments"
   },
@@ -231,7 +231,7 @@
   "pct_gdp": 1.55
  },
  "agents": {
-  "asof": "2026-10-14",
+  "asof": "2026-10-15",
   "npm": {
    "@anthropic-ai/claude-code": 11913420,
    "@openai/codex": 24385552,
@@ -243,10 +243,6 @@
   },
   "npm_total_wk": 36710958,
   "series": [
-   [
-    "2026-09-05",
-    42213925
-   ],
    [
     "2026-09-06",
     42213925
@@ -345,6 +341,10 @@
    ],
    [
     "2026-10-14",
+    36710958
+   ],
+   [
+    "2026-10-15",
     36710958
    ]
   ]
