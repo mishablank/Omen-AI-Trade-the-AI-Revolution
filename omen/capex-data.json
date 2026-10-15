@@ -1,5 +1,5 @@
 {
- "updated": "2026-10-15T00:25:58Z",
+ "updated": "2026-10-15T05:47:44Z",
  "tsmc": {
   "asof": "2026-09",
   "rev_ntd_b": 511.9,
@@ -22,7 +22,7 @@
    "to": "2026-07-17",
    "debt": 29,
    "s1_ai": 402,
-   "formd_ai": 8
+   "formd_ai": null
   }
  },
  "capex_asymmetry": {
@@ -238,8 +238,8 @@
    "@google/gemini-cli": 411986
   },
   "pypi": {
-   "claude-agent-sdk": 7502848,
-   "openai-agents": 3053879
+   "claude-agent-sdk": 7618442,
+   "openai-agents": 3105348
   },
   "npm_total_wk": 36710958,
   "series": [
