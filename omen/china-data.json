@@ -1,5 +1,5 @@
 {
- "updated": "2026-10-17T16:03:19Z",
+ "updated": "2026-10-17T18:57:45Z",
  "snapshot_date": "2026-10-17",
  "artificial_analysis": {
   "cn_best": "GLM-5.2",
@@ -701,10 +701,10 @@
  },
  "openrouter_week": {
   "week": "2026-10-12",
-  "cn_share": 0.6106,
-  "us_share": 0.2586,
-  "spi": 2.361,
-  "total_tokens": 137872301701142
+  "cn_share": 0.6107,
+  "us_share": 0.2583,
+  "spi": 2.365,
+  "total_tokens": 140908347062054
  },
  "vercel_gateway": {
   "asof": "2026-10-17",
@@ -1047,8 +1047,8 @@
   "license": "AI Gateway Leaderboard Data (c) Vercel, CC BY 4.0"
  },
  "ollama": {
-  "cn": 318011000,
-  "us": 488755414,
+  "cn": 318112600,
+  "us": 488861447,
   "cn_top": [
    {
     "name": "deepseek-r1",
@@ -1082,7 +1082,7 @@
    },
    {
     "name": "llama3.2",
-    "pulls": 85600000
+    "pulls": 85700000
    },
    {
     "name": "gemma3",
@@ -1109,7 +1109,7 @@
    },
    {
     "label": "Best AI at end of 2026: Ernie",
-    "p": 0.002,
+    "p": 0.001,
     "ticker": "KXLLM1-26DEC31-BAID",
     "series": "kxllm1"
    },
