@@ -1,5 +1,5 @@
 {
- "updated": "2026-10-17T21:12:30Z",
+ "updated": "2026-10-17T23:55:56Z",
  "snapshot_date": "2026-10-17",
  "artificial_analysis": {
   "cn_best": "GLM-5.2",
@@ -701,36 +701,36 @@
  },
  "openrouter_week": {
   "week": "2026-10-12",
-  "cn_share": 0.6105,
-  "us_share": 0.2582,
-  "spi": 2.364,
-  "total_tokens": 142187401434960
+  "cn_share": 0.61,
+  "us_share": 0.2583,
+  "spi": 2.362,
+  "total_tokens": 144245556294221
  },
  "vercel_gateway": {
   "asof": "2026-10-17",
-  "cn_share": 62.96,
-  "us_share": 29.21,
-  "spi": 2.155,
+  "cn_share": 62.73,
+  "us_share": 29.22,
+  "spi": 2.147,
   "top_cn": [
    {
     "lab": "deepseek",
-    "share": 37.73
+    "share": 37.13
    },
    {
     "lab": "zai",
-    "share": 19.69
+    "share": 20.15
    },
    {
     "lab": "moonshotai",
-    "share": 2.2
+    "share": 2.19
    },
    {
     "lab": "xiaomi",
-    "share": 1.56
+    "share": 1.54
    },
    {
     "lab": "alibaba",
-    "share": 1.45
+    "share": 1.39
    },
    {
     "lab": "minimax",
@@ -1040,15 +1040,15 @@
    },
    {
     "d": "2026-10-17",
-    "cn": 62.96,
-    "us": 29.21
+    "cn": 62.73,
+    "us": 29.22
    }
   ],
   "license": "AI Gateway Leaderboard Data (c) Vercel, CC BY 4.0"
  },
  "ollama": {
-  "cn": 318115100,
-  "us": 488865018,
+  "cn": 318219700,
+  "us": 488870701,
   "cn_top": [
    {
     "name": "deepseek-r1",
@@ -1060,7 +1060,7 @@
    },
    {
     "name": "qwen3",
-    "pulls": 40400000
+    "pulls": 40500000
    },
    {
     "name": "qwen3.5",
@@ -1089,7 +1089,7 @@
     "pulls": 41200000
    }
   ],
-  "n_models": 255,
+  "n_models": 256,
   "asof": "2026-10-17"
  },
  "kalshi": {
