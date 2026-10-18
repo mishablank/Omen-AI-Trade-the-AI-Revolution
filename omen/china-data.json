@@ -1,5 +1,5 @@
 {
- "updated": "2026-10-18T04:10:56Z",
+ "updated": "2026-10-18T09:26:42Z",
  "snapshot_date": "2026-10-18",
  "artificial_analysis": {
   "cn_best": "GLM-5.2",
@@ -120,380 +120,6 @@
   "source": "Stanford AI Index 2026, Economy chapter",
   "caveat": "Excludes China's government guidance funds: ~$184B invested in AI firms 2000-2023 (Stanford SCCEI), none of it counted as private."
  },
- "lmarena": {
-  "best_model": "Kimi K3 (Max)",
-  "best_org": "moonshot",
-  "best_rank": 18,
-  "best_score": 1487,
-  "us_leader": "Gemini 4 Argon (High)",
-  "us_leader_score": 1524,
-  "top10": 0,
-  "top20": 1,
-  "models": [
-   {
-    "model": "Gemini 4 Argon (High)",
-    "org": "google",
-    "elo": 1524,
-    "cn": false
-   },
-   {
-    "model": "Muse Wonder (Max)",
-    "org": "meta",
-    "elo": 1509,
-    "cn": false
-   },
-   {
-    "model": "Claude Opus 5.5 (High)",
-    "org": "anthropic",
-    "elo": 1508,
-    "cn": false
-   },
-   {
-    "model": "Claude Fable 5 (High)",
-    "org": "anthropic",
-    "elo": 1504,
-    "cn": false
-   },
-   {
-    "model": "Claude Opus 4.6 (High)",
-    "org": "anthropic",
-    "elo": 1503,
-    "cn": false
-   },
-   {
-    "model": "Claude Fable 5.1 (Max)",
-    "org": "anthropic",
-    "elo": 1502,
-    "cn": false
-   },
-   {
-    "model": "Claude Opus 4.7 (High)",
-    "org": "anthropic",
-    "elo": 1501,
-    "cn": false
-   },
-   {
-    "model": "Claude Opus 4.6",
-    "org": "anthropic",
-    "elo": 1497,
-    "cn": false
-   },
-   {
-    "model": "Gemini 3.8 Flash (High)",
-    "org": "google",
-    "elo": 1496,
-    "cn": false
-   },
-   {
-    "model": "Muse Spark 1.3 (Max)",
-    "org": "meta",
-    "elo": 1494,
-    "cn": false
-   },
-   {
-    "model": "Claude Opus 4.7",
-    "org": "anthropic",
-    "elo": 1494,
-    "cn": false
-   },
-   {
-    "model": "Muse Spark 1.2 (xHigh)",
-    "org": "meta",
-    "elo": 1493,
-    "cn": false
-   },
-   {
-    "model": "Muse Spark 1.1",
-    "org": "meta",
-    "elo": 1490,
-    "cn": false
-   },
-   {
-    "model": "Claude Opus 5 (Max)",
-    "org": "anthropic",
-    "elo": 1490,
-    "cn": false
-   },
-   {
-    "model": "Claude Opus 5 (High)",
-    "org": "anthropic",
-    "elo": 1490,
-    "cn": false
-   },
-   {
-    "model": "Muse Spark",
-    "org": "meta",
-    "elo": 1489,
-    "cn": false
-   },
-   {
-    "model": "Gemini 3.7 Flash (High)",
-    "org": "google",
-    "elo": 1488,
-    "cn": false
-   },
-   {
-    "model": "Kimi K3 (Max)",
-    "org": "moonshot",
-    "elo": 1487,
-    "cn": true
-   },
-   {
-    "model": "Gemini 3.1 Pro Preview",
-    "org": "google",
-    "elo": 1487,
-    "cn": false
-   },
-   {
-    "model": "Gemini 3 Pro",
-    "org": "google",
-    "elo": 1485,
-    "cn": false
-   },
-   {
-    "model": "gpt-5.6-sol-xhigh",
-    "org": "openai",
-    "elo": 1485,
-    "cn": false
-   },
-   {
-    "model": "gpt-6.1-sol-max",
-    "org": "openai",
-    "elo": 1484,
-    "cn": false
-   },
-   {
-    "model": "gemini-3.6-flash-high",
-    "org": "google",
-    "elo": 1483,
-    "cn": false
-   },
-   {
-    "model": "qwen3.8-max",
-    "org": "alibaba",
-    "elo": 1482,
-    "cn": true
-   },
-   {
-    "model": "claude-opus-4-8-high",
-    "org": "anthropic",
-    "elo": 1481,
-    "cn": false
-   },
-   {
-    "model": "gpt-5.5-high",
-    "org": "openai",
-    "elo": 1481,
-    "cn": false
-   },
-   {
-    "model": "mimo-v2.6-pro",
-    "org": "xiaomi",
-    "elo": 1479,
-    "cn": true
-   },
-   {
-    "model": "glm-5.3-max",
-    "org": "zai",
-    "elo": 1479,
-    "cn": true
-   },
-   {
-    "model": "gemini-3.5-flash-high",
-    "org": "google",
-    "elo": 1477,
-    "cn": false
-   },
-   {
-    "model": "gpt-6-astra-max",
-    "org": "openai",
-    "elo": 1477,
-    "cn": false
-   },
-   {
-    "model": "gpt-5.5",
-    "org": "openai",
-    "elo": 1477,
-    "cn": false
-   },
-   {
-    "model": "glm-5.2-max",
-    "org": "zai",
-    "elo": 1476,
-    "cn": true
-   },
-   {
-    "model": "gemini-3.5-flash-medium",
-    "org": "google",
-    "elo": 1476,
-    "cn": false
-   },
-   {
-    "model": "gpt-5.2-chat-latest-20260210",
-    "org": "openai",
-    "elo": 1476,
-    "cn": false
-   },
-   {
-    "model": "gpt-5.4-high",
-    "org": "openai",
-    "elo": 1475,
-    "cn": false
-   },
-   {
-    "model": "claude-sonnet-5.5-xhigh",
-    "org": "anthropic",
-    "elo": 1475,
-    "cn": false
-   },
-   {
-    "model": "grok-4.20-beta1",
-    "org": "xai",
-    "elo": 1475,
-    "cn": false
-   },
-   {
-    "model": "deepseek-v4.1-flash-max",
-    "org": "deepseek",
-    "elo": 1475,
-    "cn": true
-   },
-   {
-    "model": "qwen3.7-max-preview",
-    "org": "alibaba",
-    "elo": 1474,
-    "cn": true
-   },
-   {
-    "model": "claude-opus-4-8",
-    "org": "anthropic",
-    "elo": 1474,
-    "cn": false
-   },
-   {
-    "model": "glm-5.3-flash",
-    "org": "zai",
-    "elo": 1474,
-    "cn": true
-   },
-   {
-    "model": "claude-opus-4-5-20251101-high-32k",
-    "org": "anthropic",
-    "elo": 1474,
-    "cn": false
-   },
-   {
-    "model": "gpt-5.5-instant",
-    "org": "openai",
-    "elo": 1473,
-    "cn": false
-   },
-   {
-    "model": "gemini-3-flash",
-    "org": "google",
-    "elo": 1473,
-    "cn": false
-   },
-   {
-    "model": "claude-sonnet-4-6",
-    "org": "anthropic",
-    "elo": 1472,
-    "cn": false
-   },
-   {
-    "model": "grok-4.20-beta-0309-reasoning",
-    "org": "xai",
-    "elo": 1472,
-    "cn": false
-   },
-   {
-    "model": "grok-4.20-multi-agent-beta-0309",
-    "org": "xai",
-    "elo": 1470,
-    "cn": false
-   },
-   {
-    "model": "claude-opus-4-5-20251101",
-    "org": "anthropic",
-    "elo": 1470,
-    "cn": false
-   },
-   {
-    "model": "mimo-v2.5-pro",
-    "org": "xiaomi",
-    "elo": 1467,
-    "cn": true
-   },
-   {
-    "model": "ernie-5.1",
-    "org": "baidu",
-    "elo": 1467,
-    "cn": true
-   },
-   {
-    "model": "gpt-5.6-terra-xhigh",
-    "org": "openai",
-    "elo": 1466,
-    "cn": false
-   },
-   {
-    "model": "grok-4.5",
-    "org": "xai",
-    "elo": 1466,
-    "cn": false
-   },
-   {
-    "model": "grok-4.1-thinking",
-    "org": "xai",
-    "elo": 1465,
-    "cn": false
-   },
-   {
-    "model": "glm-5.1",
-    "org": "zai",
-    "elo": 1465,
-    "cn": true
-   },
-   {
-    "model": "gpt-5.4",
-    "org": "openai",
-    "elo": 1465,
-    "cn": false
-   },
-   {
-    "model": "deepseek-v4-pro-high-20260813",
-    "org": "deepseek",
-    "elo": 1465,
-    "cn": true
-   },
-   {
-    "model": "qwen3.5-max-preview",
-    "org": "alibaba",
-    "elo": 1464,
-    "cn": true
-   },
-   {
-    "model": "claude-sonnet-5-high",
-    "org": "anthropic",
-    "elo": 1461,
-    "cn": false
-   },
-   {
-    "model": "kimi-k2.6",
-    "org": "moonshot",
-    "elo": 1461,
-    "cn": true
-   },
-   {
-    "model": "qwen3.6-max-preview",
-    "org": "alibaba",
-    "elo": 1461,
-    "cn": true
-   }
-  ],
-  "asof": "2026-10-15",
-  "source": "lmarena-dataset"
- },
  "arena_boards": {
   "asof": "2026-10-18",
   "boards": {
@@ -512,7 +138,8 @@
     "top10": 1,
     "n": 100,
     "asof": "2026-10-16",
-    "source": "lmarena-dataset"
+    "source": "lmarena-dataset",
+    "carried": true
    },
    "agent": {
     "metric": "score",
@@ -530,7 +157,8 @@
     "n": 52,
     "pct_of_other": 21,
     "asof": "2026-10-16",
-    "source": "lmarena-dataset"
+    "source": "lmarena-dataset",
+    "carried": true
    },
    "text_to_video": {
     "metric": "elo",
@@ -547,7 +175,8 @@
     "top10": 5,
     "n": 48,
     "asof": "2026-09-22",
-    "source": "lmarena-dataset"
+    "source": "lmarena-dataset",
+    "carried": true
    },
    "image_to_video": {
     "metric": "elo",
@@ -564,7 +193,8 @@
     "top10": 6,
     "n": 48,
     "asof": "2026-09-22",
-    "source": "lmarena-dataset"
+    "source": "lmarena-dataset",
+    "carried": true
    },
    "text_to_image": {
     "metric": "elo",
@@ -581,7 +211,8 @@
     "top10": 0,
     "n": 82,
     "asof": "2026-10-07",
-    "source": "lmarena-dataset"
+    "source": "lmarena-dataset",
+    "carried": true
    },
    "image_edit": {
     "metric": "elo",
@@ -598,7 +229,8 @@
     "top10": 1,
     "n": 59,
     "asof": "2026-10-06",
-    "source": "lmarena-dataset"
+    "source": "lmarena-dataset",
+    "carried": true
    }
   }
  },
@@ -639,102 +271,102 @@
   "cnOrgs": [
    {
     "org": "Qwen",
-    "dl": 208193425
+    "dl": 205903544
    },
    {
     "org": "deepseek-ai",
-    "dl": 24972860
+    "dl": 24821521
    },
    {
     "org": "zai-org",
-    "dl": 15764544
+    "dl": 15657159
    },
    {
     "org": "MiniMaxAI",
-    "dl": 6232193
+    "dl": 6429056
    },
    {
     "org": "tencent",
-    "dl": 3559713
+    "dl": 3598226
    },
    {
     "org": "moonshotai",
-    "dl": 2782096
+    "dl": 2736922
    },
    {
     "org": "stepfun-ai",
-    "dl": 934273
+    "dl": 903015
    },
    {
     "org": "XiaomiMiMo",
-    "dl": 571272
+    "dl": 559747
    }
   ],
   "usOrgs": [
    {
     "org": "google",
-    "dl": 43639176
+    "dl": 43070853
    },
    {
     "org": "meta-llama",
-    "dl": 19834685
+    "dl": 19269769
    },
    {
     "org": "nvidia",
-    "dl": 15729706
+    "dl": 15650086
    },
    {
     "org": "openai",
-    "dl": 9316872
+    "dl": 9156159
    },
    {
     "org": "microsoft",
-    "dl": 2961250
+    "dl": 2938134
    },
    {
     "org": "allenai",
-    "dl": 2580181
+    "dl": 2542667
    }
   ],
-  "cn": 263010376,
-  "us": 94061870
+  "cn": 260609190,
+  "us": 92627668
  },
  "openrouter_week": {
   "week": "2026-10-12",
-  "cn_share": 0.6098,
+  "cn_share": 0.6095,
   "us_share": 0.2581,
-  "spi": 2.363,
-  "total_tokens": 147316094112774
+  "spi": 2.362,
+  "total_tokens": 150890645965664
  },
  "vercel_gateway": {
   "asof": "2026-10-18",
-  "cn_share": 64.32,
-  "us_share": 22.8,
-  "spi": 2.821,
+  "cn_share": 67.52,
+  "us_share": 21.99,
+  "spi": 3.07,
   "top_cn": [
    {
     "lab": "deepseek",
-    "share": 32.03
+    "share": 34.12
    },
    {
     "lab": "zai",
-    "share": 25.62
+    "share": 24.54
    },
    {
     "lab": "moonshotai",
-    "share": 4.07
-   },
-   {
-    "lab": "xiaomi",
-    "share": 1.22
+    "share": 4.24
    },
    {
     "lab": "alibaba",
-    "share": 1.17
+    "share": 3.14
+   },
+   {
+    "lab": "xiaomi",
+    "share": 1.28
    },
    {
     "lab": "minimax",
-    "share": 0.19
+    "share": 0.16
    }
   ],
   "series": [
@@ -1040,15 +672,15 @@
    },
    {
     "d": "2026-10-18",
-    "cn": 64.32,
-    "us": 22.8
+    "cn": 67.52,
+    "us": 21.99
    }
   ],
   "license": "AI Gateway Leaderboard Data (c) Vercel, CC BY 4.0"
  },
  "ollama": {
-  "cn": 318324200,
-  "us": 488879026,
+  "cn": 318329200,
+  "us": 488988869,
   "cn_top": [
    {
     "name": "deepseek-r1",
@@ -1121,7 +753,7 @@
    },
    {
     "label": "Best AI at end of 2026: Claude",
-    "p": 0.45,
+    "p": 0.457,
     "ticker": "KXLLM1-26DEC31-A",
     "series": "kxllm1"
    }
