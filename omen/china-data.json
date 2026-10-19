@@ -1,5 +1,5 @@
 {
- "updated": "2026-10-19T19:09:24Z",
+ "updated": "2026-10-19T23:02:03Z",
  "snapshot_date": "2026-10-19",
  "artificial_analysis": {
   "cn_best": "GLM-5.2",
@@ -99,7 +99,7 @@
   "best": [
    {
     "label": "MiniMax",
-    "rank": 51,
+    "rank": 50,
     "store": "android",
     "country": "kr"
    }
@@ -116,7 +116,7 @@
    "au",
    "kr"
   ],
-  "detail": "MiniMax #51 (KR Play); basket-mean Western top-100 presence 10/100 across 10 markets",
+  "detail": "MiniMax #50 (KR Play); basket-mean Western top-100 presence 10/100 across 10 markets",
   "note": "iOS Apple RSS top-100 + Android Play top-200 across 10 markets; presence = basket-mean of best top-100 chart rank (DeepSeek/Qwen/Doubao/Kimi/MiniMax), #1=100 #100=1; ranks past top-100 score 0."
  },
  "investment": {
@@ -554,8 +554,7 @@
     "top10": 5,
     "n": 48,
     "asof": "2026-09-22",
-    "source": "lmarena-dataset",
-    "carried": true
+    "source": "lmarena-dataset"
    },
    "image_to_video": {
     "metric": "elo",
@@ -709,10 +708,10 @@
  },
  "openrouter_week": {
   "week": "2026-10-19",
-  "cn_share": 0.6267,
-  "us_share": 0.2584,
-  "spi": 2.425,
-  "total_tokens": 18265567280198
+  "cn_share": 0.6235,
+  "us_share": 0.2614,
+  "spi": 2.385,
+  "total_tokens": 22699341288940
  },
  "vercel_gateway": {
   "asof": "2026-10-19",
@@ -1055,8 +1054,8 @@
   "license": "AI Gateway Leaderboard Data (c) Vercel, CC BY 4.0"
  },
  "ollama": {
-  "cn": 319458568,
-  "us": 489761696,
+  "cn": 319464092,
+  "us": 489768881,
   "cn_top": [
    {
     "name": "deepseek-r1",
@@ -1129,7 +1128,7 @@
    },
    {
     "label": "Best AI at end of 2026: Claude",
-    "p": 0.524,
+    "p": 0.52,
     "ticker": "KXLLM1-26DEC31-A",
     "series": "kxllm1"
    }
@@ -1139,7 +1138,7 @@
   "cn": [
    {
     "base": "Qwen/Qwen3-8B",
-    "n": 2216
+    "n": 2217
    },
    {
     "base": "deepseek-ai/DeepSeek-R1",
@@ -1172,7 +1171,7 @@
     "n": 125
    }
   ],
-  "cn_total": 2600,
+  "cn_total": 2601,
   "us_total": 2618,
   "asof": "2026-10-19"
  },
