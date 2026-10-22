@@ -1,5 +1,75 @@
 # Backlog
 
+## Constituent roll – the 2027 vintage
+
+**Status:** Open – the mechanism shipped 2026-10-22 (`feat/constituent-vintages-and-expiry-watchdog`):
+one constituent file in dated vintages, the coverage watchdog, chain-linked pair levels and the
+roll rule. What is left is curation: which 2027 markets carry the pair, and when they join.
+**Component:** `omen/constituents.js`, `omen/update-market-data.py` (`build_coverage`, `chain_levels`),
+`omen/index.html` (`verdictOf`), `omen/omen-common.js`
+**Priority:** Critical – by 2026-12-15
+
+### Problem
+
+The verdict's direction axis is the Bull share of a basket of Polymarket markets, and the
+basket is year-dated: 16 of the 17 live markets of the 2026 vintage resolve on **2027-01-01**
+(the one survivor is "AI data center in space by Dec 31, 2027"). Three of the original twenty
+had already left by 2026-10-22 (one expired 31 Jul, one 30 Sep, one delisted 4 Sep) while
+every page still said "twenty" – and the landing page was still averaging the delisted one
+at its three-month-old baked price, which is why it read a bull share of 77% against the
+monitor's 71%. On 1 January, without a roll, the Bull index is one market and the Bear
+index is empty; the bubble market the gauge's prediction family reads expires with them.
+
+Before that, every "by Dec 31" event market decays toward zero mechanically as its deadline
+nears, whatever the thesis does. The monitor's deadline-adjusted basis corrects for that on
+its own card; the verdict and the snapshots use raw odds.
+
+### What shipped
+
+- `constituents.js` is the one list (the fetcher parses the same literal the pages load).
+  Each market has `from` / `to`; the three departed ones carry the day they left, as
+  recorded in `snapshots.csv`, and `test_constituents.py` checks the vintages against that
+  history. No page carries a list of its own (tested).
+- `coverage` in `market-data.json`: per side configured / live / expiring-within-30-days /
+  rolling, the cliff, the next vintage, and prose warnings. Each warning is a GitHub Actions
+  annotation on the refresh run and a Telegram/ntfy alert when the warning set changes.
+  The landing chip says `17 OF 17 LIVE · 16 EXPIRE 2027-01-01` once the cliff is inside
+  120 days; the monitor's Constituents card says the same.
+- `bull_chain` / `bear_chain` in `snapshots.csv`: chain-linked levels that move only by the
+  markets both runs priced, so the 89-day trail and the cycle map do not jump at the roll.
+  `OMEN.parseSnapshots` prefers them when present; older rows keep their raw share, which
+  is continuous because the chain was anchored to raw on its first day.
+- The roll rule: a side with fewer than `roll_floor` (3) live markets has no direction read;
+  `verdictOf(share, regime, rolling=true)` returns "No edge" and the page says "basket
+  rolling". The fetcher reports the same state in `coverage.sides.<side>.rolling`.
+
+### Acceptance Criteria
+
+- [ ] **Curate the 2027 vintage.** Five successors are written down as `proposed` in
+      `constituents.js` (never members until the flag is deleted): GPT Astra 6.1+ Arena
+      debut ≥ 1440 (`6017629`, bull/tech), OpenAI IPO by Jun 30 2027 (`3957123`,
+      bull/capital), Anthropic IPO closing cap > $1.5T (`3887676`, bull/capital), AI bubble
+      burst by Jun 30 2027 (`4838928`, bear/mkt, the next `role: "bubble"`), Indiana data
+      center moratorium by Dec 31 2027 (`5126779`, bear/gov). Accept, replace or drop each.
+- [ ] **Fill the themes Polymarket had not listed for 2027 on 2026-10-22**: OpenAI announces
+      AGI; AI wins IMO gold; OpenAI consumer hardware; OpenAI / Anthropic acquired; US gov
+      removes access to a model (three legs); US enacts an AI safety bill; any-state data
+      center moratorium. Polymarket tends to list the year-dated versions in late December –
+      re-run the search then (`public-search?q=<theme>&events_status=active`, keep
+      `endDate >= 2027-01-02`).
+- [ ] **Pick the join date.** The proposals carry `from: 2026-12-15` (the bubble successor
+      `2027-01-01`). Joining before the cliff gives the chain-linker an overlap window to
+      splice across; joining on the cliff day means the roll is a one-market common set.
+      Either is honest – the chain never jumps – but the earlier date changes the live
+      basket before year end, and that is a curation call.
+- [ ] **Re-check `pred_bubble`'s range** (`OMEN.GAUGE_REFS`, 0–40%) when the six-month
+      bubble market goes live: a shorter horizon prices lower for the same belief.
+- [ ] **Decide the deadline-decay question** for the verdict: keep raw odds (today), or
+      read the pair on the monitor's deadline-adjusted basis in the last weeks of a
+      vintage. Not changed here – it moves the published rule.
+- [ ] Floor and horizon (`roll_floor: 3`, `horizon_days: 30`) are first guesses; adjust in
+      the file, every consumer reads them from there.
+
 ## Cloudflare R2 is disabled on the account – uploads *and* deploys fail
 
 **Status:** In progress – R2 re-enabled in the dashboard on 2026-09-26; deploy and refresh still to be confirmed green

@@ -161,19 +161,66 @@ COT_CONTRACTS = {
 # and a lengthening days-to-cover is the financing-risk bet expressed in cash equity.
 SHORT_INTEREST = ["NVDA", "CRWV", "NBIS", "IREN", "SMCI"]
 NASDAQ_SI_URL = "https://api.nasdaq.com/api/quote/{sym}/short-interest?assetClass=stocks"
-# Bear (OMN-X) is the short side: the union of two sleeves, priced as one flat
-# equal-weight basket of 9. The sleeves are series-identical to the indexes Bear
-# replaced – MKT to the old AI-Crash, GOV to the old AI-Regulation – which is what
-# lets the crash-pressure gauge and the lead-lag study keep reading MKT unchanged.
-BEAR_SLEEVES = {
-    "mkt": ["691340", "676827", "676846"],
-    "gov": ["2787889", "2787891", "2787890", "2698575", "676842", "2839991"],
-}
-POLY_IDS = {
-    "bull": ["676829", "653788", "676837", "1087074", "656312", "656313", "2413330", "2109881", "676804", "2487206", "2255930"],
-    "bear": BEAR_SLEEVES["mkt"] + BEAR_SLEEVES["gov"],
-}
-BUBBLE_ID = "691340"
+# ---------- constituents (constituents.js, dated vintages) ----------
+# The Bull / Bear basket used to be typed here as POLY_IDS and again, by hand, in four
+# pages. constituents.js is now the one list: a JSON literal every page loads as a script
+# and this file parses with json.loads. Each market carries the day it joined (`from`) and,
+# once it is gone, the day it left (`to`); `proposed` rows are written-down successors that
+# are not members yet. The module-level POLY_IDS / BEAR_SLEEVES / BUBBLE_ID below are
+# today's vintage, so everything downstream (gauge, regime, snapshot, alert) reads exactly
+# the basket the pages render.
+#
+# Bear (OMN-X) is the short side: the union of two sleeves, priced as one flat equal-weight
+# basket. The sleeves are series-identical to the indexes Bear replaced – MKT to the old
+# AI-Crash, GOV to the old AI-Regulation – which is what lets the crash-pressure gauge and
+# the lead-lag study keep reading MKT unchanged.
+CONSTITUENTS_FILE = os.path.join(HERE, "constituents.js")
+
+
+def load_constituents(path=CONSTITUENTS_FILE):
+    """The JSON object after `window.OMEN_CONSTITUENTS =`. The file is a script so the
+    pages can load it under file://; the comment header is skipped by taking the first
+    brace after the assignment and the last brace in the file."""
+    txt = open(path, encoding="utf-8").read()
+    start = txt.index("{", txt.index("OMEN_CONSTITUENTS"))
+    return json.loads(txt[start:txt.rindex("}") + 1])
+
+
+CONSTITUENTS_DOC = load_constituents()
+ROLL_FLOOR = int(CONSTITUENTS_DOC.get("roll_floor", 3))
+COVERAGE_HORIZON_DAYS = int(CONSTITUENTS_DOC.get("horizon_days", 30))
+
+
+def constituents_at(asof=None, side=None, doc=None):
+    """Members on a day: from <= day < to, never a proposed row. Same rule as
+    OMEN.constituentsAt in omen-common.js."""
+    doc = doc or CONSTITUENTS_DOC
+    d = asof or datetime.date.today().isoformat()
+    return [m for m in doc["markets"]
+            if not m.get("proposed") and m["from"] <= d and (not m.get("to") or d < m["to"])
+            and (side is None or m["side"] == side)]
+
+
+def poly_ids_at(asof=None, doc=None):
+    return {s: [m["id"] for m in constituents_at(asof, s, doc)] for s in ("bull", "bear")}
+
+
+def bear_sleeves_at(asof=None, doc=None):
+    bear = constituents_at(asof, "bear", doc)
+    return {"mkt": [m["id"] for m in bear if m.get("theme") == "mkt"],
+            "gov": [m["id"] for m in bear if m.get("theme") == "gov"]}
+
+
+def bubble_id_at(asof=None, doc=None):
+    """The gauge's bubble market: the live member with role "bubble" (newest `from` wins)."""
+    c = sorted((m for m in constituents_at(asof, "bear", doc) if m.get("role") == "bubble"),
+               key=lambda m: m["from"], reverse=True)
+    return c[0]["id"] if c else None
+
+
+BEAR_SLEEVES = bear_sleeves_at()
+POLY_IDS = poly_ids_at()
+BUBBLE_ID = bubble_id_at() or "691340"
 
 
 def index_level(price, side):
@@ -1402,16 +1449,124 @@ def mean_or_none(vals):
     return sum(vals) / len(vals) if vals else None
 
 
-def poly_prices():
-    allids = [i for v in POLY_IDS.values() for i in v]
+def poly_fetch(ids=None):
+    """One Gamma read for the configured basket. Returns (price, rows): `price` is
+    {id: YES} for the open markets – the map every gauge, snapshot and alert function
+    consumes – and `rows` is {id: Gamma row} for everything Gamma returned, which the
+    coverage block reads end dates from. A market Gamma does not return at all is simply
+    absent from both (delisted, or an id typo): coverage reports it as "missing"."""
+    allids = ids or [i for v in POLY_IDS.values() for i in v]
     qs = "&".join("id=" + i for i in allids)
     arr = json.loads(get(f"https://gamma-api.polymarket.com/markets?{qs}&limit={len(allids)}"))
-    price = {}
+    rows, price = {}, {}
     for m in arr:
-        if m.get("closed"):
+        mid = str(m["id"])
+        rows[mid] = m
+        if m.get("closed") or m.get("active") is False:
             continue
-        price[str(m["id"])] = float(json.loads(m.get("outcomePrices") or '["0"]')[0])
-    return price
+        price[mid] = float(json.loads(m.get("outcomePrices") or '["0"]')[0])
+    return price, rows
+
+
+def poly_prices():
+    return poly_fetch()[0]
+
+
+# ---------- basket coverage: the expiry watchdog ----------
+def build_coverage(rows, price, asof=None, doc=None, floor=None, horizon_days=None):
+    """What the pair is actually standing on today. Per side: configured members of the
+    vintage, how many are live, how many end inside the horizon, and whether the side is
+    below the roll floor. Plus the cliff – the end date the most live markets share – and
+    the vintage that is written down to follow. Warnings are prose, one per condition, so
+    the run log, the alert and the page can all say the same sentence."""
+    doc = doc or CONSTITUENTS_DOC
+    today = asof or datetime.date.today().isoformat()
+    floor = ROLL_FLOOR if floor is None else floor
+    horizon_days = COVERAGE_HORIZON_DAYS if horizon_days is None else horizon_days
+    d0 = datetime.date.fromisoformat(today)
+    out = {"asof": today, "floor": floor, "horizon_days": horizon_days,
+           "sides": {}, "markets": [], "next_cliff": None, "upcoming": [], "proposed": 0,
+           "warnings": []}
+    by_end = {}
+    for side in ("bull", "bear"):
+        members = constituents_at(today, side, doc)
+        live = expiring = 0
+        for m in members:
+            g = rows.get(m["id"])
+            status = "missing" if g is None else ("live" if m["id"] in price else "closed")
+            end = ((g or {}).get("endDate") or "")[:10] or None
+            days = None
+            if end:
+                try:
+                    days = (datetime.date.fromisoformat(end) - d0).days
+                except ValueError:
+                    end, days = None, None
+            out["markets"].append({"id": m["id"], "label": m["label"], "side": side,
+                                   "theme": m.get("theme"), "status": status,
+                                   "end": end, "days_left": days})
+            if status == "live":
+                live += 1
+                if end:
+                    by_end[end] = by_end.get(end, 0) + 1
+                if days is not None and days <= horizon_days:
+                    expiring += 1
+        out["sides"][side] = {"configured": len(members), "live": live,
+                              "expiring": expiring, "rolling": live < floor}
+    if by_end:
+        cliff = max(sorted(by_end), key=lambda e: by_end[e])   # most markets; earliest on ties
+        out["next_cliff"] = {"date": cliff, "count": by_end[cliff],
+                             "days_left": (datetime.date.fromisoformat(cliff) - d0).days}
+    out["upcoming"] = [{"id": m["id"], "label": m["label"], "side": m["side"], "from": m["from"]}
+                       for m in doc["markets"]
+                       if not m.get("proposed") and m["from"] > today and m["side"] in ("bull", "bear")]
+    out["proposed"] = sum(1 for m in doc["markets"] if m.get("proposed"))
+    out["warnings"] = coverage_warnings(out)
+    return out
+
+
+def coverage_warnings(cov):
+    """The two conditions worth a human's attention, as sentences. Rolling (a side under
+    the floor) is the louder one; half a side expiring inside the horizon is the earlier
+    one. A side with nothing live at all is rolling, not merely expiring."""
+    w = []
+    cliff = cov.get("next_cliff") or {}
+    for side, s in cov["sides"].items():
+        if s["rolling"]:
+            w.append(f"{side}: {s['live']} live market(s), below the floor of {cov['floor']} "
+                     f"- the verdict's direction axis is rolling")
+        elif s["live"] and 2 * s["expiring"] >= s["live"]:
+            tail = f" (cliff {cliff['date']}, {cliff['days_left']}d)" if cliff else ""
+            w.append(f"{side}: {s['expiring']} of {s['live']} live markets expire within "
+                     f"{cov['horizon_days']} days{tail}")
+    return w
+
+
+def chain_levels(prev_chain, prev_price, price, ids_by_side=None):
+    """Chain-linked Bull / Bear levels, carried run to run in market-data.json.
+
+    The raw level is the equal-weight mean of whatever is live, so it jumps whenever the
+    membership changes - a resolution, a delisting, and above all the vintage roll. The
+    chained level moves only by the markets BOTH runs priced: L = L_prev + (mean over the
+    common set now - mean over the common set then), anchored to raw on the first run
+    (or after a gap with no previous prices). With no overlap at all it falls back to the
+    raw move, as the monitor's chainedSeries does. Units are the raw level's (0-100)."""
+    ids_by_side = ids_by_side or POLY_IDS
+    out = {}
+    for side, ids in ids_by_side.items():
+        now = [price[i] for i in ids if i in price]
+        raw = sum(now) / len(now) * 100 if now else None
+        prev_level = (prev_chain or {}).get(side)
+        if raw is None or prev_level is None or not prev_price:
+            out[side] = round(raw, 4) if raw is not None else None
+            continue
+        common = [i for i in ids if i in price and i in prev_price]
+        if common:
+            step = (sum(price[i] for i in common) - sum(prev_price[i] for i in common)) / len(common) * 100
+        else:
+            was = [prev_price[i] for i in ids if i in prev_price]
+            step = raw - sum(was) / len(was) * 100 if was else 0.0
+        out[side] = round(prev_level + step, 4)
+    return out
 
 
 def compute_gauge(data, price):
@@ -1485,8 +1640,12 @@ def compute_regime(gauge, price):
 # `crash`/`reg` are kept past the Bear merge: they are exactly the MKT/GOV sleeve reads,
 # so the stored series stays comparable across the merge date and `bear` can be
 # backfilled from them for the rows that predate the column.
+# `bull_chain` / `bear_chain` are the chain-linked levels (chain_levels above), written
+# from 2026-10-22; earlier rows carry an empty cell and the pages fall back to the raw
+# pair share for them. `comp` stays last: it is an unquoted comma list, and the reader
+# splits each line on at most len(header)-1 commas.
 SNAP_HEADER = ["date", "bull", "bull_n", "bear", "bear_n", "crash", "crash_n", "reg", "reg_n",
-               "gauge", "lead", "conf", "comp"]
+               "gauge", "lead", "conf", "bull_chain", "bear_chain", "comp"]
 
 
 def snapshot_row(price):
@@ -1539,6 +1698,9 @@ def append_snapshot(data=None, price=None):
     row["gauge"] = gauge
     row["lead"] = lead
     row["conf"] = conf
+    chain = ((data or {}).get("poly") or {}).get("chain") or {}
+    row["bull_chain"] = chain.get("bull") if chain.get("bull") is not None else ""
+    row["bear_chain"] = chain.get("bear") if chain.get("bear") is not None else ""
     row["comp"] = ",".join(sorted(price.keys()))
     existing = {}
     if os.path.exists(SNAP):
@@ -1746,11 +1908,19 @@ def check_alert(data, price=None):
                    f"Gauge {gtxt}/100 (leading {lead and round(lead)} / confirming {conf and round(conf)}) "
                    f"· bubble market {bubble:.1f}% · families: "
                    + ", ".join(f"{k} {v:.0f}" for k, v in fam.items() if v is not None))
+    # Basket coverage: alert when the warning set changes, not on every run that repeats
+    # it - a cliff is a standing condition, and a 30-minute cron would otherwise page 48
+    # times a day. Clearing (the set becomes empty) is not alerted; the next run's silence
+    # is the all-clear.
+    warnings = (data.get("coverage") or {}).get("warnings") or []
+    if warnings and warnings != prev.get("coverage_warnings"):
+        send_alert("AI Crash Monitor: basket coverage", "\n".join(warnings))
     # The stamp is written as naive-UTC + "Z", the format alert-state.json has always used
     # and the pages parse. now(timezone.utc) is the non-deprecated read; dropping tzinfo
     # again before isoformat() keeps the trailing "Z" rather than emitting "+00:00".
     at = datetime.datetime.now(datetime.timezone.utc).replace(tzinfo=None).isoformat() + "Z"
-    json.dump({"regime": regime, "gauge": gauge, "at": at}, open(ALERT_STATE, "w"))
+    json.dump({"regime": regime, "gauge": gauge, "at": at, "coverage_warnings": warnings},
+              open(ALERT_STATE, "w"))
     print(f"regime: {regime} (gauge {gauge and round(gauge, 1)})")
 
 
@@ -1990,7 +2160,21 @@ def build():
     # a different tape.
     price = None
     try:
-        price = poly_prices()
+        price, rows = poly_fetch()
+        # Basket coverage (the expiry watchdog) and the chain-linked pair levels ride the
+        # same read. A warning here is also a GitHub Actions annotation, so a run that is
+        # green on every fetch still shows the basket thinning out on the run summary.
+        data["coverage"] = build_coverage(rows, price)
+        for w in data["coverage"]["warnings"]:
+            print(f"::warning title=OMEN basket coverage::{w}")
+        prev_poly = prev.get("poly") or {}
+        data["poly"] = {"at": now.strftime("%Y-%m-%dT%H:%M:%SZ"), "price": price,
+                        "chain": chain_levels(prev_poly.get("chain"), prev_poly.get("price"), price)}
+        c = data["coverage"]
+        print("coverage: " + ", ".join(f"{k} {v['live']}/{v['configured']} live" for k, v in c["sides"].items())
+              + (f"; cliff {c['next_cliff']['date']} ({c['next_cliff']['count']} markets, "
+                 f"{c['next_cliff']['days_left']}d)" if c["next_cliff"] else "")
+              + f"; chain bull {data['poly']['chain'].get('bull')} bear {data['poly']['chain'].get('bear')}")
         score, fam = compute_gauge(data, price)
         lead, conf = gauge_groups(fam)
         mkt_level = sleeve_level(price, "mkt")
@@ -2008,6 +2192,8 @@ def build():
               f"lead {data['server_gauge']['lead']} conf {data['server_gauge']['conf']}")
     except Exception as e:
         carry(data, prev, "server_gauge", e)   # stale, but its own `at` stamp says so
+        carry(data, prev, "coverage", e)
+        carry(data, prev, "poly", e)
 
     with open(OUT, "w") as f:
         json.dump(data, f)

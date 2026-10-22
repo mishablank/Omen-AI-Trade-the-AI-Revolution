@@ -207,7 +207,7 @@ footer{border-top:1px solid var(--line);padding:40px 0;background:var(--bg2)}
       <div class="mrow">
         <span class="rom">i.</span>
         <h3>Curation</h3>
-        <p>Twenty Polymarket markets – 11 Bull, 9 Bear (3 MKT, 6 GOV) – screened for theme relevance and tradability. Closed or resolved markets drop out of the live index automatically.</p>
+        <p id="curationLine">Twenty Polymarket markets – 11 Bull, 9 Bear (3 MKT, 6 GOV) – screened for theme relevance and tradability. Closed or resolved markets drop out of the live index automatically.</p>
       </div>
       <div class="mrow">
         <span class="rom">ii.</span>
@@ -267,6 +267,7 @@ footer{border-top:1px solid var(--line);padding:40px 0;background:var(--bg2)}
 </footer>
 
 <script src="omen-common.js"></script>
+<script src="constituents.js"></script>
 <script>
 "use strict";
 // The published ranges, rendered from the table the gauge is actually scored against.
@@ -275,6 +276,15 @@ footer{border-top:1px solid var(--line);padding:40px 0;background:var(--bg2)}
 document.getElementById("refRanges").innerHTML =
   "– " + OMEN.gaugeRefsProse("server")
   + " &nbsp;/&nbsp; <b>MONITOR&rsquo;S EXPLORATORY CARD ADDS</b> – " + OMEN.gaugeRefsProse("extra");
+/* ---- curation line, rendered from constituents.js so it cannot go stale ---- */
+(function(){
+  const doc=window.OMEN_CONSTITUENTS, el=document.getElementById("curationLine");
+  if(!doc||!el) return;
+  const all=OMEN.constituentsAt(doc), bull=all.filter(m=>m.side==="bull"), bear=all.filter(m=>m.side==="bear");
+  const mkt=bear.filter(m=>m.theme==="mkt").length, gov=bear.filter(m=>m.theme==="gov").length;
+  const retired=(doc.markets||[]).filter(m=>m.to&&(m.side==="bull"||m.side==="bear")).length;
+  el.textContent=`${bull.length+bear.length} Polymarket markets in the current vintage – ${bull.length} Bull, ${bear.length} Bear (${mkt} MKT, ${gov} GOV) – screened for theme relevance and tradability; ${retired} of the original twenty have resolved or been delisted since the 2026-07-10 curation. Membership is versioned in dated vintages (constituents.js, shared with the fetcher): a successor joins on its from date, a resolved market drops out of the live index automatically, and the chain-linked history absorbs the change. A side with fewer than ${doc.roll_floor} live markets has no direction read – the verdict shows “No edge · basket rolling” until the next vintage is priced.`;
+})();
 </script>
 <script src="omen-nav.js" defer></script>
 </body>

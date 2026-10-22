@@ -136,7 +136,11 @@ omen-ai/
     │
     │  ── shared front end ──
     ├── omen-common.js ............. $ · esc · safeUrl · Polymarket shapes ·
-    │                                REGIME thresholds · GAUGE_REFS · index math
+    │                                REGIME thresholds · GAUGE_REFS · index math ·
+    │                                constituent vintages · roll state · coverage
+    ├── constituents.js ............ THE constituent list: every Bull/Bear (and China,
+    │                                Macro) market in dated vintages, read by the
+    │                                fetcher and every page
     ├── omen.css ................... the design tokens
     ├── omen-nav.js ................ the shared nav
     │
@@ -161,6 +165,7 @@ omen-ai/
     ├── test_gauge_parity.py ....... server gauge vs the shared fixture
     ├── test_gauge_refs.py ......... the Python range mirror vs OMEN.GAUGE_REFS
     ├── test_docs_truth.py ......... this tree, and no unverifiable doc claims
+    ├── test_constituents.py ....... the one list, its vintages vs history, the watchdog
     ├── test_deploy_guard.py, test_seed_market_data.py
     ├── test_documented_secrets.py, test_mobile_nav.py
     ├── test_regime_explainer.py ... runs every Node suite under pytest
@@ -172,6 +177,7 @@ omen-ai/
     ├── test-a11y.mjs .............. chart text alternatives, keyboard sorting
     ├── test-pure-helpers.mjs, test-china-helpers.mjs, test-ci-branch-guard.mjs
     ├── test-app-charts.mjs ........ the SerpApi fallback's quota gate and schema
+    ├── test-constituents.mjs ...... vintages, roll state, coverage, chained snapshots
     │
     │  ── data (committed; see below) ──
     ├── market-data.json ........... full state — R2 seed, ~weekly
@@ -306,6 +312,7 @@ Tracked with acceptance criteria in [BACKLOG.md](BACKLOG.md). Stated here becaus
 - China monitor "community mentions" (w=10) is hardcoded `null` — Reddit and X have no public, key-free, CORS-accessible API for it.
 - Android chart presence rides a reverse-engineered scrape that breaks every year or two; a SerpApi fallback is specced.
 - Some fundamentals fields are hand-updated, and the capex aggregate sums whichever hyperscalers reported in a given quarter — so a 4-filer quarter can sit next to a 5-filer quarter.
+- The Bull/Bear pair is a basket of year-dated Polymarket markets, and 16 of the 17 live ones resolve on 2027-01-01. Membership is versioned in `omen/constituents.js` (dated vintages, one file for the fetcher and every page); the fetcher's `coverage` block counts live markets per side and the expiry cliff, warns on the run summary and the alert channel when half a side is inside 30 days of it, and a side with fewer than three live markets switches the verdict to "No edge · basket rolling". The 2027 successors are written down as `proposed` and still need curating — see BACKLOG.md.
 
 ## 📚 More
 
