@@ -199,22 +199,18 @@ footer{border-top:1px solid var(--line);padding:40px 0;background:var(--bg2)}
 </footer>
 
 <script src="omen-common.js"></script>
+<script src="constituents.js"></script>
 <script>
 "use strict";
-/* ================= baked snapshot (2026-07-11) ================= */
+/* ================= constituents (constituents.js) + baked price snapshot (2026-07-11) ================= */
 // Bear-side markets only – the gauge reads the crash basket (MKT sleeve) and the
-// bubble-burst market; the full 20-market set lives on indexes.html.
-const MARKETS=[
-{id:"691340",side:"bear",theme:"mkt",yes:0.1595},
-{id:"676827",side:"bear",theme:"mkt",yes:0.0615},
-{id:"676846",side:"bear",theme:"mkt",yes:0.044},
-{id:"2787889",side:"bear",theme:"gov",yes:0.3},
-{id:"2787891",side:"bear",theme:"gov",yes:0.22},
-{id:"2787890",side:"bear",theme:"gov",yes:0.255},
-{id:"2698575",side:"bear",theme:"gov",yes:0.11},
-{id:"676842",side:"bear",theme:"gov",yes:0.21},
-{id:"2839991",side:"bear",theme:"gov",yes:0.375}
-];
+// bubble-burst market. Membership comes from constituents.js (dated vintages, shared with
+// the fetcher and every page); BAKED_YES is only the pre-fetch render, and a member
+// without a baked price starts closed until Gamma prices it.
+const CONST_DOC=window.OMEN_CONSTITUENTS;
+const BAKED_YES={"691340":0.1595,"676827":0.0615,"676846":0.044,"2787889":0.3,"2787891":0.22,"2787890":0.255,"2698575":0.11,"676842":0.21,"2839991":0.375};
+const MARKETS=OMEN.constituentsAt(CONST_DOC,null,"bear").map(c=>({id:c.id,side:"bear",theme:c.theme,yes:BAKED_YES[c.id]??0,closed:!(c.id in BAKED_YES)}));
+const BUBBLE_ID=OMEN.bubbleIdAt(CONST_DOC)||"691340";
 let GAUGE = 23.6;
 // g: "lead" = priced before the fact (can warn) · "conf" = moves with/after prices (confirms)
 let FAMILIES = [
@@ -240,7 +236,7 @@ function crashLevel(){
   return ms.length?ms.reduce((a,m)=>a+m.yes,0)/ms.length*100:0;
 }
 function bubblePct(){
-  const bm=MARKETS.find(m=>m.id==="691340");
+  const bm=MARKETS.find(m=>m.id===BUBBLE_ID);
   return (bm&&!bm.closed?bm.yes:0)*100;
 }
 const regimeOf=OMEN.regimeOf;
@@ -378,7 +374,8 @@ async function goLive(){
       const arr=await res.json(); const byId={};
       for(const m of arr) byId[String(m.id)]=m;
       for(const m of MARKETS){
-        const g=byId[m.id]; if(!g) continue;
+        const g=byId[m.id];
+        if(!g){ m.closed=true; continue; }   // delisted: out of the basket, not in it at a baked price
         m.closed=OMEN.isClosed(g);
         if(!m.closed) m.yes=OMEN.outcomeYes(g);
       }

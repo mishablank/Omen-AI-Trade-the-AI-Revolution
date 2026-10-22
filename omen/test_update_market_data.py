@@ -326,7 +326,17 @@ def test_hy_ig_ratio_ignores_dates_the_other_leg_does_not_have():
     assert _credit_only(hyg, [{"d": "2025-01-02", "c": 100}]) == 100.0
 
 
-def test_bear_basket_is_the_union_of_its_sleeves():
+@pytest.fixture
+def curation_vintage(monkeypatch):
+    """The basket as curated on 2026-07-10 (11 Bull, 9 Bear = 3 MKT + 6 GOV). The module-level
+    POLY_IDS / BEAR_SLEEVES are *today's* vintage from constituents.js and thin out as
+    markets resolve; the arithmetic below is pinned to the original twenty so a resolution
+    does not rewrite a test about sleeve maths."""
+    monkeypatch.setattr(umd, "POLY_IDS", umd.poly_ids_at("2026-07-11"))
+    monkeypatch.setattr(umd, "BEAR_SLEEVES", umd.bear_sleeves_at("2026-07-11"))
+
+
+def test_bear_basket_is_the_union_of_its_sleeves(curation_vintage):
     assert umd.POLY_IDS["bear"] == umd.BEAR_SLEEVES["mkt"] + umd.BEAR_SLEEVES["gov"]
     assert len(umd.POLY_IDS["bear"]) == 9
     assert len(set(umd.POLY_IDS["bear"])) == 9
@@ -336,7 +346,7 @@ def test_bear_basket_is_the_union_of_its_sleeves():
     assert (len(umd.BEAR_SLEEVES["mkt"]), len(umd.BEAR_SLEEVES["gov"])) == (3, 6)
 
 
-def test_bear_level_is_the_flat_mean_of_all_nine_not_the_mean_of_sleeve_means():
+def test_bear_level_is_the_flat_mean_of_all_nine_not_the_mean_of_sleeve_means(curation_vintage):
     # sleeves are unequal (3 vs 6), so a mean-of-means would differ from the flat mean –
     # this pins the composite to the equal-weight union the methodology promises
     price = {i: 0.10 for i in umd.BEAR_SLEEVES["mkt"]}
@@ -346,13 +356,13 @@ def test_bear_level_is_the_flat_mean_of_all_nine_not_the_mean_of_sleeve_means():
     assert umd.sleeve_level(price, "gov") == pytest.approx(40.0)
 
 
-def test_index_level_skips_markets_missing_from_the_price_map():
+def test_index_level_skips_markets_missing_from_the_price_map(curation_vintage):
     price = {umd.BEAR_SLEEVES["mkt"][0]: 0.20, umd.BEAR_SLEEVES["gov"][0]: 0.60}
     assert umd.index_level(price, "bear") == pytest.approx(40.0)   # mean of the 2 present
     assert umd.index_level({}, "bear") is None
 
 
-def test_regime_reads_the_mkt_sleeve_not_the_bear_composite():
+def test_regime_reads_the_mkt_sleeve_not_the_bear_composite(curation_vintage):
     # the gauge is about priced *crash* risk: its thresholds must keep firing off the
     # old crash basket (= the MKT sleeve). A hot GOV sleeve lifts Bear but must not
     # move the regime, or the merge would silently retune the gauge.
@@ -371,7 +381,7 @@ def test_regime_reads_the_mkt_sleeve_not_the_bear_composite():
     assert umd.compute_regime(10, elevated) == "elevated"      # 25 <= level < 40
 
 
-def test_snapshot_row_keeps_crash_and_reg_as_sleeve_provenance():
+def test_snapshot_row_keeps_crash_and_reg_as_sleeve_provenance(curation_vintage):
     price = {i: 0.10 for i in umd.BEAR_SLEEVES["mkt"]}
     price.update({i: 0.40 for i in umd.BEAR_SLEEVES["gov"]})
     price.update({i: 0.50 for i in umd.POLY_IDS["bull"]})
@@ -391,7 +401,7 @@ def test_snapshot_row_keeps_crash_and_reg_as_sleeve_provenance():
 def test_snapshot_header_is_bear_plus_legacy_columns():
     assert umd.SNAP_HEADER == ["date", "bull", "bull_n", "bear", "bear_n",
                                "crash", "crash_n", "reg", "reg_n",
-                               "gauge", "lead", "conf", "comp"]
+                               "gauge", "lead", "conf", "bull_chain", "bear_chain", "comp"]
 
 
 # ---- RPO (remaining performance obligation) — instant XBRL facts ----

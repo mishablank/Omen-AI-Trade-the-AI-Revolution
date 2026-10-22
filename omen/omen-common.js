@@ -243,7 +243,7 @@
     if (lines.length < 2) return [];
     const head = lines[0].split(",");
     const col = {};
-    for (const k of ["bull", "bear", "crash", "gauge"]) col[k] = head.indexOf(k);
+    for (const k of ["bull", "bear", "crash", "gauge", "bull_chain", "bear_chain"]) col[k] = head.indexOf(k);
     if (col.bull < 0 || col.bear < 0) return [];
     const rows = [];
     for (let i = 1; i < lines.length; i++) {
@@ -252,9 +252,20 @@
       if (!isFinite(bull) || !isFinite(bear) || bull + bear <= 0) continue;
       const crash = col.crash >= 0 ? parseFloat(c[col.crash]) : NaN;
       const gauge = col.gauge >= 0 ? parseFloat(c[col.gauge]) : NaN;
+      // The pair share is read from the chain-linked levels when the row carries them
+      // (update-market-data.py writes them from the day the columns were introduced):
+      // across a constituent roll the raw equal-weight means jump with the membership,
+      // the chained ones move only by the markets both days priced. Older rows have no
+      // chain cell and fall back to the raw share they always had, which is continuous
+      // with the chained series because the chain is anchored to raw on its first day.
+      const bc = col.bull_chain >= 0 ? parseFloat(c[col.bull_chain]) : NaN;
+      const xc = col.bear_chain >= 0 ? parseFloat(c[col.bear_chain]) : NaN;
+      const chained = isFinite(bc) && isFinite(xc) && bc + xc > 0;
       rows.push({
         date: c[0],
-        share: bull / (bull + bear),
+        share: chained ? bc / (bc + xc) : bull / (bull + bear),
+        shareRaw: bull / (bull + bear),
+        chained,
         crash: isFinite(crash) ? crash : 0,
         gauge: isFinite(gauge) ? gauge : null,
       });
@@ -301,6 +312,62 @@
       });
     }
     return { share, t0, t1 };
+  }
+
+  /* ================= constituents (dated vintages) ================= */
+  // constituents.js publishes window.OMEN_CONSTITUENTS: every market the pair (and the
+  // monitor's side-indexes) has ever held, with the day it joined and the day it left. A
+  // page builds its live list from this instead of carrying a copy; update-market-data.py
+  // reads the same literal. See the header of constituents.js for the field semantics.
+  //
+  // Membership on day D (ISO date): from <= D < to, never a `proposed` row.
+  function constituentsAt(doc, dateIso, side) {
+    const d = dateIso || new Date().toISOString().slice(0, 10);
+    return ((doc && doc.markets) || []).filter((m) =>
+      !m.proposed && m.from <= d && (!m.to || d < m.to) && (!side || m.side === side));
+  }
+  // The gauge's bubble market on day D: the live member flagged role "bubble"; if a
+  // vintage overlap ever leaves two, the newer one wins.
+  function bubbleIdAt(doc, dateIso) {
+    const c = constituentsAt(doc, dateIso).filter((m) => m.role === "bubble")
+      .sort((a, b) => (a.from < b.from ? 1 : a.from > b.from ? -1 : 0));
+    return c.length ? c[0].id : null;
+  }
+  // The roll rule's input: live (not closed) markets per side against the floor. A side
+  // under the floor is "rolling" – its level is one or two markets' noise, not an index,
+  // so the verdict's direction axis is switched off until the next vintage is priced.
+  function rollState(markets, floor, sides) {
+    const out = { floor, live: {}, rolling: [] };
+    for (const s of sides || ["bull", "bear"]) {
+      out.live[s] = markets.filter((m) => m.side === s && !m.closed).length;
+      if (out.live[s] < floor) out.rolling.push(s);
+    }
+    return out;
+  }
+  // Expiry coverage of a live list: how many are live, the cliff (the end date shared by
+  // the most live markets – earliest wins a tie), and how many end within the horizon.
+  // endDate may be an ISO string or epoch ms, which is how the pages variously keep it.
+  function coverageSummary(markets, opts) {
+    const o = opts || {};
+    const now = o.now || Date.now(), horizonDays = o.horizonDays || 30;
+    const endMs = (m) => (m.endDate == null ? null
+      : typeof m.endDate === "number" ? m.endDate : Date.parse(m.endDate));
+    const live = markets.filter((m) => !m.closed);
+    const byEnd = {};
+    for (const m of live) {
+      const t = endMs(m);
+      if (t != null && isFinite(t)) { const e = new Date(t).toISOString().slice(0, 10); byEnd[e] = (byEnd[e] || 0) + 1; }
+    }
+    let cliff = null;
+    for (const e of Object.keys(byEnd).sort()) if (!cliff || byEnd[e] > byEnd[cliff]) cliff = e;
+    const horizon = now + horizonDays * 86400000;
+    const expiring = live.filter((m) => { const t = endMs(m); return t != null && isFinite(t) && t <= horizon; }).length;
+    return {
+      configured: markets.length, live: live.length, cliff,
+      cliffCount: cliff ? byEnd[cliff] : 0,
+      cliffDays: cliff ? Math.round((Date.parse(cliff) - now) / 86400000) : null,
+      expiring, horizonDays,
+    };
   }
 
   /* ================= capex live-tape derivations ================= */
@@ -391,6 +458,7 @@
     REGIME, regimeOf, REGIME_META,
     GAUGE_REFS, GAUGE_FAM_NAMES, gaugeScore, gaugeRefText, gaugeRefsProse,
     indexMath, sparkSvg, parseSnapshots, pairShareSeries,
+    constituentsAt, bubbleIdAt, rollState, coverageSummary,
     ocfGrowth, tokenDemand, repricingGap, serveFloorPerM, impliedMargin, newestPriced,
   };
 })(typeof globalThis !== "undefined" ? globalThis : this);

@@ -601,6 +601,7 @@
 </footer>
 
 <script src="omen-common.js"></script>
+<script src="constituents.js"></script>
 <script>
 "use strict";
 
@@ -609,52 +610,12 @@
 // theme (bull only): "tech" = technology-progress odds, "capital" = capital-markets odds.
 // The distinction matters: tech progress can continue right through a financial unwind
 // (railways, dot-com), so only the capital side is a clean read on the investment cycle.
-const CONSTITUENTS = [
-  { id:"676829",  side:"bull",  htype:"event",      theme:"tech",    label:"GPT-6 released by Dec 31, 2026" },
-  { id:"653788",  side:"bull",  htype:"structural", theme:"tech",    label:"OpenAI announces AGI before 2027" },
-  { id:"676837",  side:"bull",  htype:"event",      theme:"tech",    label:"AI wins IMO gold medal in 2026" },
-  { id:"1087074", side:"bull",  htype:"structural", theme:"tech",    label:"Any model hits 1550 Chatbot Arena by Dec 31" },
-  { id:"656312",  side:"bull",  htype:"event",      theme:"capital", label:"OpenAI IPO by Dec 31, 2026" },
-  { id:"656313",  side:"bull",  htype:"event",      theme:"capital", label:"OpenAI $1t+ IPO before 2027" },
-  { id:"2413330", side:"bull",  htype:"event",      theme:"capital", label:"Anthropic IPO by Dec 31, 2026" },
-  { id:"2109881", side:"bull",  htype:"structural", theme:"capital", label:"Anthropic market cap flips BTC by Dec 31" },
-  { id:"676804",  side:"bull",  htype:"event",      theme:"tech",    label:"OpenAI consumer hardware product by Dec 31, 2026" },
-  { id:"2487206", side:"bull",  htype:"event",      theme:"tech",    label:"Next Mythos-class model by Sep 30, 2026" },
-  { id:"2255930", side:"bull",  htype:"event",      theme:"tech",    label:"AI data center in space by Dec 31, 2027" },
-
-  /* BEAR – the short side, one flat equal-weight basket of 9 read through two sleeves.
-     MKT is series-identical to the old AI-Crash index and GOV to the old AI-Regulation
-     index, which is what keeps the crash gauge and the lead-lag study reading MKT valid. */
-  { id:"691340",  side:"bear",  htype:"structural", theme:"mkt", label:"AI bubble burst in 2026 (3+ crash triggers)", reflexive:true },
-  { id:"676827",  side:"bear",  htype:"event",      theme:"mkt", label:"OpenAI acquired before 2027" },
-  { id:"676846",  side:"bear",  htype:"event",      theme:"mkt", label:"Anthropic acquired before 2027" },
-
-  { id:"2787889", side:"bear",  htype:"structural", theme:"gov", label:"US gov removes access to a major AI model in 2026" },
-  { id:"2787891", side:"bear",  htype:"structural", theme:"gov", label:"US gov removes access to an Anthropic model in 2026" },
-  { id:"2787890", side:"bear",  htype:"structural", theme:"gov", label:"US gov removes access to a Chinese AI model in 2026" },
-  { id:"2698575", side:"bear",  htype:"event",      theme:"gov", label:"Trump orders federal review of AI releases by Jul 31" },
-  { id:"676842",  side:"bear",  htype:"event",      theme:"gov", label:"US enacts AI safety bill before 2027" },
-  { id:"2839991", side:"bear",  htype:"event",      theme:"gov", label:"Any state enacts data center moratorium by Dec 31" },
-
-  /* CHINA AI COMPETITION — the opposing force to US AI stocks.
-     Rising = negative for NVDA/MSFT/OpenAI (substitution pressure, pricing compression).
-     Markets ported from the China Watch companion page. */
-  { id:"1820798", side:"china", htype:"event",      label:"Chinese company has the best AI model by Dec 31, 2026" },
-  { id:"2873443", side:"china", htype:"event",      label:"Chinese company has a top-3 AI model by Dec 31, 2026" },
-  { id:"2873458", side:"china", htype:"event",      label:"Chinese company has a top-5 AI model by Dec 31, 2026" },
-  { id:"2873459", side:"china", htype:"event",      label:"Chinese company has a top-10 AI model by Dec 31, 2026" },
-  { id:"2431240", side:"china", htype:"event",      label:"Alibaba has the best Chinese AI model end of July 2026" },
-  { id:"2431245", side:"china", htype:"event",      label:"DeepSeek has the best Chinese AI model end of July 2026" },
-  { id:"2431244", side:"china", htype:"event",      label:"Z.ai has the best Chinese AI model end of July 2026" },
-
-  /* MACRO — multiple compression / demand destruction backdrop.
-     Rising = negative for AI multiples. IDs verified against Gamma API 2026-07-12. */
-  { id:"609655",  side:"macro", htype:"event",      label:"US recession by end of 2026" },
-  { id:"616905",  side:"macro", htype:"event",      label:"3+ Fed rate cuts in 2026 (easing cycle)" },
-  { id:"616902",  side:"macro", htype:"event",      label:"0 Fed rate cuts in 2026 (tight stance)" },
-  { id:"1192817", side:"macro", htype:"event",      label:"China 2026 GDP growth between 1-2% (slowdown)" },
-
-];
+// The list itself lives in constituents.js – one file shared with update-market-data.py
+// and the other pages, in dated vintages (from / to / proposed; see its header). This is
+// today's membership across all four sides; a resolved market still drops out of every
+// composite the moment Gamma marks it closed, exactly as before.
+const CONST_DOC = window.OMEN_CONSTITUENTS;
+const CONSTITUENTS = OMEN.constituentsAt(CONST_DOC);
 
 /* Chart event annotations — add entries as news lands: { d:"YYYY-MM-DD", label:"..." } */
 const EVENTS = [
@@ -673,7 +634,7 @@ const THEME_TIP = {
   mkt:"the unwind itself – bubble-burst odds and distress-sale odds for the leading labs",
   gov:"the clampdown – model-access removals, federal reviews, safety bills, moratoria",
 };
-const BUBBLE_ID = "691340";
+const BUBBLE_ID = OMEN.bubbleIdAt(CONST_DOC) || "691340";
 const FUNDING_IDS = ["656312","2413330"];
 // Bubble-sentiment markets: existing bull constituents whose extreme probability = euphoria
 const BUBBLE_SENTIMENT_IDS = ["656313","653788","2413330"];
@@ -2416,6 +2377,18 @@ function renderCoverage(){
   if(coverage.excluded.length) notes.push("Excluded: "+coverage.excluded.map(e=>`${esc(e.c.label)} (${e.reason})`).join("; "));
   if(coverage.failedHist.length) notes.push(coverage.failedHist.length+" market(s) missing price history this cycle (dropped from the composite, not zero-filled).");
   if(coverage.suggestions.length) notes.push("Possible successor markets: "+coverage.suggestions.map(s=>`<a href="https://polymarket.com/event/${esc(s.slug)}" target="_blank" rel="noopener">${esc(s.title)}</a>`).join("; "));
+  // the expiry cliff and the roll state of the pair, from the same live rows (the fetcher
+  // writes the same numbers into market-data.json's `coverage` block for the run log)
+  const core=CONSTITUENTS.filter(c=>c.side==="bull"||c.side==="bear").map(c=>{ const m=markets.get(c.id); return {side:c.side, closed:!m||m.closed, endDate:m?m.endDate:null}; });
+  const cov=OMEN.coverageSummary(core,{horizonDays:CONST_DOC.horizon_days});
+  const roll=OMEN.rollState(core,CONST_DOC.roll_floor);
+  if(roll.rolling.length) notes.push(`<b>Basket rolling:</b> ${roll.rolling.map(s=>`${s} has ${roll.live[s]} live market(s)`).join(", ")} against a floor of ${roll.floor} – the landing verdict reads No edge until the next vintage is priced.`);
+  if(cov.cliff&&cov.cliffDays!=null&&cov.cliffDays<=120) notes.push(`<b>Expiry cliff:</b> ${cov.cliffCount} of ${cov.live} live Bull/Bear markets resolve on ${cov.cliff} (${cov.cliffDays}d).`);
+  const today=new Date().toISOString().slice(0,10);
+  const upcoming=(CONST_DOC.markets||[]).filter(m=>!m.proposed&&m.from>today&&(m.side==="bull"||m.side==="bear"));
+  const proposed=(CONST_DOC.markets||[]).filter(m=>m.proposed).length;
+  if(upcoming.length) notes.push(`Next vintage: ${upcoming.length} market(s) join from ${upcoming.map(m=>m.from).sort()[0]}.`);
+  else if(proposed) notes.push(`${proposed} successor market(s) are written down as proposed in constituents.js and not yet curated in.`);
   $("coverageNote").innerHTML=notes.length?notes.join("<br>"):"All constituents live; none resolved or dropped.";
 }
 const ageTxt=ms=>{ const h=ms/3600000; return h<1?"<1h":h<48?Math.round(h)+"h":Math.round(h/24)+"d"; };

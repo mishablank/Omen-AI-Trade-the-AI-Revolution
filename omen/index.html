@@ -355,7 +355,7 @@ footer{border-top:1px solid var(--line);padding:64px 0 40px;position:relative;z-
         <tr><th>Mixed · 45–55%</th><td id="mx-mixed-calm">No edge</td><td id="mx-mixed-elevated">No edge</td><td id="mx-mixed-stressed">Caution</td></tr>
         <tr><th>Bearish · bull share &lt; 45%</th><td id="mx-bear-calm">Risk-off</td><td id="mx-bear-elevated">Risk-off</td><td id="mx-bear-stressed">Risk-off</td></tr>
       </table>
-      <div class="foot">Direction is the Bull side's share of the pair (BULL + BEAR = 1), read from 20 live Polymarket AI markets. Stress is the crash-pressure regime – five signal families scored 0–100 against fixed calm→stress ranges (Elevated ≥ 35, Stressed ≥ 55, with single-market trips capped at Elevated). Thresholds and caveats: <a href="methodology.html#verdict" style="color:var(--accT)">methodology</a>.</div>
+      <div class="foot">Direction is the Bull side's share of the pair (BULL + BEAR = 1), read from <span class="nconst">20</span> live Polymarket AI markets. Stress is the crash-pressure regime – five signal families scored 0–100 against fixed calm→stress ranges (Elevated ≥ 35, Stressed ≥ 55, with single-market trips capped at Elevated). Thresholds and caveats: <a href="methodology.html#verdict" style="color:var(--accT)">methodology</a>.</div>
     </div>
   </div>
 </section>
@@ -366,14 +366,14 @@ footer{border-top:1px solid var(--line);padding:64px 0 40px;position:relative;z-
     <div class="shead rv">
       <span class="kick">Under the verdict</span>
       <h2>Three layers, one click each.</h2>
-      <p>The landing page carries the conclusion. The inputs – twenty prediction markets, five signal families, and the math connecting them – each get their own page.</p>
+      <p>The landing page carries the conclusion. The inputs – <span class="nconst">twenty</span> prediction markets, five signal families, and the math connecting them – each get their own page.</p>
     </div>
     <div class="steps rv">
       <a class="step" href="indexes.html">
         <span class="rom">i.</span>
         <h3>The Indexes</h3>
         <div class="live"><span style="color:var(--bull)">BULL <span id="ex-bull">$0.698</span></span> &nbsp;·&nbsp; <span style="color:var(--bear)">BEAR <span id="ex-bear">$0.302</span></span> <span class="lab">· PAIR = 1</span></div>
-        <p>Twenty Polymarket markets sorted into the two stories the market tells about AI – full panels with constituents, prices, and 7-day history.</p>
+        <p><span class="nconst">Twenty</span> Polymarket markets sorted into the two stories the market tells about AI – full panels with constituents, prices, and 7-day history.</p>
         <span class="go">See the indexes →</span>
       </a>
       <a class="step" href="gauge.html">
@@ -433,6 +433,7 @@ footer{border-top:1px solid var(--line);padding:64px 0 40px;position:relative;z-
 </footer>
 
 <script src="omen-common.js"></script>
+<script src="constituents.js"></script>
 <script>
 "use strict";
 /* Old deep links (#indexes, #gauge, #method) now live on their own pages. */
@@ -441,29 +442,18 @@ footer{border-top:1px solid var(--line);padding:64px 0 40px;position:relative;z-
   if(MOVED[location.hash]) location.replace(MOVED[location.hash]);
 }
 
-/* ================= baked snapshot (2026-07-11) ================= */
-const MARKETS=[
-{id:"676829",side:"bull",theme:"tech",ht:"event",label:"GPT-6 released by Dec 31, 2026",yes:0.92,d1:0.02,slug:"gpt-6-released-by"},
-{id:"653788",side:"bull",theme:"tech",ht:"structural",label:"OpenAI announces AGI before 2027",yes:0.075,d1:null,slug:"openai-announces-it-has-achieved-agi-before-2027"},
-{id:"676837",side:"bull",theme:"tech",ht:"event",label:"AI wins IMO gold medal in 2026",yes:0.63,d1:null,slug:"ai-wins-imo-gold-medal-in-2026"},
-{id:"1087074",side:"bull",theme:"tech",ht:"structural",label:"Any model hits 1550 Chatbot Arena by Dec 31",yes:0.17,d1:null,slug:"chatbot-arena-how-high-will-ai-score-by-december-31"},
-{id:"656312",side:"bull",theme:"capital",ht:"event",label:"OpenAI IPO by Dec 31, 2026",yes:0.185,d1:-0.05,slug:"openai-ipo-by"},
-{id:"656313",side:"bull",theme:"capital",ht:"event",label:"OpenAI $1t+ IPO before 2027",yes:0.105,d1:null,slug:"openai-1t-ipo-before-2027"},
-{id:"2413330",side:"bull",theme:"capital",ht:"event",label:"Anthropic IPO by Dec 31, 2026",yes:0.625,d1:null,slug:"anthropic-ipo-by"},
-{id:"2109881",side:"bull",theme:"capital",ht:"structural",label:"Anthropic market cap flips BTC by Dec 31",yes:0.8,d1:null,slug:"will-anthropic-flip-btc-by-december-31"},
-{id:"676804",side:"bull",theme:"tech",ht:"event",label:"OpenAI consumer hardware product by Dec 31, 2026",yes:0.33,d1:0.025,slug:"will-openai-launch-a-consumer-hardware-product-by"},
-{id:"2487206",side:"bull",theme:"tech",ht:"event",label:"Next Mythos-class model by Sep 30, 2026",yes:0.815,d1:0.065,slug:"next-mythos-class-model-released-by"},
-{id:"2255930",side:"bull",theme:"tech",ht:"event",label:"AI data center in space by Dec 31, 2027",yes:0.255,d1:null,slug:"ai-data-center-in-space-by"},
-{id:"691340",side:"bear",theme:"mkt",ht:"structural",label:"AI bubble burst in 2026 (3+ crash triggers)",yes:0.1595,d1:0.007,slug:"ai-bubble-burst-by"},
-{id:"676827",side:"bear",theme:"mkt",ht:"event",label:"OpenAI acquired before 2027",yes:0.0615,d1:null,slug:"openai-acquired-before-2027"},
-{id:"676846",side:"bear",theme:"mkt",ht:"event",label:"Anthropic acquired before 2027",yes:0.044,d1:0.0025,slug:"anthropic-acquired-before-2027"},
-{id:"2787889",side:"bear",theme:"gov",ht:"structural",label:"US gov removes access to a major AI model in 2026",yes:0.3,d1:0.07,slug:"us-government-removes-public-access-to-another-major-ai-model-in-2026-20260703202936862"},
-{id:"2787891",side:"bear",theme:"gov",ht:"structural",label:"US gov removes access to an Anthropic model in 2026",yes:0.22,d1:null,slug:"us-government-removes-public-access-to-another-anthropic-ai-model-in-2026-20260703203121674"},
-{id:"2787890",side:"bear",theme:"gov",ht:"structural",label:"US gov removes access to a Chinese AI model in 2026",yes:0.255,d1:0.04,slug:"us-government-removes-public-access-to-a-major-chinese-ai-model-in-2026-20260703203328223"},
-{id:"2698575",side:"bear",theme:"gov",ht:"event",label:"Trump orders federal review of AI releases by Jul 31",yes:0.11,d1:-0.01,slug:"trump-orders-federal-review-for-ai-model-releases-by-may-31"},
-{id:"676842",side:"bear",theme:"gov",ht:"event",label:"US enacts AI safety bill before 2027",yes:0.21,d1:null,slug:"us-enacts-ai-safety-bill-before-2027"},
-{id:"2839991",side:"bear",theme:"gov",ht:"event",label:"Any state enacts data center moratorium by Dec 31",yes:0.375,d1:-0.19,slug:"will-any-state-enact-a-data-center-moratorium-by-december-31-20260707003733282"}
-];
+/* ================= constituents (constituents.js) + baked price snapshot (2026-07-11) ================= */
+// Membership comes from constituents.js – the one list every page and the fetcher read,
+// in dated vintages – so this page cannot say "twenty" while the basket holds seventeen.
+// BAKED is only the pre-fetch render: a member with no baked price starts closed and
+// joins the pair when Gamma answers; a baked market Gamma no longer returns is closed too
+// (it used to stay in the mean at a months-old price).
+const CONST_DOC=window.OMEN_CONSTITUENTS;
+const BAKED={"676829":[0.92,0.02],"653788":[0.075,null],"676837":[0.63,null],"1087074":[0.17,null],"656312":[0.185,-0.05],"656313":[0.105,null],"2413330":[0.625,null],"2109881":[0.8,null],"676804":[0.33,0.025],"2487206":[0.815,0.065],"2255930":[0.255,null],"691340":[0.1595,0.007],"676827":[0.0615,null],"676846":[0.044,0.0025],"2787889":[0.3,0.07],"2787891":[0.22,null],"2787890":[0.255,0.04],"2698575":[0.11,-0.01],"676842":[0.21,null],"2839991":[0.375,-0.19]};
+const MARKETS=OMEN.constituentsAt(CONST_DOC).filter(c=>c.side==="bull"||c.side==="bear").map(c=>{ const b=BAKED[c.id];
+  return {id:c.id,side:c.side,theme:c.theme,ht:c.htype,label:c.label,slug:c.slug,yes:b?b[0]:0,d1:b?b[1]:null,closed:!b}; });
+const BUBBLE_ID=OMEN.bubbleIdAt(CONST_DOC)||"691340";
+let POLY_LIVE=false;   // set once Gamma has answered; the roll rule only reads live counts
 let GAUGE = 23.6;
 // family labels only – the full per-family breakdown lives on gauge.html
 const FAM_LABELS={pred:"Prediction markets",opt:"Options skew",credit:"Credit",vol:"Volatility complex",equity:"Equity drawdown"};
@@ -499,8 +489,12 @@ const VERDICTS={
 function dirOf(bullShare){
   return bullShare>=0.55?"bull":bullShare>0.45?"mixed":"bear";
 }
-// bullShare in [0,1] · regime "calm"|"elevated"|"stressed"
-function verdictOf(bullShare,regime){
+// bullShare in [0,1] · regime "calm"|"elevated"|"stressed" · rolling: a side of the pair
+// has fewer live markets than constituents.js's roll_floor, so its level is one or two
+// markets' noise rather than an index – direction is switched off and the cell is "No edge"
+// until the next vintage is priced (OMEN.rollState decides; this rule only honours it)
+function verdictOf(bullShare,regime,rolling){
+  if(rolling) return "mixed";
   const dir=dirOf(bullShare);
   if(dir==="bear") return "riskoff";
   if(regime==="stressed") return "caution";
@@ -524,17 +518,21 @@ function renderHero(){
   }
 }
 function bubblePct(){
-  const bm=MARKETS.find(m=>m.id==="691340");
+  const bm=MARKETS.find(m=>m.id===BUBBLE_ID);
   return (bm&&!bm.closed?bm.yes:0)*100;
 }
+function rollNow(){ return POLY_LIVE?OMEN.rollState(MARKETS,CONST_DOC.roll_floor):{floor:CONST_DOC.roll_floor,live:{},rolling:[]}; }
 function renderVerdict(){
   const b=pairShare("bull");
   const regime=regimeOf(GAUGE,indexOf("bear","mkt"),bubblePct());
-  const key=verdictOf(b,regime);
+  const roll=rollNow(), rolling=roll.rolling.length>0;
+  const key=verdictOf(b,regime,rolling);
   const V=VERDICTS[key], R=REGIME_META[regime];
-  const chip=$("vchip"); chip.textContent=V.label; chip.style.color=V.color; chip.style.borderColor=V.border;
-  $("vhead").textContent=V.h;
-  $("vline").textContent=V.line(b,GAUGE,R.word);
+  const chip=$("vchip"); chip.textContent=V.label+(rolling?" · basket rolling":""); chip.style.color=V.color; chip.style.borderColor=V.border;
+  $("vhead").textContent=rolling?"The basket is rolling – no direction read until the next vintage is priced.":V.h;
+  $("vline").textContent=rolling
+    ?`Only ${roll.rolling.map(s=>`${roll.live[s]} live ${s.toUpperCase()} market${roll.live[s]===1?"":"s"}`).join(" and ")} against a floor of ${roll.floor}: one or two markets' noise is not an index, so direction is switched off. Crash pressure still reads ${GAUGE.toFixed(1)}/100 (${R.word}).`
+    :V.line(b,GAUGE,R.word);
   const rw=$("regimeWord"); rw.textContent=R.word; rw.style.color=R.color;
   document.querySelectorAll(".regime").forEach(c=>{ c.textContent="Regime · "+R.word; c.style.borderColor=R.border; c.style.color=R.color; });
   $("ex-gauge").textContent=GAUGE.toFixed(1)+"/100";
@@ -645,7 +643,6 @@ function renderDialFams(fam){
 // from the CLOB so historical regimes can honor the single-market Elevated trip. Both are
 // best-effort: the panels stay hidden rather than rendering empty frames.
 const CLOB="https://clob.polymarket.com";
-const BUBBLE_ID="691340";
 const VERDICT_INK={riskon:"#79c99a",constructive:"#e3a63c",mixed:"#8fa8d8",caution:"#e08a4f",riskoff:"#e2685a"};
 const VERDICT_WASH={riskon:"rgba(121,201,154,.09)",constructive:"rgba(227,166,60,.09)",mixed:"rgba(143,168,216,.07)",caution:"rgba(224,138,79,.10)",riskoff:"rgba(226,104,90,.10)"};
 let HIST=null, BUBBLE_BY_DATE=null;
@@ -664,8 +661,8 @@ function histDays(){
   if(!HIST||!HIST.length) return null;
   const rows=HIST.filter(r=>r.date!==todayUTC()).map(r=>({...r,regime:histRegime(r)}));
   rows.push({date:todayUTC(),share:pairShare("bull"),gauge:GAUGE,crash:indexOf("bear","mkt"),
-             regime:regimeOf(GAUGE,indexOf("bear","mkt"),bubblePct()),live:true});
-  for(const r of rows) r.verdict=verdictOf(r.share,r.regime);
+             regime:regimeOf(GAUGE,indexOf("bear","mkt"),bubblePct()),live:true,rolling:rollNow().rolling.length>0});
+  for(const r of rows) r.verdict=verdictOf(r.share,r.regime,r.rolling);
   return rows;
 }
 
@@ -836,8 +833,11 @@ async function goLive(){
     const arr=await res.json(); const byId={};
     for(const m of arr) byId[String(m.id)]=m;
     for(const m of MARKETS){
-      const g=byId[m.id]; if(!g) continue;
+      const g=byId[m.id];
+      // not returned = delisted (or a dead id): out of the pair, not in it at a baked price
+      if(!g){ m.closed=true; continue; }
       m.closed=OMEN.isClosed(g);
+      m.endDate=g.endDate||null;
       if(!m.closed){
         m.yes=OMEN.outcomeYes(g);
         m.d1=g.oneDayPriceChange??m.d1;
@@ -845,9 +845,16 @@ async function goLive(){
         if(m.id===BUBBLE_ID) bubbleTok=m.tok;
       }
     }
+    POLY_LIVE=true;
     renderHero(); renderVerdict();
+    // the chip states what the pair stands on: live count, and the expiry cliff once it is
+    // inside four months – the Jan-1 roll of a year-dated basket should never be a surprise
+    const cov=OMEN.coverageSummary(MARKETS,{horizonDays:CONST_DOC.horizon_days});
+    document.querySelectorAll(".nconst").forEach(el=>el.textContent=String(cov.live));
     const chip=$("livechip"); chip.classList.add("on");
-    $("livetxt").textContent="LIVE · POLYMARKET GAMMA · "+new Date().toISOString().slice(0,16).replace("T"," ")+" UTC";
+    $("livetxt").textContent="LIVE · POLYMARKET GAMMA · "+new Date().toISOString().slice(0,16).replace("T"," ")+" UTC"
+      +" · "+cov.live+" OF "+cov.configured+" LIVE"
+      +(cov.cliff&&cov.cliffDays!=null&&cov.cliffDays<=120?" · "+cov.cliffCount+" EXPIRE "+cov.cliff:"");
     try{ applyServerData(mktData); }catch(e){ /* baked gauge stays */ }
     fetchHeroSparks();
   }catch(e){ /* baked snapshot stays */ }
@@ -861,6 +868,7 @@ function reveal(){
 }
 
 drawDialScale();
+document.querySelectorAll(".nconst").forEach(el=>el.textContent=String(MARKETS.length));
 renderHero();
 const regime0=renderVerdict();
 renderDriver(regime0,GAUGE,"2026-07-11",null);
