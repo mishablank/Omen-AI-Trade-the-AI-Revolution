@@ -1,5 +1,5 @@
 {
- "updated": "2026-10-22T05:57:53Z",
+ "updated": "2026-10-22T11:39:45Z",
  "tsmc": {
   "asof": "2026-09",
   "rev_ntd_b": 511.9,
@@ -14,7 +14,7 @@
    "from": "2026-07-25",
    "to": "2026-10-22",
    "debt": 8,
-   "s1_ai": 290,
+   "s1_ai": 291,
    "formd_ai": 3
   },
   "prev": {
@@ -27,7 +27,7 @@
  },
  "capex_asymmetry": {
   "asof": "2026-10-22",
-  "us_ttm_usd_b": 586.3,
+  "us_ttm_usd_b": 601.4,
   "us_names": [
    "AMZN",
    "GOOGL",
@@ -67,7 +67,7 @@
   ],
   "fx_cny_per_usd": 6.6861,
   "fx_asof": "2026-10-16",
-  "ratio": 13.8
+  "ratio": 14.1
  },
  "ramp": {
   "asof": "2026-09",
@@ -211,7 +211,7 @@
    "stale": true,
    "src": "https://www.koreatimes.co.kr/economy/20260921/exports-up-78-in-first-20-days-of-sept-on-robust-chip-shipments"
   },
-  "checked": "2026-10-21T11:37:58Z"
+  "checked": "2026-10-22T11:39:50Z"
  },
  "eia": {
   "operating_gw": 1385.0,
