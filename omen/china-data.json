@@ -1,5 +1,5 @@
 {
- "updated": "2026-10-24T10:44:17Z",
+ "updated": "2026-10-24T14:24:58Z",
  "snapshot_date": "2026-10-24",
  "artificial_analysis": {
   "cn_best": "GLM-5.2",
@@ -99,7 +99,7 @@
   "best": [
    {
     "label": "MiniMax",
-    "rank": 42,
+    "rank": 43,
     "store": "android",
     "country": "kr"
    }
@@ -116,7 +116,7 @@
    "au",
    "kr"
   ],
-  "detail": "MiniMax #42 (KR Play); basket-mean Western top-100 presence 12/100 across 10 markets",
+  "detail": "MiniMax #43 (KR Play); basket-mean Western top-100 presence 12/100 across 10 markets",
   "note": "iOS Apple RSS top-100 + Android Play top-200 across 10 markets; presence = basket-mean of best top-100 chart rank (DeepSeek/Qwen/Doubao/Kimi/MiniMax), #1=100 #100=1; ranks past top-100 score 0."
  },
  "investment": {
@@ -708,10 +708,10 @@
  },
  "openrouter_week": {
   "week": "2026-10-19",
-  "cn_share": 0.6185,
-  "us_share": 0.2562,
-  "spi": 2.414,
-  "total_tokens": 151975763422516
+  "cn_share": 0.6183,
+  "us_share": 0.2566,
+  "spi": 2.409,
+  "total_tokens": 154646941736071
  },
  "vercel_gateway": {
   "asof": "2026-10-24",
@@ -1054,8 +1054,8 @@
   "license": "AI Gateway Leaderboard Data (c) Vercel, CC BY 4.0"
  },
  "ollama": {
-  "cn": 322698900,
-  "us": 492288000,
+  "cn": 322801200,
+  "us": 492396200,
   "cn_top": [
    {
     "name": "deepseek-r1",
@@ -1079,7 +1079,7 @@
    },
    {
     "name": "qwen3-coder",
-    "pulls": 10200000
+    "pulls": 10300000
    }
   ],
   "us_top": [
@@ -1093,20 +1093,18 @@
    },
    {
     "name": "gemma3",
-    "pulls": 41300000
+    "pulls": 41400000
    }
   ],
   "n_models": 260,
-  "asof": "2026-10-24",
-  "cn_per_day": 735917,
-  "us_per_day": 567954
+  "asof": "2026-10-24"
  },
  "kalshi": {
   "asof": "2026-10-24",
   "markets": [
    {
     "label": "Will a Chinese AI model be #1 this year?",
-    "p": 0.13,
+    "p": 0.14,
     "ticker": "KXBESTLLMCHINA-27",
     "series": "kxbestllmchina"
    },
@@ -1130,7 +1128,7 @@
    },
    {
     "label": "Best AI at end of 2026: Claude",
-    "p": 0.5,
+    "p": 0.498,
     "ticker": "KXLLM1-26DEC31-A",
     "series": "kxllm1"
    }
@@ -1140,7 +1138,7 @@
   "cn": [
    {
     "base": "Qwen/Qwen3-8B",
-    "n": 2228
+    "n": 2229
    },
    {
     "base": "deepseek-ai/DeepSeek-R1",
@@ -1173,7 +1171,7 @@
     "n": 129
    }
   ],
-  "cn_total": 2611,
+  "cn_total": 2612,
   "us_total": 2627,
   "asof": "2026-10-24"
  },
