@@ -1,5 +1,5 @@
 {
- "updated": "2026-10-24T19:11:12Z",
+ "updated": "2026-10-24T22:08:31Z",
  "snapshot_date": "2026-10-24",
  "artificial_analysis": {
   "cn_best": "GLM-5.2",
@@ -708,10 +708,10 @@
  },
  "openrouter_week": {
   "week": "2026-10-19",
-  "cn_share": 0.6185,
-  "us_share": 0.2567,
-  "spi": 2.409,
-  "total_tokens": 160127110603320
+  "cn_share": 0.6182,
+  "us_share": 0.2571,
+  "spi": 2.405,
+  "total_tokens": 163098288490998
  },
  "vercel_gateway": {
   "asof": "2026-10-24",
@@ -1054,8 +1054,8 @@
   "license": "AI Gateway Leaderboard Data (c) Vercel, CC BY 4.0"
  },
  "ollama": {
-  "cn": 323206200,
-  "us": 492609599,
+  "cn": 323212100,
+  "us": 492616300,
   "cn_top": [
    {
     "name": "deepseek-r1",
@@ -1128,7 +1128,7 @@
    },
    {
     "label": "Best AI at end of 2026: Claude",
-    "p": 0.491,
+    "p": 0.498,
     "ticker": "KXLLM1-26DEC31-A",
     "series": "kxllm1"
    }
