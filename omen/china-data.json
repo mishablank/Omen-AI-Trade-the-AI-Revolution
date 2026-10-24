@@ -1,5 +1,5 @@
 {
- "updated": "2026-10-24T14:24:58Z",
+ "updated": "2026-10-24T16:23:18Z",
  "snapshot_date": "2026-10-24",
  "artificial_analysis": {
   "cn_best": "GLM-5.2",
@@ -99,7 +99,7 @@
   "best": [
    {
     "label": "MiniMax",
-    "rank": 43,
+    "rank": 41,
     "store": "android",
     "country": "kr"
    }
@@ -116,7 +116,7 @@
    "au",
    "kr"
   ],
-  "detail": "MiniMax #43 (KR Play); basket-mean Western top-100 presence 12/100 across 10 markets",
+  "detail": "MiniMax #41 (KR Play); basket-mean Western top-100 presence 12/100 across 10 markets",
   "note": "iOS Apple RSS top-100 + Android Play top-200 across 10 markets; presence = basket-mean of best top-100 chart rank (DeepSeek/Qwen/Doubao/Kimi/MiniMax), #1=100 #100=1; ranks past top-100 score 0."
  },
  "investment": {
@@ -709,39 +709,39 @@
  "openrouter_week": {
   "week": "2026-10-19",
   "cn_share": 0.6183,
-  "us_share": 0.2566,
+  "us_share": 0.2567,
   "spi": 2.409,
-  "total_tokens": 154646941736071
+  "total_tokens": 156984808813213
  },
  "vercel_gateway": {
   "asof": "2026-10-24",
-  "cn_share": 68.88,
-  "us_share": 23.38,
-  "spi": 2.946,
+  "cn_share": 67.48,
+  "us_share": 22.62,
+  "spi": 2.983,
   "top_cn": [
    {
     "lab": "zai",
-    "share": 35.02
+    "share": 32.42
    },
    {
     "lab": "deepseek",
-    "share": 30.36
+    "share": 30.8
    },
    {
     "lab": "moonshotai",
-    "share": 1.89
+    "share": 2.6
    },
    {
     "lab": "xiaomi",
-    "share": 0.68
+    "share": 0.75
    },
    {
     "lab": "minimax",
-    "share": 0.53
+    "share": 0.56
    },
    {
     "lab": "alibaba",
-    "share": 0.38
+    "share": 0.36
    }
   ],
   "series": [
@@ -1047,15 +1047,15 @@
    },
    {
     "d": "2026-10-24",
-    "cn": 68.88,
-    "us": 23.38
+    "cn": 67.48,
+    "us": 22.62
    }
   ],
   "license": "AI Gateway Leaderboard Data (c) Vercel, CC BY 4.0"
  },
  "ollama": {
-  "cn": 322801200,
-  "us": 492396200,
+  "cn": 323002199,
+  "us": 492502100,
   "cn_top": [
    {
     "name": "deepseek-r1",
@@ -1067,7 +1067,7 @@
    },
    {
     "name": "qwen3",
-    "pulls": 41300000
+    "pulls": 41400000
    },
    {
     "name": "qwen3.5",
@@ -1104,7 +1104,7 @@
   "markets": [
    {
     "label": "Will a Chinese AI model be #1 this year?",
-    "p": 0.14,
+    "p": 0.1,
     "ticker": "KXBESTLLMCHINA-27",
     "series": "kxbestllmchina"
    },
@@ -1128,7 +1128,7 @@
    },
    {
     "label": "Best AI at end of 2026: Claude",
-    "p": 0.498,
+    "p": 0.499,
     "ticker": "KXLLM1-26DEC31-A",
     "series": "kxllm1"
    }
@@ -1138,7 +1138,7 @@
   "cn": [
    {
     "base": "Qwen/Qwen3-8B",
-    "n": 2229
+    "n": 2230
    },
    {
     "base": "deepseek-ai/DeepSeek-R1",
@@ -1171,7 +1171,7 @@
     "n": 129
    }
   ],
-  "cn_total": 2612,
+  "cn_total": 2613,
   "us_total": 2627,
   "asof": "2026-10-24"
  },
