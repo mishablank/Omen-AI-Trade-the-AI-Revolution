@@ -1,5 +1,5 @@
 {
- "updated": "2026-10-25T11:09:40Z",
+ "updated": "2026-10-25T15:57:58Z",
  "snapshot_date": "2026-10-25",
  "artificial_analysis": {
   "cn_best": "GLM-5.2",
@@ -70,7 +70,7 @@
   }
  },
  "search_consumer": {
-  "western_share_pct": 2.4,
+  "western_share_pct": 2.3,
   "asof": "2026-10",
   "source": "google-trends",
   "terms_us": [
@@ -90,7 +90,7 @@
    "Seed 1.6",
    "Seed 2.0"
   ],
-  "note": "Google Trends US, 90-day avg: 8 Chinese AI terms = 2.4% of AI-assistant search interest vs ChatGPT+Gemini+Claude+Llama AI+Meta AI."
+  "note": "Google Trends US, 90-day avg: 8 Chinese AI terms = 2.3% of AI-assistant search interest vs ChatGPT+Gemini+Claude+Llama AI+Meta AI."
  },
  "apps": {
   "score": 8,
@@ -708,10 +708,10 @@
  },
  "openrouter_week": {
   "week": "2026-10-19",
-  "cn_share": 0.615,
-  "us_share": 0.2568,
-  "spi": 2.395,
-  "total_tokens": 174683938497181
+  "cn_share": 0.6153,
+  "us_share": 0.2562,
+  "spi": 2.401,
+  "total_tokens": 178673256296212
  },
  "vercel_gateway": {
   "asof": "2026-10-25",
@@ -1054,8 +1054,8 @@
   "license": "AI Gateway Leaderboard Data (c) Vercel, CC BY 4.0"
  },
  "ollama": {
-  "cn": 323524600,
-  "us": 493046800,
+  "cn": 323628400,
+  "us": 493061300,
   "cn_top": [
    {
     "name": "deepseek-r1",
@@ -1067,7 +1067,7 @@
    },
    {
     "name": "qwen3",
-    "pulls": 41400000
+    "pulls": 41500000
    },
    {
     "name": "qwen3.5",
@@ -1097,9 +1097,7 @@
    }
   ],
   "n_models": 260,
-  "asof": "2026-10-25",
-  "cn_per_day": 811129,
-  "us_per_day": 745410
+  "asof": "2026-10-25"
  },
  "kalshi": {
   "asof": "2026-10-25",
@@ -1124,13 +1122,13 @@
    },
    {
     "label": "Best AI at end of 2026: Qwen",
-    "p": 0.006,
+    "p": 0.005,
     "ticker": "KXLLM1-26DEC31-ALI",
     "series": "kxllm1"
    },
    {
     "label": "Best AI at end of 2026: Claude",
-    "p": 0.522,
+    "p": 0.539,
     "ticker": "KXLLM1-26DEC31-A",
     "series": "kxllm1"
    }
