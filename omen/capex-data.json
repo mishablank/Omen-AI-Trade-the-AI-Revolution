@@ -1,5 +1,5 @@
 {
- "updated": "2026-10-26T05:58:23Z",
+ "updated": "2026-10-26T12:49:41Z",
  "tsmc": {
   "asof": "2026-09",
   "rev_ntd_b": 511.9,
@@ -13,15 +13,15 @@
   "cur": {
    "from": "2026-07-29",
    "to": "2026-10-26",
-   "debt": 8,
-   "s1_ai": 298,
+   "debt": 11,
+   "s1_ai": 302,
    "formd_ai": 3
   },
   "prev": {
    "from": "2026-04-30",
    "to": "2026-07-28",
    "debt": 29,
-   "s1_ai": 350,
+   "s1_ai": null,
    "formd_ai": 7
   }
  },
@@ -211,7 +211,7 @@
    "stale": true,
    "src": "https://www.koreatimes.co.kr/economy/20260921/exports-up-78-in-first-20-days-of-sept-on-robust-chip-shipments"
   },
-  "checked": "2026-10-25T11:12:35Z"
+  "checked": "2026-10-26T12:49:46Z"
  },
  "eia": {
   "operating_gw": 1390.6,
