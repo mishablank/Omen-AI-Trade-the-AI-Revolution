@@ -1,5 +1,5 @@
 {
- "updated": "2026-10-28T18:44:58Z",
+ "updated": "2026-10-28T23:02:49Z",
  "tsmc": {
   "asof": "2026-09",
   "rev_ntd_b": 511.9,
@@ -13,7 +13,7 @@
   "cur": {
    "from": "2026-07-31",
    "to": "2026-10-28",
-   "debt": null,
+   "debt": 14,
    "s1_ai": 299,
    "formd_ai": 3
   },
@@ -27,7 +27,7 @@
  },
  "capex_asymmetry": {
   "asof": "2026-10-28",
-  "us_ttm_usd_b": 601.4,
+  "us_ttm_usd_b": 621.4,
   "us_names": [
    "AMZN",
    "GOOGL",
@@ -67,7 +67,7 @@
   ],
   "fx_cny_per_usd": 6.6702,
   "fx_asof": "2026-10-23",
-  "ratio": 14.1
+  "ratio": 14.6
  },
  "ramp": {
   "asof": "2026-09",
@@ -238,8 +238,8 @@
    "@google/gemini-cli": 364690
   },
   "pypi": {
-   "claude-agent-sdk": 7977979,
-   "openai-agents": 4751043
+   "claude-agent-sdk": null,
+   "openai-agents": null
   },
   "npm_total_wk": 34068063,
   "series": [
