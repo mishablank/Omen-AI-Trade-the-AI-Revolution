@@ -1,5 +1,5 @@
 {
- "updated": "2026-10-28T08:13:49Z",
+ "updated": "2026-10-28T15:53:51Z",
  "snapshot_date": "2026-10-28",
  "artificial_analysis": {
   "cn_best": "GLM-5.2",
@@ -620,117 +620,117 @@
   "source": "search",
   "asof": "2026-10-28",
   "vel": {
-   "MiniMax-AI/MiniMax-H3": 104.3,
-   "MiniMax-AI/MiniMax-M2": 0.9,
-   "MoonshotAI/Kimi-K3": 8.5,
-   "MoonshotAI/kimi-cli": 0.9,
-   "QwenLM/Qwen3.8": 4.7,
-   "QwenLM/qwen-code": 22.6,
+   "MiniMax-AI/MiniMax-H3": 87.3,
+   "MiniMax-AI/MiniMax-M2": 0.0,
+   "MoonshotAI/Kimi-K3": 4.7,
+   "MoonshotAI/kimi-cli": -0.9,
+   "QwenLM/Qwen3.8": 7.5,
+   "QwenLM/qwen-code": 19.7,
    "XiaomiMiMo/MiMo-Audio": 0.0,
-   "XiaomiMiMo/MiMo-Code": 12.2,
-   "deepseek-ai/DeepInfer": 444.6,
-   "deepseek-ai/deepseek-harness": 1171.1,
-   "zai-org/GLM-OCR": 5.6,
-   "zai-org/ZCode": 41.4
+   "XiaomiMiMo/MiMo-Code": -2.8,
+   "deepseek-ai/DeepInfer": 435.5,
+   "deepseek-ai/deepseek-harness": 1099.0,
+   "zai-org/GLM-OCR": 3.8,
+   "zai-org/ZCode": 26.3
   }
  },
- "github_stars_per_day": 1816.8,
+ "github_stars_per_day": 1680.0,
  "hf": {
   "cnOrgs": [
    {
     "org": "Qwen",
-    "dl": 196628204
+    "dl": 198981772
    },
    {
     "org": "deepseek-ai",
-    "dl": 24003484
+    "dl": 24075014
    },
    {
     "org": "zai-org",
-    "dl": 16279651
+    "dl": 16775247
    },
    {
     "org": "MiniMaxAI",
-    "dl": 7320120
+    "dl": 7492026
    },
    {
     "org": "tencent",
-    "dl": 4126527
+    "dl": 4318981
    },
    {
     "org": "moonshotai",
-    "dl": 2393148
+    "dl": 2399882
    },
    {
     "org": "stepfun-ai",
-    "dl": 677572
+    "dl": 669440
    },
    {
     "org": "XiaomiMiMo",
-    "dl": 426879
+    "dl": 403596
    }
   ],
   "usOrgs": [
    {
     "org": "google",
-    "dl": 36219409
+    "dl": 35979281
    },
    {
     "org": "nvidia",
-    "dl": 15978685
+    "dl": 16363752
    },
    {
     "org": "meta-llama",
-    "dl": 15827403
+    "dl": 15828412
    },
    {
     "org": "openai",
-    "dl": 8777263
+    "dl": 8868011
    },
    {
     "org": "microsoft",
-    "dl": 2635860
+    "dl": 2633179
    },
    {
     "org": "allenai",
-    "dl": 2144437
+    "dl": 2158960
    }
   ],
-  "cn": 251855585,
-  "us": 81583057
+  "cn": 255115958,
+  "us": 81831595
  },
  "openrouter_week": {
   "week": "2026-10-26",
-  "cn_share": 0.608,
-  "us_share": 0.247,
-  "spi": 2.462,
-  "total_tokens": 62292558291233
+  "cn_share": 0.6118,
+  "us_share": 0.2451,
+  "spi": 2.497,
+  "total_tokens": 72171181490804
  },
  "vercel_gateway": {
   "asof": "2026-10-28",
-  "cn_share": 52.4,
-  "us_share": 20.33,
-  "spi": 2.577,
+  "cn_share": 51.31,
+  "us_share": 22.01,
+  "spi": 2.331,
   "top_cn": [
    {
     "lab": "deepseek",
-    "share": 29.17
+    "share": 28.62
    },
    {
     "lab": "zai",
-    "share": 17.38
+    "share": 16.76
    },
    {
     "lab": "moonshotai",
-    "share": 4.63
+    "share": 4.73
    },
    {
     "lab": "xiaomi",
-    "share": 0.68
+    "share": 0.62
    },
    {
     "lab": "minimax",
-    "share": 0.3
+    "share": 0.34
    },
    {
     "lab": "alibaba",
@@ -1040,15 +1040,15 @@
    },
    {
     "d": "2026-10-28",
-    "cn": 52.4,
-    "us": 20.33
+    "cn": 51.31,
+    "us": 22.01
    }
   ],
   "license": "AI Gateway Leaderboard Data (c) Vercel, CC BY 4.0"
  },
  "ollama": {
-  "cn": 325589399,
-  "us": 494424500,
+  "cn": 325998799,
+  "us": 494640700,
   "cn_top": [
    {
     "name": "deepseek-r1",
@@ -1056,11 +1056,11 @@
    },
    {
     "name": "qwen2.5",
-    "pulls": 43800000
+    "pulls": 43900000
    },
    {
     "name": "qwen3",
-    "pulls": 41700000
+    "pulls": 41800000
    },
    {
     "name": "qwen3.5",
@@ -1086,11 +1086,13 @@
    },
    {
     "name": "gemma3",
-    "pulls": 41400000
+    "pulls": 41500000
    }
   ],
   "n_models": 264,
-  "asof": "2026-10-28"
+  "asof": "2026-10-28",
+  "cn_per_day": 867517,
+  "us_per_day": 523005
  },
  "kalshi": {
   "asof": "2026-10-28",
@@ -1121,7 +1123,7 @@
    },
    {
     "label": "Best AI at end of 2026: Claude",
-    "p": 0.595,
+    "p": 0.591,
     "ticker": "KXLLM1-26DEC31-A",
     "series": "kxllm1"
    }
@@ -1131,7 +1133,7 @@
   "cn": [
    {
     "base": "Qwen/Qwen3-8B",
-    "n": 2241
+    "n": 2243
    },
    {
     "base": "deepseek-ai/DeepSeek-R1",
@@ -1164,7 +1166,7 @@
     "n": 129
    }
   ],
-  "cn_total": 2624,
+  "cn_total": 2626,
   "us_total": 2627,
   "asof": "2026-10-28"
  },
