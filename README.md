@@ -79,6 +79,7 @@ The regime chip always states *which threshold fired*, in plain English, with th
 | [**gauge.html**](omen/gauge.html) | **The gauge.** Family-by-family breakdown, leading vs confirming, 90-day reconstruction with regime bands. |
 | [**indexes.html**](omen/indexes.html) | **The indexes.** Bull and Bear as one two-sided market that always sums to 1. Bull splits TECH vs CAP; Bear splits MKT vs GOV — because technology progress can survive a financial unwind, and a regulatory clampdown is not a crash. |
 | [**ai-capex.html**](omen/ai-capex.html) | **AI capex.** Eight fundamentals theses — debt saturation, credit stress, equity raises, capex vs GDP, stranded >1 GW projects, the dark-fiber overcapacity analogy, FCF erosion, reflexive treasury vehicles — plus a live tape. |
+| [**trades.html**](omen/trades.html) | **Trades.** Ten positions against the verdict — tokenized stocks, on-chain perps, prediction markets, tokenized T-bills — each wired to the live readings it leans on, with a published ON / WATCH / OFF rule and a kill switch. A worked example, not advice. |
 | [**china-ai-monitor.html**](omen/china-ai-monitor.html) | **China substitution.** Demand for Chinese LLMs (DeepSeek, Qwen, GLM, Kimi, MiniMax, MiMo) as a leading indicator of substitution pressure on US AI equities. |
 | [**methodology.html**](omen/methodology.html) | **Methodology** — including the honesty section on what none of this can prove. |
 
@@ -131,6 +132,7 @@ omen-ai/
     ├── gauge.html                  family-by-family gauge breakdown
     ├── indexes.html                Bull/Bear as one two-sided market
     ├── ai-capex.html               capex theses + the live tape
+    ├── trades.html                 ten positions against the verdict, rule per card
     ├── china-ai-monitor.html       Chinese-model substitution demand
     ├── methodology.html            method, and what none of it can prove
     │
@@ -178,6 +180,7 @@ omen-ai/
     ├── test-pure-helpers.mjs, test-china-helpers.mjs, test-ci-branch-guard.mjs
     ├── test-app-charts.mjs ........ the SerpApi fallback's quota gate and schema
     ├── test-constituents.mjs ...... vintages, roll state, coverage, chained snapshots
+    ├── test-trades.mjs ............ the ten stance rules, every cell, the signal reader
     │
     │  ── data (committed; see below) ──
     ├── market-data.json ........... full state — R2 seed, ~weekly

@@ -1,0 +1,922 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>OMEN — Trades</title>
+<meta name="description" content="Ten ways to take a side on the AI cycle with tokenized stocks, on-chain perps and prediction markets – each with the OMEN numbers it reads, the published rule that switches it on, and what kills it. A worked example, not advice.">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="favicon.svg">
+<meta name="theme-color" content="#0b0a08">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="OMEN">
+<meta property="og:title" content="OMEN — Trades">
+<meta property="og:description" content="Ten positions against today's AI-cycle verdict – tokenized stocks, on-chain perps, prediction markets – each with its live reading, its rule and its kill switch.">
+<meta property="og:image" content="og-image.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="OMEN — Trades">
+<meta name="twitter:description" content="Ten positions against today's AI-cycle verdict – each with its live reading, its rule and its kill switch.">
+<link rel="stylesheet" href="omen.css">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--ink);font-family:var(--sans);overflow-x:hidden;
+  background-image:radial-gradient(1100px 480px at 78% -120px,rgba(227,166,60,.07),transparent 70%)}
+a{color:inherit;text-decoration:none}
+::selection{background:var(--acc);color:#141005}
+.wrap{position:relative;z-index:1;max-width:1180px;margin:0 auto;padding:0 28px}
+section{padding:64px 0}
+.kick{font-size:11px;letter-spacing:.15em;text-transform:uppercase;color:var(--acc);font-weight:600;display:flex;align-items:center;gap:10px}
+.kick::before{content:"";width:22px;height:1px;background:var(--acc);display:inline-block}
+
+/* ---------- ticker ---------- */
+.ticker{border-bottom:1px solid var(--line);background:var(--bg2);font-family:var(--mono);font-size:11px;color:var(--mut);
+  overflow-x:auto;white-space:nowrap;-webkit-overflow-scrolling:touch;scrollbar-width:none}
+.ticker::-webkit-scrollbar{display:none}
+.ticker .in{display:flex;gap:0;max-width:1180px;margin:0 auto;padding:0 28px;height:36px;align-items:center}
+.ticker .it{display:inline-flex;gap:8px;align-items:baseline;padding:0 20px;border-right:1px solid var(--line)}
+.ticker .it:first-child{padding-left:0}
+.ticker .it b{color:var(--ink);font-weight:600}
+.ticker .lab{color:var(--dim);letter-spacing:.08em}
+
+/* ---------- nav ---------- */
+nav{position:sticky;top:0;z-index:50;background:rgba(11,10,8,.88);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+nav .wrap{display:flex;align-items:center;gap:34px;height:64px}
+.logo{display:flex;align-items:center;gap:10px;font-family:var(--serif);font-weight:700;font-size:21px;letter-spacing:.02em}
+.logo svg{width:26px;height:26px}
+nav .links{display:flex;gap:28px;margin-left:auto}
+nav .links a{font-size:13px;color:var(--mut);transition:color .2s}
+nav .links a:hover{color:var(--accT)}
+nav .links a.here{color:var(--accT);font-weight:600}
+.btn{display:inline-flex;align-items:center;gap:9px;font-size:13px;font-weight:600;
+  background:var(--acc);color:#181204;padding:9px 16px;border:0;border-radius:6px;cursor:pointer;transition:background .15s,transform .15s;margin-left:6px}
+.btn:hover{background:var(--accT);transform:translateY(-1px)}
+
+/* ---------- hero ---------- */
+.hero{padding:76px 0 30px}
+.hero h1{font-family:var(--serif);font-size:clamp(36px,5vw,58px);font-weight:700;letter-spacing:-.01em;line-height:1.08;margin:22px 0 22px;max-width:860px}
+.hero h1 em{font-style:italic;color:var(--accT)}
+.hero .sub{max-width:700px;color:var(--mut);font-size:16px;line-height:1.7}
+.hero .sub b{color:var(--ink);font-weight:600}
+.snapline{display:inline-flex;align-items:center;gap:8px;font-family:var(--mono);font-size:10px;letter-spacing:.1em;color:var(--dim);margin-top:26px;text-transform:uppercase}
+.snapline .dot{width:7px;height:7px;border-radius:50%;background:var(--acc)}
+.notice{margin-top:22px;border:1px solid var(--accD);border-radius:10px;background:var(--warn-wash);padding:14px 18px;max-width:760px;font-size:13.5px;line-height:1.6;color:var(--mut)}
+.notice b{color:var(--ink)}
+
+/* ---------- today ---------- */
+.today{display:grid;grid-template-columns:1.3fr 1fr 1fr 1fr;gap:18px;margin-top:34px}
+.today>div{border-top:2px solid var(--line2);background:linear-gradient(180deg,var(--panel),transparent);padding:20px 20px 18px}
+.today .lab{font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--dim);margin-bottom:10px}
+.today .v{font-family:var(--mono);font-size:30px;font-weight:700;letter-spacing:-.01em;line-height:1}
+.today .v small{font-size:13px;color:var(--dim);font-weight:400}
+.today p{color:var(--mut);font-size:12.5px;line-height:1.55;margin-top:10px}
+.today .verdict{font-family:var(--serif);font-size:26px;font-weight:700;line-height:1.15}
+.today .c-on{border-top-color:var(--bull)}.today .c-watch{border-top-color:var(--acc)}.today .c-off{border-top-color:var(--line2)}
+
+/* ---------- section headers ---------- */
+.shead{margin-bottom:34px;padding-top:34px;border-top:1px solid var(--line)}
+.shead .toprow{display:flex;align-items:baseline;gap:16px;flex-wrap:wrap}
+.shead .rom{font-family:var(--serif);font-style:italic;color:var(--acc);font-size:20px}
+.shead h2{font-family:var(--serif);font-size:clamp(26px,3.6vw,40px);font-weight:700;letter-spacing:-.01em;line-height:1.12;margin-top:14px}
+.shead .claim{font-family:var(--serif);font-style:italic;font-size:17px;color:var(--mut);margin-top:12px;max-width:680px;line-height:1.55}
+.shead p.exp{color:var(--mut);margin-top:14px;max-width:680px;line-height:1.65;font-size:14.5px}
+.shead p.exp b{color:var(--ink);font-weight:600}
+
+/* ---------- filter ---------- */
+.filter{display:flex;gap:8px;flex-wrap:wrap;margin:0 0 22px}
+.filter button{font:inherit;font-size:12px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--mut);
+  background:transparent;border:1px solid var(--line2);border-radius:99px;padding:8px 14px;cursor:pointer;min-height:36px;transition:color .15s,border-color .15s}
+.filter button:hover{color:var(--accT);border-color:var(--acc)}
+.filter button[aria-pressed="true"]{color:#181204;background:var(--acc);border-color:var(--acc)}
+.filter button:focus-visible{outline:2px solid var(--acc);outline-offset:2px}
+
+/* ---------- trade cards ---------- */
+.trades{display:grid;gap:22px}
+.tcard{border:1px solid var(--line);border-radius:12px;background:var(--panel);padding:26px 26px 22px;position:relative}
+.tcard[hidden]{display:none}
+.tcard .top{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:10px}
+.tcard .num{font-family:var(--serif);font-style:italic;color:var(--acc);font-size:20px;margin-right:4px}
+.tcard h3{font-family:var(--serif);font-size:23px;font-weight:700;line-height:1.2;margin:6px 0 8px;max-width:820px}
+.tcard .thesis{font-family:var(--serif);font-style:italic;color:var(--mut);font-size:16px;line-height:1.5;max-width:760px}
+.chip{font-size:10px;font-weight:700;letter-spacing:.08em;padding:3px 9px;border-radius:99px;text-transform:uppercase;white-space:nowrap;border:1px solid var(--line2);color:var(--mut)}
+.chip.side-bull{color:var(--bull);border-color:var(--bullD)}
+.chip.side-bear{color:var(--bear);border-color:var(--bearD)}
+.chip.side-neutral{color:var(--regT);border-color:var(--regD)}
+.chip.side-hedge{color:var(--accT);border-color:var(--accD)}
+.stance{margin-left:auto;font-family:var(--mono);font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;padding:7px 12px;border-radius:7px;border:1px solid var(--line2);color:var(--dim);background:transparent}
+.stance.on{color:var(--bullT);border-color:var(--bull);background:var(--bull-wash)}
+.stance.watch{color:var(--accT);border-color:var(--acc);background:var(--warn-wash)}
+.stance.off{color:var(--mut);border-color:var(--line2)}
+.stance.check{color:var(--regT);border-color:var(--reg);background:var(--us-wash)}
+.stance-why{width:100%;font-size:12px;color:var(--dim);line-height:1.5;margin-top:-2px}
+.stance-why b{color:var(--mut);font-weight:600}
+.tgrid{display:grid;grid-template-columns:1.15fr 1fr;gap:26px;margin-top:20px}
+.tgrid h4{font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--dim);margin-bottom:8px;font-weight:700}
+.legs{list-style:none}
+.legs li{display:grid;grid-template-columns:62px 1fr;gap:10px;padding:8px 0;border-top:1px solid var(--line);font-size:13px;line-height:1.5;color:var(--mut)}
+.legs li:first-child{border-top:0;padding-top:0}
+.legs .dir{font-family:var(--mono);font-size:10.5px;font-weight:700;letter-spacing:.08em;padding-top:3px}
+.legs .dir.long{color:var(--bull)}.legs .dir.short{color:var(--bear)}.legs .dir.buy{color:var(--accT)}.legs .dir.hold{color:var(--regT)}
+.legs b{color:var(--ink);font-weight:600}
+.legs .venue{display:block;color:var(--dim);font-size:11.5px;margin-top:2px}
+.reads{list-style:none}
+.reads li{display:flex;justify-content:space-between;gap:14px;padding:7px 0;border-top:1px solid var(--line);font-size:12.5px;color:var(--mut);line-height:1.45}
+.reads li:first-child{border-top:0;padding-top:0}
+.reads .v{font-family:var(--mono);font-weight:700;color:var(--ink);white-space:nowrap;text-align:right}
+.reads .v.up{color:var(--pos)}.reads .v.down{color:var(--neg)}
+.why{color:var(--mut);font-size:14px;line-height:1.68;margin-top:18px;max-width:900px}
+.why b{color:var(--ink);font-weight:600}
+.why a{color:var(--mut);border-bottom:1px solid var(--line2)}
+.why a:hover{color:var(--accT);border-color:var(--acc)}
+.rule{margin-top:16px;border-left:2px solid var(--acc);padding:6px 0 6px 16px;font-size:13px;line-height:1.65;color:var(--mut);max-width:900px}
+.rule b{color:var(--ink)}
+.rule .lab{font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--acc);display:block;margin-bottom:4px;font-weight:700}
+.kill{margin-top:12px;font-size:12.5px;color:var(--mut);line-height:1.6;max-width:900px}
+.kill b{color:var(--bearT);font-weight:700;letter-spacing:.06em}
+.meta{display:flex;gap:18px;flex-wrap:wrap;margin-top:16px;padding-top:12px;border-top:1px solid var(--line);font-family:var(--mono);font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--dim)}
+.meta b{color:var(--mut);font-weight:600}
+
+/* ---------- venues + tables ---------- */
+.panel{border:1px solid var(--line);border-radius:12px;background:var(--panel);padding:26px 26px 20px;margin-bottom:22px}
+.panel h3{font-family:var(--serif);font-size:18px;font-weight:700;margin-bottom:4px}
+.panel .cap{font-size:11px;letter-spacing:.1em;color:var(--dim);text-transform:uppercase}
+table.dt{width:100%;border-collapse:collapse;font-size:13px;margin-top:16px}
+.dt th{font-size:9.5px;letter-spacing:.14em;color:var(--dim);text-align:left;padding:0 10px 9px 0;border-bottom:1px solid var(--line2);text-transform:uppercase;font-weight:700}
+.dt td{padding:9px 10px 9px 0;border-bottom:1px solid var(--line);color:var(--mut);vertical-align:top;line-height:1.5}
+.dt tr:last-child td{border-bottom:none}
+.dt td:first-child{color:var(--ink)}
+.dt td a{color:var(--mut);border-bottom:1px solid var(--line2)}
+.dt td a:hover{color:var(--accT);border-color:var(--acc)}
+.srcline{font-size:11.5px;color:var(--dim);margin-top:16px;line-height:1.7}
+.srcline b{color:var(--mut);letter-spacing:.08em;font-weight:700}
+.srcline a{color:var(--mut);border-bottom:1px solid var(--line2)}
+.srcline a:hover{color:var(--accT);border-color:var(--acc)}
+
+/* ---------- honesty ---------- */
+.honesty{border:1px solid var(--line);border-radius:12px;background:linear-gradient(180deg,var(--panel2),var(--panel));padding:30px 30px 26px}
+.honesty h3{font-family:var(--serif);font-size:20px;font-weight:700;margin-bottom:10px}
+.honesty p{color:var(--mut);font-size:14px;line-height:1.7;max-width:860px;margin-top:10px}
+.honesty p b{color:var(--ink)}
+
+/* ---------- footer ---------- */
+footer{border-top:1px solid var(--line);padding:56px 0 40px;background:var(--bg2)}
+.fgrid{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:40px;margin-bottom:48px}
+.fgrid h4{font-size:11px;letter-spacing:.16em;color:var(--dim);margin-bottom:18px;text-transform:uppercase}
+.fgrid a,.fgrid span{display:block;color:var(--mut);font-size:13.5px;margin-bottom:11px;transition:color .2s}
+.fgrid a:hover{color:var(--accT)}
+.fbase{display:flex;justify-content:space-between;flex-wrap:wrap;gap:14px;font-size:11px;letter-spacing:.08em;color:var(--dim);border-top:1px solid var(--line);padding-top:26px;text-transform:uppercase}
+
+/* reveal */
+.rv{opacity:0;transform:translateY(26px);transition:opacity .7s ease,transform .7s ease}
+.rv.in{opacity:1;transform:none}
+@media(prefers-reduced-motion:reduce){.rv{opacity:1;transform:none;transition:none}}
+.up{color:var(--pos)}.down{color:var(--neg)}
+
+/* ---------- mobile ---------- */
+@media(max-width:900px){.today{grid-template-columns:1fr 1fr}.tgrid{grid-template-columns:1fr}.fgrid{grid-template-columns:1fr 1fr}}
+@media(max-width:760px){
+  .wrap{padding-left:max(20px,env(safe-area-inset-left));padding-right:max(20px,env(safe-area-inset-right))}
+  section{padding:52px 0}
+  .hero{padding:34px 0 24px}
+  .hero h1{font-size:clamp(28px,7.4vw,36px);line-height:1.14;margin:14px 0 18px}
+  .hero .sub{font-size:15.5px;line-height:1.62}
+  .snapline{margin-top:20px;flex-wrap:wrap;line-height:1.6;white-space:normal}
+  .notice{font-size:13px;padding:12px 14px}
+  .today{grid-template-columns:1fr;gap:12px;margin-top:26px}
+  .today>div{padding:16px 16px 14px}
+  .today .v{font-size:26px}
+  .today .verdict{font-size:22px}
+  .shead{margin-bottom:24px;padding-top:26px}
+  .shead h2{font-size:clamp(24px,6.4vw,30px);line-height:1.16}
+  .shead .claim{font-size:15.5px}
+  .shead p.exp{font-size:14px}
+  .tcard{padding:20px 16px 16px;border-radius:10px}
+  .tcard h3{font-size:20px}
+  .tcard .thesis{font-size:15px}
+  .stance{margin-left:0;width:100%;text-align:center}
+  .legs li{grid-template-columns:54px 1fr;gap:8px}
+  .reads li{flex-direction:column;gap:2px}
+  .reads .v{text-align:left;white-space:normal}
+  .why{font-size:13.5px}
+  .meta{gap:10px 16px}
+  .panel{padding:20px 16px 16px;border-radius:10px}
+  /* tables → stacked rows; the column label comes from data-l */
+  table.dt,.dt tbody,.dt tr,.dt td{display:block;width:auto}
+  .dt tr:first-child{display:none}
+  .dt tr{border-bottom:1px solid var(--line);padding:13px 0}
+  .dt tr:last-child{border-bottom:none;padding-bottom:2px}
+  .dt td{border:0;padding:3px 0;font-size:13px}
+  .dt td:first-child{color:var(--ink);font-weight:600;padding-top:0;line-height:1.4}
+  .dt td[data-l]::before{content:attr(data-l) " ";display:block;font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:var(--dim);font-family:var(--sans);font-weight:700;margin-bottom:1px}
+  .dt td:empty{display:none}
+  .honesty{padding:22px 18px 18px}
+  .honesty h3{font-size:18px}
+  footer{padding:44px 0 32px}
+  .fgrid{grid-template-columns:1fr 1fr;gap:30px 18px;margin-bottom:36px}
+  .fgrid>div:first-child{grid-column:1/-1}
+  .fgrid a,.fgrid span{font-size:13px;margin-bottom:14px}
+  .fbase{flex-direction:column;gap:8px;font-size:10.5px;padding-top:22px}
+}
+</style>
+</head>
+<body>
+
+<div class="ticker">
+  <div class="in">
+    <span class="it"><span class="lab">VERDICT</span><b id="tkVerdict">–</b></span>
+    <span class="it"><span class="lab">BULL SHARE</span><b id="tkShare">–</b></span>
+    <span class="it"><span class="lab">CRASH PRESSURE</span><b id="tkGauge">–</b><span id="tkRegime" class="lab">–</span></span>
+    <span class="it"><span class="lab">NVDA 25Δ RR</span><b id="tkRr">–</b></span>
+    <span class="it"><span class="lab">BUBBLE MKT</span><b id="tkBubble">–</b></span>
+    <span class="it"><span class="lab">NVDA 1Y −50%</span><b id="tkTail">–</b><span class="lab">OPTIONS</span></span>
+    <span class="it"><span class="lab">HY OAS</span><b id="tkHy">–</b></span>
+    <span class="it"><span class="lab">NQ SPECS</span><b id="tkCot">–</b><span class="lab">PCTILE</span></span>
+    <span class="it"><span class="lab">ON-CHAIN T-BILL</span><b id="tkTbill">–</b><span class="lab">30D APY</span></span>
+    <span class="it"><span class="lab">SOURCE</span><b style="color:var(--mut)">POLYMARKET · OPRA · FRED · CFTC · XBRL</b></span>
+  </div>
+</div>
+
+<nav>
+  <div class="wrap">
+    <a class="logo" href="index.html">
+      <svg viewBox="0 0 32 32" fill="none"><path d="M11.2924 10.3332A8.6 8.6 0 1 0 20.9086 21.6668A8.6 8.6 0 0 1 11.2924 10.3332Z" fill="#e3a63c"/><circle cx="19.4" cy="13.2" r="8.6" stroke="#e2685a" stroke-width="1.4"/></svg>
+      OMEN
+    </a>
+    <div class="links" id="navlinks">
+      <a href="indexes.html">The Indexes</a>
+      <a href="gauge.html">The Gauge</a>
+      <a href="methodology.html">Methodology</a>
+      <a href="china-ai-monitor.html">China Watch</a>
+      <a href="ai-capex.html">AI CapEx</a>
+      <a href="trades.html" class="here">Trades</a>
+    </div>
+    <a class="btn" href="polymarket-ai-index.html">Open the monitor</a>
+    <button class="navtoggle" type="button" aria-label="Menu" aria-expanded="false" aria-controls="navlinks"><span class="bars"></span></button>
+  </div>
+</nav>
+
+<header class="hero">
+  <div class="wrap">
+    <div class="kick">Positions · The verdict, expressed</div>
+    <h1>The numbers say something. <em>Here is what a position would look like</em> – and the rule that turns each one on.</h1>
+    <p class="sub">Every other page measures. This one asks the next question: if you believed the gauge and the pair, what would you <b>hold</b>? Ten positions, each buildable with <b>tokenized stocks, on-chain perps and prediction markets</b> – no broker required – and each wired to the live readings it leans on. A position is <b>ON</b> when its published rule says so, <b>WATCH</b> when one input is missing, <b>OFF</b> when the data has moved against it. The rule is printed under every card, with the thresholds, so you can argue with a number.</p>
+    <div class="snapline"><span class="dot"></span>Rules written 2026-10-28 · readings as of <span id="asOf">loading…</span> · <span id="nLive">–</span></div>
+    <div class="notice"><b>Not investment advice, and not a model portfolio.</b> OMEN holds no positions and sells nothing. These are worked examples of how this site's numbers map to exposures – thresholds chosen by hand on 2026-10-28, not backtested. Sizes are relative to a risk budget, never dollars. Tokenized shares and perps carry issuer, oracle and liquidation risk the underlying does not; most venues below exclude US persons. The <a href="#honesty" style="color:var(--accT)">honesty section</a> is part of the page.</div>
+
+    <div class="today">
+      <div id="todayVerdictBox">
+        <div class="lab">Today's verdict · <span id="todayCell">–</span></div>
+        <div class="verdict" id="todayVerdict">loading…</div>
+        <p id="todayLine">Direction from the Bull side's share of the pair, stress from the five-family gauge – the same rule as the <a href="index.html" style="color:var(--accT)">landing page</a>.</p>
+      </div>
+      <div class="c-on"><div class="lab">On</div><div class="v" id="nOn">–<small> / 10</small></div><p>Rule satisfied on today's readings.</p></div>
+      <div class="c-watch"><div class="lab">Watch</div><div class="v" id="nWatch">–<small> / 10</small></div><p>One input missing or borderline – or a reading this site can't make and the venue must.</p></div>
+      <div class="c-off"><div class="lab">Off</div><div class="v" id="nOff">–<small> / 10</small></div><p>The data has moved against it. The card stays – with the number that would flip it.</p></div>
+    </div>
+  </div>
+</header>
+
+<!-- ============ the ten ============ -->
+<section id="positions">
+  <div class="wrap">
+    <div class="shead rv">
+      <div class="toprow"><span class="rom">i.</span><span class="kick" style="color:var(--dim)">Ten positions · four kinds</span></div>
+      <h2>Bull, bear, neutral, hedge.</h2>
+      <div class="claim">Three positions lean with the pair, one leans against it, three are indifferent to the AI question and get paid by its plumbing, three protect a book that holds the rest.</div>
+      <p class="exp">Each card has four parts. <b>Legs</b> – the instrument, the venue and the direction. <b>What OMEN reads</b> – the live figures the position leans on, pulled from the same <code>market-data.json</code> every other page uses. <b>Why now</b> – the logic in plain words. <b>The rule</b> – the thresholds that make it ON, WATCH or OFF, and the one or two readings that kill it. Filter by kind:</p>
+      <div class="filter" role="group" aria-label="Filter positions by kind">
+        <button type="button" data-f="all" aria-pressed="true">All ten</button>
+        <button type="button" data-f="bull" aria-pressed="false">Bull</button>
+        <button type="button" data-f="bear" aria-pressed="false">Bear</button>
+        <button type="button" data-f="neutral" aria-pressed="false">Neutral</button>
+        <button type="button" data-f="hedge" aria-pressed="false">Hedge</button>
+      </div>
+    </div>
+
+    <div class="trades">
+
+      <!-- 1 -->
+      <article class="tcard rv" id="t-core" data-side="bull">
+        <div class="top"><span class="num">1.</span><span class="chip side-bull">Bull · hedged</span><span class="chip">Tokenized stock + event market</span><span class="stance" data-stance>loading</span><div class="stance-why" data-why></div></div>
+        <h3>The core long, insured: hold NVIDIA on-chain, pay for the crash with the crash market.</h3>
+        <div class="thesis">Today's verdict says the trade is still priced to run and that stress is building underneath. Take it literally: own the long, and let the market that pays out on a bust be the insurance.</div>
+        <div class="tgrid">
+          <div><h4>Legs</h4><ul class="legs">
+            <li><span class="dir long">LONG</span><span><b>NVDAx</b> (xStocks, Kraken / Solana) or <b>NVDAon</b> (Ondo Global Markets) – 1× spot, no leverage<span class="venue">1:1 backed tokens; 24/7 price, Nasdaq-hours liquidity</span></span></li>
+            <li><span class="dir buy">BUY</span><span><b>"AI bubble burst in 2026" YES</b> – <span data-ins-pct>–</span> of the long's notional<span class="venue">Polymarket · the gauge's own bubble market · resolves 2027-01-01, so it must be re-bought in the 2027 successor</span></span></li>
+          </ul></div>
+          <div><h4>What OMEN reads</h4><ul class="reads" data-reads><li>Live readings load with the data.</li></ul></div>
+        </div>
+        <p class="why"><b>Why now.</b> Direction is bullish and the stock is cheaper against its own earnings than it has been for most of a decade, while the semiconductor index around it has already fallen hard – NVIDIA has been the <i>least</i> punished name in the complex. The stress the gauge sees is in the vol complex and credit, not in the pair's direction. The honest response to "Constructive · hedged" is to stay long and buy the tail. At <span data-bub-cents>–</span> the bubble market pays <span data-bub-mult>–</span> on a bust; an insurance leg of <span data-ins-pct2>–</span> of notional covers a <span data-bub-cover>–</span> drawdown on the long. The <a href="polymarket-ai-index.html#leaps">options tail</a> on NVIDIA (<span data-tail50>–</span> for −50% in a year) is cheaper per day than the binary – if you can trade listed options, the put-spread is the better insurance; this is the one you can buy with USDC.</p>
+        <div class="rule" data-rule><span class="lab">The rule</span>Rule and live stance load with the data.</div>
+        <p class="kill"><b>KILLS IT</b> – Bull share below the direction band's lower edge (flat, not short – that is position 10). Regime Stressed: the late-cycle cell. NVIDIA's 25Δ risk reversal at the top of the gauge's published range – the options market calling the top louder than the pair.</p>
+        <div class="meta"><span>Horizon <b>to the 2027-01-01 roll</b></span><span>Size <b>core</b></span><span>Kind <b>directional · insured</b></span></div>
+      </article>
+
+      <!-- 2 -->
+      <article class="tcard rv" id="t-memory" data-side="bull">
+        <div class="top"><span class="num">2.</span><span class="chip side-bull">Bull</span><span class="chip">Tokenized stock or perp</span><span class="stance" data-stance>loading</span><div class="stance-why" data-why></div></div>
+        <h3>Own the leg of the capex with pricing power: memory.</h3>
+        <div class="thesis">Every hyperscaler dollar lands somewhere. GPUs are contested; the HBM and DRAM that sit next to them are sold out and repricing upward on a quarterly contract cycle the fetcher reads directly.</div>
+        <div class="tgrid">
+          <div><h4>Legs</h4><ul class="legs">
+            <li><span class="dir long">LONG</span><span><b>MUx</b> (xStocks) or <b>MU-PERP</b> at 1–2× (Hyperliquid, trade.xyz)<span class="venue">The perp trades 24/7 against a Nasdaq oracle; funding is the carry cost of the leverage</span></span></li>
+          </ul></div>
+          <div><h4>What OMEN reads</h4><ul class="reads" data-reads><li>Live readings load with the data.</li></ul></div>
+        </div>
+        <p class="why"><b>Why now.</b> The <a href="ai-capex.html#tape">capex tape</a> carries two memory reads that lead the equity: TrendForce's quarterly DRAM contract forecast and the Korea 20-day chip-export print, the classic cycle canary. Both point up, and the fab upstream of all of it is still growing revenue at a rate no mature cycle sustains. The stock has sold off with the index anyway – the rotation out of AI since early October did not distinguish between names with pricing power and names without it. Direction from the pair is bullish, so the position is with the verdict, not against it.</p>
+        <div class="rule" data-rule><span class="lab">The rule</span>Rule and live stance load with the data.</div>
+        <p class="kill"><b>KILLS IT</b> – The DRAM contract forecast flips to "fall". The Korea 20-day print goes negative year on year. The Bull share crosses into the bearish band.</p>
+        <div class="meta"><span>Horizon <b>one contract quarter</b></span><span>Size <b>satellite</b></span><span>Kind <b>directional</b></span></div>
+      </article>
+
+      <!-- 3 -->
+      <article class="tcard rv" id="t-grid" data-side="bull">
+        <div class="top"><span class="num">3.</span><span class="chip side-bull">Bull · hedged</span><span class="chip">Tokenized stock + event market</span><span class="stance" data-stance>loading</span><div class="stance-why" data-why></div></div>
+        <h3>The toll road: own the power, hedge the moratorium.</h3>
+        <div class="thesis">Whether or not the models earn their cost, the data centers draw power, and the generators already connected get paid first. The thing that stops them is not a crash – it is a legislature.</div>
+        <div class="tgrid">
+          <div><h4>Legs</h4><ul class="legs">
+            <li><span class="dir long">LONG</span><span><b>VSTon</b> / <b>CEGon</b> (Ondo Global Markets, where listed) – equal weight<span class="venue">Vistra and Constellation: merchant generation in the data-center corridors; both in the gauge's crash basket</span></span></li>
+            <li><span class="dir buy">BUY</span><span><b>"Any state enacts a data-center moratorium by Dec 31" YES</b> – ¼ of the long's notional<span class="venue">Polymarket · the Bear index's GOV sleeve · the one bear case that hits power before it hits GPUs</span></span></li>
+          </ul></div>
+          <div><h4>What OMEN reads</h4><ul class="reads" data-reads><li>Live readings load with the data.</li></ul></div>
+        </div>
+        <p class="why"><b>Why now.</b> Capex is now a measurable share of GDP and of its growth, data-center construction is growing at a rate that has no precedent in the BEA series, and the EIA pipeline shows far more capacity planned than under construction – scarcity on the grid side persists even if half the announced gigawatts never get built. That is the bull leg. The hedge is the part the pair prices and most AI portfolios ignore: the Bear index's regulatory sleeve trades well above its crash sleeve, and the moratorium market is its most expensive member. A quarter of notional in that market pays <span data-mor-mult>–</span> if a state acts – roughly the drawdown a merchant generator would take on the headline.</p>
+        <div class="rule" data-rule><span class="lab">The rule</span>Rule and live stance load with the data.</div>
+        <p class="kill"><b>KILLS IT</b> – Capex as a share of GDP turns down quarter on quarter. The moratorium market crosses 50% – at that point the hedge is the trade and the long is wrong. Regime Stressed moves it to WATCH: utilities fall with the basket in a liquidation, whatever their fundamentals.</p>
+        <div class="meta"><span>Horizon <b>two to four quarters</b></span><span>Size <b>satellite</b></span><span>Kind <b>directional · hedged</b></span></div>
+      </article>
+
+      <!-- 4 -->
+      <article class="tcard rv" id="t-carry" data-side="neutral">
+        <div class="top"><span class="num">4.</span><span class="chip side-neutral">Neutral · carry</span><span class="chip">Tokenized stock vs perp</span><span class="stance" data-stance>loading</span><div class="stance-why" data-why></div></div>
+        <h3>Cash-and-carry on the NVIDIA perp: let the leveraged longs pay you.</h3>
+        <div class="thesis">A perpetual's funding is the price of crowding. When the crowd is long, shorts get paid every eight hours – and a spot token is a short's perfect hedge.</div>
+        <div class="tgrid">
+          <div><h4>Legs</h4><ul class="legs">
+            <li><span class="dir long">LONG</span><span><b>NVDAx</b> spot (xStocks) – 1×<span class="venue">The hedge leg: delta +1</span></span></li>
+            <li><span class="dir short">SHORT</span><span><b>NVDA-PERP</b> (Hyperliquid, trade.xyz) – same notional, 1× isolated margin<span class="venue">Delta −1 · collect funding · USDC-settled</span></span></li>
+          </ul></div>
+          <div><h4>What OMEN reads</h4><ul class="reads" data-reads><li>Live readings load with the data.</li></ul></div>
+        </div>
+        <p class="why"><b>Why now.</b> On-chain equity perps went from a curiosity to nearly half of Hyperliquid's volume this year, and the open interest is retail, levered and long. OMEN cannot read the funding rate – it is a venue number, not a market-wide one – but it reads the conditions that make it rich: speculative Nasdaq positioning at a multi-year extreme, elevated implied vol, and a front-month term structure inverted into the November print. The position is indifferent to AI: it earns the spread between what levered longs pay and what a tokenized T-bill yields, and it carries no direction. The hurdle is published below; the funding read is yours to take on the venue before you put it on.</p>
+        <div class="rule" data-rule><span class="lab">The rule</span>Rule and live stance load with the data.</div>
+        <p class="kill"><b>KILLS IT</b> – Funding turns negative (the crowd has flipped short – close, or flip the legs). Spot token and perp oracle diverge over a weekend or holiday – the basis you are earning becomes the basis you are losing. The spot token's redemption or trading pauses – the hedge leg stops being a hedge.</p>
+        <div class="meta"><span>Horizon <b>rolling, re-check each funding epoch</b></span><span>Size <b>as large as the venue's depth allows</b></span><span>Kind <b>market-neutral · carry</b></span></div>
+      </article>
+
+      <!-- 5 -->
+      <article class="tcard rv" id="t-pair" data-side="neutral">
+        <div class="top"><span class="num">5.</span><span class="chip side-neutral">Neutral on AI · bear on financing</span><span class="chip">Tokenized stock vs perp</span><span class="stance" data-stance>loading</span><div class="stance-why" data-why></div></div>
+        <h3>Pair the spenders: long the one funding capex from cash flow, short the one funding it from debt.</h3>
+        <div class="thesis">The same buildout, two balance sheets. If the AI trade keeps running, both do fine and the pair is flat. If financing tightens, the one spending more than it earns breaks first.</div>
+        <div class="tgrid">
+          <div><h4>Legs</h4><ul class="legs">
+            <li><span class="dir long">LONG</span><span><b>MSFTx</b> (xStocks) or <b>MSFT-PERP</b> – the lowest capex-to-cash-flow ratio in the cohort<span class="venue">Positive free cash flow after the capex</span></span></li>
+            <li><span class="dir short">SHORT</span><span><b>ORCL-PERP</b> (Hyperliquid, trade.xyz) – the highest ratio; equal notional<span class="venue">Negative free cash flow, the most leveraged program of the majors. CRWV-PERP is the higher-beta version of the same leg</span></span></li>
+          </ul></div>
+          <div><h4>What OMEN reads</h4><ul class="reads" data-reads><li>Live readings load with the data.</li></ul></div>
+        </div>
+        <p class="why"><b>Why now.</b> The <a href="ai-capex.html#fcf">capex page</a> ranks the five filers by capex over operating cash flow, from audited XBRL. The spread between the top and bottom of that table is the whole position: one company is paying for its buildout and one is borrowing for it, and the <a href="ai-capex.html#credit">credit tape</a> says the borrowers' paper is where spreads widened first. The honest caveat is in the readings: the short leg has already halved from its high, so a good part of the thesis is priced. That is why the rule keys off the fundamental gap and the credit family, not the drawdown – the pair earns when the gap persists into a tighter credit regime, and does nothing if the gap closes because the spender slows down.</p>
+        <div class="rule" data-rule><span class="lab">The rule</span>Rule and live stance load with the data.</div>
+        <p class="kill"><b>KILLS IT</b> – The capex-to-cash-flow gap between the legs narrows below the WATCH threshold (the spender cut capex, or the earner caught up). The short leg's insider buying turns positive on a scale that matters. High-yield spreads fall back toward the calm end of the gauge's range while the gap persists – the market has decided it does not care.</p>
+        <div class="meta"><span>Horizon <b>two reporting quarters</b></span><span>Size <b>satellite · equal legs</b></span><span>Kind <b>relative value</b></span></div>
+      </article>
+
+      <!-- 6 -->
+      <article class="tcard rv" id="t-decay" data-side="neutral">
+        <div class="top"><span class="num">6.</span><span class="chip side-neutral">Neutral · against the headline</span><span class="chip">Event markets</span><span class="stance" data-stance>loading</span><div class="stance-why" data-why></div></div>
+        <h3>Collect the calendar: sell the Bull legs that are running out of year.</h3>
+        <div class="thesis">A "by December 31" market decays toward zero on the calendar, whatever the thesis does. The headline Bull index carries that decay; a NO on its cheapest legs is paid for it.</div>
+        <div class="tgrid">
+          <div><h4>Legs</h4><ul class="legs" data-decay-legs>
+            <li><span class="dir buy">BUY NO</span><span>The Bull constituents priced at or under the threshold with under 90 days to run – listed live from <code>constituents.js</code> once the data loads<span class="venue">Polymarket · USDC · capital-heavy: a NO at 96¢ ties up 96¢ to earn 4</span></span></li>
+          </ul></div>
+          <div><h4>What OMEN reads</h4><ul class="reads" data-reads><li>Live readings load with the data.</li></ul></div>
+        </div>
+        <p class="why"><b>Why now.</b> The <a href="BACKLOG.md">constituent roll</a> made this visible: sixteen of the seventeen live markets behind the pair resolve on 2027-01-01, and the verdict reads their raw odds. An event that has not happened with two months left is not a 3% event – it is a 3% price that the calendar will take to zero unless an S-1 or a product launch lands first. Buying NO on those legs is the cleanest way to be short the headline Bull number without being short AI: the legs are capital-structure events with filing trails, and the <a href="ai-capex.html#tape">issuance tape</a> counts the filings. Thin, slow, and the kill switch is a public document.</p>
+        <div class="rule" data-rule><span class="lab">The rule</span>Rule and live stance load with the data.</div>
+        <p class="kill"><b>KILLS IT</b> – An S-1 from the named issuer appears in EDGAR, or the leg's price doubles from entry: get out, the calendar has stopped mattering. Resolution-rule risk is real on every leg: read each market's resolution text before you take the other side of it.</p>
+        <div class="meta"><span>Horizon <b>to 2027-01-01</b></span><span>Size <b>small · capital-heavy</b></span><span>Kind <b>event · time decay</b></span></div>
+      </article>
+
+      <!-- 7 -->
+      <article class="tcard rv" id="t-crowd" data-side="hedge">
+        <div class="top"><span class="num">7.</span><span class="chip side-hedge">Hedge</span><span class="chip">Index perp</span><span class="stance" data-stance>loading</span><div class="stance-why" data-why></div></div>
+        <h3>Short the crowd, not the names: an index hedge against the longs.</h3>
+        <div class="thesis">Speculators are as long the Nasdaq as they have been in years and as short volatility as they have been in years. That is the fragile side of the market – and it is the index, not the single names you chose.</div>
+        <div class="tgrid">
+          <div><h4>Legs</h4><ul class="legs">
+            <li><span class="dir short">SHORT</span><span><b>XYZ100</b> (Nasdaq-100 style basket perp, Hyperliquid, trade.xyz) – 25–35% of the notional of positions 1–3<span class="venue">Or short QQQx / QQQon borrowed against collateral on Kamino, if you would rather not hold a perp</span></span></li>
+          </ul></div>
+          <div><h4>What OMEN reads</h4><ul class="reads" data-reads><li>Live readings load with the data.</li></ul></div>
+        </div>
+        <p class="why"><b>Why now.</b> The <a href="polymarket-ai-index.html#cot">COT panel</a> reads two crowds at once: Nasdaq futures speculators net long at a percentile the series rarely visits, and VIX futures speculators net short at the other extreme. Crowded longs and crowded short-vol unwind together, and they unwind through the index. This hedge keeps the alpha of positions 1–3 – the view that <i>these</i> names, not the basket, are the right exposure – and removes the beta the crowd is about to sell. It is the cheap version of insurance when the gauge is Elevated but not Stressed: no premium paid, just a drag if the index grinds higher.</p>
+        <div class="rule" data-rule><span class="lab">The rule</span>Rule and live stance load with the data.</div>
+        <p class="kill"><b>KILLS IT</b> – Nasdaq speculative positioning falls back under the WATCH threshold: the crowd has already left. Regime Calm with the pair bullish – the Risk-on cell, where a standing hedge is only a cost.</p>
+        <div class="meta"><span>Horizon <b>while positioning is extreme</b></span><span>Size <b>¼–⅓ of the long book</b></span><span>Kind <b>beta hedge</b></span></div>
+      </article>
+
+      <!-- 8 -->
+      <article class="tcard rv" id="t-recession" data-side="hedge">
+        <div class="top"><span class="num">8.</span><span class="chip side-hedge">Hedge · macro</span><span class="chip">Event market</span><span class="stance" data-stance>loading</span><div class="stance-why" data-why></div></div>
+        <h3>The AI book's real hedge is a recession contract.</h3>
+        <div class="thesis">Capex is a fifth of GDP growth. The risk to a bull AI book is less that the models disappoint than that the cycle turns – and the one makes the other.</div>
+        <div class="tgrid">
+          <div><h4>Legs</h4><ul class="legs">
+            <li><span class="dir buy">BUY</span><span><b>"Recession in 2027" YES</b> (Kalshi) or the Polymarket US-recession market – 2–3% of the long book<span class="venue">Kalshi is the US-regulated venue; Polymarket where available</span></span></li>
+          </ul></div>
+          <div><h4>What OMEN reads</h4><ul class="reads" data-reads><li>Live readings load with the data.</li></ul></div>
+        </div>
+        <p class="why"><b>Why now.</b> The <a href="ai-capex.html#gdp">capex-vs-GDP</a> series says the buildout is now a structural share of growth. That cuts both ways: a capex slowdown is itself a growth shock, so a recession contract is reflexively correlated with the thing a bull book fears. At the price the monitor reads, it is cheap relative to that correlation – cheaper than any equity put, and it pays in the scenario where the gauge's credit and vol families would be red together. It is the hedge for position 1 that does not expire on 2027-01-01.</p>
+        <div class="rule" data-rule><span class="lab">The rule</span>Rule and live stance load with the data.</div>
+        <p class="kill"><b>KILLS IT</b> – The contract reprices above the OFF threshold – the hedge is no longer cheap and the Risk-off cell is doing the work. Capex's share of GDP growth collapses while recession odds stay low: the correlation the position depends on has broken.</p>
+        <div class="meta"><span>Horizon <b>to resolution</b></span><span>Size <b>2–3% of the long book</b></span><span>Kind <b>tail hedge</b></span></div>
+      </article>
+
+      <!-- 9 -->
+      <article class="tcard rv" id="t-cash" data-side="bear">
+        <div class="top"><span class="num">9.</span><span class="chip side-bear">Defensive</span><span class="chip">Tokenized T-bills</span><span class="stance" data-stance>loading</span><div class="stance-why" data-why></div></div>
+        <h3>Dry powder, sized by the regime: tokenized T-bills as the bear position you can hold forever.</h3>
+        <div class="thesis">The simplest bear expression is to own less. On-chain Treasuries pay for the wait, settle in the same USDC the perps and the markets use, and the gauge says how much.</div>
+        <div class="tgrid">
+          <div><h4>Legs</h4><ul class="legs">
+            <li><span class="dir hold">HOLD</span><span><b>USDY</b> / <b>OUSG</b> (Ondo) · <b>BUIDL</b> (BlackRock, via Securitize) · <b>USYC</b> (Circle) – the cash share of the book<span class="venue">Or a Pendle PT on a stablecoin yield for a fixed rate to a date. Same USDC rails as every other leg here</span></span></li>
+          </ul></div>
+          <div><h4>What OMEN reads</h4><ul class="reads" data-reads><li>Live readings load with the data.</li></ul></div>
+        </div>
+        <p class="why"><b>Why now.</b> The regime is the sizing rule. Calm keeps a token cash sleeve; Elevated moves a third of the book to Treasuries; Stressed moves half. The yield is not the point – at the current on-chain T-bill rate it is a small number – the point is that the bear position with the least path dependence is the one that never has to be right about timing. It is also what funds positions 1–3 again when the regime drops back to Calm, and the collateral behind the event legs. No leg on this page is cheaper to hold or harder to be liquidated out of.</p>
+        <div class="rule" data-rule><span class="lab">The rule</span>Rule and live stance load with the data.</div>
+        <p class="kill"><b>KILLS IT</b> – Nothing kills it; the share changes with the regime. The issuer risk is real and not zero: these are fund tokens with redemption terms, not bank deposits.</p>
+        <div class="meta"><span>Horizon <b>standing</b></span><span>Size <b>by regime</b></span><span>Kind <b>defensive · carry</b></span></div>
+      </article>
+
+      <!-- 10 -->
+      <article class="tcard rv" id="t-short" data-side="bear">
+        <div class="top"><span class="num">10.</span><span class="chip side-bear">Bear · outright</span><span class="chip">Perp</span><span class="stance" data-stance>loading</span><div class="stance-why" data-why></div></div>
+        <h3>The outright short – and the exact number that would turn it on.</h3>
+        <div class="thesis">Every bear wants this one. The matrix says when it is a position and when it is an opinion: the Bear side of the pair has to be in control, or the stress has to be in the red band while direction wavers.</div>
+        <div class="tgrid">
+          <div><h4>Legs</h4><ul class="legs">
+            <li><span class="dir short">SHORT</span><span><b>NVDA-PERP</b> (Hyperliquid, trade.xyz) – 1–2×, isolated margin; or <b>SOXX-equivalent</b> sector perp for the complex rather than the name<span class="venue">The only on-chain way to be short a single stock with size; funding is paid by whichever side is crowded</span></span></li>
+          </ul></div>
+          <div><h4>What OMEN reads</h4><ul class="reads" data-reads><li>Live readings load with the data.</li></ul></div>
+        </div>
+        <p class="why"><b>Why now – or rather, why not yet.</b> This card exists so that the bear case is held to the same rule as the bull one. The verdict's bottom row is unconditional: a bearish pair is Risk-off whatever the gauge says, and that is the cell in which an outright short is a position rather than a view. Today the pair is not there, and the card shows how far away it is. The intermediate state is the Caution cell – Stressed regime, mixed direction – where the options market has usually already said it (watch the risk reversal) and a short is at least not fighting the tape. Until one of those prints, the bear expressions on this page are positions 5 to 9.</p>
+        <div class="rule" data-rule><span class="lab">The rule</span>Rule and live stance load with the data.</div>
+        <p class="kill"><b>KILLS IT</b> – The Bull share back above the direction band's upper edge. Regime back to Calm. NVIDIA's risk reversal collapsing toward the calm end of its range with the stock not moving – the options market stopped paying for the downside before the stock stopped falling.</p>
+        <div class="meta"><span>Horizon <b>while the cell holds</b></span><span>Size <b>satellite · never levered beyond 2×</b></span><span>Kind <b>directional</b></span></div>
+      </article>
+
+    </div>
+  </div>
+</section>
+
+<!-- ============ venues ============ -->
+<section id="venues">
+  <div class="wrap">
+    <div class="shead rv">
+      <div class="toprow"><span class="rom">ii.</span><span class="kick" style="color:var(--dim)">Where these can actually be done</span></div>
+      <h2>The venues, and who they exclude.</h2>
+      <div class="claim">Every leg above is buildable without a brokerage account. None of it is available to everyone, and none of it is the underlying.</div>
+    </div>
+    <div class="panel rv">
+      <h3>On-chain rails for a stock view</h3>
+      <span class="cap">Checked 2026-10-28 · listings change; the venue's own list is the source of truth</span>
+      <table class="dt">
+        <tr><th>Rail</th><th>What it is</th><th>Used for</th><th>Who it excludes</th></tr>
+        <tr><td><a href="https://xstocks.com" target="_blank" rel="noopener">xStocks</a> (Backed Finance)</td><td data-l="What it is">Tokenized US equities and ETFs on Solana and Ethereum, each 1:1 backed by the share in custody; traded on Kraken, Bybit and Solana DEXs, 24/7. NVDAx, MUx, AVGOx, ORCLx, MSFTx, GOOGLx, QQQx, SPYx among 60+ at launch, several hundred since.</td><td data-l="Used for">Spot longs (1, 2, 5) and the hedge leg of the carry (4)</td><td data-l="Who it excludes">US persons; Swiss-regulated issuer</td></tr>
+        <tr><td><a href="https://ondo.finance/ondo-stocks" target="_blank" rel="noopener">Ondo Global Markets</a></td><td data-l="What it is">450+ tokenized US stocks and ETFs, total-return (dividends accrue), on Ethereum, Solana, BNB and Robinhood Chain; MetaMask and Uniswap pools since October 2026. The broadest catalogue, so the utilities (3) and sector ETFs live here.</td><td data-l="Used for">Spot longs where xStocks has no listing (3)</td><td data-l="Who it excludes">US persons</td></tr>
+        <tr><td><a href="https://trade.xyz" target="_blank" rel="noopener">Hyperliquid HIP-3</a> (trade.xyz)</td><td data-l="What it is">USDC-settled perpetuals on US equities, indices, commodities and pre-IPO names, deployed on Hyperliquid's order book under HIP-3 – 115 builder markets as of October 2026, nearly half the exchange's perp volume. NVDA, MU, ORCL, MSFT, CRWV, AVGO and the XYZ100 basket; up to 20× on NVDA.</td><td data-l="Used for">Every short leg (4, 5, 7, 10) and leverage where the card allows it (2)</td><td data-l="Who it excludes">US persons; 24/7 trading against an oracle that is stale while Nasdaq is shut</td></tr>
+        <tr><td><a href="https://polymarket.com" target="_blank" rel="noopener">Polymarket</a> · <a href="https://kalshi.com" target="_blank" rel="noopener">Kalshi</a></td><td data-l="What it is">The event legs. Polymarket (USDC on Polygon) lists the Bull/Bear constituents the verdict reads; Kalshi (USD, CFTC-regulated) lists the recession contract the monitor's macro family reads.</td><td data-l="Used for">Insurance (1, 3, 8) and the decay legs (6)</td><td data-l="Who it excludes">Polymarket: US persons on the main venue; Kalshi: non-US persons. Resolution is by the market's rules, not by the headline</td></tr>
+        <tr><td>Tokenized T-bills</td><td data-l="What it is"><a href="https://ondo.finance" target="_blank" rel="noopener">USDY / OUSG</a>, <a href="https://securitize.io" target="_blank" rel="noopener">BUIDL</a>, USYC – fund tokens over short Treasuries, ≈$15B outstanding; 30-day yields around <span data-tbill-apy>–</span> in October 2026.</td><td data-l="Used for">The cash sleeve (9) and the hurdle rate for the carry (4)</td><td data-l="Who it excludes">Varies by token: USDY is non-US, OUSG and BUIDL are qualified-purchaser products</td></tr>
+        <tr><td><a href="https://kamino.finance" target="_blank" rel="noopener">Kamino</a> (Solana lending)</td><td data-l="What it is">Lends against xStocks collateral – the way to borrow a token to short it, or to lever a spot long, without a perp.</td><td data-l="Used for">The no-perp variant of the index hedge (7)</td><td data-l="Who it excludes">Liquidation at the protocol's LTV; collateral oracles follow the token, not the share</td></tr>
+      </table>
+      <div class="srcline"><b>HONESTY</b> – OMEN has no relationship with any venue named here and reads none of their prices; the cards are wired to the same public data as the rest of the site. &nbsp;<b>SOURCE</b> – <a href="https://solana.com/news/case-study-xstocks" target="_blank" rel="noopener">Solana Foundation on xStocks</a> · <a href="https://solana.com/news/ondo-global-markets-tokenized-stocks-etfs-solana" target="_blank" rel="noopener">Ondo Global Markets on Solana</a> · <a href="https://www.theblock.co/news/defi/2026-07-13-hyperliquid-hip-3-markets-surge-50-perp-volume-onchain-stock-trading-grows-408064" target="_blank" rel="noopener">The Block on HIP-3 volume</a> (Jul 2026) · <a href="https://www.redstone.finance/research/tokenized-stocks-2026" target="_blank" rel="noopener">RedStone, tokenized stocks in DeFi</a> (Sep 2026) · <a href="https://app.rwa.xyz" target="_blank" rel="noopener">rwa.xyz</a> for issuance and holders</div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ honesty ============ -->
+<section id="honesty">
+  <div class="wrap">
+    <div class="honesty rv">
+      <h3>What this page cannot know</h3>
+      <p><b>The rules are hand-written, not fitted.</b> Every threshold above was chosen on 2026-10-28 by reading the data, not by testing it. The <a href="methodology.html#honesty" style="color:var(--accT)">methodology</a> already admits the bear markets show no statistically significant lead over drawdowns; a trading rule built on them inherits that. ON means "the published rule is satisfied", not "this will work".</p>
+      <p><b>A token is not the share.</b> xStocks and Ondo tokens track the price through an issuer that holds the shares; you hold a claim on the issuer. They trade when Nasdaq is shut, at whatever a thin book says, and the perps' oracles freeze at Friday's close. Basis between token, perp and share is a real cost on every hedge here, and it is widest exactly when you need the hedge.</p>
+      <p><b>Perps liquidate.</b> Positions 2, 4, 5, 7 and 10 use leverage or are hedged with it. A weekend gap through a maintenance margin closes the position at the worst print of the week. The cards cap leverage for that reason; the venue does not.</p>
+      <p><b>Event markets resolve on their text.</b> The bubble market needs three named triggers; the moratorium market needs a specific legal act; the recession contract follows a specific arbiter. A thesis being right is not the same as a market resolving YES.</p>
+      <p><b>Funding is unread.</b> Position 4's whole return is a number this site does not fetch. The card states the hurdle and leaves the read to the venue; if that bothers you, the page is doing its job.</p>
+      <p><b>Eligibility is not universal</b> – most spot and perp rails exclude US persons, Kalshi excludes everyone else, and the Treasury tokens split by investor class. Nothing here is an offer, a solicitation or advice. OMEN holds no positions and sells nothing.</p>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <div class="fgrid">
+      <div>
+        <a class="logo" href="index.html" style="margin-bottom:18px">
+          <svg viewBox="0 0 32 32" fill="none" style="width:22px;height:22px"><path d="M11.2924 10.3332A8.6 8.6 0 1 0 20.9086 21.6668A8.6 8.6 0 0 1 11.2924 10.3332Z" fill="#e3a63c"/><circle cx="19.4" cy="13.2" r="8.6" stroke="#e2685a" stroke-width="1.4"/></svg>
+          OMEN
+        </a>
+        <span style="max-width:280px">Ten positions against the verdict – the expression companion to the indexes, the gauge and the capex tape.</span>
+      </div>
+      <div>
+        <h4>Positions</h4>
+        <a href="#t-core">1. Core long, insured</a>
+        <a href="#t-memory">2. Memory</a>
+        <a href="#t-grid">3. The toll road</a>
+        <a href="#t-carry">4. Cash-and-carry</a>
+        <a href="#t-pair">5. The spenders pair</a>
+        <a href="#t-decay">6. Collect the calendar</a>
+        <a href="#t-crowd">7. Short the crowd</a>
+        <a href="#t-recession">8. Recession contract</a>
+        <a href="#t-cash">9. Dry powder</a>
+        <a href="#t-short">10. The outright short</a>
+      </div>
+      <div>
+        <h4>Reads</h4>
+        <a href="index.html">The verdict</a>
+        <a href="gauge.html">The gauge</a>
+        <a href="indexes.html">The indexes</a>
+        <a href="ai-capex.html">AI CapEx tape</a>
+        <a href="polymarket-ai-index.html">The monitor</a>
+        <a href="methodology.html">Methodology</a>
+      </div>
+      <div>
+        <h4>Fine print</h4>
+        <span>Not investment advice</span>
+        <span>No positions, nothing sold</span>
+        <span>Rules dated, not backtested</span>
+        <a href="#venues">Venues and who they exclude</a>
+      </div>
+    </div>
+    <div class="fbase">
+      <span>© 2026 – OMEN</span>
+      <span>Trades · Polymarket + OPRA + FRED + CFTC + XBRL + EIA · rules 2026-10-28</span>
+    </div>
+  </div>
+</footer>
+
+<script src="omen-common.js"></script>
+<script src="constituents.js"></script>
+<script src="omen-nav.js"></script>
+<script>
+"use strict";
+const {$,esc,safeUrl}=OMEN;
+const MINUS="−";
+
+/* ================= trades: thresholds ================= */
+// Every number a card's rule quotes comes from here, and every stance decision reads
+// the same object – the rule prose is rendered from T, not typed next to it, so the
+// published threshold and the applied one cannot disagree. test-trades.mjs slices this
+// block (through the `render` marker) and runs the stance rules against fixtures.
+const TBILL={apy:3.7,asof:"2026-10-23",src:"Ondo OUSG 30-day APY"};   // curated; the on-chain T-bill rate the carry hurdle and the cash sleeve quote
+const T={
+  CORE_ON:["riskon","constructive"],
+  INSURE:{calm:2,elevated:4},            // insurance leg, % of the long's notional, by regime
+  MEM_KOREA_MIN:0,                        // Korea 20-day chip exports, YoY %, must exceed
+  GRID_MORATORIUM_OFF:50,                 // moratorium market YES %, at which the hedge is the trade
+  CARRY_HURDLE_PP:5,                      // annualised funding must beat the T-bill by this many points
+  PAIR_GAP_ON:0.5, PAIR_GAP_WATCH:0.25,   // capex/OCF gap between the short and the long leg
+  DECAY_MAX_CENTS:5, DECAY_MAX_DAYS:90,   // a Bull leg is a decay leg under this price with under this many days left
+  CROWD_ON:90, CROWD_WATCH:75,            // NQ speculators net-long percentile
+  RECESSION_ON:25, RECESSION_WATCH:40,    // recession contract YES %
+  RECESSION_GROWTH_SHARE:15,              // capex share of GDP growth, %, for the correlation to hold
+  CASH:{calm:10,elevated:30,stressed:50}, // cash sleeve, % of book, by regime
+  SHORT_RR_WATCH:8,                       // NVDA 25Δ risk reversal, points, that makes the Caution cell a WATCH
+};
+const VLABEL={riskon:"Risk-on",constructive:"Constructive · hedged",mixed:"No edge",caution:"Caution",riskoff:"Risk-off"};
+const RWORD={calm:"Calm",elevated:"Elevated",stressed:"Stressed"};
+
+/* ================= trades: signal reader ================= */
+// One flat object of readings, pulled from the two data files the rest of the site
+// already refreshes. Anything missing is null, and a rule that needs it says WATCH
+// with "no reading" rather than guessing.
+function readSignals(md,cd,constDoc){
+  const S={at:md.updated||null};
+  const g=md.server_gauge||{};
+  S.gauge=g.score??null; S.regime=g.regime||null; S.fam=g.fam||{}; S.lead=g.lead??null; S.conf=g.conf??null;
+  S.bubble=g.bubble!=null?g.bubble*100:null;
+  const price=(md.poly&&md.poly.price)||{};
+  const day=(md.updated||"").slice(0,10)||undefined;
+  const live=OMEN.constituentsAt(constDoc,day);
+  const mean=(side)=>{const v=live.filter(m=>m.side===side&&price[m.id]!=null).map(m=>price[m.id]);return v.length?v.reduce((a,b)=>a+b,0)/v.length*100:null;};
+  const b=mean("bull"),x=mean("bear");
+  S.bullIdx=b; S.bearIdx=x;
+  S.bullShare=(b!=null&&x!=null&&b+x>0)?b/(b+x):null;
+  const roll=md.coverage&&md.coverage.sides?Object.values(md.coverage.sides).some(s=>s.rolling):false;
+  S.rolling=roll;
+  S.dir=S.bullShare!=null?OMEN.dirOf(S.bullShare):null;
+  S.verdict=(S.bullShare!=null&&S.regime)?OMEN.verdictOf(S.bullShare,S.regime,roll):null;
+  const cov=(md.coverage&&md.coverage.markets)||[];
+  const daysLeft=id=>{const c=cov.find(m=>m.id===id);return c&&c.days_left!=null?c.days_left:null;};
+  S.bullLegs=live.filter(m=>m.side==="bull"&&price[m.id]!=null).map(m=>({id:m.id,label:m.label,slug:m.slug,yes:price[m.id]*100,days:daysLeft(m.id)}));
+  const mor=live.find(m=>m.side==="bear"&&/moratorium/i.test(m.label));
+  S.moratorium=mor&&price[mor.id]!=null?price[mor.id]*100:null;
+  S.bearGov=(()=>{const v=live.filter(m=>m.side==="bear"&&m.theme==="gov"&&price[m.id]!=null).map(m=>price[m.id]);return v.length?v.reduce((a,c)=>a+c,0)/v.length*100:null;})();
+  S.bearMkt=(()=>{const v=live.filter(m=>m.side==="bear"&&m.theme==="mkt"&&price[m.id]!=null).map(m=>price[m.id]);return v.length?v.reduce((a,c)=>a+c,0)/v.length*100:null;})();
+  const sk=md.skew&&md.skew.NVDA; S.rrNvda=sk&&sk.rr!=null?sk.rr*100:null; S.ivNvda=sk&&sk.atm!=null?sk.atm*100:null;
+  const tm=md.term&&md.term.NVDA; S.termNvda=tm&&tm.ratio!=null?tm.ratio:null;
+  const tl=md.tail&&md.tail.NVDA; const lv=tl&&tl.levels?tl.levels.find(l=>l.pct===tl.trigger_pct):null; S.tailNvda=lv&&lv.p!=null?lv.p*100:null; S.tailDte=tl?tl.dte:null;
+  const fr=md.fred||{}; S.hyOas=fr.HY_OAS?fr.HY_OAS.last:null; S.cccOas=fr.CCC_OAS?fr.CCC_OAS.last:null;
+  const cot=(md.cot&&md.cot.contracts)||[]; const byKey=k=>cot.find(c=>c.key===k);
+  S.cotNdx=byKey("ndx")?byKey("ndx").pctile:null; S.cotVix=byKey("vix")?byKey("vix").pctile:null; S.cotDate=byKey("ndx")?byKey("ndx").date:null;
+  S.vxn=md.vol&&md.vol.VXN?md.vol.VXN.last:null; S.skewIdx=md.vol&&md.vol.SKEW?md.vol.SKEW.last:null;
+  S.dd={}; S.px={};
+  for(const sym of ["NVDA","SOXX","MU","ORCL","MSFT","CRWV","VST","CEG","SPY"]){
+    const s=md.equity&&md.equity[sym]; if(!s||!s.length) continue;
+    const hi=Math.max(...s.map(r=>r.c)), last=s[s.length-1].c;
+    S.px[sym]=last; S.dd[sym]=(last/hi-1)*100;
+  }
+  const v=md.valuation||{}; S.pe=v.pe_ttm??null; S.pePct=v.pct_10y??null;
+  const ins=md.insiders||{}; S.insNvda=ins.NVDA?ins.NVDA.net_usd:null; S.insOrcl=ins.ORCL?ins.ORCL.net_usd:null;
+  const pf=md.fundamentals&&md.fundamentals.per_filer&&md.fundamentals.per_filer.per; S.pf=pf||{};
+  const mc=md.macro||{}; const gs=(mc.growth_share||[]).filter(x=>x!=null); S.growthShare=gs.length?gs[gs.length-1]:null;
+  const pg=mc.pct_gdp||[]; S.pctGdp=pg.length?pg[pg.length-1]:null; S.pctGdpPrev=pg.length>1?pg[pg.length-2]:null; S.macroAsof=mc.asof||null;
+  const km=(md.kalshi&&md.kalshi.markets)||[]; const rc=km.find(m=>/recession/i.test(m.title)); S.recession=rc&&rc.price!=null?rc.price*100:null; S.recessionTitle=rc?rc.title:null;
+  S.gpu=md.gpu&&md.gpu.median_dph!=null?md.gpu.median_dph:null;
+  // capex-data.json
+  const c=cd||{};
+  const dr=(c.memory&&c.memory.dram_contract)||(c.manual&&c.manual.memory&&c.manual.memory.dram_contract)||null;
+  S.dram=dr?{direction:dr.direction,lo:dr.lo,hi:dr.hi,quarter:dr.quarter}:null;
+  const ko=c.manual&&c.manual.korea; S.korea=ko&&ko.chip_exports_yoy_pct!=null?ko.chip_exports_yoy_pct:null; S.koreaWin=ko?ko.window:null;
+  S.tsmcYoy=c.tsmc&&c.tsmc.yoy_pct!=null?c.tsmc.yoy_pct:null;
+  S.eia=c.eia||null; S.dcYoy=c.capex_gdp&&c.capex_gdp.dc_yoy_pct!=null?c.capex_gdp.dc_yoy_pct:null;
+  S.tbill=TBILL.apy;
+  return S;
+}
+
+/* ================= trades: the ten rules ================= */
+const st=(state,why)=>({state,why});
+const on=w=>st("on",w), watch=w=>st("watch",w), off=w=>st("off",w), check=w=>st("check",w);
+const nodata=w=>st("watch",w||"no reading in the data file – the rule cannot run");
+const pct=(x,nd=1)=>x==null?"–":x.toFixed(nd)+"%";
+const num=(x,nd=1)=>x==null?"–":x.toFixed(nd);
+const cents=x=>x==null?"–":x.toFixed(1)+"¢";
+const sgn=(x,nd=1,unit="")=>x==null?"–":(x<0?MINUS:"+")+Math.abs(x).toFixed(nd)+unit;
+const usdB=x=>x==null?"–":(x<0?MINUS:"")+"$"+Math.abs(x).toFixed(1)+"B";
+const usdM=x=>x==null?"–":(x<0?MINUS:"")+"$"+Math.abs(x/1e6).toFixed(0)+"M";
+const rd=(label,value,cls)=>({label,value,cls});
+const insurePct=S=>S.regime==="calm"?T.INSURE.calm:T.INSURE.elevated;
+
+const TRADES=[
+  {key:"core",side:"bull",
+    stance:S=>{
+      if(S.verdict==null) return nodata();
+      if(S.rolling) return watch("the basket is rolling – no direction read until the next vintage is priced");
+      if(T.CORE_ON.includes(S.verdict)) return on(`verdict <b>${VLABEL[S.verdict]}</b> – hold the long, insurance leg at ${insurePct(S)}% of notional (${RWORD[S.regime]})`);
+      if(S.verdict==="mixed") return watch("the pair is near even – no direction to lean on");
+      if(S.verdict==="caution") return off("regime Stressed with direction still leaning up – the late-cycle cell; flat, not short");
+      return off("the Bear side of the pair is in control – Risk-off");
+    },
+    rule:S=>`<b>ON</b> when the verdict is <b>Risk-on</b> or <b>Constructive</b>. The insurance leg is <b>${T.INSURE.calm}%</b> of the long's notional in Calm and <b>${T.INSURE.elevated}%</b> in Elevated. <b>WATCH</b> in the No-edge cell. <b>OFF</b> – flat, not short – when the Bull share falls under <b>${(OMEN.DIRECTION.BULL*100).toFixed(0)}%</b> (the direction band's lower edge) or the regime reaches Stressed.`,
+    reads:S=>[
+      rd("Verdict",S.verdict?VLABEL[S.verdict]:"–"),
+      rd("Bull share of the pair",pct(S.bullShare!=null?S.bullShare*100:null),S.dir==="bull"?"up":S.dir==="bear"?"down":null),
+      rd("Crash pressure · regime",S.gauge!=null?`${num(S.gauge)}/100 · ${RWORD[S.regime]||"–"}`:"–",S.regime==="stressed"?"down":null),
+      rd("NVDA P/E, trailing · 10y percentile",S.pe!=null?`${num(S.pe)}× · ${num(S.pePct,0)}th`:"–"),
+      rd("NVDA vs SOXX, from running high",S.dd.NVDA!=null?`${sgn(S.dd.NVDA,1,"%")} vs ${sgn(S.dd.SOXX,1,"%")}`:"–"),
+      rd("Bubble market (insurance price)",cents(S.bubble)),
+      rd("NVDA −50% in ~1y, options-implied",pct(S.tailNvda)),
+      rd("NVDA insider net selling, 90d",usdM(S.insNvda),S.insNvda!=null&&S.insNvda<0?"down":null),
+    ]},
+  {key:"memory",side:"bull",
+    stance:S=>{
+      if(!S.dram||S.korea==null||S.dir==null) return nodata();
+      if(S.dir==="bear"||S.dram.direction==="fall") return off(S.dir==="bear"?"the pair is bearish – no directional long":"the DRAM contract forecast points down");
+      const okK=S.korea>T.MEM_KOREA_MIN, okD=S.dram.direction==="rise";
+      if(okK&&okD&&S.dir==="bull") return on(`DRAM contract <b>${esc(S.dram.direction)} ${S.dram.lo}–${S.dram.hi}%</b> for ${esc(S.dram.quarter)}, Korea chips <b>${sgn(S.korea,0,"%")}</b> YoY, pair bullish`);
+      return watch(!okD?"DRAM contract direction is flat – one of the two memory reads is missing":!okK?"Korea 20-day print is not growing":"direction is mixed – memory needs the pair on its side");
+    },
+    rule:S=>`<b>ON</b> when the DRAM contract forecast reads <b>rise</b>, the Korea 20-day chip-export print is above <b>${T.MEM_KOREA_MIN}%</b> YoY and the pair's direction is bullish. <b>WATCH</b> when any one of the three is missing. <b>OFF</b> when the contract forecast reads <b>fall</b> or direction is bearish.`,
+    reads:S=>[
+      rd("DRAM contract forecast",S.dram?`${esc(S.dram.direction)} ${S.dram.lo}–${S.dram.hi}% (${esc(S.dram.quarter)})`:"–",S.dram&&S.dram.direction==="rise"?"up":null),
+      rd(`Korea chip exports, 20d${S.koreaWin?" ("+esc(S.koreaWin)+")":""}`,sgn(S.korea,0,"% YoY"),S.korea>0?"up":"down"),
+      rd("TSMC revenue, YoY",sgn(S.tsmcYoy,1,"%"),S.tsmcYoy>0?"up":"down"),
+      rd("MU from running high",sgn(S.dd.MU,1,"%"),"down"),
+      rd("Pair direction",S.dir||"–",S.dir==="bull"?"up":S.dir==="bear"?"down":null),
+      rd("H100 spot rent, vast.ai median",S.gpu!=null?"$"+num(S.gpu,2)+"/hr":"–"),
+    ]},
+  {key:"grid",side:"bull",
+    stance:S=>{
+      if(S.pctGdp==null||S.pctGdpPrev==null||S.regime==null) return nodata();
+      if(S.moratorium!=null&&S.moratorium>=T.GRID_MORATORIUM_OFF) return off(`moratorium market at ${pct(S.moratorium)} – the hedge is the trade`);
+      if(S.pctGdp<=S.pctGdpPrev) return off("capex as a share of GDP turned down quarter on quarter");
+      if(S.regime==="stressed") return watch("regime Stressed – utilities fall with the basket in a liquidation");
+      return on(`capex <b>${pct(S.pctGdp,2)}</b> of GDP, up from ${pct(S.pctGdpPrev,2)}; moratorium hedge at <b>${cents(S.moratorium)}</b>`);
+    },
+    rule:S=>`<b>ON</b> when hyperscaler capex as a share of GDP is higher than the prior quarter and the regime is not Stressed. <b>WATCH</b> in Stressed. <b>OFF</b> when the share turns down, or when the moratorium market reaches <b>${T.GRID_MORATORIUM_OFF}%</b> – past that the hedge leg is the position.`,
+    reads:S=>[
+      rd("Capex share of GDP, latest vs prior qtr",S.pctGdp!=null?`${pct(S.pctGdp,2)} vs ${pct(S.pctGdpPrev,2)}`:"–",S.pctGdp>S.pctGdpPrev?"up":"down"),
+      rd("Capex share of GDP growth",pct(S.growthShare,0)),
+      rd("Data-center construction, YoY",sgn(S.dcYoy,1,"%"),S.dcYoy>0?"up":null),
+      rd("EIA pipeline · planned / building / canceled GW",S.eia?`${num(S.eia.planned_gw,0)} / ${num(S.eia.under_construction_gw,0)} / ${num(S.eia.canceled_gw,0)}`:"–"),
+      rd("Moratorium market (hedge price)",cents(S.moratorium)),
+      rd("Bear GOV sleeve vs MKT sleeve",S.bearGov!=null?`${num(S.bearGov)} vs ${num(S.bearMkt)}`:"–"),
+      rd("VST · CEG from running high",S.dd.VST!=null?`${sgn(S.dd.VST,1,"%")} · ${sgn(S.dd.CEG,1,"%")}`:"–","down"),
+    ]},
+  {key:"carry",side:"neutral",
+    stance:S=>check(`hurdle: annualised funding above <b>${num(S.tbill+T.CARRY_HURDLE_PP)}%</b> (T-bill ${num(S.tbill)}% + ${T.CARRY_HURDLE_PP}pp) – read it on the venue`),
+    rule:S=>`<b>ON</b> when the perp's annualised funding is above the on-chain T-bill yield by <b>${T.CARRY_HURDLE_PP}</b> points – today that hurdle is <b>${num(S.tbill+T.CARRY_HURDLE_PP)}%</b>. This site does not read funding, so the stance is always <b>CHECK</b>: the readings below say whether the conditions for rich funding are present, the venue says whether it is.`,
+    reads:S=>[
+      rd("On-chain T-bill, 30d APY",pct(S.tbill)+" ("+esc(TBILL.src)+", "+esc(TBILL.asof)+")"),
+      rd("Hurdle for the carry",pct(S.tbill+T.CARRY_HURDLE_PP)),
+      rd("NQ speculators net long, percentile",num(S.cotNdx)+"th",S.cotNdx>=T.CROWD_ON?"up":null),
+      rd("NVDA ATM implied vol, ~1 month",pct(S.ivNvda,0)),
+      rd("NVDA term structure (front / back)",S.termNvda!=null?num(S.termNvda,2)+"×"+(S.termNvda>1?" inverted":""):"–",S.termNvda>1?"up":null),
+      rd("Funding, NVDA-PERP","venue read – not fetched"),
+    ]},
+  {key:"pair",side:"neutral",
+    stance:S=>{
+      const o=S.pf.ORCL,m=S.pf.MSFT;
+      if(!o||!m||o.capex_over_ocf==null||m.capex_over_ocf==null) return nodata();
+      const gap=o.capex_over_ocf-m.capex_over_ocf;
+      if(gap>=T.PAIR_GAP_ON) return on(`capex/OCF gap <b>${num(gap,2)}×</b> (ORCL ${num(o.capex_over_ocf,2)}× vs MSFT ${num(m.capex_over_ocf,2)}×)`);
+      if(gap>=T.PAIR_GAP_WATCH) return watch(`gap ${num(gap,2)}× – narrowing toward the floor`);
+      return off(`gap ${num(gap,2)}× – the spender and the earner have converged`);
+    },
+    rule:S=>`<b>ON</b> when the short leg's capex-to-operating-cash-flow ratio exceeds the long leg's by <b>${T.PAIR_GAP_ON}×</b> or more. <b>WATCH</b> from <b>${T.PAIR_GAP_WATCH}×</b>. <b>OFF</b> below that. Drawdown is deliberately not in the rule: the pair pays on the gap persisting into tighter credit, not on the chart.`,
+    reads:S=>[
+      rd("ORCL capex / OCF, TTM",S.pf.ORCL?num(S.pf.ORCL.capex_over_ocf,2)+"×":"–",S.pf.ORCL&&S.pf.ORCL.capex_over_ocf>=1?"down":null),
+      rd("MSFT capex / OCF, TTM",S.pf.MSFT?num(S.pf.MSFT.capex_over_ocf,2)+"×":"–","up"),
+      rd("ORCL · MSFT free cash flow, TTM",S.pf.ORCL?`${usdB(S.pf.ORCL.fcf_ttm_b)} · ${usdB(S.pf.MSFT.fcf_ttm_b)}`:"–"),
+      rd("HY OAS · CCC OAS",S.hyOas!=null?`${num(S.hyOas,2)}% · ${num(S.cccOas,1)}%`:"–"),
+      rd("Credit family of the gauge",S.fam.credit!=null?num(S.fam.credit,0)+"/100":"–"),
+      rd("ORCL from running high (already priced)",sgn(S.dd.ORCL,1,"%"),"down"),
+      rd("CRWV from running high (the high-beta leg)",sgn(S.dd.CRWV,1,"%"),"down"),
+    ]},
+  {key:"decay",side:"neutral",
+    legs:S=>S.bullLegs.filter(l=>l.yes<=T.DECAY_MAX_CENTS&&l.days!=null&&l.days<=T.DECAY_MAX_DAYS),
+    stance:S=>{
+      if(!S.bullLegs.length) return nodata();
+      const legs=TRADES.find(t=>t.key==="decay").legs(S);
+      if(!legs.length) return off(`no Bull leg under ${T.DECAY_MAX_CENTS}¢ with under ${T.DECAY_MAX_DAYS} days left`);
+      return on(`${legs.length} leg${legs.length===1?"":"s"} qualify – ${legs.map(l=>`<b>${cents(l.yes)}</b> with ${l.days}d left`).join(", ")}`);
+    },
+    rule:S=>`<b>ON</b> for every live Bull constituent priced at or under <b>${T.DECAY_MAX_CENTS}¢</b> with <b>${T.DECAY_MAX_DAYS}</b> days or fewer to resolution; the legs are read from <code>constituents.js</code> and the fetcher's coverage block, never typed here. <b>OFF</b> when none qualifies. Exit a leg when its price doubles from entry or a filing appears.`,
+    reads:S=>{
+      const legs=S.bullLegs.filter(l=>l.yes<=T.DECAY_MAX_CENTS&&l.days!=null&&l.days<=T.DECAY_MAX_DAYS);
+      const rows=legs.map(l=>rd(esc(l.label),`NO at ${cents(100-l.yes)} · +${pct(l.yes/(100-l.yes)*100)} by resolution · ${l.days}d`,"up"));
+      rows.push(rd("Bull index, raw mean of the legs",num(S.bullIdx)));
+      rows.push(rd("Live Bull legs · under the threshold",`${S.bullLegs.length} · ${legs.length}`));
+      return rows;
+    }},
+  {key:"crowd",side:"hedge",
+    stance:S=>{
+      if(S.cotNdx==null) return nodata();
+      if(S.cotNdx>=T.CROWD_ON) return on(`NQ speculators net long at the <b>${num(S.cotNdx)}th</b> percentile${S.cotVix!=null&&S.cotVix<=10?`, VIX speculators net short at the ${num(S.cotVix)}th`:""}`);
+      if(S.cotNdx>=T.CROWD_WATCH) return watch(`positioning at the ${num(S.cotNdx)}th percentile – elevated, not extreme`);
+      return off(`positioning at the ${num(S.cotNdx)}th percentile – the crowd has left`);
+    },
+    rule:S=>`<b>ON</b> when Nasdaq-100 futures speculators' net long is at or above the <b>${T.CROWD_ON}th</b> percentile of its three-year history. <b>WATCH</b> from the <b>${T.CROWD_WATCH}th</b>. <b>OFF</b> below – and in the Risk-on cell, where a standing hedge is only a cost.`,
+    reads:S=>[
+      rd(`NQ speculators net long, percentile${S.cotDate?" ("+esc(S.cotDate)+")":""}`,num(S.cotNdx)+"th",S.cotNdx>=T.CROWD_ON?"down":null),
+      rd("VIX futures speculators, percentile (low = crowded short vol)",num(S.cotVix)+"th",S.cotVix<=10?"down":null),
+      rd("VXN · SKEW",S.vxn!=null?`${num(S.vxn)} · ${num(S.skewIdx)}`:"–"),
+      rd("Vol family of the gauge",S.fam.vol!=null?num(S.fam.vol,0)+"/100":"–"),
+      rd("SPY from running high",sgn(S.dd.SPY,1,"%")),
+      rd("Verdict cell",S.verdict?VLABEL[S.verdict]:"–"),
+    ]},
+  {key:"recession",side:"hedge",
+    stance:S=>{
+      if(S.recession==null||S.growthShare==null) return nodata();
+      if(S.recession>T.RECESSION_WATCH) return off(`contract at ${pct(S.recession)} – no longer cheap; the Risk-off cell is doing the work`);
+      if(S.recession<=T.RECESSION_ON&&S.growthShare>=T.RECESSION_GROWTH_SHARE) return on(`contract at <b>${cents(S.recession)}</b> with capex <b>${pct(S.growthShare,0)}</b> of GDP growth`);
+      if(S.recession<=T.RECESSION_ON) return watch(`contract is cheap but capex is only ${pct(S.growthShare,0)} of growth – the correlation is weak`);
+      return watch(`contract at ${pct(S.recession)} – between the ON and OFF thresholds`);
+    },
+    rule:S=>`<b>ON</b> when the recession contract is at or under <b>${T.RECESSION_ON}¢</b> and capex's share of GDP growth is at least <b>${T.RECESSION_GROWTH_SHARE}%</b>. <b>WATCH</b> up to <b>${T.RECESSION_WATCH}¢</b>. <b>OFF</b> above that.`,
+    reads:S=>[
+      rd(S.recessionTitle?esc(S.recessionTitle)+" (Kalshi)":"Recession contract",cents(S.recession)),
+      rd("Capex share of GDP growth",pct(S.growthShare,0),S.growthShare>=T.RECESSION_GROWTH_SHARE?"up":null),
+      rd(`Capex share of GDP${S.macroAsof?" ("+esc(S.macroAsof)+")":""}`,pct(S.pctGdp,2)),
+      rd("HY OAS",S.hyOas!=null?num(S.hyOas,2)+"%":"–"),
+      rd("Credit · vol families",S.fam.credit!=null?`${num(S.fam.credit,0)} · ${num(S.fam.vol,0)}`:"–"),
+    ]},
+  {key:"cash",side:"bear",
+    stance:S=>{
+      if(!S.regime) return nodata();
+      return on(`regime <b>${RWORD[S.regime]}</b> – cash sleeve <b>${T.CASH[S.regime]}%</b> of the book at ~${num(S.tbill)}%`);
+    },
+    rule:S=>`Always <b>ON</b>; the size is the rule. Cash sleeve <b>${T.CASH.calm}%</b> of the book in Calm, <b>${T.CASH.elevated}%</b> in Elevated, <b>${T.CASH.stressed}%</b> in Stressed, re-struck whenever the regime changes.`,
+    reads:S=>[
+      rd("Regime",S.regime?RWORD[S.regime]:"–",S.regime==="stressed"?"down":S.regime==="calm"?"up":null),
+      rd("Cash sleeve today",S.regime?T.CASH[S.regime]+"%":"–"),
+      rd("Crash pressure · leading / confirming",S.gauge!=null?`${num(S.gauge)} · ${num(S.lead)} / ${num(S.conf)}`:"–"),
+      rd("On-chain T-bill, 30d APY",pct(S.tbill)),
+      rd("Bull share of the pair",pct(S.bullShare!=null?S.bullShare*100:null)),
+    ]},
+  {key:"short",side:"bear",
+    stance:S=>{
+      if(S.verdict==null) return nodata();
+      if(S.rolling) return watch("the basket is rolling – no direction read");
+      if(S.verdict==="riskoff") return on(`Bull share <b>${pct(S.bullShare*100)}</b> – the Bear side is in control`);
+      if(S.verdict==="caution") return S.rrNvda!=null&&S.rrNvda>=T.SHORT_RR_WATCH
+        ?watch(`Caution cell with NVDA risk reversal at ${num(S.rrNvda)}pt – the options market agrees`)
+        :watch("Caution cell – stress is red but the pair still leans up");
+      const dist=(S.bullShare-OMEN.DIRECTION.BEAR)*100;
+      return off(`Bull share ${pct(S.bullShare*100)} – <b>${num(dist)}</b> points above the bearish band; regime ${RWORD[S.regime]}`);
+    },
+    rule:S=>`<b>ON</b> only in the <b>Risk-off</b> cell – Bull share under <b>${(OMEN.DIRECTION.BEAR*100).toFixed(0)}%</b>, whatever the gauge reads. <b>WATCH</b> in the <b>Caution</b> cell (regime Stressed, direction mixed), firmer when NVDA's 25Δ risk reversal is at or above <b>${T.SHORT_RR_WATCH}</b> points. <b>OFF</b> in every other cell, with the distance to the trigger shown.`,
+    reads:S=>[
+      rd("Verdict cell",S.verdict?VLABEL[S.verdict]:"–"),
+      rd("Bull share · bearish band edge",S.bullShare!=null?`${pct(S.bullShare*100)} · ${(OMEN.DIRECTION.BEAR*100).toFixed(0)}%`:"–"),
+      rd("Distance to the trigger",S.bullShare!=null?sgn((S.bullShare-OMEN.DIRECTION.BEAR)*100,1," pts"):"–"),
+      rd("Regime · crash pressure",S.regime?`${RWORD[S.regime]} · ${num(S.gauge)}/100`:"–"),
+      rd("NVDA 25Δ risk reversal",S.rrNvda!=null?num(S.rrNvda)+"pt":"–",S.rrNvda>=T.SHORT_RR_WATCH?"down":null),
+      rd("NVDA from running high",sgn(S.dd.NVDA,1,"%"),"down"),
+      rd("NVDA short interest, days to cover","see the monitor"),
+    ]},
+];
+
+/* ================= render ================= */
+const STANCE_WORD={on:"ON",watch:"WATCH",off:"OFF",check:"CHECK"};
+function renderCard(t,S){
+  const card=$("t-"+t.key); if(!card) return null;
+  const s=t.stance(S);
+  const chip=card.querySelector("[data-stance]"); chip.textContent=STANCE_WORD[s.state]; chip.className="stance "+s.state;
+  card.querySelector("[data-why]").innerHTML=s.why?`<b>${STANCE_WORD[s.state]}</b> – ${s.why}`:"";
+  card.querySelector("[data-rule]").innerHTML=`<span class="lab">The rule</span>${t.rule(S)}`;
+  const ul=card.querySelector("[data-reads]");
+  ul.innerHTML=t.reads(S).map(r=>`<li><span>${r.label}</span><span class="v${r.cls?" "+r.cls:""}">${r.value}</span></li>`).join("");
+  return s.state;
+}
+function renderDecayLegs(S){
+  const host=document.querySelector("[data-decay-legs]"); if(!host) return;
+  const legs=TRADES.find(t=>t.key==="decay").legs(S);
+  if(!legs.length) return;
+  host.innerHTML=legs.map(l=>`<li><span class="dir buy">BUY NO</span><span><b>${esc(l.label)}</b> – NO at ${cents(100-l.yes)}, pays 100¢ in ${l.days} days<span class="venue">Polymarket · ${l.slug?`<a href="${safeUrl("https://polymarket.com/event/"+l.slug)}" target="_blank" rel="noopener">${esc(l.slug)}</a>`:"market "+esc(l.id)}</span></span></li>`).join("");
+}
+function renderToday(S){
+  const n={on:0,watch:0,off:0,check:0};
+  for(const t of TRADES){ const s=renderCard(t,S); if(s) n[s]++; }
+  renderDecayLegs(S);
+  $("nOn").innerHTML=`${n.on}<small> / ${TRADES.length}</small>`;
+  $("nWatch").innerHTML=`${n.watch+n.check}<small> / ${TRADES.length}</small>`;
+  $("nOff").innerHTML=`${n.off}<small> / ${TRADES.length}</small>`;
+  const V=S.verdict?VLABEL[S.verdict]:"–";
+  $("todayVerdict").textContent=V+(S.rolling?" · basket rolling":"");
+  const col={riskon:"var(--bullT)",constructive:"var(--accT)",mixed:"var(--regT)",caution:"var(--crashT)",riskoff:"var(--crashT)"}[S.verdict];
+  if(col) $("todayVerdict").style.color=col;
+  $("todayCell").textContent=S.dir&&S.regime?`${S.dir} × ${S.regime}`:"–";
+  if(S.bullShare!=null&&S.gauge!=null)
+    $("todayLine").textContent=`Bull share ${pct(S.bullShare*100)} with crash pressure ${num(S.gauge)}/100 (${RWORD[S.regime]}). The cards below apply that cell – the same rule as the landing page, from the same data file.`;
+  // ticker
+  $("tkVerdict").textContent=V;
+  $("tkShare").textContent=pct(S.bullShare!=null?S.bullShare*100:null);
+  $("tkGauge").textContent=S.gauge!=null?num(S.gauge)+"/100":"–";
+  $("tkRegime").textContent=S.regime?RWORD[S.regime].toUpperCase():"–";
+  $("tkRr").textContent=S.rrNvda!=null?num(S.rrNvda)+"PT":"–";
+  $("tkBubble").textContent=cents(S.bubble);
+  $("tkTail").textContent=pct(S.tailNvda);
+  $("tkHy").textContent=S.hyOas!=null?num(S.hyOas,2)+"%":"–";
+  $("tkCot").textContent=S.cotNdx!=null?num(S.cotNdx,0)+"TH":"–";
+  $("tkTbill").textContent=pct(S.tbill);
+  $("asOf").textContent=S.at?S.at.replace("T"," ").replace(/:\d\dZ$/,"Z"):"–";
+  $("nLive").textContent=`${S.bullLegs.length} live Bull legs · rules read ${TRADES.length} positions`;
+  // the insurance math on card 1 and the moratorium multiple on card 3
+  const ip=insurePct(S);
+  for(const id of ["data-ins-pct","data-ins-pct2"]) document.querySelectorAll(`[${id}]`).forEach(el=>el.textContent=S.regime?ip+"%":"–");
+  if(S.bubble!=null&&S.bubble>0){
+    document.querySelectorAll("[data-bub-cents]").forEach(el=>el.textContent=cents(S.bubble));
+    document.querySelectorAll("[data-bub-mult]").forEach(el=>el.textContent="≈"+num(100/S.bubble)+"×");
+    document.querySelectorAll("[data-bub-cover]").forEach(el=>el.textContent="≈"+num(ip/S.bubble*100,0)+"%");
+  }
+  document.querySelectorAll("[data-tail50]").forEach(el=>el.textContent=pct(S.tailNvda));
+  if(S.moratorium!=null&&S.moratorium>0) document.querySelectorAll("[data-mor-mult]").forEach(el=>el.textContent="≈"+num(100/S.moratorium)+"×");
+  document.querySelectorAll("[data-tbill-apy]").forEach(el=>el.textContent=pct(S.tbill));
+}
+
+// filter chips: one kind at a time, "All" restores
+document.querySelectorAll(".filter button").forEach(b=>b.addEventListener("click",()=>{
+  const f=b.dataset.f;
+  document.querySelectorAll(".filter button").forEach(x=>x.setAttribute("aria-pressed",x===b?"true":"false"));
+  document.querySelectorAll(".tcard").forEach(c=>{ c.hidden=f!=="all"&&c.dataset.side!==f; });
+}));
+
+// reveal on scroll
+const io=new IntersectionObserver(es=>{ for(const e of es){ if(!e.isIntersecting) continue; e.target.classList.add("in"); io.unobserve(e.target);} },{threshold:.08});
+document.querySelectorAll(".rv").forEach(el=>io.observe(el));
+
+async function load(){
+  let md=null,cd=null;
+  try{ const r=await fetch("market-data.json",{cache:"no-store"}); if(r.ok) md=await r.json(); }catch(e){}
+  if(!md&&typeof MARKET_DATA!=="undefined") md=MARKET_DATA;   // the file:// bundle, if a page loads it
+  try{ const r=await fetch("capex-data.json",{cache:"no-store"}); if(r.ok) cd=await r.json(); }catch(e){}
+  if(!md){
+    $("todayVerdict").textContent="no data";
+    $("asOf").textContent="data file unreachable – serve the folder over http";
+    document.querySelectorAll("[data-stance]").forEach(el=>{ el.textContent="NO DATA"; el.className="stance off"; });
+    document.querySelectorAll("[data-rule]").forEach((el,i)=>{ el.innerHTML=`<span class="lab">The rule</span>${TRADES[i].rule({tbill:TBILL.apy})}`; });
+    return;
+  }
+  const S=readSignals(md,cd,window.OMEN_CONSTITUENTS);
+  renderToday(S);
+}
+load();
+</script>
+</body>
+</html>

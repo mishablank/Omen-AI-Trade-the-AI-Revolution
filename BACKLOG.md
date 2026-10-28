@@ -1,5 +1,42 @@
 # Backlog
 
+## Trades page – the reads it cannot make yet
+
+**Status:** Open – the page shipped 2026-10-28 (`feat/trades-page`): ten positions, each with a
+stance rule rendered from one threshold object and a kill switch, wired to `market-data.json`
+and `capex-data.json`. Three things are stated on the page as unread or unverified.
+**Component:** `omen/trades.html`, `omen/test-trades.mjs`, `omen/update-market-data.py`
+**Priority:** Normal
+
+### Problem
+
+- **Funding is unread.** Position 4 (cash-and-carry on the NVDA perp) is the one position whose
+  whole return is a venue number – Hyperliquid's funding rate on the trade.xyz NVDA market – and
+  the page says so: its stance is always CHECK, with the hurdle (on-chain T-bill + 5pp) printed.
+  Hyperliquid's info API is public and keyless (`POST https://api.hyperliquid.xyz/info`,
+  `metaAndAssetCtxs` for the HIP-3 deployer), so the fetcher could carry it.
+- **The T-bill rate is curated.** `TBILL` in trades.html is a hand-set 3.7% (Ondo OUSG 30-day
+  APY, 2026-10-23). It sets the carry hurdle and the cash sleeve's quoted yield. FRED `DTB3`
+  is the keyless series for the underlying; the token yields trail it by fee.
+- **Listings are asserted, not read.** The venue table names xStocks, Ondo and trade.xyz
+  tickers from public listings as of 2026-10-28; nothing checks they still exist. The on-chain
+  venues publish lists (xStocks and trade.xyz both have public market endpoints).
+
+### Acceptance Criteria
+
+- [ ] `update-market-data.py` carries `funding.NVDA` (annualised %, as-of) from Hyperliquid's
+      info API, with carry-forward on failure like every other panel; trades.html reads it and
+      position 4's stance becomes ON / WATCH / OFF against the printed hurdle.
+- [ ] `TBILL` moves from a constant to `fred.DTB3` (or a tokenized-Treasury yield if a keyless
+      source exists), with the as-of shown where the constant's date is shown today.
+- [ ] A listing check – weekly is enough – that each ticker named in the venue table resolves
+      on its venue, reported as a run annotation like the coverage warnings; a delisted leg is
+      flagged on the card, not silently kept.
+- [ ] The thresholds in `T` are a 2026-10-28 reading of the data, not a fit. Once the snapshot
+      history is long enough, score each rule's ON/OFF history against forward drawdowns and
+      either keep the number or publish why it changed.
+
+
 ## Constituent roll – the 2027 vintage
 
 **Status:** Open – the mechanism shipped 2026-10-22 (`feat/constituent-vintages-and-expiry-watchdog`):
