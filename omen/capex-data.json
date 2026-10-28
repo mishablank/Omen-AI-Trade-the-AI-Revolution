@@ -1,5 +1,5 @@
 {
- "updated": "2026-10-28T15:57:35Z",
+ "updated": "2026-10-28T18:44:58Z",
  "tsmc": {
   "asof": "2026-09",
   "rev_ntd_b": 511.9,
@@ -13,7 +13,7 @@
   "cur": {
    "from": "2026-07-31",
    "to": "2026-10-28",
-   "debt": 12,
+   "debt": null,
    "s1_ai": 299,
    "formd_ai": 3
   },
@@ -22,7 +22,7 @@
    "to": "2026-07-30",
    "debt": 26,
    "s1_ai": 353,
-   "formd_ai": null
+   "formd_ai": 7
   }
  },
  "capex_asymmetry": {
@@ -233,15 +233,15 @@
  "agents": {
   "asof": "2026-10-28",
   "npm": {
-   "@anthropic-ai/claude-code": 8641472,
-   "@openai/codex": 18127935,
-   "@google/gemini-cli": 288968
+   "@anthropic-ai/claude-code": 10900364,
+   "@openai/codex": 22803009,
+   "@google/gemini-cli": 364690
   },
   "pypi": {
    "claude-agent-sdk": 7977979,
    "openai-agents": 4751043
   },
-  "npm_total_wk": 27058375,
+  "npm_total_wk": 34068063,
   "series": [
    [
     "2026-10-03",
@@ -345,7 +345,7 @@
    ],
    [
     "2026-10-28",
-    27058375
+    34068063
    ]
   ]
  },
