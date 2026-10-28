@@ -1,6 +1,6 @@
 {
- "updated": "2026-10-27T22:53:45Z",
- "snapshot_date": "2026-10-27",
+ "updated": "2026-10-28T01:07:24Z",
+ "snapshot_date": "2026-10-28",
  "artificial_analysis": {
   "cn_best": "GLM-5.2",
   "cn_score": 51,
@@ -93,17 +93,10 @@
   "note": "Google Trends US, 90-day avg: 8 Chinese AI terms = 2.3% of AI-assistant search interest vs ChatGPT+Gemini+Claude+Llama AI+Meta AI."
  },
  "apps": {
-  "score": 1,
-  "asof": "2026-10-27",
+  "score": 0,
+  "asof": "2026-10-28",
   "source": "app-charts",
-  "best": [
-   {
-    "label": "MiniMax",
-    "rank": 97,
-    "store": "android",
-    "country": "kr"
-   }
-  ],
+  "best": [],
   "markets": [
    "us",
    "gb",
@@ -116,7 +109,7 @@
    "au",
    "kr"
   ],
-  "detail": "MiniMax #97 (KR Play); basket-mean Western top-100 presence 1/100 across 10 markets",
+  "detail": "no Chinese AI app in any iOS or Play top-100; basket-mean Western top-100 presence 0/100 across 10 markets",
   "note": "iOS Apple RSS top-100 + Android Play top-200 across 10 markets; presence = basket-mean of best top-100 chart rank (DeepSeek/Qwen/Doubao/Kimi/MiniMax), #1=100 #100=1; ranks past top-100 score 0."
  },
  "investment": {
@@ -502,7 +495,7 @@
   "source": "lmarena-dataset"
  },
  "arena_boards": {
-  "asof": "2026-10-27",
+  "asof": "2026-10-28",
   "boards": {
    "webdev": {
     "metric": "elo",
@@ -625,7 +618,7 @@
    "zai-org/ZCode"
   ],
   "source": "search",
-  "asof": "2026-10-27",
+  "asof": "2026-10-28",
   "vel": {
    "MiniMax-AI/MiniMax-H3": 104.3,
    "MiniMax-AI/MiniMax-M2": 0.9,
@@ -708,48 +701,43 @@
  },
  "openrouter_week": {
   "week": "2026-10-26",
-  "cn_share": 0.604,
-  "us_share": 0.2516,
-  "spi": 2.401,
-  "total_tokens": 51344730679236
+  "cn_share": 0.6035,
+  "us_share": 0.2518,
+  "spi": 2.396,
+  "total_tokens": 53405328659443
  },
  "vercel_gateway": {
-  "asof": "2026-10-27",
-  "cn_share": 53.32,
-  "us_share": 29.77,
-  "spi": 1.791,
+  "asof": "2026-10-28",
+  "cn_share": 48.14,
+  "us_share": 24.89,
+  "spi": 1.934,
   "top_cn": [
    {
     "lab": "deepseek",
-    "share": 28.97
+    "share": 22.57
    },
    {
     "lab": "zai",
-    "share": 20.35
+    "share": 19.29
    },
    {
     "lab": "moonshotai",
-    "share": 2.43
+    "share": 5.13
    },
    {
     "lab": "xiaomi",
-    "share": 0.77
+    "share": 0.66
    },
    {
     "lab": "minimax",
-    "share": 0.52
+    "share": 0.29
    },
    {
     "lab": "alibaba",
-    "share": 0.27
+    "share": 0.19
    }
   ],
   "series": [
-   {
-    "d": "2026-08-28",
-    "cn": 62.17,
-    "us": 37.49
-   },
    {
     "d": "2026-08-29",
     "cn": 69.31,
@@ -1047,15 +1035,20 @@
    },
    {
     "d": "2026-10-27",
-    "cn": 53.32,
-    "us": 29.77
+    "cn": 52.92,
+    "us": 29.51
+   },
+   {
+    "d": "2026-10-28",
+    "cn": 48.14,
+    "us": 24.89
    }
   ],
   "license": "AI Gateway Leaderboard Data (c) Vercel, CC BY 4.0"
  },
  "ollama": {
-  "cn": 325481600,
-  "us": 494103700,
+  "cn": 325483400,
+  "us": 494209100,
   "cn_top": [
    {
     "name": "deepseek-r1",
@@ -1089,7 +1082,7 @@
    },
    {
     "name": "llama3.2",
-    "pulls": 86300000
+    "pulls": 86400000
    },
    {
     "name": "gemma3",
@@ -1097,10 +1090,10 @@
    }
   ],
   "n_models": 264,
-  "asof": "2026-10-27"
+  "asof": "2026-10-28"
  },
  "kalshi": {
-  "asof": "2026-10-27",
+  "asof": "2026-10-28",
   "markets": [
    {
     "label": "Will a Chinese AI model be #1 this year?",
@@ -1122,7 +1115,7 @@
    },
    {
     "label": "Best AI at end of 2026: Qwen",
-    "p": 0.005,
+    "p": 0.006,
     "ticker": "KXLLM1-26DEC31-ALI",
     "series": "kxllm1"
    },
@@ -1173,7 +1166,7 @@
   ],
   "cn_total": 2620,
   "us_total": 2627,
-  "asof": "2026-10-27"
+  "asof": "2026-10-28"
  },
  "sdk": {
   "cn": [
@@ -1204,7 +1197,7 @@
     "wk": 38338451
    }
   ],
-  "asof": "2026-10-27"
+  "asof": "2026-10-28"
  },
  "epoch_compute": {
   "us_share": 79.5,
