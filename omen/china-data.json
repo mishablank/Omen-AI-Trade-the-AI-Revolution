@@ -1,5 +1,5 @@
 {
- "updated": "2026-10-28T01:07:24Z",
+ "updated": "2026-10-28T08:13:49Z",
  "snapshot_date": "2026-10-28",
  "artificial_analysis": {
   "cn_best": "GLM-5.2",
@@ -502,16 +502,16 @@
     "best_model": "Kimi K3.1 Pro (Max)",
     "best_org": "moonshot",
     "best_rank": 8,
-    "best_score": 1692,
+    "best_score": 1695,
     "other_model": "Claude Opus 5.5 (Max)",
     "other_org": "anthropic",
     "other_rank": 1,
-    "other_score": 1807,
-    "gap": 115,
+    "other_score": 1809,
+    "gap": 114,
     "cn_leads": false,
     "top10": 1,
     "n": 100,
-    "asof": "2026-10-23",
+    "asof": "2026-10-27",
     "source": "lmarena-dataset"
    },
    "agent": {
@@ -587,17 +587,17 @@
     "metric": "elo",
     "best_model": "Seedream 5.0 Pro",
     "best_org": "bytedance",
-    "best_rank": 11,
-    "best_score": 1392,
+    "best_rank": 13,
+    "best_score": 1390,
     "other_model": "GPT-Image-2.5 Sunburst",
     "other_org": "openai",
     "other_rank": 1,
-    "other_score": 1515,
-    "gap": 123,
+    "other_score": 1517,
+    "gap": 127,
     "cn_leads": false,
     "top10": 0,
-    "n": 60,
-    "asof": "2026-10-26",
+    "n": 61,
+    "asof": "2026-10-27",
     "source": "lmarena-dataset"
    }
   }
@@ -639,23 +639,23 @@
   "cnOrgs": [
    {
     "org": "Qwen",
-    "dl": 196597444
+    "dl": 196628204
    },
    {
     "org": "deepseek-ai",
-    "dl": 23994992
+    "dl": 24003484
    },
    {
     "org": "zai-org",
-    "dl": 16272980
+    "dl": 16279651
    },
    {
     "org": "MiniMaxAI",
-    "dl": 7321085
+    "dl": 7320120
    },
    {
     "org": "tencent",
-    "dl": 4119366
+    "dl": 4126527
    },
    {
     "org": "moonshotai",
@@ -663,7 +663,7 @@
    },
    {
     "org": "stepfun-ai",
-    "dl": 685337
+    "dl": 677572
    },
    {
     "org": "XiaomiMiMo",
@@ -673,15 +673,15 @@
   "usOrgs": [
    {
     "org": "google",
-    "dl": 36204848
-   },
-   {
-    "org": "meta-llama",
-    "dl": 16044071
+    "dl": 36219409
    },
    {
     "org": "nvidia",
     "dl": 15978685
+   },
+   {
+    "org": "meta-llama",
+    "dl": 15827403
    },
    {
     "org": "openai",
@@ -689,52 +689,52 @@
    },
    {
     "org": "microsoft",
-    "dl": 2678392
+    "dl": 2635860
    },
    {
     "org": "allenai",
-    "dl": 2148163
+    "dl": 2144437
    }
   ],
-  "cn": 251811231,
-  "us": 81831422
+  "cn": 251855585,
+  "us": 81583057
  },
  "openrouter_week": {
   "week": "2026-10-26",
-  "cn_share": 0.6035,
-  "us_share": 0.2518,
-  "spi": 2.396,
-  "total_tokens": 53405328659443
+  "cn_share": 0.608,
+  "us_share": 0.247,
+  "spi": 2.462,
+  "total_tokens": 62292558291233
  },
  "vercel_gateway": {
   "asof": "2026-10-28",
-  "cn_share": 48.14,
-  "us_share": 24.89,
-  "spi": 1.934,
+  "cn_share": 52.4,
+  "us_share": 20.33,
+  "spi": 2.577,
   "top_cn": [
    {
     "lab": "deepseek",
-    "share": 22.57
+    "share": 29.17
    },
    {
     "lab": "zai",
-    "share": 19.29
+    "share": 17.38
    },
    {
     "lab": "moonshotai",
-    "share": 5.13
+    "share": 4.63
    },
    {
     "lab": "xiaomi",
-    "share": 0.66
+    "share": 0.68
    },
    {
     "lab": "minimax",
-    "share": 0.29
+    "share": 0.3
    },
    {
     "lab": "alibaba",
-    "share": 0.19
+    "share": 0.22
    }
   ],
   "series": [
@@ -1040,15 +1040,15 @@
    },
    {
     "d": "2026-10-28",
-    "cn": 48.14,
-    "us": 24.89
+    "cn": 52.4,
+    "us": 20.33
    }
   ],
   "license": "AI Gateway Leaderboard Data (c) Vercel, CC BY 4.0"
  },
  "ollama": {
-  "cn": 325483400,
-  "us": 494209100,
+  "cn": 325589399,
+  "us": 494424500,
   "cn_top": [
    {
     "name": "deepseek-r1",
@@ -1078,7 +1078,7 @@
   "us_top": [
    {
     "name": "llama3.1",
-    "pulls": 120600000
+    "pulls": 120700000
    },
    {
     "name": "llama3.2",
@@ -1121,7 +1121,7 @@
    },
    {
     "label": "Best AI at end of 2026: Claude",
-    "p": 0.597,
+    "p": 0.595,
     "ticker": "KXLLM1-26DEC31-A",
     "series": "kxllm1"
    }
@@ -1131,7 +1131,7 @@
   "cn": [
    {
     "base": "Qwen/Qwen3-8B",
-    "n": 2237
+    "n": 2241
    },
    {
     "base": "deepseek-ai/DeepSeek-R1",
@@ -1164,7 +1164,7 @@
     "n": 129
    }
   ],
-  "cn_total": 2620,
+  "cn_total": 2624,
   "us_total": 2627,
   "asof": "2026-10-28"
  },
