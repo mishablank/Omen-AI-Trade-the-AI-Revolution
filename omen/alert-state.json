@@ -1,1 +1,1 @@
-{"regime": "calm", "gauge": 33.56271328898637, "at": "2026-10-29T08:19:34.035513Z", "coverage_warnings": []}
+{"regime": "calm", "gauge": 31.32476533457459, "at": "2026-10-29T08:40:20.094645Z", "coverage_warnings": ["china: 0 live market(s), below the floor of 3 - the china side-index is reading too few markets to be an index", "macro: 0 live market(s), below the floor of 3 - the macro side-index is reading too few markets to be an index"]}
