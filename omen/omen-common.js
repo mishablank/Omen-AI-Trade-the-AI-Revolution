@@ -101,6 +101,31 @@
     stressed: { word: "Stressed", color: "var(--crashT)", border: "var(--crash)" },
   };
 
+  /* ================= verdict direction ================= */
+  // The direction axis of the verdict: the Bull side's share of the pair, banded once
+  // here. index.html owned dirOf/verdictOf until 2026-10-28, when trades.html became the
+  // second page to apply the matrix – the same copy-per-page drift the thresholds above
+  // were pulled out of. The verdict labels and prose stay on the landing page; the rule
+  // that picks the cell lives here. test-verdict.mjs covers all nine cells through the
+  // landing page's alias of these two functions.
+  const DIRECTION = { BULL: 0.55, BEAR: 0.45 };
+  function dirOf(bullShare) {
+    return bullShare >= DIRECTION.BULL ? "bull" : bullShare > DIRECTION.BEAR ? "mixed" : "bear";
+  }
+  // bullShare in [0,1] · regime "calm"|"elevated"|"stressed" · rolling: a side of the pair
+  // has fewer live markets than constituents.js's roll_floor, so its level is one or two
+  // markets' noise rather than an index – direction is switched off and the cell is
+  // "No edge" until the next vintage is priced (rollState decides; this only honours it).
+  // Stress cannot soften a bearish read: the bear row is Risk-off in every column.
+  function verdictOf(bullShare, regime, rolling) {
+    if (rolling) return "mixed";
+    const dir = dirOf(bullShare);
+    if (dir === "bear") return "riskoff";
+    if (regime === "stressed") return "caution";
+    if (dir === "mixed") return "mixed";
+    return regime === "calm" ? "riskon" : "constructive";
+  }
+
   /* ================= gauge reference ranges ================= */
   // The calm→stress range each gauge component is normalized against, written down once.
   // They used to be re-typed in five places — compute_gauge() in update-market-data.py,
@@ -456,6 +481,7 @@
     $, esc, safeUrl,
     outcomeYes, jsonList, isClosed, bookSpread,
     REGIME, regimeOf, REGIME_META,
+    DIRECTION, dirOf, verdictOf,
     GAUGE_REFS, GAUGE_FAM_NAMES, gaugeScore, gaugeRefText, gaugeRefsProse,
     indexMath, sparkSvg, parseSnapshots, pairShareSeries,
     constituentsAt, bubbleIdAt, rollState, coverageSummary,

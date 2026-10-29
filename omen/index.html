@@ -270,6 +270,7 @@ footer{border-top:1px solid var(--line);padding:64px 0 40px;position:relative;z-
       <a href="methodology.html">Methodology</a>
       <a href="china-ai-monitor.html">China Watch</a>
       <a href="ai-capex.html">AI CapEx</a>
+      <a href="trades.html">Trades</a>
     </div>
     <a class="btn" href="polymarket-ai-index.html">Open the monitor</a>
     <button class="navtoggle" type="button" aria-label="Menu" aria-expanded="false" aria-controls="navlinks"><span class="bars"></span></button>
@@ -406,7 +407,7 @@ footer{border-top:1px solid var(--line);padding:64px 0 40px;position:relative;z-
       </div>
       <div>
         <h4>Site</h4>
-        <a href="indexes.html">The Indexes</a><a href="gauge.html">The Gauge</a><a href="methodology.html">Methodology</a><a href="china-ai-monitor.html">China Watch</a><a href="ai-capex.html">AI CapEx</a><a href="polymarket-ai-index.html">Live Monitor →</a>
+        <a href="indexes.html">The Indexes</a><a href="gauge.html">The Gauge</a><a href="methodology.html">Methodology</a><a href="china-ai-monitor.html">China Watch</a><a href="ai-capex.html">AI CapEx</a><a href="trades.html">Trades</a><a href="polymarket-ai-index.html">Live Monitor →</a>
       </div>
       <div>
         <h4>Data</h4>
@@ -485,22 +486,10 @@ const VERDICTS={
     h:"Markets price the break.",
     line:(b,g,r)=>`Bull share ${(b*100).toFixed(1)}% – the bear side of the pair is in control, with crash pressure at ${g.toFixed(1)}/100 (${r}).`},
 };
-// direction from the pair share: bullish ≥ .55, bearish < .45, mixed between
-function dirOf(bullShare){
-  return bullShare>=0.55?"bull":bullShare>0.45?"mixed":"bear";
-}
-// bullShare in [0,1] · regime "calm"|"elevated"|"stressed" · rolling: a side of the pair
-// has fewer live markets than constituents.js's roll_floor, so its level is one or two
-// markets' noise rather than an index – direction is switched off and the cell is "No edge"
-// until the next vintage is priced (OMEN.rollState decides; this rule only honours it)
-function verdictOf(bullShare,regime,rolling){
-  if(rolling) return "mixed";
-  const dir=dirOf(bullShare);
-  if(dir==="bear") return "riskoff";
-  if(regime==="stressed") return "caution";
-  if(dir==="mixed") return "mixed";
-  return regime==="calm"?"riskon":"constructive";
-}
+// Direction bands (bullish ≥ .55, bearish < .45, mixed between) and the cell rule live
+// in omen-common.js since 2026-10-28 – trades.html applies the same matrix, so the
+// rule is written once. The labels above are this page's; the thresholds are shared.
+const dirOf=OMEN.dirOf, verdictOf=OMEN.verdictOf;
 // Same regime rules as the monitor, from the one place the thresholds are written down:
 // the blended gauge or the crash basket can trip Stressed; a single market (the
 // bubble-burst market included) can raise Elevated but never trips red on its own.

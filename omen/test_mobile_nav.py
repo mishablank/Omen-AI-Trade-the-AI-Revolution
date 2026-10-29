@@ -17,7 +17,8 @@ HERE = Path(__file__).parent
 
 # The pages that share the marketing-site nav (logo · link row · monitor CTA). The two
 # dashboards (monitor, china) have their own chrome and no .links row.
-NAV_PAGES = ["index.html", "indexes.html", "gauge.html", "methodology.html", "ai-capex.html"]
+NAV_PAGES = ["index.html", "indexes.html", "gauge.html", "methodology.html", "ai-capex.html",
+             "trades.html"]
 
 
 def read(name: str) -> str:
