@@ -258,6 +258,98 @@ def test_implied_median_none_when_crossing_outside_ladder():
     assert umd.implied_median([]) is None
 
 
+# ---- Kalshi GPU: the 2026-10 relisting (monthly-average ladders, settled prints) ----
+
+def _gpu_mkt(strike, bid, ask, close="2026-12-01T04:59:59Z", value=None):
+    return {"floor_strike": strike, "yes_bid_dollars": bid, "yes_ask_dollars": ask,
+            "close_time": close, "expiration_value": value}
+
+
+def test_gpu_series_are_the_live_relisting_not_the_retired_ones():
+    # the *W / *MON series stopped listing after 2026-09-04 and the panel went blank;
+    # pin the replacement names so a revert to the dead tickers fails here, not on the page
+    for cfg in umd.KALSHI_GPU.values():
+        assert cfg["monthly"].endswith("MS") and cfg["weekly"].endswith("WS")
+        assert "MON" not in cfg["monthly"] and not cfg["weekly"].endswith("00W")
+
+
+def test_settled_print_takes_the_newest_numeric_value():
+    evs = [
+        {"sub_title": "August 2026", "markets": [_gpu_mkt(2, "0", "0", "2026-08-31T03:59:59Z", "2.77")]},
+        {"sub_title": "September 2026", "markets": [_gpu_mkt(2, "0", "0", "2026-10-01T03:59:59Z", "2.83")]},
+        # a resolved event that published "No" instead of a level is skipped, not read as 0
+        {"sub_title": "Oct 2026", "markets": [_gpu_mkt(2, "0", "0", "2026-10-20T03:59:59Z", "No")]},
+        {"sub_title": "empty", "markets": []},
+    ]
+    p = umd.settled_print(evs, "monthly average")
+    assert p == {"value": 2.83, "close": "2026-10-01T03:59:59Z", "kind": "monthly average",
+                 "period": "September 2026"}
+    assert umd.settled_print([], "weekly print") is None
+
+
+def test_event_month_reads_the_subtitle_and_falls_back_to_the_close():
+    assert umd._event_month({"sub_title": "November 2026"}) == "2026-11"
+    # markets close on the 1st of the next month: a day back is the month priced
+    assert umd._event_month({"sub_title": "", "markets": [_gpu_mkt(2, "0", "0", "2026-12-01T04:59:59Z")]}) == "2026-11"
+
+
+def test_forward_curve_orders_by_close_limits_the_horizon_and_says_why_a_month_is_thin():
+    thin = {"sub_title": "October 2026",
+            "markets": [_gpu_mkt(k, "0.0000", "1.0000", "2026-11-01T03:59:59Z") for k in (2, 3, 4)]}
+    priced = {"sub_title": "November 2026",
+              "markets": [_gpu_mkt(9.0, "0.72", "0.82", "2026-12-01T04:59:59Z"),
+                          _gpu_mkt(9.5, "0.55", "0.65", "2026-12-01T04:59:59Z"),
+                          _gpu_mkt(10.0, "0.36", "0.46", "2026-12-01T04:59:59Z")]}
+    far = {"sub_title": "March 2027", "markets": [_gpu_mkt(5, "0.4", "0.5", "2027-04-01T03:59:59Z")]}
+    curve = umd.forward_curve([far, priced, thin], horizon=2)
+    assert [c["month"] for c in curve] == ["2026-10", "2026-11"]      # March is past the horizon
+    assert curve[0]["implied"] is None and curve[0]["strikes"] == 0
+    assert curve[0]["note"] == "book too thin to imply a median"
+    assert curve[1]["strikes"] == 3
+    assert curve[1]["implied"] == pytest.approx(9.5 + (0.6 - 0.5) * 0.5 / (0.6 - 0.41), abs=1e-4)
+    assert curve[1]["close"] == "2026-12-01"
+
+
+def test_kalshi_gpu_row_uses_the_newest_print_and_the_first_priced_month(monkeypatch):
+    def fake_events(series, status, limit=20):
+        if status == "settled" and series.endswith("MS"):
+            return [{"sub_title": "September 2026", "markets": [_gpu_mkt(2, "0", "0", "2026-10-01T03:59:59Z", "2.83")]}]
+        if status == "settled" and series.endswith("WS"):
+            return [{"sub_title": "Week 41", "markets": [_gpu_mkt(2, "0", "0", "2026-10-09T20:00:00Z", "2.79")]}]
+        return [
+            {"sub_title": "October 2026", "markets": [_gpu_mkt(3, "0.0000", "0.2400", "2026-11-01T03:59:59Z")]},
+            {"sub_title": "November 2026", "markets": [
+                _gpu_mkt(2.5, "0.85", "0.95"), _gpu_mkt(3.0, "0.45", "0.55"), _gpu_mkt(3.5, "0.05", "0.15")]},
+        ]
+    monkeypatch.setattr(umd, "kalshi_events", fake_events)
+    out = umd.kalshi_gpu(today=umd.datetime.date(2026, 10, 29))
+    h = next(c for c in out["chips"] if c["chip"] == "H100")
+    # the weekly print settled later than the September average, so it is the reference
+    assert (h["ref"], h["ref_kind"], h["ref_date"], h["ref_age_days"]) == (2.79, "weekly print", "2026-10-09", 20)
+    # October's book is one-sided, so the forward point is November's average
+    assert (h["implied_month"], h["implied_label"], h["strikes"]) == ("2026-11", "November 2026", 3)
+    assert h["implied"] == pytest.approx(2.5 + (0.9 - 0.5) * 0.5 / (0.9 - 0.5), abs=1e-4)
+    assert h["note"] is None and [c["month"] for c in h["curve"]] == ["2026-10", "2026-11"]
+    assert h["url"] == "https://kalshi.com/markets/kxh100ms"
+
+
+def test_kalshi_gpu_survives_every_request_failing(monkeypatch):
+    def boom(*a, **k):
+        raise urllib.error.URLError("down")
+    monkeypatch.setattr(umd, "kalshi_events", boom)
+    out = umd.kalshi_gpu(today=umd.datetime.date(2026, 10, 29))
+    assert len(out["chips"]) == 4
+    assert all(c["ref"] is None and c["implied"] is None and c["curve"] == [] for c in out["chips"])
+
+
+def test_kalshi_gpu_says_so_when_no_month_prices(monkeypatch):
+    monkeypatch.setattr(umd, "kalshi_events", lambda s, st, limit=20: [] if st == "settled" else [
+        {"sub_title": "October 2026", "markets": [_gpu_mkt(3, "0", "1", "2026-11-01T03:59:59Z")]}])
+    h = umd.kalshi_gpu(today=umd.datetime.date(2026, 10, 29))["chips"][0]
+    assert h["implied"] is None and h["implied_label"] == "October 2026"
+    assert h["note"] == "no month in the next 1 has a book tight enough to imply a median"
+
+
 def test_gauge_families_and_regime():
     data = {
         "skew": {"NVDA": {"rr": 0.055}, "SOXX": {"rr": 0.095}},

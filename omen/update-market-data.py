@@ -15,7 +15,7 @@ Sources (all free / unauthenticated unless noted):
   - Realized GPU spot rent (vast.ai public bundles API): H100 SXM $/GPU-hr
   - NVDA trailing-P/E percentile (SEC XBRL diluted EPS x Yahoo monthly closes):
     the "decade-low multiple" claim as an auditable 10-year percentile
-  - Kalshi GPU compute markets (H100/H200/B200/A100): second venue on the same
+  - Kalshi GPU compute markets (H100/H200/B200/A100, monthly-average ladders): second venue on the same
     rents, settled on the Ornn index — the cross-venue basis check for vast.ai
 
 Optional env: METACULUS_TOKEN enables the Metaculus forecaster-crowd panel
@@ -122,20 +122,30 @@ KALSHI_SERIES = {
     "KXUSOPENAIANTH": "US stake in OpenAI & Anthropic",
 }
 MANIFOLD_TERMS = ["AI bubble", "NVIDIA crash", "AI winter"]
-# Kalshi GPU compute markets (launched 2026-07-14): the second venue pricing the
-# same GPU rents Polymarket brackets do, settled on the Ornn index rather than
-# vast.ai's ask tape — so the two venues disagree partly on basis, not just view.
-#   *W   weekly  — directional "price to beat"; its strike IS the Ornn reference
-#                  print at open_time (not live), which is how we read Ornn for free.
-#   *MON monthly — terminal ladder on the month-end value; the only real forward point.
-#   *MAX yearly  — resolves "above $X BY Dec 31" (running max, upward-biased).
-#                  Deliberately NOT fetched: it is not comparable to a terminal forward.
+# Kalshi GPU compute markets: the second venue pricing the same GPU rents Polymarket
+# brackets do, settled on the Ornn index rather than vast.ai's ask tape - so the two
+# venues disagree partly on basis, not just view.
+#
+# Kalshi relisted the whole family in Sep-Oct 2026. The series this fetcher was written
+# against (*W weekly "price to beat", *MON month-end ladder) stopped listing after
+# 2026-09-04 / 2026-08-31, and kalshi_gpu came back empty from then on. What is live now:
+#   *MS  monthly - "monthly AVERAGE price above $X in <month>": one event per month, out
+#                  roughly ten months. A forward on the month's average, not a month-end
+#                  print. Settled events publish the realized Ornn average as
+#                  expiration_value, which is the reference print this fetcher reads.
+#   *WS  weekly  - the weekly relisting; its settled events publish the Ornn weekly print.
+#                  Listed through 2026-10-09 and not since. Read for its settled value only.
+#   *MAX yearly  - resolves "above $X BY Dec 31" (running max, upward-biased).
+#                  Deliberately NOT fetched: it is not comparable to a forward on a level.
 KALSHI_GPU = {
-    "H100": {"label": "H100 SXM", "weekly": "KXH100W", "monthly": "KXH100MON"},
-    "H200": {"label": "H200", "weekly": "KXH200W", "monthly": "KXH200MON"},
-    "B200": {"label": "B200", "weekly": "KXB200W", "monthly": "KXB200MON"},
-    "A100": {"label": "A100 SXM4", "weekly": "KXA100W", "monthly": "KXA100MON"},
+    "H100": {"label": "H100 SXM", "monthly": "KXH100MS", "weekly": "KXH100WS"},
+    "H200": {"label": "H200", "monthly": "KXH200MS", "weekly": "KXH200WS"},
+    "B200": {"label": "B200", "monthly": "KXB200MS", "weekly": "KXB200WS"},
+    "A100": {"label": "A100 SXM4", "monthly": "KXA100MS", "weekly": "KXA100WS"},
 }
+# how many listed months, front first, are searched for one whose book can price a median.
+# Beyond the front few the ladders are mostly bid-0 / ask-1 (checked 2026-10-29).
+KALSHI_GPU_HORIZON = 4
 # a ladder strike wider than this is a quote, not a price
 KALSHI_MAX_SPREAD = 0.15
 # CFTC Commitments of Traders (legacy futures-only, weekly: Tuesday positions,
@@ -1226,43 +1236,126 @@ def kalshi_markets(series_ticker):
     return j.get("markets") or []
 
 
-def kalshi_gpu():
+def kalshi_events(series_ticker, status, limit=20):
+    """Events of one series with their markets nested, one request."""
+    j = json.loads(get(KALSHI_B + f"/events?series_ticker={series_ticker}&status={status}"
+                       f"&with_nested_markets=true&limit={limit}", timeout=20))
+    return j.get("events") or []
+
+
+def _event_close(e):
+    """An event's close timestamp (ISO string), from its latest-closing market."""
+    return max(((m.get("close_time") or "") for m in (e.get("markets") or [])), default="")
+
+
+def settled_print(events, kind):
+    """The newest realized Ornn value among settled events, or None.
+
+    A settled Kalshi GPU event carries the index value it resolved on as each market's
+    expiration_value (a string: "2.83"). Every market of an event shares it. Some older
+    events carry "No" or nothing there - those are skipped, never parsed as zero."""
+    best = None
+    for e in events:
+        val = None
+        for m in e.get("markets") or []:
+            val = _fnum(m.get("expiration_value"))
+            if val is not None:
+                break
+        close = _event_close(e)
+        if val is None or not close:
+            continue
+        if best is None or close > best["close"]:
+            best = {"value": val, "close": close, "kind": kind,
+                    "period": e.get("sub_title") or e.get("title") or ""}
+    return best
+
+
+_MONTHS = {m: i for i, m in enumerate(
+    ["january", "february", "march", "april", "may", "june", "july", "august",
+     "september", "october", "november", "december"], start=1)}
+
+
+def _event_month(e):
+    """ISO month of a monthly event ("2026-11"), from its sub_title ("November 2026"),
+    falling back to the month its markets close in, minus a day (they close on the 1st)."""
+    # an explicit table, not strptime("%B"): month names there follow the runner's locale
+    parts = (e.get("sub_title") or "").strip().split()
+    if len(parts) == 2 and parts[0].lower() in _MONTHS and parts[1].isdigit():
+        return f"{parts[1]}-{_MONTHS[parts[0].lower()]:02d}"
+    try:
+        close = _event_close(e)[:10]
+        if not close:
+            return None
+        d = datetime.date.fromisoformat(close) - datetime.timedelta(days=1)
+        return d.strftime("%Y-%m")
+    except ValueError:
+        return None
+
+
+def forward_curve(events, horizon=KALSHI_GPU_HORIZON):
+    """The front `horizon` monthly-average events, each priced where its ladder can carry
+    a median. Ordered by close. A month whose book is one-sided or too wide keeps its row
+    with implied None and the reason, so the panel can say which months were thin."""
+    out = []
+    for e in sorted(events, key=_event_close)[:horizon]:
+        lad = kalshi_ladder(e.get("markets") or [])
+        imp = implied_median(lad)
+        out.append({"month": _event_month(e), "label": e.get("sub_title") or "",
+                    "close": _event_close(e)[:10] or None, "strikes": len(lad),
+                    "implied": round(imp, 4) if imp is not None else None,
+                    "note": None if imp is not None else (
+                        "book too thin to imply a median" if len(lad) < 3
+                        else "median sits outside the quoted strikes")})
+    return out
+
+
+def kalshi_gpu(today=None):
     """GPU compute prices from Kalshi, the second venue on the same underlying.
 
-    Returns per-chip: the Ornn reference print (weekly strike), the month-end
-    implied median where the ladder can carry one, and the ladder itself.
-    """
+    Per chip: the newest realized Ornn print Kalshi has settled on (a monthly average or
+    a weekly print, dated and labelled - a reference, never a live spot), the nearest
+    listed month whose monthly-average ladder can carry a median, and the front months
+    of that curve. Each request is independent: a failed one leaves its field empty."""
+    today = today or datetime.date.today()
     out = {"source": "Kalshi public API (settles on Ornn index)", "chips": []}
     for chip, cfg in KALSHI_GPU.items():
         row = {"chip": chip, "label": cfg["label"], "ref": None, "ref_date": None,
-               "implied": None, "strikes": 0, "expiry": None, "url": None, "note": None}
+               "ref_kind": None, "ref_period": None, "ref_age_days": None,
+               "implied": None, "implied_month": None, "implied_label": None,
+               "strikes": 0, "expiry": None, "curve": [],
+               "url": f"https://kalshi.com/markets/{cfg['monthly'].lower()}", "note": None}
+        prints = []
+        for series, kind in ((cfg["monthly"], "monthly average"), (cfg["weekly"], "weekly print")):
+            try:
+                p = settled_print(kalshi_events(series, "settled", limit=6), kind)
+            except Exception:
+                p = None
+            if p:
+                prints.append(p)
+        if prints:
+            p = max(prints, key=lambda x: x["close"])
+            row.update({"ref": p["value"], "ref_date": p["close"][:10], "ref_kind": p["kind"],
+                        "ref_period": p["period"]})
+            try:
+                row["ref_age_days"] = (today - datetime.date.fromisoformat(p["close"][:10])).days
+            except ValueError:
+                pass
         try:
-            wk = kalshi_markets(cfg["weekly"])
+            curve = forward_curve(kalshi_events(cfg["monthly"], "open", limit=24))
         except Exception:
-            wk = []
-        # the weekly directional strike is set at the Ornn print when the market
-        # opens, so it dates to open_time — it is a reference, never a live spot.
-        for m in wk:
-            k = _fnum(m.get("floor_strike"))
-            if k is None:
-                continue
-            row["ref"] = k
-            row["ref_date"] = (m.get("open_time") or "")[:10]
-            row["ref_above"] = kalshi_price(m)
-            row["url"] = f"https://kalshi.com/markets/{cfg['weekly'].lower()}"
-            break
-        try:
-            mo = kalshi_markets(cfg["monthly"])
-        except Exception:
-            mo = []
-        if mo:
-            row["expiry"] = (mo[0].get("close_time") or "")[:10]
-            lad = kalshi_ladder(mo)
-            row["strikes"] = len(lad)
-            row["implied"] = implied_median(lad)
-            if row["implied"] is None:
-                row["note"] = ("book too thin to imply a month-end median"
-                               if len(lad) < 3 else "median sits outside the quoted strikes")
+            curve = []
+        row["curve"] = curve
+        priced = [c for c in curve if c["implied"] is not None]
+        pick = priced[0] if priced else (curve[0] if curve else None)
+        if pick:
+            row["expiry"] = pick["close"]
+            row["strikes"] = pick["strikes"]
+            row["implied_month"], row["implied_label"] = pick["month"], pick["label"]
+        if priced:
+            row["implied"] = pick["implied"]
+        elif curve:
+            row["note"] = (f"no month in the next {len(curve)} has a book tight enough "
+                           f"to imply a median")
         out["chips"].append(row)
     return out
 
@@ -2062,9 +2155,10 @@ def build():
     try:
         data["kalshi_gpu"] = kalshi_gpu()
         for c in data["kalshi_gpu"]["chips"]:
-            imp = f"${c['implied']:.2f}" if c["implied"] else f"n/a ({c['note']})"
-            print(f"kalshi_gpu {c['chip']}: ref ${c['ref']} ({c['ref_date']}) "
-                  f"month-end {imp}, {c['strikes']} usable strikes")
+            imp = f"${c['implied']:.2f}" if c["implied"] is not None else "n/a"
+            print(f"kalshi_gpu {c['chip']}: ref ${c['ref']} ({c['ref_kind']}, {c['ref_date']}) "
+                  f"{c['implied_label'] or 'front month'} avg {imp}, {c['strikes']} usable strikes"
+                  + (f" - {c['note']}" if c["note"] else ""))
     except Exception as e:
         carry(data, prev, "kalshi_gpu", e)
 
