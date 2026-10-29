@@ -1,5 +1,5 @@
 {
- "updated": "2026-10-29T08:40:27Z",
+ "updated": "2026-10-29T08:48:53Z",
  "snapshot_date": "2026-10-29",
  "artificial_analysis": {
   "cn_best": "GLM-5.2",
@@ -643,11 +643,11 @@
    },
    {
     "org": "deepseek-ai",
-    "dl": 24034228
+    "dl": 23929574
    },
    {
     "org": "zai-org",
-    "dl": 16742908
+    "dl": 16745974
    },
    {
     "org": "MiniMaxAI",
@@ -655,15 +655,15 @@
    },
    {
     "org": "tencent",
-    "dl": 4334290
+    "dl": 4335911
    },
    {
     "org": "moonshotai",
-    "dl": 2400896
+    "dl": 2396086
    },
    {
     "org": "stepfun-ai",
-    "dl": 658796
+    "dl": 658793
    },
    {
     "org": "XiaomiMiMo",
@@ -673,7 +673,7 @@
   "usOrgs": [
    {
     "org": "google",
-    "dl": 35990364
+    "dl": 35974845
    },
    {
     "org": "nvidia",
@@ -681,7 +681,7 @@
    },
    {
     "org": "meta-llama",
-    "dl": 15327810
+    "dl": 15332297
    },
    {
     "org": "openai",
@@ -693,18 +693,18 @@
    },
    {
     "org": "allenai",
-    "dl": 2140946
+    "dl": 2141602
    }
   ],
-  "cn": 254636385,
-  "us": 81265960
+  "cn": 254531605,
+  "us": 81255584
  },
  "openrouter_week": {
   "week": "2026-10-26",
-  "cn_share": 0.6063,
-  "us_share": 0.2542,
-  "spi": 2.385,
-  "total_tokens": 93325118882425
+  "cn_share": 0.6064,
+  "us_share": 0.254,
+  "spi": 2.387,
+  "total_tokens": 92863798092351
  },
  "vercel_gateway": {
   "asof": "2026-10-29",
@@ -1047,8 +1047,8 @@
   "license": "AI Gateway Leaderboard Data (c) Vercel, CC BY 4.0"
  },
  "ollama": {
-  "cn": 326415099,
-  "us": 494979300,
+  "cn": 326415299,
+  "us": 495079500,
   "cn_top": [
    {
     "name": "deepseek-r1",
@@ -1082,7 +1082,7 @@
    },
    {
     "name": "llama3.2",
-    "pulls": 86400000
+    "pulls": 86500000
    },
    {
     "name": "gemma3",
