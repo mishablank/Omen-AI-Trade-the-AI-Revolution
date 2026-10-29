@@ -1,5 +1,5 @@
 {
- "updated": "2026-10-29T15:59:40Z",
+ "updated": "2026-10-29T18:51:26Z",
  "snapshot_date": "2026-10-29",
  "artificial_analysis": {
   "cn_best": "GLM-5.2",
@@ -700,40 +700,40 @@
  },
  "openrouter_week": {
   "week": "2026-10-26",
-  "cn_share": 0.605,
-  "us_share": 0.258,
-  "spi": 2.346,
-  "total_tokens": 103386346291423
+  "cn_share": 0.6043,
+  "us_share": 0.2597,
+  "spi": 2.327,
+  "total_tokens": 107550119103837
  },
  "vercel_gateway": {
   "asof": "2026-10-29",
-  "cn_share": 48.16,
-  "us_share": 25.99,
-  "spi": 1.853,
+  "cn_share": 46.6,
+  "us_share": 27.65,
+  "spi": 1.685,
   "top_cn": [
    {
     "lab": "deepseek",
-    "share": 25.45
+    "share": 25.14
    },
    {
     "lab": "zai",
-    "share": 14.74
+    "share": 13.74
    },
    {
     "lab": "moonshotai",
-    "share": 6.78
+    "share": 6.51
    },
    {
     "lab": "xiaomi",
-    "share": 0.55
+    "share": 0.54
    },
    {
     "lab": "minimax",
-    "share": 0.37
+    "share": 0.38
    },
    {
     "lab": "alibaba",
-    "share": 0.27
+    "share": 0.28
    }
   ],
   "series": [
@@ -1039,15 +1039,15 @@
    },
    {
     "d": "2026-10-29",
-    "cn": 48.16,
-    "us": 25.99
+    "cn": 46.6,
+    "us": 27.65
    }
   ],
   "license": "AI Gateway Leaderboard Data (c) Vercel, CC BY 4.0"
  },
  "ollama": {
-  "cn": 326822099,
-  "us": 495195800,
+  "cn": 326825199,
+  "us": 495402900,
   "cn_top": [
    {
     "name": "deepseek-r1",
@@ -1089,9 +1089,7 @@
    }
   ],
   "n_models": 264,
-  "asof": "2026-10-29",
-  "cn_per_day": 820518,
-  "us_per_day": 553224
+  "asof": "2026-10-29"
  },
  "kalshi": {
   "asof": "2026-10-29",
@@ -1122,7 +1120,7 @@
    },
    {
     "label": "Best AI at end of 2026: Gemini",
-    "p": 0.471,
+    "p": 0.549,
     "ticker": "KXLLM1-26DEC31-GOOG",
     "series": "kxllm1"
    }
@@ -1136,7 +1134,7 @@
    },
    {
     "base": "deepseek-ai/DeepSeek-R1",
-    "n": 327
+    "n": 328
    },
    {
     "base": "zai-org/GLM-4.5-Air",
@@ -1158,15 +1156,15 @@
    },
    {
     "base": "openai/gpt-oss-20b",
-    "n": 568
+    "n": 571
    },
    {
     "base": "microsoft/phi-4",
     "n": 129
    }
   ],
-  "cn_total": 2633,
-  "us_total": 2622,
+  "cn_total": 2634,
+  "us_total": 2625,
   "asof": "2026-10-29"
  },
  "sdk": {
