@@ -299,3 +299,27 @@ def test_a_side_index_warns_on_its_own_cliff_but_never_says_the_verdict_rolls():
     macro = [w for w in cov["warnings"] if w.startswith("macro:")]
     assert macro == ["macro: 4 of 4 live markets expire within 30 days (cliff 2027-01-01, 22d)"]
     assert not any("verdict" in w for w in cov["warnings"] if w.startswith(("china:", "macro:")))
+
+
+def test_the_run_reads_the_side_indexes_but_keeps_them_out_of_the_pair(monkeypatch):
+    """Regression, 2026-10-29: the watchdog was fed the pair-only Gamma read, so all six
+    side-index markets read as "missing" and it warned that China and Macro had 0 live."""
+    today = "2026-10-29"
+    pair = umd.poly_ids_at(today)["bull"] + umd.poly_ids_at(today)["bear"]
+    side = [m["id"] for s in umd.SIDE_INDEXES for m in umd.constituents_at(today, s)]
+    asked = []
+
+    def fake_get(url, **kw):
+        asked.append(url)
+        ids = [part[3:] for part in url.split("?", 1)[1].split("&") if part.startswith("id=")]
+        return json.dumps([{"id": i, "closed": False, "endDate": "2027-01-01T00:00:00Z",
+                            "outcomePrices": '["0.3","0.7"]'} for i in ids])
+    monkeypatch.setattr(umd, "get", fake_get)
+    monkeypatch.setattr(umd, "POLY_IDS", umd.poly_ids_at(today))
+    price, price_all, rows = umd.poly_read(today)
+    assert len(asked) == 1, "one Gamma request per run"
+    assert set(price) == set(pair), "the pair's price map must not grow side-index ids"
+    assert set(price_all) == set(pair) | set(side)
+    cov = umd.build_coverage(rows, price_all, asof=today)
+    assert cov["sides"]["china"]["live"] == 2 and cov["sides"]["macro"]["live"] == 4
+    assert all(not w.startswith("macro:") for w in cov["warnings"])
