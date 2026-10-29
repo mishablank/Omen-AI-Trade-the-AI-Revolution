@@ -30,6 +30,9 @@ DOC = umd.load_constituents()
 SIDES = {"bull", "bear", "china", "macro"}
 THEMES = {"bull": {"tech", "capital"}, "bear": {"mkt", "gov"}}
 PAGES = ["index.html", "indexes.html", "gauge.html", "polymarket-ai-index.html"]
+# every job a market can hold, and the side it must sit on
+ROLES = {"bubble": "bear", "recession": "macro", "fed_cuts": "macro",
+         "china_top3": "china", "china_best": "china"}
 
 
 # ---- the file ----
@@ -57,15 +60,41 @@ def test_every_market_is_well_formed():
         if m.get("to"):
             assert m["to"] > m["from"], m
         if m.get("role"):
-            assert m["role"] == "bubble" and m["side"] == "bear" and m["theme"] == "mkt", m
+            assert m["role"] in ROLES, m
+            assert m["side"] == ROLES[m["role"]], m
+            if m["role"] == "bubble":
+                assert m["theme"] == "mkt", m
     assert DOC["roll_floor"] >= 2
     assert DOC["horizon_days"] >= 7
 
 
-def test_at_most_one_live_bubble_market_per_day():
+def test_at_most_one_live_market_per_role_per_day():
     for day in ("2026-07-11", "2026-10-22", "2027-01-01", "2027-06-01"):
-        bubble = [m for m in umd.constituents_at(day, "bear", DOC) if m.get("role") == "bubble"]
-        assert len(bubble) <= 1, (day, bubble)
+        for role in ROLES:
+            holders = [m for m in umd.constituents_at(day, None, DOC) if m.get("role") == role]
+            # a successor can overlap its predecessor; then the newer one holds the job
+            assert len(holders) <= 2, (day, role, holders)
+            if len(holders) == 2:
+                newest = max(holders, key=lambda m: m["from"])
+                assert umd.role_id_at(role, day, DOC) == newest["id"]
+
+
+def test_the_recession_leg_hands_over_on_new_years_day():
+    assert umd.role_id_at("recession", "2026-12-31", DOC) == "609655"
+    assert umd.role_id_at("recession", "2027-01-01", DOC) == "3407418"
+    # roles with no successor yet simply have no holder once the 2026 market is gone
+    assert umd.role_id_at("fed_cuts", "2026-10-22", DOC) == "616905"
+
+
+def test_the_dead_china_markets_are_retired_not_silently_absent():
+    """Five of the seven China markets stopped coming back from Gamma (three ended in July,
+    two were closed early on 2026-08-03). They now carry the day they left, so the China
+    index's member count is the truth rather than seven with five missing."""
+    china_today = {m["id"] for m in umd.constituents_at("2026-10-22", "china", DOC)}
+    assert china_today == {"1820798", "2873443"}
+    for i in ("2873458", "2873459", "2431240", "2431245", "2431244"):
+        m = next(x for x in DOC["markets"] if x["id"] == i)
+        assert m.get("to") and m.get("note"), i
     assert umd.bubble_id_at("2026-10-22", DOC) == "691340"
     assert umd.BUBBLE_ID == umd.bubble_id_at(None, DOC)
 
@@ -149,15 +178,20 @@ def _rows(members, end="2027-01-01", closed=()):
 def test_coverage_counts_live_expiring_and_the_cliff():
     members = umd.constituents_at("2026-10-22", None, DOC)
     core = [m for m in members if m["side"] in ("bull", "bear")]
-    rows = _rows(core)
-    price = {m["id"]: 0.3 for m in core}
+    rows = _rows(members)
+    price = {m["id"]: 0.3 for m in members}
     cov = umd.build_coverage(rows, price, asof="2026-10-22", doc=DOC)
     assert cov["sides"]["bull"]["live"] == len([m for m in core if m["side"] == "bull"])
     assert cov["sides"]["bear"]["live"] == len([m for m in core if m["side"] == "bear"])
     assert cov["next_cliff"] == {"date": "2027-01-01", "count": len(core), "days_left": 71}
-    # 71 days out, nothing is inside the 30-day horizon yet and nothing is rolling
+    # 71 days out, nothing is inside the 30-day horizon yet and the pair is not rolling
     assert cov["sides"]["bull"]["expiring"] == 0 and not cov["sides"]["bull"]["rolling"]
-    assert cov["warnings"] == []
+    # the side-indexes are watched too: China is down to two live markets, and says so
+    assert set(cov["sides"]) == {"bull", "bear", "china", "macro"}
+    assert cov["sides"]["china"]["live"] == 2 and cov["sides"]["macro"]["live"] == 4
+    assert cov["warnings"] == ["china: 2 live market(s), below the floor of 3 - the china "
+                               "side-index is reading too few markets to be an index"]
+    assert cov["sides"]["macro"]["cliff"] == {"date": "2027-01-01", "count": 4, "days_left": 71}
     assert {m["status"] for m in cov["markets"]} == {"live"}
 
 
@@ -180,7 +214,8 @@ def test_coverage_flags_a_rolling_side_and_missing_markets():
     rows.update(_rows([m for m in members if m["side"] == "bear"]))
     price = {m["id"]: 0.3 for m in bull[:2]} | {m["id"]: 0.3 for m in members if m["side"] == "bear"}
     cov = umd.build_coverage(rows, price, asof="2026-10-22", doc=DOC)
-    assert cov["sides"]["bull"] == {"configured": len(bull), "live": 2, "expiring": 0, "rolling": True}
+    assert cov["sides"]["bull"] == {"configured": len(bull), "live": 2, "expiring": 0, "rolling": True,
+                                    "cliff": {"date": "2027-01-01", "count": 2, "days_left": 71}}
     statuses = {m["id"]: m["status"] for m in cov["markets"]}
     assert statuses[bull[2]["id"]] == "closed" and statuses[bull[3]["id"]] == "missing"
     assert cov["warnings"][0].startswith("bull: 2 live market(s), below the floor of 3")
@@ -254,3 +289,13 @@ def test_runner_lists_stay_identical():
     assert sorted(from_npm) == sorted(tre.SUITES)
     on_disk = sorted(p.name for p in HERE.glob("test-*.mjs"))
     assert on_disk == sorted(tre.SUITES), "a Node suite on disk is not run by pytest"
+
+
+def test_a_side_index_warns_on_its_own_cliff_but_never_says_the_verdict_rolls():
+    members = [m for m in umd.constituents_at("2026-12-10", None, DOC)]
+    rows = _rows(members)
+    price = {m["id"]: 0.3 for m in members}
+    cov = umd.build_coverage(rows, price, asof="2026-12-10", doc=DOC)
+    macro = [w for w in cov["warnings"] if w.startswith("macro:")]
+    assert macro == ["macro: 4 of 4 live markets expire within 30 days (cliff 2027-01-01, 22d)"]
+    assert not any("verdict" in w for w in cov["warnings"] if w.startswith(("china:", "macro:")))

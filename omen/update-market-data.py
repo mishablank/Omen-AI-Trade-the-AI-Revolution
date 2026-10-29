@@ -197,6 +197,9 @@ def load_constituents(path=CONSTITUENTS_FILE):
 
 
 CONSTITUENTS_DOC = load_constituents()
+# the pair the verdict reads, and the monitor's side-indexes the watchdog also covers
+VERDICT_SIDES = ("bull", "bear")
+SIDE_INDEXES = ("china", "macro")
 ROLL_FLOOR = int(CONSTITUENTS_DOC.get("roll_floor", 3))
 COVERAGE_HORIZON_DAYS = int(CONSTITUENTS_DOC.get("horizon_days", 30))
 
@@ -221,11 +224,17 @@ def bear_sleeves_at(asof=None, doc=None):
             "gov": [m["id"] for m in bear if m.get("theme") == "gov"]}
 
 
-def bubble_id_at(asof=None, doc=None):
-    """The gauge's bubble market: the live member with role "bubble" (newest `from` wins)."""
-    c = sorted((m for m in constituents_at(asof, "bear", doc) if m.get("role") == "bubble"),
+def role_id_at(role, asof=None, doc=None):
+    """The market doing a named job (constituents.js `role`) on a day: the live member
+    with that role, newest `from` winning. Same rule as OMEN.roleIdAt."""
+    c = sorted((m for m in constituents_at(asof, None, doc) if m.get("role") == role),
                key=lambda m: m["from"], reverse=True)
     return c[0]["id"] if c else None
+
+
+def bubble_id_at(asof=None, doc=None):
+    """The gauge's bubble market."""
+    return role_id_at("bubble", asof, doc)
 
 
 BEAR_SLEEVES = bear_sleeves_at()
@@ -1581,9 +1590,10 @@ def build_coverage(rows, price, asof=None, doc=None, floor=None, horizon_days=No
            "sides": {}, "markets": [], "next_cliff": None, "upcoming": [], "proposed": 0,
            "warnings": []}
     by_end = {}
-    for side in ("bull", "bear"):
+    for side in VERDICT_SIDES + SIDE_INDEXES:
         members = constituents_at(today, side, doc)
         live = expiring = 0
+        side_end = {}
         for m in members:
             g = rows.get(m["id"])
             status = "missing" if g is None else ("live" if m["id"] in price else "closed")
@@ -1600,15 +1610,16 @@ def build_coverage(rows, price, asof=None, doc=None, floor=None, horizon_days=No
             if status == "live":
                 live += 1
                 if end:
-                    by_end[end] = by_end.get(end, 0) + 1
+                    side_end[end] = side_end.get(end, 0) + 1
+                    if side in VERDICT_SIDES:
+                        by_end[end] = by_end.get(end, 0) + 1
                 if days is not None and days <= horizon_days:
                     expiring += 1
         out["sides"][side] = {"configured": len(members), "live": live,
-                              "expiring": expiring, "rolling": live < floor}
-    if by_end:
-        cliff = max(sorted(by_end), key=lambda e: by_end[e])   # most markets; earliest on ties
-        out["next_cliff"] = {"date": cliff, "count": by_end[cliff],
-                             "days_left": (datetime.date.fromisoformat(cliff) - d0).days}
+                              "expiring": expiring, "rolling": live < floor,
+                              "cliff": _cliff(side_end, d0)}
+    # the headline cliff is the verdict pair's; each side carries its own as well
+    out["next_cliff"] = _cliff(by_end, d0)
     out["upcoming"] = [{"id": m["id"], "label": m["label"], "side": m["side"], "from": m["from"]}
                        for m in doc["markets"]
                        if not m.get("proposed") and m["from"] > today and m["side"] in ("bull", "bear")]
@@ -1617,16 +1628,27 @@ def build_coverage(rows, price, asof=None, doc=None, floor=None, horizon_days=No
     return out
 
 
+def _cliff(by_end, d0):
+    """The end date the most live markets share (earliest on ties), or None."""
+    if not by_end:
+        return None
+    cliff = max(sorted(by_end), key=lambda e: by_end[e])
+    return {"date": cliff, "count": by_end[cliff],
+            "days_left": (datetime.date.fromisoformat(cliff) - d0).days}
+
+
 def coverage_warnings(cov):
     """The two conditions worth a human's attention, as sentences. Rolling (a side under
     the floor) is the louder one; half a side expiring inside the horizon is the earlier
     one. A side with nothing live at all is rolling, not merely expiring."""
     w = []
-    cliff = cov.get("next_cliff") or {}
     for side, s in cov["sides"].items():
+        cliff = s.get("cliff") or {}
         if s["rolling"]:
+            consequence = ("the verdict's direction axis is rolling" if side in VERDICT_SIDES
+                           else f"the {side} side-index is reading too few markets to be an index")
             w.append(f"{side}: {s['live']} live market(s), below the floor of {cov['floor']} "
-                     f"- the verdict's direction axis is rolling")
+                     f"- {consequence}")
         elif s["live"] and 2 * s["expiring"] >= s["live"]:
             tail = f" (cliff {cliff['date']}, {cliff['days_left']}d)" if cliff else ""
             w.append(f"{side}: {s['expiring']} of {s['live']} live markets expire within "
