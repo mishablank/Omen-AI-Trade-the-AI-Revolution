@@ -1574,6 +1574,22 @@ def poly_prices():
     return poly_fetch()[0]
 
 
+def poly_read(asof=None):
+    """The run's single Gamma read: the pair plus the side-indexes, in one request.
+
+    Returns (price, price_all, rows). `price` is the pair only - the map the gauge, the
+    regime, the snapshot (whose `comp` column records the pair's live members) and the
+    alert consume, unchanged. `price_all` and `rows` add the China and Macro members, for
+    the coverage watchdog alone. Fetching only the pair (as poly_fetch() alone did) made
+    every side-index market read as "missing" and the watchdog warn on two healthy
+    indexes (run of 2026-10-29 08:4x UTC)."""
+    pair = [i for v in POLY_IDS.values() for i in v]
+    side = [m["id"] for s in SIDE_INDEXES for m in constituents_at(asof, s)]
+    price_all, rows = poly_fetch(pair + [i for i in side if i not in set(pair)])
+    keep = set(pair)
+    return {i: p for i, p in price_all.items() if i in keep}, price_all, rows
+
+
 # ---------- basket coverage: the expiry watchdog ----------
 def build_coverage(rows, price, asof=None, doc=None, floor=None, horizon_days=None):
     """What the pair is actually standing on today. Per side: configured members of the
@@ -2276,11 +2292,11 @@ def build():
     # a different tape.
     price = None
     try:
-        price, rows = poly_fetch()
+        price, price_all, rows = poly_read()
         # Basket coverage (the expiry watchdog) and the chain-linked pair levels ride the
-        # same read. A warning here is also a GitHub Actions annotation, so a run that is
+        # same read; coverage sees the side-indexes too, everything else the pair only. A warning here is also a GitHub Actions annotation, so a run that is
         # green on every fetch still shows the basket thinning out on the run summary.
-        data["coverage"] = build_coverage(rows, price)
+        data["coverage"] = build_coverage(rows, price_all)
         for w in data["coverage"]["warnings"]:
             print(f"::warning title=OMEN basket coverage::{w}")
         prev_poly = prev.get("poly") or {}
