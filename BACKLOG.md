@@ -106,6 +106,16 @@ its own card; the verdict and the snapshots use raw odds.
       vintage. Not changed here – it moves the published rule.
 - [ ] Floor and horizon (`roll_floor: 3`, `horizon_days: 30`) are first guesses; adjust in
       the file, every consumer reads them from there.
+- [ ] **The side-indexes (China, Macro) roll on the same day.** Since 2026-10-29 the watchdog
+      covers them and their inputs are read by job (`role` in `constituents.js`), not by id.
+      Done so far: the five dead China markets are retired with their dates (three July
+      cohort markets; top-5 and top-10, closed early on 2026-08-03), and "US recession by end
+      of 2027" (`3407418`) takes the recession role on 2027-01-01. Still without a 2027 market
+      on 2026-10-29, so their roles go empty on 1 January and the monitor's macro family
+      drops those legs: **3+ Fed cuts** (`fed_cuts`), **0 Fed cuts**, **China 2027 GDP**,
+      **Chinese company has the best / a top-3 AI model** (`china_best`, `china_top3`). The
+      China index is already below the floor (two live markets) and the refresh run warns
+      on it; adding one or two China rows clears it.
 
 ## Cloudflare R2 is disabled on the account – uploads *and* deploys fail
 

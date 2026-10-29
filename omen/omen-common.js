@@ -351,13 +351,16 @@
     return ((doc && doc.markets) || []).filter((m) =>
       !m.proposed && m.from <= d && (!m.to || d < m.to) && (!side || m.side === side));
   }
-  // The gauge's bubble market on day D: the live member flagged role "bubble"; if a
-  // vintage overlap ever leaves two, the newer one wins.
-  function bubbleIdAt(doc, dateIso) {
-    const c = constituentsAt(doc, dateIso).filter((m) => m.role === "bubble")
+  // The market doing a named job on day D (constituents.js `role`): the live member
+  // carrying that role; if a vintage overlap leaves two, the newer `from` wins, which is
+  // how a successor takes a job over on its start date.
+  function roleIdAt(doc, role, dateIso) {
+    const c = constituentsAt(doc, dateIso).filter((m) => m.role === role)
       .sort((a, b) => (a.from < b.from ? 1 : a.from > b.from ? -1 : 0));
     return c.length ? c[0].id : null;
   }
+  // The gauge's bubble market on day D.
+  function bubbleIdAt(doc, dateIso) { return roleIdAt(doc, "bubble", dateIso); }
   // The roll rule's input: live (not closed) markets per side against the floor. A side
   // under the floor is "rolling" – its level is one or two markets' noise, not an index,
   // so the verdict's direction axis is switched off until the next vintage is priced.
@@ -484,7 +487,7 @@
     DIRECTION, dirOf, verdictOf,
     GAUGE_REFS, GAUGE_FAM_NAMES, gaugeScore, gaugeRefText, gaugeRefsProse,
     indexMath, sparkSvg, parseSnapshots, pairShareSeries,
-    constituentsAt, bubbleIdAt, rollState, coverageSummary,
+    constituentsAt, roleIdAt, bubbleIdAt, rollState, coverageSummary,
     ocfGrowth, tokenDemand, repricingGap, serveFloorPerM, impliedMargin, newestPriced,
   };
 })(typeof globalThis !== "undefined" ? globalThis : this);

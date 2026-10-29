@@ -122,19 +122,27 @@ const g = gaugeFor("equal");
 {
   // The convergence rule: the monitor's regime chip states the fetcher's server_gauge
   // (the number the landing page and the alert already use) and falls back to the
-  // page's own six-family score only when the payload is missing or stale.
+  // page's own six-family score only when the payload is missing or older than 12h.
+  // The window was 2h (FRESH_MS, the staleness pill's line) until 2026-10-29, while the
+  // cron's real gap between runs had a 4.3h median: the chip spent most of its time on
+  // the fallback and disagreed with the landing page.
   const HG = slice("function headlineGauge()", "\n// The rule inputs");
   const sig = { gauge: { score: 40.2 } };
   const iso = (agoMs) => new Date(Date.now() - agoMs).toISOString();
-  const FRESH_MS = 2 * 3600000;
-  const hg = (mkt) => build(HG, ["headlineGauge"], { mkt, sig, FRESH_MS }).headlineGauge();
+  const HEADLINE_MAX_AGE_MS = 12 * 3600000;
+  const hg = (mkt) => build(HG, ["headlineGauge"], { mkt, sig, HEADLINE_MAX_AGE_MS }).headlineGauge();
 
   const fresh = hg({ server_gauge: { score: 36.25 }, updated: iso(10 * 60000) });
   ok("headline/fresh server gauge wins", fresh.score === 36.25 && fresh.source === "server",
     JSON.stringify(fresh));
 
-  const stale = hg({ server_gauge: { score: 36.25 }, updated: iso(3 * 3600000) });
-  ok("headline/stale payload falls back to the client score",
+  // the case that used to fall back: a payload one ordinary cron gap old is still the headline
+  const gap = hg({ server_gauge: { score: 36.25 }, updated: iso(5 * 3600000) });
+  ok("headline/a 5h-old payload (a normal cron gap) still wins",
+    gap.score === 36.25 && gap.source === "server", JSON.stringify(gap));
+
+  const stale = hg({ server_gauge: { score: 36.25 }, updated: iso(13 * 3600000) });
+  ok("headline/a payload past 12h falls back to the client score",
     stale.score === 40.2 && stale.source === "client", JSON.stringify(stale));
 
   ok("headline/no server_gauge falls back",
@@ -145,7 +153,7 @@ const g = gaugeFor("equal");
     hg({ server_gauge: { score: 36.25 } }).source === "client");
   ok("headline/no payload at all falls back",
     hg(null).source === "client" && hg(null).score === 40.2);
-  console.log("  headlineGauge (server-first, stale fallback)");
+  console.log("  headlineGauge (server-first for 12h, then fallback)");
 }
 
 /* ---------- every component is scored through the shared ranges table ---------- */

@@ -246,7 +246,7 @@
 <div class="fresh" id="freshStrip"></div>
 
 <div class="card" id="p-gauge" data-view="today" style="margin-top:14px">
-  <h2>AI Crash-Pressure Gauge <span class="sub" style="font-weight:400">&ndash; blended 0&ndash;100 across six independent signal families</span>
+  <h2>Exploratory gauge <span class="sub" style="font-weight:400">&ndash; six signal families, blended 0&ndash;100; the headline is the five-family gauge in the regime chip</span>
     <a href="/polymarket-ai-index/prediction-markets" data-nav="prediction-markets" class="sub" style="font-weight:600;color:var(--accT);margin-left:auto">History &rarr;</a></h2>
   <div class="vline" id="gaugeVerdict"></div>
   <div class="gauge">
@@ -1185,10 +1185,14 @@ function bubbleSentiment(){
   for(const id of BUBBLE_SENTIMENT_IDS){ const m=markets.get(id); if(m&&!m.closed){ sum+=m.yes*100; n++; } }
   return n?sum/n:null;
 }
-function macroRecession(){ const m=markets.get("609655"); return m&&!m.closed?m.yes*100:null; }
-function macroFedCuts(){ const m=markets.get("616905"); return m&&!m.closed?m.yes*100:null; }
-function chinaTop3(){ const m=markets.get("2873443"); return m&&!m.closed?m.yes*100:null; }
-function chinaBestModel(){ const m=markets.get("1820798"); return m&&!m.closed?m.yes*100:null; }
+// Each reads the market doing that job today (constituents.js `role`), not a fixed id, so a
+// successor takes over on its start date instead of the family going dark when a year-dated
+// market resolves. The fallback ids are the 2026 vintage, for a page loaded without the file.
+const roleYes=(role,fallback)=>{ const m=markets.get((OMEN.roleIdAt?OMEN.roleIdAt(CONST_DOC,role):null)||fallback); return m&&!m.closed?m.yes*100:null; };
+function macroRecession(){ return roleYes("recession","609655"); }
+function macroFedCuts(){ return roleYes("fed_cuts","616905"); }
+function chinaTop3(){ return roleYes("china_top3","2873443"); }
+function chinaBestModel(){ return roleYes("china_best","1820798"); }
 function drawdown(series){ if(!series||!series.length) return null; const hi=Math.max(...series.map(p=>p.c)); return (series[series.length-1].c/hi-1)*100; }
 
 function computeSignals(){
@@ -1214,7 +1218,7 @@ function computeSignals(){
     {name:"B200 rent below $3.00 at month end", plain:"the odds B200 rent ends the month below $3.00", pl:true, v:b200Sub3(), sub:"B200 (Blackwell) GPU rental bracket markets — next-gen demand proxy", link:["gpu","p-b200"]},
     {name:"Funding window: IPO odds 7d change", plain:"the AI funding window", v:fundingDelta(), sub:"max of OpenAI / Anthropic 2026 IPO; sharp drop = funding window closing", isDelta:true},
     {name:"Bubble sentiment (extreme euphoria)", plain:"bubble sentiment", v:bubbleSentiment(), sub:"avg of OpenAI $1T IPO + AGI + Anthropic IPO odds; >70% = euphoric", link:["prediction-markets","p-constituents"]},
-    {name:"US recession probability", plain:"US recession odds", pl:true, v:macroRecession(), sub:"Polymarket: US recession by end of 2026"},
+    {name:"US recession probability", plain:"US recession odds", pl:true, v:macroRecession(), sub:"Polymarket: "+((CONST_DOC.markets||[]).find(m=>OMEN.roleIdAt&&m.id===OMEN.roleIdAt(CONST_DOC,"recession"))?.label||"US recession")},
     {name:"China AI: top-3 model odds", plain:"the odds a Chinese lab has a top-3 model", pl:true, v:chinaTop3(), sub:"Polymarket: Chinese company has a top-3 AI model by Dec 31"},
   ];
   s.gauge=computeGauge();
@@ -1286,12 +1290,21 @@ const gaugeBand = g => g==null ? null : GAUGE_BANDS.find(b=>g<b.max).name;
 // disagreement the embedded gauge exists to prevent. The client gauge (macro family,
 // three-component pred, weighting toggle) stays on the gauge card as the exploratory
 // read; the card states the difference. Fall back to the client score only when the
-// fetcher payload is missing or stale (the same 2h band fetcherStale draws): a regime
-// read off a week-old bundled seed would be worse than the live client one.
+// fetcher payload is missing or older than HEADLINE_MAX_AGE_MS: a regime read off a week-old
+// bundled seed would be worse than the live client one.
+//
+// That window used to be FRESH_MS (2h, the staleness pill's line). The refresh cron does not
+// run every 30 minutes in practice: over 40 scheduled runs to 2026-10-29 the gap between runs
+// had a median of 4.3h and a max of 7.7h, and 84% of gaps exceeded 2h. So most of the time
+// the chip silently fell back to this page's six-family score and disagreed with the landing
+// page (30 vs 35.6 on 2026-10-22). The headline now holds the server gauge for 12h; the pill
+// still says "stale" at 2h, which is a statement about freshness, not about which number is
+// the headline.
 function headlineGauge(){
   const sg=mkt?.server_gauge;
-  const fresh=sg&&sg.score!=null&&mkt?.updated&&(Date.now()-Date.parse(mkt.updated)<FRESH_MS);
-  return fresh ? {score:sg.score, source:"server"} : {score:sig.gauge?.score ?? null, source:"client"};
+  const age=mkt?.updated?Date.now()-Date.parse(mkt.updated):null;
+  const fresh=sg&&sg.score!=null&&age!=null&&age<HEADLINE_MAX_AGE_MS;
+  return fresh ? {score:sg.score, source:"server", age} : {score:sig.gauge?.score ?? null, source:"client", age};
 }
 // The rule inputs, read once. The level and z are deliberately the MKT sleeve, not the Bear
 // composite: these bands are calibrated to priced crash risk, and MKT is the old crash basket
@@ -1539,14 +1552,18 @@ function renderGauge(){
          : g.lead-g.conf>=10 ? " The leading side is running ahead of the confirming side &ndash; this is being priced before it shows up in prices."
          : " Leading and confirming sides agree.";
   }
-  $("gaugeVerdict").innerHTML=`<strong>${g.score.toFixed(0)}/100 (${band})</strong>${top?`, with <strong>${top.label.toLowerCase()}</strong> the highest-pressure family at ${top.v.toFixed(0)}`:""}.${lead}`;
+  const hg0=headlineGauge();
+  const headTxt = hg0.source==="server"&&hg0.score!=null
+    ? `Headline <strong>${hg0.score.toFixed(1)}/100 (${gaugeBand(hg0.score)})</strong> &ndash; five families, the number on the landing page and in the regime chip. This exploratory read: `
+    : `Headline unavailable (fetcher payload missing or over 12h old) &ndash; the regime chip is using this exploratory read: `;
+  $("gaugeVerdict").innerHTML=`${headTxt}<strong>${g.score.toFixed(0)}/100 (${band})</strong>${top?`, with <strong>${top.label.toLowerCase()}</strong> the highest-pressure family at ${top.v.toFixed(0)}`:""}.${lead}`;
   // The card and the chip are two different instruments, and the note must say which is
   // which: the chip (and the landing page, and the alert) reads the fetcher's five-family
   // server gauge; this card is the page's exploratory six-family read and may differ.
   const hg=headlineGauge();
   const headlineNote = hg.source==="server"
-    ? `The regime chip does <em>not</em> read this card: it uses the fetcher&rsquo;s five-family server gauge (prediction leg = bubble market only), currently <strong>${hg.score.toFixed(0)}/100</strong> &ndash; the same number the landing page shows and the escalation alert fires on, so the headline regime cannot disagree across pages. This card&rsquo;s six-family read (adds the macro family, plus the NVDA-tail and H100 components in the prediction leg) is the exploratory view and can sit above or below it.`
-    : `The regime chip normally reads the fetcher&rsquo;s five-family server gauge, but the fetcher payload is missing or stale, so it is currently falling back to this card&rsquo;s six-family score.`;
+    ? `The regime chip does <em>not</em> read this card: it uses the fetcher&rsquo;s five-family server gauge (prediction leg = bubble market only), currently <strong>${hg.score.toFixed(0)}/100</strong> &ndash; the same number the landing page shows and the escalation alert fires on. The chip applies the landing page&rsquo;s rules plus two earlier warnings (a crash z-score, and any single tracked signal at 15% or more), so it can read one step hotter than the landing page but never cooler. This card&rsquo;s six-family read (adds the macro family, plus the NVDA-tail and H100 components in the prediction leg) is the exploratory view and can sit above or below it.`
+    : `The regime chip normally reads the fetcher&rsquo;s five-family server gauge, but the fetcher payload is missing or more than 12h old, so it is currently falling back to this card&rsquo;s six-family score.`;
   $("gaugeNote").innerHTML=`Highest-pressure family right now: <strong>${top?top.label+" ("+top.v.toFixed(0)+")":"–"}</strong>. Bands on the meter and chart match the regime thresholds (35 / 55). Each family is normalized 0&ndash;100 against calm/stress reference levels (see methodology); this card&rsquo;s score is the equal-weighted mean of all six families (or the thesis weighting when toggled). ${headlineNote} The <strong>leading</strong> sub-score (prediction markets, options skew, credit, macro) is the early-warning read; the <strong>confirming</strong> sub-score (vol complex, equity drawdown) rises <em>while</em> a crash happens, not before &ndash; a high confirming score with a low leading score means the damage is already on the tape. The history line is reconstructed from stored daily series &ndash; its prediction-market family uses the bubble market only, so it can sit slightly below the live number.`;
   renderGaugeChart();
 }
@@ -2388,6 +2405,11 @@ function renderCoverage(){
   const roll=OMEN.rollState(core,CONST_DOC.roll_floor);
   if(roll.rolling.length) notes.push(`<b>Basket rolling:</b> ${roll.rolling.map(s=>`${s} has ${roll.live[s]} live market(s)`).join(", ")} against a floor of ${roll.floor} – the landing verdict reads No edge until the next vintage is priced.`);
   if(cov.cliff&&cov.cliffDays!=null&&cov.cliffDays<=120) notes.push(`<b>Expiry cliff:</b> ${cov.cliffCount} of ${cov.live} live Bull/Bear markets resolve on ${cov.cliff} (${cov.cliffDays}d).`);
+  // the side-indexes: watched like the pair (the fetcher alerts on them), but they never roll the verdict
+  const sideTxt=["china","macro"].map(sd=>{ const ms=CONSTITUENTS.filter(c=>c.side===sd).map(c=>{ const m=markets.get(c.id); return {closed:!m||m.closed, endDate:m?m.endDate:null}; });
+    const cv=OMEN.coverageSummary(ms,{horizonDays:CONST_DOC.horizon_days});
+    return `${sd==="china"?"China AI":"Macro"} ${cv.live} of ${cv.configured} live${cv.cliff&&cv.cliffDays!=null&&cv.cliffDays<=120?` (${cv.cliffCount} resolve ${cv.cliff})`:""}${cv.live<CONST_DOC.roll_floor?" &ndash; <b>thin</b>":""}`; });
+  notes.push(`Side indexes: ${sideTxt.join("; ")}. They feed the exploratory gauge&rsquo;s macro family and the single-signal trips, never the verdict.`);
   const today=new Date().toISOString().slice(0,10);
   const upcoming=(CONST_DOC.markets||[]).filter(m=>!m.proposed&&m.from>today&&(m.side==="bull"||m.side==="bear"));
   const proposed=(CONST_DOC.markets||[]).filter(m=>m.proposed).length;
@@ -2413,6 +2435,9 @@ function setPanelStatus(cardId, status, label){
 // (2h — the Action runs every ~30min, so past 2h it has missed cycles). Sharing the constant
 // is the point: a panel and the pill can never disagree about what "stale" means.
 const FRESH_MS = 2*3600000;
+// how long the fetcher's server gauge stays the headline (see headlineGauge): above the
+// longest observed gap between scheduled refresh runs, well under a missed day
+const HEADLINE_MAX_AGE_MS = 12*3600000;
 function fetcherStale(){
   if(!mkt?.updated) return null;
   const age=Date.now()-Date.parse(mkt.updated);

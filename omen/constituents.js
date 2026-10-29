@@ -19,8 +19,17 @@
 //             of the live index by itself (Gamma marks it closed) and `to` just records when.
 //   proposed  true = a successor written down but not yet curated into the basket. Never a
 //             member, whatever its dates say; delete the flag to activate it.
-//   role      "bubble" marks the single market the crash-pressure gauge's prediction family
-//             reads (BUBBLE_ID everywhere). At most one live member per day carries it.
+//   role      names a market a single signal reads by job rather than by id, so a successor
+//             takes the job over on its `from` date (newest live `from` wins; at most one
+//             live member per role per day):
+//               bubble      the gauge's prediction family and the regime's single-market trip
+//               recession   the monitor's macro family (US recession odds)
+//               fed_cuts    the monitor's macro family (easing-cycle odds)
+//               china_top3  the monitor's macro family and the China single-signal trip
+//               china_best  the claims-watch China read
+//
+// The China and Macro side-indexes are watched the same way (coverage.sides.china /
+// .macro) but never drive the verdict: a thin side-index warns, it does not roll.
 //
 // The roll rule (index.html, update-market-data.py): a side with fewer than `roll_floor`
 // live markets has no direction read — the verdict goes to "No edge · basket rolling" until
@@ -100,16 +109,23 @@ window.OMEN_CONSTITUENTS = {
       "slug": "indiana-enacts-data-center-moratorium-by-20260929", "from": "2026-12-15", "proposed": true,
       "note": "2027 successor to 2839991 (any state by Dec 31) – a single-state leg; Polymarket lists per-state ladders only" },
 
-    { "id": "1820798", "side": "china", "htype": "event", "label": "Chinese company has the best AI model by Dec 31, 2026", "from": "2026-07-12" },
-    { "id": "2873443", "side": "china", "htype": "event", "label": "Chinese company has a top-3 AI model by Dec 31, 2026", "from": "2026-07-12" },
-    { "id": "2873458", "side": "china", "htype": "event", "label": "Chinese company has a top-5 AI model by Dec 31, 2026", "from": "2026-07-12" },
-    { "id": "2873459", "side": "china", "htype": "event", "label": "Chinese company has a top-10 AI model by Dec 31, 2026", "from": "2026-07-12" },
-    { "id": "2431240", "side": "china", "htype": "event", "label": "Alibaba has the best Chinese AI model end of July 2026", "from": "2026-07-12" },
-    { "id": "2431245", "side": "china", "htype": "event", "label": "DeepSeek has the best Chinese AI model end of July 2026", "from": "2026-07-12" },
-    { "id": "2431244", "side": "china", "htype": "event", "label": "Z.ai has the best Chinese AI model end of July 2026", "from": "2026-07-12" },
+    { "id": "1820798", "side": "china", "htype": "event", "label": "Chinese company has the best AI model by Dec 31, 2026", "from": "2026-07-12", "role": "china_best" },
+    { "id": "2873443", "side": "china", "htype": "event", "label": "Chinese company has a top-3 AI model by Dec 31, 2026", "from": "2026-07-12", "role": "china_top3" },
+    { "id": "2873458", "side": "china", "htype": "event", "label": "Chinese company has a top-5 AI model by Dec 31, 2026", "from": "2026-07-12", "to": "2026-08-03",
+      "note": "closed by Polymarket 2026-08-03, five months before its own deadline (resolved early); not returned by Gamma since" },
+    { "id": "2873459", "side": "china", "htype": "event", "label": "Chinese company has a top-10 AI model by Dec 31, 2026", "from": "2026-07-12", "to": "2026-08-03",
+      "note": "closed by Polymarket 2026-08-03, five months before its own deadline (resolved early); not returned by Gamma since" },
+    { "id": "2431240", "side": "china", "htype": "event", "label": "Alibaba has the best Chinese AI model end of July 2026", "from": "2026-07-12", "to": "2026-08-01",
+      "note": "resolved 2026-07-31 by its own terms" },
+    { "id": "2431245", "side": "china", "htype": "event", "label": "DeepSeek has the best Chinese AI model end of July 2026", "from": "2026-07-12", "to": "2026-08-01",
+      "note": "resolved 2026-07-31 by its own terms" },
+    { "id": "2431244", "side": "china", "htype": "event", "label": "Z.ai has the best Chinese AI model end of July 2026", "from": "2026-07-12", "to": "2026-08-01",
+      "note": "resolved 2026-07-31 by its own terms" },
 
-    { "id": "609655",  "side": "macro", "htype": "event", "label": "US recession by end of 2026", "from": "2026-07-12" },
-    { "id": "616905",  "side": "macro", "htype": "event", "label": "3+ Fed rate cuts in 2026 (easing cycle)", "from": "2026-07-12" },
+    { "id": "609655",  "side": "macro", "htype": "event", "label": "US recession by end of 2026", "from": "2026-07-12", "role": "recession" },
+    { "id": "3407418", "side": "macro", "htype": "event", "label": "US recession by end of 2027", "from": "2027-01-01", "role": "recession",
+      "note": "like-for-like 2027 successor to 609655 (same question, next year); takes the macro family's recession leg over on 2027-01-01" },
+    { "id": "616905",  "side": "macro", "htype": "event", "label": "3+ Fed rate cuts in 2026 (easing cycle)", "from": "2026-07-12", "role": "fed_cuts" },
     { "id": "616902",  "side": "macro", "htype": "event", "label": "0 Fed rate cuts in 2026 (tight stance)", "from": "2026-07-12" },
     { "id": "1192817", "side": "macro", "htype": "event", "label": "China 2026 GDP growth between 1-2% (slowdown)", "from": "2026-07-12" }
   ]

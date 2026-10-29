@@ -18,8 +18,10 @@ else comes from `market-data.json`, produced by `update-market-data.py`.
   markets, options skew, credit – priced before the fact) and a **confirming** sub-score
   (vol complex, equity drawdown – moves with/after prices); only the leading side can warn.
 - **Regime chip** — Calm / Elevated / Stressed, and *which threshold fired* (e.g. "bubble market ≥ 15%").
-  The fetcher embeds the same server-side gauge + regime into `market-data.json`
-  (`server_gauge`), which the landing page reads — so the two pages can't disagree.
+  The fetcher embeds the server-side gauge + regime into `market-data.json`
+  (`server_gauge`); the landing page and this chip both state that number (the chip falls
+  back to the card's six-family score only when the payload is over 12h old). The chip's
+  rules add two earlier warnings to the landing page's, so it can read hotter, never cooler.
 - **Two composite indexes** (Bull / Bear) as chain-linked small multiples with
   event annotations, tile sparklines, and risk-direction-aware delta colors. Each carries two
   sleeve tags with sub-readings: Bull splits **TECH** (technology-progress odds) vs **CAP**
