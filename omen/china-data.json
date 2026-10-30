@@ -1,5 +1,5 @@
 {
- "updated": "2026-10-30T15:47:10Z",
+ "updated": "2026-10-30T18:28:56Z",
  "snapshot_date": "2026-10-30",
  "artificial_analysis": {
   "cn_best": "GLM-5.2",
@@ -702,39 +702,39 @@
  "openrouter_week": {
   "week": "2026-10-26",
   "cn_share": 0.6053,
-  "us_share": 0.262,
-  "spi": 2.311,
-  "total_tokens": 135722842665188
+  "us_share": 0.2617,
+  "spi": 2.313,
+  "total_tokens": 139413136000123
  },
  "vercel_gateway": {
   "asof": "2026-10-30",
-  "cn_share": 49.79,
-  "us_share": 22.33,
-  "spi": 2.23,
+  "cn_share": 48.72,
+  "us_share": 23.28,
+  "spi": 2.093,
   "top_cn": [
    {
     "lab": "deepseek",
-    "share": 26.17
+    "share": 25.72
    },
    {
     "lab": "zai",
-    "share": 20.19
+    "share": 19.64
    },
    {
     "lab": "moonshotai",
-    "share": 2.38
+    "share": 2.28
    },
    {
     "lab": "xiaomi",
-    "share": 0.54
-   },
-   {
-    "lab": "minimax",
-    "share": 0.25
+    "share": 0.52
    },
    {
     "lab": "alibaba",
-    "share": 0.24
+    "share": 0.28
+   },
+   {
+    "lab": "minimax",
+    "share": 0.27
    }
   ],
   "series": [
@@ -790,7 +790,7 @@
    },
    {
     "d": "2026-09-10",
-    "cn": 66.35,
+    "cn": 66.36,
     "us": 33.36
    },
    {
@@ -931,7 +931,7 @@
    {
     "d": "2026-10-08",
     "cn": 55.64,
-    "us": 41.91
+    "us": 41.92
    },
    {
     "d": "2026-10-09",
@@ -1040,15 +1040,15 @@
    },
    {
     "d": "2026-10-30",
-    "cn": 49.79,
-    "us": 22.33
+    "cn": 48.72,
+    "us": 23.28
    }
   ],
   "license": "AI Gateway Leaderboard Data (c) Vercel, CC BY 4.0"
  },
  "ollama": {
-  "cn": 327143399,
-  "us": 495879900,
+  "cn": 327245499,
+  "us": 495885900,
   "cn_top": [
    {
     "name": "deepseek-r1",
@@ -1090,16 +1090,14 @@
    }
   ],
   "n_models": 264,
-  "asof": "2026-10-30",
-  "cn_per_day": 324089,
-  "us_per_day": 690038
+  "asof": "2026-10-30"
  },
  "kalshi": {
   "asof": "2026-10-30",
   "markets": [
    {
     "label": "Will a Chinese AI model be #1 this year?",
-    "p": 0.08,
+    "p": 0.06,
     "ticker": "KXBESTLLMCHINA-27",
     "series": "kxbestllmchina"
    },
@@ -1123,7 +1121,7 @@
    },
    {
     "label": "Best AI at end of 2026: Gemini",
-    "p": 0.559,
+    "p": 0.563,
     "ticker": "KXLLM1-26DEC31-GOOG",
     "series": "kxllm1"
    }
