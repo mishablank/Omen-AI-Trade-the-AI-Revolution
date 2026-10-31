@@ -1,5 +1,5 @@
 {
- "updated": "2026-10-31T20:49:00Z",
+ "updated": "2026-10-31T23:52:50Z",
  "snapshot_date": "2026-10-31",
  "artificial_analysis": {
   "cn_best": "GLM-5.2",
@@ -702,31 +702,31 @@
  "openrouter_week": {
   "week": "2026-10-26",
   "cn_share": 0.6072,
-  "us_share": 0.2602,
-  "spi": 2.334,
-  "total_tokens": 166901263692583
+  "us_share": 0.2598,
+  "spi": 2.337,
+  "total_tokens": 170487589200035
  },
  "vercel_gateway": {
   "asof": "2026-10-31",
-  "cn_share": 54.04,
-  "us_share": 19.82,
-  "spi": 2.727,
+  "cn_share": 52.91,
+  "us_share": 20.04,
+  "spi": 2.64,
   "top_cn": [
    {
     "lab": "deepseek",
-    "share": 33.4
+    "share": 32.69
    },
    {
     "lab": "zai",
-    "share": 17.14
+    "share": 16.74
    },
    {
     "lab": "moonshotai",
-    "share": 2.1
+    "share": 2.03
    },
    {
     "lab": "alibaba",
-    "share": 0.52
+    "share": 0.55
    },
    {
     "lab": "xiaomi",
@@ -1040,15 +1040,15 @@
    },
    {
     "d": "2026-10-31",
-    "cn": 54.04,
-    "us": 19.82
+    "cn": 52.91,
+    "us": 20.04
    }
   ],
   "license": "AI Gateway Leaderboard Data (c) Vercel, CC BY 4.0"
  },
  "ollama": {
-  "cn": 328072624,
-  "us": 496346300,
+  "cn": 328175100,
+  "us": 496552900,
   "cn_top": [
    {
     "name": "deepseek-r1",
@@ -1082,11 +1082,11 @@
    },
    {
     "name": "llama3.2",
-    "pulls": 86600000
+    "pulls": 86700000
    },
    {
     "name": "gemma3",
-    "pulls": 41500000
+    "pulls": 41600000
    }
   ],
   "n_models": 266,
@@ -1097,7 +1097,7 @@
   "markets": [
    {
     "label": "Will a Chinese AI model be #1 this year?",
-    "p": 0.08,
+    "p": 0.05,
     "ticker": "KXBESTLLMCHINA-27",
     "series": "kxbestllmchina"
    },
@@ -1121,7 +1121,7 @@
    },
    {
     "label": "Best AI at end of 2026: Gemini",
-    "p": 0.525,
+    "p": 0.527,
     "ticker": "KXLLM1-26DEC31-GOOG",
     "series": "kxllm1"
    }
