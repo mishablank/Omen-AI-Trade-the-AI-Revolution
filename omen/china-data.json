@@ -1,5 +1,5 @@
 {
- "updated": "2026-10-31T17:27:25Z",
+ "updated": "2026-10-31T20:49:00Z",
  "snapshot_date": "2026-10-31",
  "artificial_analysis": {
   "cn_best": "GLM-5.2",
@@ -701,36 +701,36 @@
  },
  "openrouter_week": {
   "week": "2026-10-26",
-  "cn_share": 0.6071,
+  "cn_share": 0.6072,
   "us_share": 0.2602,
-  "spi": 2.333,
-  "total_tokens": 163796847504325
+  "spi": 2.334,
+  "total_tokens": 166901263692583
  },
  "vercel_gateway": {
   "asof": "2026-10-31",
-  "cn_share": 55.74,
-  "us_share": 19.23,
-  "spi": 2.899,
+  "cn_share": 54.04,
+  "us_share": 19.82,
+  "spi": 2.727,
   "top_cn": [
    {
     "lab": "deepseek",
-    "share": 34.38
+    "share": 33.4
    },
    {
     "lab": "zai",
-    "share": 17.66
+    "share": 17.14
    },
    {
     "lab": "moonshotai",
-    "share": 2.35
-   },
-   {
-    "lab": "xiaomi",
-    "share": 0.49
+    "share": 2.1
    },
    {
     "lab": "alibaba",
-    "share": 0.48
+    "share": 0.52
+   },
+   {
+    "lab": "xiaomi",
+    "share": 0.51
    },
    {
     "lab": "minimax",
@@ -1040,15 +1040,15 @@
    },
    {
     "d": "2026-10-31",
-    "cn": 55.74,
-    "us": 19.23
+    "cn": 54.04,
+    "us": 19.82
    }
   ],
   "license": "AI Gateway Leaderboard Data (c) Vercel, CC BY 4.0"
  },
  "ollama": {
-  "cn": 327966217,
-  "us": 496338300,
+  "cn": 328072624,
+  "us": 496346300,
   "cn_top": [
    {
     "name": "deepseek-r1",
@@ -1064,7 +1064,7 @@
    },
    {
     "name": "qwen3.5",
-    "pulls": 23900000
+    "pulls": 24000000
    },
    {
     "name": "qwen2.5-coder",
@@ -1109,7 +1109,7 @@
    },
    {
     "label": "Best AI at end of 2026: Ernie",
-    "p": 0.001,
+    "p": 0.002,
     "ticker": "KXLLM1-26DEC31-BAID",
     "series": "kxllm1"
    },
@@ -1121,7 +1121,7 @@
    },
    {
     "label": "Best AI at end of 2026: Gemini",
-    "p": 0.523,
+    "p": 0.525,
     "ticker": "KXLLM1-26DEC31-GOOG",
     "series": "kxllm1"
    }
@@ -1157,7 +1157,7 @@
    },
    {
     "base": "openai/gpt-oss-20b",
-    "n": 573
+    "n": 574
    },
    {
     "base": "microsoft/phi-4",
@@ -1165,7 +1165,7 @@
    }
   ],
   "cn_total": 2644,
-  "us_total": 2627,
+  "us_total": 2628,
   "asof": "2026-10-31"
  },
  "sdk": {
