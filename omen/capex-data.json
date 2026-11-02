@@ -1,5 +1,5 @@
 {
- "updated": "2026-11-02T09:18:15Z",
+ "updated": "2026-11-02T20:12:27Z",
  "tsmc": {
   "asof": "2026-09",
   "rev_ntd_b": 511.9,
@@ -13,8 +13,8 @@
   "cur": {
    "from": "2026-08-05",
    "to": "2026-11-02",
-   "debt": 16,
-   "s1_ai": 290,
+   "debt": 20,
+   "s1_ai": 292,
    "formd_ai": 3
   },
   "prev": {
@@ -210,7 +210,7 @@
    "stale": true,
    "src": "https://www.koreatimes.co.kr/economy/20260921/exports-up-78-in-first-20-days-of-sept-on-robust-chip-shipments"
   },
-  "checked": "2026-11-01T14:57:32Z"
+  "checked": "2026-11-02T20:12:31Z"
  },
  "eia": {
   "operating_gw": 1390.6,
@@ -221,26 +221,26 @@
   "src": "https://www.eia.gov/electricity/data/eia860m/xls/september_generator2026.xlsx"
  },
  "capex_gdp": {
-  "dc_construction_saar_b": 85.0,
-  "dc_yoy_pct": 73.2,
-  "dc_asof": "2026-08",
+  "dc_construction_saar_b": 96.5,
+  "dc_yoy_pct": 90.3,
+  "dc_asof": "2026-09",
   "computers_saar_b": 504.1,
   "gdp_saar_b": 33010.0,
   "gdp_asof": "2026-07-01",
-  "pct_gdp": 1.78
+  "pct_gdp": 1.82
  },
  "agents": {
   "asof": "2026-11-02",
   "npm": {
-   "@anthropic-ai/claude-code": 12083369,
-   "@openai/codex": 27738136,
-   "@google/gemini-cli": 445883
+   "@anthropic-ai/claude-code": 12886034,
+   "@openai/codex": 27839068,
+   "@google/gemini-cli": 445269
   },
   "pypi": {
    "claude-agent-sdk": 8093087,
    "openai-agents": 4453132
   },
-  "npm_total_wk": 40267388,
+  "npm_total_wk": 41170371,
   "series": [
    [
     "2026-10-08",
@@ -344,7 +344,7 @@
    ],
    [
     "2026-11-02",
-    40267388
+    41170371
    ]
   ]
  },
