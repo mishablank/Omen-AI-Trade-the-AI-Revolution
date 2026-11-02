@@ -1,5 +1,5 @@
 {
- "updated": "2026-11-02T01:25:40Z",
+ "updated": "2026-11-02T09:15:53Z",
  "snapshot_date": "2026-11-02",
  "artificial_analysis": {
   "cn_best": "GLM-5.2",
@@ -93,13 +93,13 @@
   "note": "Google Trends US, 90-day avg: 8 Chinese AI terms = 2.3% of AI-assistant search interest vs ChatGPT+Gemini+Claude+Llama AI+Meta AI."
  },
  "apps": {
-  "score": 4,
+  "score": 1,
   "asof": "2026-11-02",
   "source": "app-charts",
   "best": [
    {
     "label": "MiniMax",
-    "rank": 81,
+    "rank": 96,
     "store": "android",
     "country": "br"
    }
@@ -116,7 +116,7 @@
    "au",
    "kr"
   ],
-  "detail": "MiniMax #81 (BR Play); basket-mean Western top-100 presence 4/100 across 10 markets",
+  "detail": "MiniMax #96 (BR Play); basket-mean Western top-100 presence 1/100 across 10 markets",
   "note": "iOS Apple RSS top-100 + Android Play top-200 across 10 markets; presence = basket-mean of best top-100 chart rank (DeepSeek/Qwen/Doubao/Kimi/MiniMax), #1=100 #100=1; ranks past top-100 score 0."
  },
  "investment": {
@@ -646,102 +646,102 @@
   "cnOrgs": [
    {
     "org": "Qwen",
-    "dl": 196828027
+    "dl": 196151176
    },
    {
     "org": "deepseek-ai",
-    "dl": 23948204
+    "dl": 23864461
    },
    {
     "org": "zai-org",
-    "dl": 17254217
+    "dl": 17132527
    },
    {
     "org": "MiniMaxAI",
-    "dl": 8050501
+    "dl": 8011514
    },
    {
     "org": "tencent",
-    "dl": 4572354
+    "dl": 4538152
    },
    {
     "org": "moonshotai",
-    "dl": 2237228
+    "dl": 2223172
    },
    {
     "org": "stepfun-ai",
-    "dl": 557389
+    "dl": 534472
    },
    {
     "org": "XiaomiMiMo",
-    "dl": 365716
+    "dl": 362651
    }
   ],
   "usOrgs": [
    {
     "org": "google",
-    "dl": 34552281
+    "dl": 34430601
    },
    {
     "org": "nvidia",
-    "dl": 16472775
+    "dl": 16274015
    },
    {
     "org": "meta-llama",
-    "dl": 13904910
+    "dl": 13614673
    },
    {
     "org": "openai",
-    "dl": 8627186
+    "dl": 8447874
    },
    {
     "org": "microsoft",
-    "dl": 2254640
+    "dl": 2202690
    },
    {
     "org": "allenai",
-    "dl": 1735696
+    "dl": 1735067
    }
   ],
-  "cn": 253813636,
-  "us": 77547488
+  "cn": 252818125,
+  "us": 76704920
  },
  "openrouter_week": {
   "week": "2026-11-02",
-  "cn_share": 0.6199,
-  "us_share": 0.2691,
-  "spi": 2.304,
-  "total_tokens": 960661602208
+  "cn_share": 0.6503,
+  "us_share": 0.2221,
+  "spi": 2.928,
+  "total_tokens": 9544284409978
  },
  "vercel_gateway": {
   "asof": "2026-11-02",
-  "cn_share": 51.79,
-  "us_share": 20.84,
-  "spi": 2.485,
+  "cn_share": 54.83,
+  "us_share": 19.86,
+  "spi": 2.761,
   "top_cn": [
    {
     "lab": "deepseek",
-    "share": 30.24
+    "share": 34.86
    },
    {
     "lab": "zai",
-    "share": 19.27
+    "share": 18.13
    },
    {
     "lab": "moonshotai",
-    "share": 1.22
+    "share": 0.79
    },
    {
     "lab": "xiaomi",
-    "share": 0.37
+    "share": 0.46
+   },
+   {
+    "lab": "minimax",
+    "share": 0.25
    },
    {
     "lab": "alibaba",
-    "share": 0.26
-   },
-   {
-    "lab": "inclusionai",
-    "share": 0.22
+    "share": 0.18
    }
   ],
   "series": [
@@ -1047,15 +1047,15 @@
    },
    {
     "d": "2026-11-02",
-    "cn": 51.79,
-    "us": 20.84
+    "cn": 54.83,
+    "us": 19.86
    }
   ],
   "license": "AI Gateway Leaderboard Data (c) Vercel, CC BY 4.0"
  },
  "ollama": {
-  "cn": 328805643,
-  "us": 497021800,
+  "cn": 328912558,
+  "us": 497241000,
   "cn_top": [
    {
     "name": "deepseek-r1",
@@ -1089,7 +1089,7 @@
    },
    {
     "name": "llama3.2",
-    "pulls": 86700000
+    "pulls": 86800000
    },
    {
     "name": "gemma3",
@@ -1104,7 +1104,7 @@
   "markets": [
    {
     "label": "Will a Chinese AI model be #1 this year?",
-    "p": 0.05,
+    "p": 0.06,
     "ticker": "KXBESTLLMCHINA-27",
     "series": "kxbestllmchina"
    },
@@ -1128,7 +1128,7 @@
    },
    {
     "label": "Best AI at end of 2026: Gemini",
-    "p": 0.482,
+    "p": 0.479,
     "ticker": "KXLLM1-26DEC31-GOOG",
     "series": "kxllm1"
    }
@@ -1138,7 +1138,7 @@
   "cn": [
    {
     "base": "Qwen/Qwen3-8B",
-    "n": 2271
+    "n": 2277
    },
    {
     "base": "deepseek-ai/DeepSeek-R1",
@@ -1156,7 +1156,7 @@
   "us": [
    {
     "base": "meta-llama/Llama-3.1-8B",
-    "n": 1501
+    "n": 1502
    },
    {
     "base": "google/gemma-3-12b-it",
@@ -1171,8 +1171,8 @@
     "n": 129
    }
   ],
-  "cn_total": 2656,
-  "us_total": 2628,
+  "cn_total": 2662,
+  "us_total": 2629,
   "asof": "2026-11-02"
  },
  "sdk": {
