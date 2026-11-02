@@ -1,6 +1,6 @@
 {
- "updated": "2026-11-01T22:32:32Z",
- "snapshot_date": "2026-11-01",
+ "updated": "2026-11-02T01:25:40Z",
+ "snapshot_date": "2026-11-02",
  "artificial_analysis": {
   "cn_best": "GLM-5.2",
   "cn_score": 51,
@@ -93,13 +93,13 @@
   "note": "Google Trends US, 90-day avg: 8 Chinese AI terms = 2.3% of AI-assistant search interest vs ChatGPT+Gemini+Claude+Llama AI+Meta AI."
  },
  "apps": {
-  "score": 1,
-  "asof": "2026-11-01",
+  "score": 4,
+  "asof": "2026-11-02",
   "source": "app-charts",
   "best": [
    {
     "label": "MiniMax",
-    "rank": 98,
+    "rank": 81,
     "store": "android",
     "country": "br"
    }
@@ -116,7 +116,7 @@
    "au",
    "kr"
   ],
-  "detail": "MiniMax #98 (BR Play); basket-mean Western top-100 presence 1/100 across 10 markets",
+  "detail": "MiniMax #81 (BR Play); basket-mean Western top-100 presence 4/100 across 10 markets",
   "note": "iOS Apple RSS top-100 + Android Play top-200 across 10 markets; presence = basket-mean of best top-100 chart rank (DeepSeek/Qwen/Doubao/Kimi/MiniMax), #1=100 #100=1; ranks past top-100 score 0."
  },
  "investment": {
@@ -502,7 +502,7 @@
   "source": "lmarena-dataset"
  },
  "arena_boards": {
-  "asof": "2026-11-01",
+  "asof": "2026-11-02",
   "boards": {
    "webdev": {
     "metric": "elo",
@@ -625,7 +625,7 @@
    "zai-org/ZCode"
   ],
   "source": "search",
-  "asof": "2026-11-01",
+  "asof": "2026-11-02",
   "vel": {
    "MiniMax-AI/MiniMax-H3": 76.0,
    "MiniMax-AI/MiniMax-M2": 0.0,
@@ -707,49 +707,44 @@
   "us": 77547488
  },
  "openrouter_week": {
-  "week": "2026-10-26",
-  "cn_share": 0.6082,
-  "us_share": 0.2569,
-  "spi": 2.367,
-  "total_tokens": 191624521792265
+  "week": "2026-11-02",
+  "cn_share": 0.6199,
+  "us_share": 0.2691,
+  "spi": 2.304,
+  "total_tokens": 960661602208
  },
  "vercel_gateway": {
-  "asof": "2026-11-01",
-  "cn_share": 53.02,
-  "us_share": 19.51,
-  "spi": 2.718,
+  "asof": "2026-11-02",
+  "cn_share": 51.79,
+  "us_share": 20.84,
+  "spi": 2.485,
   "top_cn": [
    {
     "lab": "deepseek",
-    "share": 31.22
+    "share": 30.24
    },
    {
     "lab": "zai",
-    "share": 19.05
+    "share": 19.27
    },
    {
     "lab": "moonshotai",
-    "share": 1.48
+    "share": 1.22
    },
    {
     "lab": "xiaomi",
-    "share": 0.53
-   },
-   {
-    "lab": "minimax",
-    "share": 0.32
+    "share": 0.37
    },
    {
     "lab": "alibaba",
-    "share": 0.3
+    "share": 0.26
+   },
+   {
+    "lab": "inclusionai",
+    "share": 0.22
    }
   ],
   "series": [
-   {
-    "d": "2026-09-02",
-    "cn": 61.08,
-    "us": 38.55
-   },
    {
     "d": "2026-09-03",
     "cn": 61.24,
@@ -1047,15 +1042,20 @@
    },
    {
     "d": "2026-11-01",
-    "cn": 53.02,
-    "us": 19.51
+    "cn": 52.2,
+    "us": 20.49
+   },
+   {
+    "d": "2026-11-02",
+    "cn": 51.79,
+    "us": 20.84
    }
   ],
   "license": "AI Gateway Leaderboard Data (c) Vercel, CC BY 4.0"
  },
  "ollama": {
-  "cn": 328703266,
-  "us": 496915500,
+  "cn": 328805643,
+  "us": 497021800,
   "cn_top": [
    {
     "name": "deepseek-r1",
@@ -1071,7 +1071,7 @@
    },
    {
     "name": "qwen3.5",
-    "pulls": 24000000
+    "pulls": 24100000
    },
    {
     "name": "qwen2.5-coder",
@@ -1097,10 +1097,10 @@
    }
   ],
   "n_models": 266,
-  "asof": "2026-11-01"
+  "asof": "2026-11-02"
  },
  "kalshi": {
-  "asof": "2026-11-01",
+  "asof": "2026-11-02",
   "markets": [
    {
     "label": "Will a Chinese AI model be #1 this year?",
@@ -1116,7 +1116,7 @@
    },
    {
     "label": "Best AI at end of 2026: Ernie",
-    "p": 0.002,
+    "p": 0.001,
     "ticker": "KXLLM1-26DEC31-BAID",
     "series": "kxllm1"
    },
@@ -1128,7 +1128,7 @@
    },
    {
     "label": "Best AI at end of 2026: Gemini",
-    "p": 0.484,
+    "p": 0.482,
     "ticker": "KXLLM1-26DEC31-GOOG",
     "series": "kxllm1"
    }
@@ -1173,7 +1173,7 @@
   ],
   "cn_total": 2656,
   "us_total": 2628,
-  "asof": "2026-11-01"
+  "asof": "2026-11-02"
  },
  "sdk": {
   "cn": [
@@ -1204,7 +1204,7 @@
     "wk": 38263995
    }
   ],
-  "asof": "2026-11-01"
+  "asof": "2026-11-02"
  },
  "epoch_compute": {
   "us_share": 79.5,
