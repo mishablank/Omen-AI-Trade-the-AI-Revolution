@@ -1,5 +1,5 @@
 {
- "updated": "2026-11-03T19:24:39Z",
+ "updated": "2026-11-03T20:01:12Z",
  "snapshot_date": "2026-11-03",
  "artificial_analysis": {
   "cn_best": "GLM-5.2",
@@ -99,7 +99,7 @@
   "best": [
    {
     "label": "MiniMax",
-    "rank": 73,
+    "rank": 71,
     "store": "android",
     "country": "br"
    }
@@ -116,7 +116,7 @@
    "au",
    "kr"
   ],
-  "detail": "MiniMax #73 (BR Play); basket-mean Western top-100 presence 6/100 across 10 markets",
+  "detail": "MiniMax #71 (BR Play); basket-mean Western top-100 presence 6/100 across 10 markets",
   "note": "iOS Apple RSS top-100 + Android Play top-200 across 10 markets; presence = basket-mean of best top-100 chart rank (DeepSeek/Qwen/Doubao/Kimi/MiniMax), #1=100 #100=1; ranks past top-100 score 0."
  },
  "investment": {
@@ -708,10 +708,10 @@
  },
  "openrouter_week": {
   "week": "2026-11-02",
-  "cn_share": 0.6398,
-  "us_share": 0.2337,
-  "spi": 2.738,
-  "total_tokens": 57574485539200
+  "cn_share": 0.6401,
+  "us_share": 0.2334,
+  "spi": 2.743,
+  "total_tokens": 58515956171057
  },
  "vercel_gateway": {
   "asof": "2026-11-03",
@@ -1054,8 +1054,8 @@
   "license": "AI Gateway Leaderboard Data (c) Vercel, CC BY 4.0"
  },
  "ollama": {
-  "cn": 330046582,
-  "us": 497988700,
+  "cn": 330047045,
+  "us": 497994000,
   "cn_top": [
    {
     "name": "deepseek-r1",
@@ -1097,9 +1097,7 @@
    }
   ],
   "n_models": 267,
-  "asof": "2026-11-03",
-  "cn_per_day": 850063,
-  "us_per_day": 635938
+  "asof": "2026-11-03"
  },
  "kalshi": {
   "asof": "2026-11-03",
@@ -1130,7 +1128,7 @@
    },
    {
     "label": "Best AI at end of 2026: Gemini",
-    "p": 0.524,
+    "p": 0.527,
     "ticker": "KXLLM1-26DEC31-GOOG",
     "series": "kxllm1"
    }
@@ -1140,7 +1138,7 @@
   "cn": [
    {
     "base": "Qwen/Qwen3-8B",
-    "n": 2288
+    "n": 2287
    },
    {
     "base": "deepseek-ai/DeepSeek-R1",
@@ -1173,7 +1171,7 @@
     "n": 129
    }
   ],
-  "cn_total": 2673,
+  "cn_total": 2672,
   "us_total": 2630,
   "asof": "2026-11-03"
  },
