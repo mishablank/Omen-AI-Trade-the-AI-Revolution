@@ -1,6 +1,6 @@
 {
- "updated": "2026-11-03T20:01:12Z",
- "snapshot_date": "2026-11-03",
+ "updated": "2026-11-04T00:34:01Z",
+ "snapshot_date": "2026-11-04",
  "artificial_analysis": {
   "cn_best": "GLM-5.2",
   "cn_score": 51,
@@ -93,13 +93,13 @@
   "note": "Google Trends US, 90-day avg: 8 Chinese AI terms = 2.3% of AI-assistant search interest vs ChatGPT+Gemini+Claude+Llama AI+Meta AI."
  },
  "apps": {
-  "score": 6,
-  "asof": "2026-11-03",
+  "score": 8,
+  "asof": "2026-11-04",
   "source": "app-charts",
   "best": [
    {
     "label": "MiniMax",
-    "rank": 71,
+    "rank": 60,
     "store": "android",
     "country": "br"
    }
@@ -116,7 +116,7 @@
    "au",
    "kr"
   ],
-  "detail": "MiniMax #71 (BR Play); basket-mean Western top-100 presence 6/100 across 10 markets",
+  "detail": "MiniMax #60 (BR Play); basket-mean Western top-100 presence 8/100 across 10 markets",
   "note": "iOS Apple RSS top-100 + Android Play top-200 across 10 markets; presence = basket-mean of best top-100 chart rank (DeepSeek/Qwen/Doubao/Kimi/MiniMax), #1=100 #100=1; ranks past top-100 score 0."
  },
  "investment": {
@@ -502,7 +502,7 @@
   "source": "lmarena-dataset"
  },
  "arena_boards": {
-  "asof": "2026-11-03",
+  "asof": "2026-11-04",
   "boards": {
    "webdev": {
     "metric": "elo",
@@ -625,7 +625,7 @@
    "zai-org/ZCode"
   ],
   "source": "search",
-  "asof": "2026-11-03",
+  "asof": "2026-11-04",
   "vel": {
    "MiniMax-AI/MiniMax-H3": 93.0,
    "MiniMax-AI/MiniMax-M2": 1.0,
@@ -708,48 +708,43 @@
  },
  "openrouter_week": {
   "week": "2026-11-02",
-  "cn_share": 0.6401,
-  "us_share": 0.2334,
-  "spi": 2.743,
-  "total_tokens": 58515956171057
+  "cn_share": 0.6403,
+  "us_share": 0.2323,
+  "spi": 2.756,
+  "total_tokens": 64679602794345
  },
  "vercel_gateway": {
-  "asof": "2026-11-03",
-  "cn_share": 45.91,
-  "us_share": 28.77,
-  "spi": 1.596,
+  "asof": "2026-11-04",
+  "cn_share": 41.76,
+  "us_share": 35.04,
+  "spi": 1.192,
   "top_cn": [
    {
     "lab": "deepseek",
-    "share": 25.02
+    "share": 30.99
    },
    {
     "lab": "zai",
-    "share": 17.2
+    "share": 5.0
    },
    {
     "lab": "moonshotai",
-    "share": 1.55
+    "share": 3.0
    },
    {
     "lab": "alibaba",
-    "share": 1.01
+    "share": 2.16
    },
    {
     "lab": "xiaomi",
-    "share": 0.49
+    "share": 0.36
    },
    {
     "lab": "minimax",
-    "share": 0.34
+    "share": 0.23
    }
   ],
   "series": [
-   {
-    "d": "2026-09-04",
-    "cn": 59.54,
-    "us": 40.1
-   },
    {
     "d": "2026-09-05",
     "cn": 67.66,
@@ -1047,15 +1042,20 @@
    },
    {
     "d": "2026-11-03",
-    "cn": 45.91,
-    "us": 28.77
+    "cn": 44.39,
+    "us": 31.57
+   },
+   {
+    "d": "2026-11-04",
+    "cn": 41.76,
+    "us": 35.04
    }
   ],
   "license": "AI Gateway Leaderboard Data (c) Vercel, CC BY 4.0"
  },
  "ollama": {
-  "cn": 330047045,
-  "us": 497994000,
+  "cn": 330054345,
+  "us": 498140099,
   "cn_top": [
    {
     "name": "deepseek-r1",
@@ -1096,15 +1096,15 @@
     "pulls": 41600000
    }
   ],
-  "n_models": 267,
-  "asof": "2026-11-03"
+  "n_models": 268,
+  "asof": "2026-11-04"
  },
  "kalshi": {
-  "asof": "2026-11-03",
+  "asof": "2026-11-04",
   "markets": [
    {
     "label": "Will a Chinese AI model be #1 this year?",
-    "p": 0.06,
+    "p": 0.05,
     "ticker": "KXBESTLLMCHINA-27",
     "series": "kxbestllmchina"
    },
@@ -1116,19 +1116,19 @@
    },
    {
     "label": "Best AI at end of 2026: Ernie",
-    "p": 0.003,
+    "p": 0.002,
     "ticker": "KXLLM1-26DEC31-BAID",
     "series": "kxllm1"
    },
    {
     "label": "Best AI at end of 2026: Qwen",
-    "p": 0.006,
+    "p": 0.005,
     "ticker": "KXLLM1-26DEC31-ALI",
     "series": "kxllm1"
    },
    {
     "label": "Best AI at end of 2026: Gemini",
-    "p": 0.527,
+    "p": 0.496,
     "ticker": "KXLLM1-26DEC31-GOOG",
     "series": "kxllm1"
    }
@@ -1138,7 +1138,7 @@
   "cn": [
    {
     "base": "Qwen/Qwen3-8B",
-    "n": 2287
+    "n": 2282
    },
    {
     "base": "deepseek-ai/DeepSeek-R1",
@@ -1164,16 +1164,16 @@
    },
    {
     "base": "openai/gpt-oss-20b",
-    "n": 575
+    "n": 570
    },
    {
     "base": "microsoft/phi-4",
     "n": 129
    }
   ],
-  "cn_total": 2672,
-  "us_total": 2630,
-  "asof": "2026-11-03"
+  "cn_total": 2667,
+  "us_total": 2625,
+  "asof": "2026-11-04"
  },
  "sdk": {
   "cn": [
@@ -1204,7 +1204,7 @@
     "wk": 38263995
    }
   ],
-  "asof": "2026-11-03"
+  "asof": "2026-11-04"
  },
  "epoch_compute": {
   "us_share": 79.5,
