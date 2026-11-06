@@ -1,5 +1,5 @@
 {
- "updated": "2026-11-06T10:41:10Z",
+ "updated": "2026-11-06T17:53:25Z",
  "source": "google-play-scraper",
  "store": "android",
  "depth": 200,
@@ -9,7 +9,7 @@
    "label": "DeepSeek",
    "store": "android",
    "country": "de",
-   "rank": 196,
+   "rank": 194,
    "appId": "com.deepseek.chat",
    "title": "DeepSeek - AI Assistant"
   },
