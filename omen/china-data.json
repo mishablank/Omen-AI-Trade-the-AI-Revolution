@@ -1,5 +1,5 @@
 {
- "updated": "2026-11-06T02:11:33Z",
+ "updated": "2026-11-06T10:41:10Z",
  "snapshot_date": "2026-11-06",
  "artificial_analysis": {
   "cn_best": "GLM-5.2",
@@ -99,7 +99,7 @@
   "best": [
    {
     "label": "MiniMax",
-    "rank": 120,
+    "rank": 125,
     "store": "android",
     "country": "br"
    },
@@ -122,7 +122,7 @@
    "au",
    "kr"
   ],
-  "detail": "no Chinese AI app in any iOS or Play top-100 (nearest: MiniMax #120 (BR Play)); basket-mean Western top-100 presence 0/100 across 10 markets",
+  "detail": "no Chinese AI app in any iOS or Play top-100 (nearest: MiniMax #125 (BR Play)); basket-mean Western top-100 presence 0/100 across 10 markets",
   "note": "iOS Apple RSS top-100 + Android Play top-200 across 10 markets; presence = basket-mean of best top-100 chart rank (DeepSeek/Qwen/Doubao/Kimi/MiniMax), #1=100 #100=1; ranks past top-100 score 0."
  },
  "investment": {
@@ -547,36 +547,36 @@
    },
    "text_to_video": {
     "metric": "elo",
-    "best_model": "dreamina-seedance-2.0-720p",
+    "best_model": "Dreamina Seedance 2.0 (720p)",
     "best_org": "bytedance",
-    "best_rank": 5,
-    "best_score": 1479,
-    "other_model": "gemini-omni-1.1-flash",
+    "best_rank": 6,
+    "best_score": 1481,
+    "other_model": "Gemini Omni 1.2 Flash",
     "other_org": "google",
     "other_rank": 1,
-    "other_score": 1516,
-    "gap": 37,
+    "other_score": 1541,
+    "gap": 60,
     "cn_leads": false,
-    "top10": 5,
-    "n": 48,
-    "asof": "2026-09-22",
+    "top10": 3,
+    "n": 50,
+    "asof": "2026-11-05",
     "source": "lmarena-dataset"
    },
    "image_to_video": {
     "metric": "elo",
-    "best_model": "minimax-h3",
+    "best_model": "MiniMax H3",
     "best_org": "minimax",
-    "best_rank": 1,
-    "best_score": 1495,
-    "other_model": "gemini-omni-1.1-flash",
+    "best_rank": 2,
+    "best_score": 1493,
+    "other_model": "Gemini Omni 1.2 Flash",
     "other_org": "google",
-    "other_rank": 2,
-    "other_score": 1488,
-    "gap": -7,
-    "cn_leads": true,
-    "top10": 6,
-    "n": 48,
-    "asof": "2026-09-22",
+    "other_rank": 1,
+    "other_score": 1502,
+    "gap": 9,
+    "cn_leads": false,
+    "top10": 5,
+    "n": 50,
+    "asof": "2026-11-05",
     "source": "lmarena-dataset"
    },
    "text_to_image": {
@@ -652,102 +652,102 @@
   "cnOrgs": [
    {
     "org": "Qwen",
-    "dl": 193186893
+    "dl": 191590381
    },
    {
     "org": "deepseek-ai",
-    "dl": 23313243
+    "dl": 23366156
    },
    {
     "org": "zai-org",
-    "dl": 16771603
+    "dl": 16855243
    },
    {
     "org": "MiniMaxAI",
-    "dl": 8329161
+    "dl": 8330100
    },
    {
     "org": "tencent",
-    "dl": 4574592
+    "dl": 4610839
    },
    {
     "org": "moonshotai",
-    "dl": 2124985
+    "dl": 2107064
    },
    {
     "org": "stepfun-ai",
-    "dl": 529157
+    "dl": 532948
    },
    {
     "org": "XiaomiMiMo",
-    "dl": 366951
+    "dl": 368457
    }
   ],
   "usOrgs": [
    {
     "org": "google",
-    "dl": 33115933
+    "dl": 33215396
    },
    {
     "org": "nvidia",
-    "dl": 15366557
+    "dl": 15230057
    },
    {
     "org": "meta-llama",
-    "dl": 12855189
+    "dl": 12626807
    },
    {
     "org": "openai",
-    "dl": 8404614
+    "dl": 8385426
    },
    {
     "org": "microsoft",
-    "dl": 2110311
+    "dl": 2083838
    },
    {
     "org": "allenai",
-    "dl": 1694763
+    "dl": 1704089
    }
   ],
-  "cn": 249196585,
-  "us": 73547367
+  "cn": 247761188,
+  "us": 73245613
  },
  "openrouter_week": {
   "week": "2026-11-02",
-  "cn_share": 0.6312,
-  "us_share": 0.2308,
-  "spi": 2.735,
-  "total_tokens": 128435724628545
+  "cn_share": 0.6313,
+  "us_share": 0.2291,
+  "spi": 2.755,
+  "total_tokens": 140211320383138
  },
  "vercel_gateway": {
   "asof": "2026-11-06",
-  "cn_share": 41.16,
-  "us_share": 34.1,
-  "spi": 1.207,
+  "cn_share": 45.64,
+  "us_share": 29.22,
+  "spi": 1.562,
   "top_cn": [
    {
     "lab": "deepseek",
-    "share": 26.9
+    "share": 28.77
    },
    {
     "lab": "zai",
-    "share": 8.66
+    "share": 10.06
    },
    {
     "lab": "moonshotai",
-    "share": 3.54
+    "share": 5.01
    },
    {
     "lab": "alibaba",
-    "share": 1.26
+    "share": 0.95
    },
    {
     "lab": "xiaomi",
-    "share": 0.49
+    "share": 0.57
    },
    {
     "lab": "minimax",
-    "share": 0.27
+    "share": 0.25
    }
   ],
   "series": [
@@ -1053,15 +1053,15 @@
    },
    {
     "d": "2026-11-06",
-    "cn": 41.16,
-    "us": 34.1
+    "cn": 45.64,
+    "us": 29.22
    }
   ],
   "license": "AI Gateway Leaderboard Data (c) Vercel, CC BY 4.0"
  },
  "ollama": {
-  "cn": 331542511,
-  "us": 499733100,
+  "cn": 331754529,
+  "us": 499916000,
   "cn_top": [
    {
     "name": "deepseek-r1",
@@ -1077,7 +1077,7 @@
    },
    {
     "name": "qwen3.5",
-    "pulls": 24500000
+    "pulls": 24600000
    },
    {
     "name": "qwen2.5-coder",
@@ -1122,7 +1122,7 @@
    },
    {
     "label": "Best AI at end of 2026: Ernie",
-    "p": 0.003,
+    "p": 0.002,
     "ticker": "KXLLM1-26DEC31-BAID",
     "series": "kxllm1"
    },
@@ -1134,7 +1134,7 @@
    },
    {
     "label": "Best AI at end of 2026: Gemini",
-    "p": 0.574,
+    "p": 0.601,
     "ticker": "KXLLM1-26DEC31-GOOG",
     "series": "kxllm1"
    }
@@ -1144,7 +1144,7 @@
   "cn": [
    {
     "base": "Qwen/Qwen3-8B",
-    "n": 2298
+    "n": 2302
    },
    {
     "base": "deepseek-ai/DeepSeek-R1",
@@ -1174,11 +1174,11 @@
    },
    {
     "base": "microsoft/phi-4",
-    "n": 129
+    "n": 130
    }
   ],
-  "cn_total": 2683,
-  "us_total": 2627,
+  "cn_total": 2687,
+  "us_total": 2628,
   "asof": "2026-11-06"
  },
  "sdk": {
