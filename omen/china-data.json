@@ -1,5 +1,5 @@
 {
- "updated": "2026-11-07T08:38:31Z",
+ "updated": "2026-11-07T15:36:04Z",
  "snapshot_date": "2026-11-07",
  "artificial_analysis": {
   "cn_best": "GLM-5.2",
@@ -102,12 +102,6 @@
     "rank": 157,
     "store": "android",
     "country": "br"
-   },
-   {
-    "label": "DeepSeek",
-    "rank": 200,
-    "store": "android",
-    "country": "de"
    }
   ],
   "markets": [
@@ -633,64 +627,64 @@
   "source": "search",
   "asof": "2026-11-07",
   "vel": {
-   "MiniMax-AI/MiniMax-H3": 72.3,
+   "MiniMax-AI/MiniMax-H3": 33.2,
    "MiniMax-AI/MiniMax-M2": 0.0,
-   "MoonshotAI/Kimi-K3": 4.1,
-   "MoonshotAI/kimi-cli": -4.1,
-   "QwenLM/Qwen3.8": 2.1,
-   "QwenLM/qwen-code": 23.8,
-   "XiaomiMiMo/MiMo": 1.0,
-   "XiaomiMiMo/MiMo-Code": 7.2,
-   "deepseek-ai/DeepInfer": 84.7,
-   "deepseek-ai/deepseek-harness": 1128.9,
-   "zai-org/GLM-OCR": 2.1,
-   "zai-org/ZCode": 18.6
+   "MoonshotAI/Kimi-K3": 7.7,
+   "MoonshotAI/kimi-cli": 1.1,
+   "QwenLM/Qwen3.8": 4.4,
+   "QwenLM/qwen-code": 26.5,
+   "XiaomiMiMo/MiMo": 0.0,
+   "XiaomiMiMo/MiMo-Code": 3.3,
+   "deepseek-ai/DeepInfer": 49.8,
+   "deepseek-ai/deepseek-harness": 869.1,
+   "zai-org/GLM-OCR": 3.3,
+   "zai-org/ZCode": 16.6
   }
  },
- "github_stars_per_day": 1340.7,
+ "github_stars_per_day": 1015.1,
  "hf": {
   "cnOrgs": [
    {
     "org": "Qwen",
-    "dl": 191564924
+    "dl": 191985688
    },
    {
     "org": "deepseek-ai",
-    "dl": 23350835
+    "dl": 23514224
    },
    {
     "org": "zai-org",
-    "dl": 16839758
+    "dl": 16758870
    },
    {
     "org": "MiniMaxAI",
-    "dl": 8330011
+    "dl": 8391596
    },
    {
     "org": "tencent",
-    "dl": 4629344
+    "dl": 4634208
    },
    {
     "org": "moonshotai",
-    "dl": 2098122
+    "dl": 2104163
    },
    {
     "org": "stepfun-ai",
-    "dl": 540545
+    "dl": 539966
    },
    {
     "org": "XiaomiMiMo",
-    "dl": 368577
+    "dl": 368679
    }
   ],
   "usOrgs": [
    {
     "org": "google",
-    "dl": 33439451
+    "dl": 33371761
    },
    {
     "org": "nvidia",
-    "dl": 15230057
+    "dl": 15127684
    },
    {
     "org": "meta-llama",
@@ -698,7 +692,7 @@
    },
    {
     "org": "openai",
-    "dl": 8409865
+    "dl": 8411092
    },
    {
     "org": "microsoft",
@@ -706,48 +700,48 @@
    },
    {
     "org": "allenai",
-    "dl": 1705717
+    "dl": 1724726
    }
   ],
-  "cn": 247722116,
-  "us": 73449855
+  "cn": 248297394,
+  "us": 73300028
  },
  "openrouter_week": {
   "week": "2026-11-02",
-  "cn_share": 0.63,
-  "us_share": 0.2274,
-  "spi": 2.77,
-  "total_tokens": 167012716892972
+  "cn_share": 0.6314,
+  "us_share": 0.2257,
+  "spi": 2.797,
+  "total_tokens": 175846104462379
  },
  "vercel_gateway": {
   "asof": "2026-11-07",
-  "cn_share": 48.23,
-  "us_share": 23.3,
-  "spi": 2.07,
+  "cn_share": 50.77,
+  "us_share": 21.69,
+  "spi": 2.341,
   "top_cn": [
    {
     "lab": "deepseek",
-    "share": 28.39
+    "share": 30.99
    },
    {
     "lab": "zai",
-    "share": 12.74
+    "share": 13.55
    },
    {
     "lab": "moonshotai",
-    "share": 6.03
+    "share": 4.83
    },
    {
     "lab": "xiaomi",
-    "share": 0.44
+    "share": 0.6
    },
    {
     "lab": "alibaba",
-    "share": 0.38
+    "share": 0.51
    },
    {
     "lab": "minimax",
-    "share": 0.24
+    "share": 0.28
    }
   ],
   "series": [
@@ -1053,15 +1047,15 @@
    },
    {
     "d": "2026-11-07",
-    "cn": 48.23,
-    "us": 23.3
+    "cn": 50.77,
+    "us": 21.69
    }
   ],
   "license": "AI Gateway Leaderboard Data (c) Vercel, CC BY 4.0"
  },
  "ollama": {
-  "cn": 332283373,
-  "us": 500254300,
+  "cn": 332596467,
+  "us": 500362000,
   "cn_top": [
    {
     "name": "deepseek-r1",
@@ -1081,7 +1075,7 @@
    },
    {
     "name": "qwen2.5-coder",
-    "pulls": 23400000
+    "pulls": 23500000
    },
    {
     "name": "qwen3-coder",
@@ -1103,7 +1097,9 @@
    }
   ],
   "n_models": 270,
-  "asof": "2026-11-07"
+  "asof": "2026-11-07",
+  "cn_per_day": 806930,
+  "us_per_day": 252553
  },
  "kalshi": {
   "asof": "2026-11-07",
@@ -1134,7 +1130,7 @@
    },
    {
     "label": "Best AI at end of 2026: Gemini",
-    "p": 0.622,
+    "p": 0.606,
     "ticker": "KXLLM1-26DEC31-GOOG",
     "series": "kxllm1"
    }
