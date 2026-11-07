@@ -1,6 +1,6 @@
 {
- "updated": "2026-11-06T19:54:09Z",
- "snapshot_date": "2026-11-06",
+ "updated": "2026-11-07T00:00:24Z",
+ "snapshot_date": "2026-11-07",
  "artificial_analysis": {
   "cn_best": "GLM-5.2",
   "cn_score": 51,
@@ -94,12 +94,12 @@
  },
  "apps": {
   "score": 0,
-  "asof": "2026-11-06",
+  "asof": "2026-11-07",
   "source": "app-charts",
   "best": [
    {
     "label": "MiniMax",
-    "rank": 167,
+    "rank": 158,
     "store": "android",
     "country": "br"
    }
@@ -116,7 +116,7 @@
    "au",
    "kr"
   ],
-  "detail": "no Chinese AI app in any iOS or Play top-100 (nearest: MiniMax #167 (BR Play)); basket-mean Western top-100 presence 0/100 across 10 markets",
+  "detail": "no Chinese AI app in any iOS or Play top-100 (nearest: MiniMax #158 (BR Play)); basket-mean Western top-100 presence 0/100 across 10 markets",
   "note": "iOS Apple RSS top-100 + Android Play top-200 across 10 markets; presence = basket-mean of best top-100 chart rank (DeepSeek/Qwen/Doubao/Kimi/MiniMax), #1=100 #100=1; ranks past top-100 score 0."
  },
  "investment": {
@@ -502,7 +502,7 @@
   "source": "lmarena-dataset"
  },
  "arena_boards": {
-  "asof": "2026-11-06",
+  "asof": "2026-11-07",
   "boards": {
    "webdev": {
     "metric": "elo",
@@ -625,7 +625,7 @@
    "zai-org/ZCode"
   ],
   "source": "search",
-  "asof": "2026-11-06",
+  "asof": "2026-11-07",
   "vel": {
    "MiniMax-AI/MiniMax-H3": 72.3,
    "MiniMax-AI/MiniMax-M2": 0.0,
@@ -708,40 +708,40 @@
  },
  "openrouter_week": {
   "week": "2026-11-02",
-  "cn_share": 0.6296,
-  "us_share": 0.2295,
-  "spi": 2.743,
-  "total_tokens": 152204645173860
+  "cn_share": 0.628,
+  "us_share": 0.2301,
+  "spi": 2.73,
+  "total_tokens": 157749175381425
  },
  "vercel_gateway": {
   "asof": "2026-11-06",
-  "cn_share": 43.84,
-  "us_share": 32.32,
-  "spi": 1.356,
+  "cn_share": 43.75,
+  "us_share": 33.43,
+  "spi": 1.309,
   "top_cn": [
    {
     "lab": "deepseek",
-    "share": 25.97
+    "share": 25.95
    },
    {
     "lab": "zai",
-    "share": 11.93
+    "share": 11.75
    },
    {
     "lab": "moonshotai",
-    "share": 4.3
+    "share": 4.46
    },
    {
     "lab": "alibaba",
-    "share": 0.7
+    "share": 0.65
    },
    {
     "lab": "xiaomi",
-    "share": 0.56
+    "share": 0.53
    },
    {
     "lab": "minimax",
-    "share": 0.37
+    "share": 0.38
    }
   ],
   "series": [
@@ -1047,15 +1047,15 @@
    },
    {
     "d": "2026-11-06",
-    "cn": 43.84,
-    "us": 32.32
+    "cn": 43.75,
+    "us": 33.43
    }
   ],
   "license": "AI Gateway Leaderboard Data (c) Vercel, CC BY 4.0"
  },
  "ollama": {
-  "cn": 331869797,
-  "us": 500138000,
+  "cn": 332175226,
+  "us": 500144500,
   "cn_top": [
    {
     "name": "deepseek-r1",
@@ -1063,7 +1063,7 @@
    },
    {
     "name": "qwen2.5",
-    "pulls": 44900000
+    "pulls": 45000000
    },
    {
     "name": "qwen3",
@@ -1097,14 +1097,14 @@
    }
   ],
   "n_models": 270,
-  "asof": "2026-11-06"
+  "asof": "2026-11-07"
  },
  "kalshi": {
-  "asof": "2026-11-06",
+  "asof": "2026-11-07",
   "markets": [
    {
     "label": "Will a Chinese AI model be #1 this year?",
-    "p": 0.05,
+    "p": 0.07,
     "ticker": "KXBESTLLMCHINA-27",
     "series": "kxbestllmchina"
    },
@@ -1128,7 +1128,7 @@
    },
    {
     "label": "Best AI at end of 2026: Gemini",
-    "p": 0.598,
+    "p": 0.599,
     "ticker": "KXLLM1-26DEC31-GOOG",
     "series": "kxllm1"
    }
@@ -1156,7 +1156,7 @@
   "us": [
    {
     "base": "meta-llama/Llama-3.1-8B",
-    "n": 1503
+    "n": 1504
    },
    {
     "base": "google/gemma-3-12b-it",
@@ -1164,7 +1164,7 @@
    },
    {
     "base": "openai/gpt-oss-20b",
-    "n": 571
+    "n": 573
    },
    {
     "base": "microsoft/phi-4",
@@ -1172,17 +1172,29 @@
    }
   ],
   "cn_total": 2686,
-  "us_total": 2628,
-  "asof": "2026-11-06"
+  "us_total": 2631,
+  "asof": "2026-11-07"
  },
  "sdk": {
   "cn": [
    {
     "pkg": "dashscope",
     "wk": 416036
+   },
+   {
+    "pkg": "zhipuai",
+    "wk": 28425
+   },
+   {
+    "pkg": "zai-sdk",
+    "wk": 41517
    }
   ],
   "us": [
+   {
+    "pkg": "openai",
+    "wk": 91156146
+   },
    {
     "pkg": "anthropic",
     "wk": 50083571
@@ -1192,7 +1204,7 @@
     "wk": 38431674
    }
   ],
-  "asof": "2026-11-06"
+  "asof": "2026-11-07"
  },
  "epoch_compute": {
   "us_share": 79.5,
