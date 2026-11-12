@@ -1,6 +1,6 @@
 {
- "updated": "2026-11-11T20:04:49Z",
- "snapshot_date": "2026-11-11",
+ "updated": "2026-11-12T01:59:12Z",
+ "snapshot_date": "2026-11-12",
  "artificial_analysis": {
   "cn_best": "GLM-5.2",
   "cn_score": 51,
@@ -94,12 +94,12 @@
  },
  "apps": {
   "score": 0,
-  "asof": "2026-11-11",
+  "asof": "2026-11-12",
   "source": "app-charts",
   "best": [
    {
     "label": "MiniMax",
-    "rank": 128,
+    "rank": 127,
     "store": "android",
     "country": "br"
    }
@@ -116,7 +116,7 @@
    "au",
    "kr"
   ],
-  "detail": "no Chinese AI app in any iOS or Play top-100 (nearest: MiniMax #128 (BR Play)); basket-mean Western top-100 presence 0/100 across 10 markets",
+  "detail": "no Chinese AI app in any iOS or Play top-100 (nearest: MiniMax #127 (BR Play)); basket-mean Western top-100 presence 0/100 across 10 markets",
   "note": "iOS Apple RSS top-100 + Android Play top-200 across 10 markets; presence = basket-mean of best top-100 chart rank (DeepSeek/Qwen/Doubao/Kimi/MiniMax), #1=100 #100=1; ranks past top-100 score 0."
  },
  "investment": {
@@ -502,7 +502,7 @@
   "source": "lmarena-dataset"
  },
  "arena_boards": {
-  "asof": "2026-11-11",
+  "asof": "2026-11-12",
   "boards": {
    "webdev": {
     "metric": "elo",
@@ -554,7 +554,8 @@
     "top10": 3,
     "n": 50,
     "asof": "2026-11-09",
-    "source": "lmarena-dataset"
+    "source": "lmarena-dataset",
+    "carried": true
    },
    "image_to_video": {
     "metric": "elo",
@@ -588,8 +589,7 @@
     "top10": 0,
     "n": 84,
     "asof": "2026-11-09",
-    "source": "lmarena-dataset",
-    "carried": true
+    "source": "lmarena-dataset"
    },
    "image_edit": {
     "metric": "elo",
@@ -606,7 +606,8 @@
     "top10": 0,
     "n": 63,
     "asof": "2026-11-09",
-    "source": "lmarena-dataset"
+    "source": "lmarena-dataset",
+    "carried": true
    }
   }
  },
@@ -626,7 +627,7 @@
    "zai-org/ZCode"
   ],
   "source": "search",
-  "asof": "2026-11-11",
+  "asof": "2026-11-12",
   "vel": {
    "MiniMax-AI/MiniMax-H3": 66.0,
    "MiniMax-AI/skills": 6.7,
@@ -709,48 +710,43 @@
  },
  "openrouter_week": {
   "week": "2026-11-09",
-  "cn_share": 0.6317,
-  "us_share": 0.2245,
-  "spi": 2.814,
-  "total_tokens": 88241921619469
+  "cn_share": 0.6314,
+  "us_share": 0.2255,
+  "spi": 2.8,
+  "total_tokens": 96478250562059
  },
  "vercel_gateway": {
-  "asof": "2026-11-11",
-  "cn_share": 43.51,
-  "us_share": 29.92,
-  "spi": 1.454,
+  "asof": "2026-11-12",
+  "cn_share": 49.49,
+  "us_share": 26.24,
+  "spi": 1.886,
   "top_cn": [
    {
     "lab": "deepseek",
-    "share": 20.7
+    "share": 25.77
    },
    {
     "lab": "zai",
-    "share": 17.77
+    "share": 19.08
    },
    {
     "lab": "moonshotai",
-    "share": 3.54
-   },
-   {
-    "lab": "xiaomi",
-    "share": 0.62
+    "share": 3.7
    },
    {
     "lab": "alibaba",
-    "share": 0.47
+    "share": 0.38
+   },
+   {
+    "lab": "xiaomi",
+    "share": 0.38
    },
    {
     "lab": "minimax",
-    "share": 0.4
+    "share": 0.18
    }
   ],
   "series": [
-   {
-    "d": "2026-09-12",
-    "cn": 78.03,
-    "us": 21.44
-   },
    {
     "d": "2026-09-13",
     "cn": 79.61,
@@ -1048,15 +1044,20 @@
    },
    {
     "d": "2026-11-11",
-    "cn": 43.51,
-    "us": 29.92
+    "cn": 44.05,
+    "us": 29.71
+   },
+   {
+    "d": "2026-11-12",
+    "cn": 49.49,
+    "us": 26.24
    }
   ],
   "license": "AI Gateway Leaderboard Data (c) Vercel, CC BY 4.0"
  },
  "ollama": {
-  "cn": 333664717,
-  "us": 502999499,
+  "cn": 333672126,
+  "us": 503006199,
   "cn_top": [
    {
     "name": "deepseek-r1",
@@ -1098,10 +1099,10 @@
    }
   ],
   "n_models": 269,
-  "asof": "2026-11-11"
+  "asof": "2026-11-12"
  },
  "kalshi": {
-  "asof": "2026-11-11",
+  "asof": "2026-11-12",
   "markets": [
    {
     "label": "Will a Chinese AI model be #1 this year?",
@@ -1129,7 +1130,7 @@
    },
    {
     "label": "Best AI at end of 2026: Gemini",
-    "p": 0.683,
+    "p": 0.682,
     "ticker": "KXLLM1-26DEC31-GOOG",
     "series": "kxllm1"
    }
@@ -1139,7 +1140,7 @@
   "cn": [
    {
     "base": "Qwen/Qwen3-8B",
-    "n": 2323
+    "n": 2324
    },
    {
     "base": "deepseek-ai/DeepSeek-R1",
@@ -1172,40 +1173,40 @@
     "n": 130
    }
   ],
-  "cn_total": 2708,
+  "cn_total": 2709,
   "us_total": 2631,
-  "asof": "2026-11-11"
+  "asof": "2026-11-12"
  },
  "sdk": {
   "cn": [
    {
     "pkg": "dashscope",
-    "wk": 430181
+    "wk": 442270
    },
    {
     "pkg": "zhipuai",
-    "wk": 36208
+    "wk": 35821
    },
    {
     "pkg": "zai-sdk",
-    "wk": 46445
+    "wk": 49996
    }
   ],
   "us": [
    {
     "pkg": "openai",
-    "wk": 90619156
+    "wk": 90279281
    },
    {
     "pkg": "anthropic",
-    "wk": 50139647
+    "wk": 49531968
    },
    {
     "pkg": "google-genai",
-    "wk": 38561463
+    "wk": 38456289
    }
   ],
-  "asof": "2026-11-11"
+  "asof": "2026-11-12"
  },
  "epoch_compute": {
   "us_share": 79.5,
