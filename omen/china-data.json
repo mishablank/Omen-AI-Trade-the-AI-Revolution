@@ -1,5 +1,5 @@
 {
- "updated": "2026-11-14T16:57:05Z",
+ "updated": "2026-11-14T18:36:47Z",
  "snapshot_date": "2026-11-14",
  "artificial_analysis": {
   "cn_best": "GLM-5.2",
@@ -70,7 +70,7 @@
   }
  },
  "search_consumer": {
-  "western_share_pct": 2.2,
+  "western_share_pct": 2.1,
   "asof": "2026-11",
   "source": "google-trends",
   "terms_us": [
@@ -90,7 +90,7 @@
    "Seed 1.6",
    "Seed 2.0"
   ],
-  "note": "Google Trends US, 90-day avg: 8 Chinese AI terms = 2.2% of AI-assistant search interest vs ChatGPT+Gemini+Claude+Llama AI+Meta AI."
+  "note": "Google Trends US, 90-day avg: 8 Chinese AI terms = 2.1% of AI-assistant search interest vs ChatGPT+Gemini+Claude+Llama AI+Meta AI."
  },
  "apps": {
   "score": 0,
@@ -701,10 +701,10 @@
  },
  "openrouter_week": {
   "week": "2026-11-09",
-  "cn_share": 0.6248,
+  "cn_share": 0.6244,
   "us_share": 0.2284,
-  "spi": 2.736,
-  "total_tokens": 177916300657258
+  "spi": 2.734,
+  "total_tokens": 180242952217889
  },
  "vercel_gateway": {
   "asof": "2026-11-14",
@@ -1047,8 +1047,8 @@
   "license": "AI Gateway Leaderboard Data (c) Vercel, CC BY 4.0"
  },
  "ollama": {
-  "cn": 335787196,
-  "us": 504681500,
+  "cn": 335989428,
+  "us": 504784900,
   "cn_top": [
    {
     "name": "deepseek-r1",
@@ -1082,7 +1082,7 @@
    },
    {
     "name": "llama3.2",
-    "pulls": 87600000
+    "pulls": 87700000
    },
    {
     "name": "gemma3",
@@ -1090,9 +1090,7 @@
    }
   ],
   "n_models": 270,
-  "asof": "2026-11-14",
-  "cn_per_day": 686872,
-  "us_per_day": 560509
+  "asof": "2026-11-14"
  },
  "kalshi": {
   "asof": "2026-11-14",
@@ -1123,7 +1121,7 @@
    },
    {
     "label": "Best AI at end of 2026: Gemini",
-    "p": 0.719,
+    "p": 0.702,
     "ticker": "KXLLM1-26DEC31-GOOG",
     "series": "kxllm1"
    }
