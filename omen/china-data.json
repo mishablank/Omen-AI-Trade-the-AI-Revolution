@@ -1,5 +1,5 @@
 {
- "updated": "2026-11-15T16:56:17Z",
+ "updated": "2026-11-15T19:12:26Z",
  "snapshot_date": "2026-11-15",
  "artificial_analysis": {
   "cn_best": "GLM-5.2",
@@ -701,10 +701,10 @@
  },
  "openrouter_week": {
   "week": "2026-11-09",
-  "cn_share": 0.6224,
-  "us_share": 0.2265,
-  "spi": 2.748,
-  "total_tokens": 203903572376064
+  "cn_share": 0.6217,
+  "us_share": 0.2266,
+  "spi": 2.743,
+  "total_tokens": 205979199773334
  },
  "vercel_gateway": {
   "asof": "2026-11-15",
@@ -1047,8 +1047,8 @@
   "license": "AI Gateway Leaderboard Data (c) Vercel, CC BY 4.0"
  },
  "ollama": {
-  "cn": 336927565,
-  "us": 505216900,
+  "cn": 336930209,
+  "us": 505321400,
   "cn_top": [
    {
     "name": "deepseek-r1",
@@ -1090,9 +1090,7 @@
    }
   ],
   "n_models": 270,
-  "asof": "2026-11-15",
-  "cn_per_day": 1141821,
-  "us_per_day": 536082
+  "asof": "2026-11-15"
  },
  "kalshi": {
   "asof": "2026-11-15",
@@ -1111,7 +1109,7 @@
    },
    {
     "label": "Best AI at end of 2026: Ernie",
-    "p": 0.002,
+    "p": 0.001,
     "ticker": "KXLLM1-26DEC31-BAID",
     "series": "kxllm1"
    },
@@ -1123,7 +1121,7 @@
    },
    {
     "label": "Best AI at end of 2026: Gemini",
-    "p": 0.72,
+    "p": 0.742,
     "ticker": "KXLLM1-26DEC31-GOOG",
     "series": "kxllm1"
    }
