@@ -1,5 +1,5 @@
 {
- "updated": "2026-11-15T01:43:11Z",
+ "updated": "2026-11-15T09:07:33Z",
  "snapshot_date": "2026-11-15",
  "artificial_analysis": {
   "cn_best": "GLM-5.2",
@@ -530,8 +530,7 @@
     "n": 59,
     "pct_of_other": 17,
     "asof": "2026-11-11",
-    "source": "lmarena-dataset",
-    "carried": true
+    "source": "lmarena-dataset"
    },
    "text_to_video": {
     "metric": "elo",
@@ -548,8 +547,7 @@
     "top10": 3,
     "n": 50,
     "asof": "2026-11-09",
-    "source": "lmarena-dataset",
-    "carried": true
+    "source": "lmarena-dataset"
    },
    "image_to_video": {
     "metric": "elo",
@@ -566,8 +564,7 @@
     "top10": 5,
     "n": 50,
     "asof": "2026-11-09",
-    "source": "lmarena-dataset",
-    "carried": true
+    "source": "lmarena-dataset"
    },
    "text_to_image": {
     "metric": "elo",
@@ -584,8 +581,7 @@
     "top10": 0,
     "n": 85,
     "asof": "2026-11-12",
-    "source": "lmarena-dataset",
-    "carried": true
+    "source": "lmarena-dataset"
    },
    "image_edit": {
     "metric": "elo",
@@ -602,8 +598,7 @@
     "top10": 0,
     "n": 64,
     "asof": "2026-11-12",
-    "source": "lmarena-dataset",
-    "carried": true
+    "source": "lmarena-dataset"
    }
   }
  },
@@ -644,72 +639,72 @@
   "cnOrgs": [
    {
     "org": "Qwen",
-    "dl": 179522750
+    "dl": 177690662
    },
    {
     "org": "deepseek-ai",
-    "dl": 23526157
+    "dl": 23676044
    },
    {
     "org": "zai-org",
-    "dl": 15967790
+    "dl": 15934105
    },
    {
     "org": "MiniMaxAI",
-    "dl": 8541357
+    "dl": 8524713
    },
    {
     "org": "tencent",
-    "dl": 4689201
+    "dl": 4699628
    },
    {
     "org": "moonshotai",
-    "dl": 2188922
+    "dl": 2196223
    },
    {
     "org": "stepfun-ai",
-    "dl": 531827
+    "dl": 532710
    },
    {
     "org": "XiaomiMiMo",
-    "dl": 333279
+    "dl": 332857
    }
   ],
   "usOrgs": [
    {
     "org": "google",
-    "dl": 31412307
+    "dl": 31514552
    },
    {
     "org": "nvidia",
-    "dl": 14211933
+    "dl": 14193231
    },
    {
     "org": "meta-llama",
-    "dl": 11784482
+    "dl": 11696243
    },
    {
     "org": "openai",
-    "dl": 8115516
+    "dl": 8053626
    },
    {
     "org": "microsoft",
-    "dl": 1888928
+    "dl": 1864220
    },
    {
     "org": "allenai",
-    "dl": 1551605
+    "dl": 1521044
    }
   ],
-  "cn": 235301283,
-  "us": 68964771
+  "cn": 233586942,
+  "us": 68842916
  },
  "openrouter_week": {
   "week": "2026-11-09",
-  "cn_share": 0.6223,
-  "us_share": 0.2289,
-  "spi": 2.719,
-  "total_tokens": 187206172262160
+  "cn_share": 0.6222,
+  "us_share": 0.2279,
+  "spi": 2.73,
+  "total_tokens": 194496201682925
  },
  "vercel_gateway": {
   "asof": "2026-11-14",
@@ -1052,16 +1047,16 @@
   "license": "AI Gateway Leaderboard Data (c) Vercel, CC BY 4.0"
  },
  "ollama": {
-  "cn": 336203389,
-  "us": 504892500,
+  "cn": 336515209,
+  "us": 505102600,
   "cn_top": [
    {
     "name": "deepseek-r1",
-    "pulls": 95000000
+    "pulls": 95100000
    },
    {
     "name": "qwen2.5",
-    "pulls": 45800000
+    "pulls": 45900000
    },
    {
     "name": "qwen3",
@@ -1069,7 +1064,7 @@
    },
    {
     "name": "qwen3.5",
-    "pulls": 25900000
+    "pulls": 26000000
    },
    {
     "name": "qwen2.5-coder",
@@ -1126,7 +1121,7 @@
    },
    {
     "label": "Best AI at end of 2026: Gemini",
-    "p": 0.72,
+    "p": 0.724,
     "ticker": "KXLLM1-26DEC31-GOOG",
     "series": "kxllm1"
    }
@@ -1136,7 +1131,7 @@
   "cn": [
    {
     "base": "Qwen/Qwen3-8B",
-    "n": 2336
+    "n": 2338
    },
    {
     "base": "deepseek-ai/DeepSeek-R1",
@@ -1154,7 +1149,7 @@
   "us": [
    {
     "base": "meta-llama/Llama-3.1-8B",
-    "n": 1501
+    "n": 1502
    },
    {
     "base": "google/gemma-3-12b-it",
@@ -1169,16 +1164,12 @@
     "n": 127
    }
   ],
-  "cn_total": 2720,
-  "us_total": 2630,
+  "cn_total": 2722,
+  "us_total": 2631,
   "asof": "2026-11-15"
  },
  "sdk": {
   "cn": [
-   {
-    "pkg": "dashscope",
-    "wk": 413327
-   },
    {
     "pkg": "zhipuai",
     "wk": 35851
@@ -1189,14 +1180,6 @@
    }
   ],
   "us": [
-   {
-    "pkg": "openai",
-    "wk": 88488031
-   },
-   {
-    "pkg": "anthropic",
-    "wk": 49742586
-   },
    {
     "pkg": "google-genai",
     "wk": 39271805
