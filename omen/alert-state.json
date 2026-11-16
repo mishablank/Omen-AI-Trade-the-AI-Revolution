@@ -1,1 +1,1 @@
-{"regime": "elevated", "gauge": 47.63399036974232, "at": "2026-11-16T09:24:39.814529Z", "coverage_warnings": ["china: 2 live market(s), below the floor of 3 - the china side-index is reading too few markets to be an index"]}
+{"regime": "stressed", "gauge": 55.67662281682806, "at": "2026-11-16T20:14:51.342345Z", "coverage_warnings": ["china: 2 live market(s), below the floor of 3 - the china side-index is reading too few markets to be an index"]}
