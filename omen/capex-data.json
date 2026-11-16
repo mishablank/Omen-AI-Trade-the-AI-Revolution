@@ -1,5 +1,5 @@
 {
- "updated": "2026-11-16T20:17:50Z",
+ "updated": "2026-11-16T22:49:04Z",
  "tsmc": {
   "asof": "2026-10",
   "rev_ntd_b": 586.9,
@@ -14,7 +14,7 @@
    "from": "2026-08-19",
    "to": "2026-11-16",
    "debt": 27,
-   "s1_ai": 290,
+   "s1_ai": 294,
    "formd_ai": 4
   },
   "prev": {
@@ -64,8 +64,8 @@
     "asof": "2025-12"
    }
   ],
-  "fx_cny_per_usd": 6.676,
-  "fx_asof": "2026-11-06",
+  "fx_cny_per_usd": 6.671,
+  "fx_asof": "2026-11-13",
   "ratio": 16.2
  },
  "ramp": {
@@ -237,7 +237,7 @@
    "@google/gemini-cli": 464043
   },
   "pypi": {
-   "claude-agent-sdk": null,
+   "claude-agent-sdk": 9348408,
    "openai-agents": 4554900
   },
   "npm_total_wk": 44401525,
