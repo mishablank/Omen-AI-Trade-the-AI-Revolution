@@ -1,5 +1,5 @@
 {
- "updated": "2026-11-17T14:15:17Z",
+ "updated": "2026-11-17T21:35:53Z",
  "snapshot_date": "2026-11-17",
  "artificial_analysis": {
   "cn_best": "GLM-5.2",
@@ -564,7 +564,8 @@
     "top10": 5,
     "n": 50,
     "asof": "2026-11-09",
-    "source": "lmarena-dataset"
+    "source": "lmarena-dataset",
+    "carried": true
    },
    "text_to_image": {
     "metric": "elo",
@@ -620,21 +621,21 @@
   "source": "search",
   "asof": "2026-11-17",
   "vel": {
-   "MiniMax-AI/MiniMax-H3": 33.4,
-   "MiniMax-AI/skills": 5.3,
-   "MoonshotAI/Kimi-K3": 3.5,
-   "MoonshotAI/kimi-cli": 1.8,
-   "QwenLM/Qwen3.8": 7.9,
-   "QwenLM/qwen-code": 87.9,
+   "MiniMax-AI/MiniMax-H3": 26.5,
+   "MiniMax-AI/skills": 13.2,
+   "MoonshotAI/Kimi-K3": 2.8,
+   "MoonshotAI/kimi-cli": 3.8,
+   "QwenLM/Qwen3.8": 3.8,
+   "QwenLM/qwen-code": 101.2,
    "XiaomiMiMo/MiMo": 0.0,
-   "XiaomiMiMo/MiMo-Code": 0.0,
-   "deepseek-ai/DeepInfer": 37.8,
-   "deepseek-ai/deepseek-harness": 680.2,
-   "zai-org/GLM-OCR": 3.5,
-   "zai-org/ZCode": 14.1
+   "XiaomiMiMo/MiMo-Code": 3.8,
+   "deepseek-ai/DeepInfer": 51.1,
+   "deepseek-ai/deepseek-harness": 630.1,
+   "zai-org/GLM-OCR": 0.0,
+   "zai-org/ZCode": 26.5
   }
  },
- "github_stars_per_day": 875.3,
+ "github_stars_per_day": 862.8,
  "hf": {
   "cnOrgs": [
    {
@@ -701,40 +702,40 @@
  },
  "openrouter_week": {
   "week": "2026-11-16",
-  "cn_share": 0.6534,
-  "us_share": 0.1932,
-  "spi": 3.381,
-  "total_tokens": 64406092369168
+  "cn_share": 0.665,
+  "us_share": 0.1877,
+  "spi": 3.543,
+  "total_tokens": 80182416953535
  },
  "vercel_gateway": {
   "asof": "2026-11-17",
-  "cn_share": 50.77,
-  "us_share": 25.78,
-  "spi": 1.969,
+  "cn_share": 47.67,
+  "us_share": 28.81,
+  "spi": 1.655,
   "top_cn": [
    {
     "lab": "deepseek",
-    "share": 29.15
+    "share": 26.78
    },
    {
     "lab": "zai",
-    "share": 15.05
+    "share": 14.67
    },
    {
     "lab": "moonshotai",
-    "share": 5.17
+    "share": 4.69
    },
    {
     "lab": "xiaomi",
-    "share": 0.5
+    "share": 0.51
    },
    {
     "lab": "alibaba",
-    "share": 0.41
+    "share": 0.49
    },
    {
     "lab": "minimax",
-    "share": 0.35
+    "share": 0.41
    }
   ],
   "series": [
@@ -1040,19 +1041,19 @@
    },
    {
     "d": "2026-11-17",
-    "cn": 50.77,
-    "us": 25.78
+    "cn": 47.67,
+    "us": 28.81
    }
   ],
   "license": "AI Gateway Leaderboard Data (c) Vercel, CC BY 4.0"
  },
  "ollama": {
-  "cn": 338376820,
-  "us": 506385200,
+  "cn": 338584986,
+  "us": 506494100,
   "cn_top": [
    {
     "name": "deepseek-r1",
-    "pulls": 95100000
+    "pulls": 95200000
    },
    {
     "name": "qwen2.5",
@@ -1064,7 +1065,7 @@
    },
    {
     "name": "qwen3.5",
-    "pulls": 26500000
+    "pulls": 26600000
    },
    {
     "name": "qwen2.5-coder",
@@ -1082,7 +1083,7 @@
    },
    {
     "name": "llama3.2",
-    "pulls": 87800000
+    "pulls": 87900000
    },
    {
     "name": "gemma3",
@@ -1090,7 +1091,9 @@
    }
   ],
   "n_models": 270,
-  "asof": "2026-11-17"
+  "asof": "2026-11-17",
+  "cn_per_day": 687255,
+  "us_per_day": 407609
  },
  "kalshi": {
   "asof": "2026-11-17",
