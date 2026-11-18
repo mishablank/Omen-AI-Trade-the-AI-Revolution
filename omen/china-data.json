@@ -1,5 +1,5 @@
 {
- "updated": "2026-11-18T03:34:41Z",
+ "updated": "2026-11-18T12:55:19Z",
  "snapshot_date": "2026-11-18",
  "artificial_analysis": {
   "cn_best": "GLM-5.2",
@@ -570,17 +570,17 @@
     "metric": "elo",
     "best_model": "Qwen-Image-3.0-Pro",
     "best_org": "alibaba",
-    "best_rank": 14,
+    "best_rank": 15,
     "best_score": 1254,
     "other_model": "GPT-Image-2.5 Sunburst",
     "other_org": "openai",
     "other_rank": 1,
-    "other_score": 1429,
-    "gap": 175,
+    "other_score": 1428,
+    "gap": 174,
     "cn_leads": false,
     "top10": 0,
-    "n": 85,
-    "asof": "2026-11-12",
+    "n": 86,
+    "asof": "2026-11-17",
     "source": "lmarena-dataset"
    },
    "image_edit": {
@@ -597,7 +597,7 @@
     "cn_leads": false,
     "top10": 0,
     "n": 64,
-    "asof": "2026-11-12",
+    "asof": "2026-11-17",
     "source": "lmarena-dataset"
    }
   }
@@ -639,102 +639,102 @@
   "cnOrgs": [
    {
     "org": "Qwen",
-    "dl": 176592519
+    "dl": 175657127
    },
    {
     "org": "deepseek-ai",
-    "dl": 23850168
+    "dl": 24064891
    },
    {
     "org": "zai-org",
-    "dl": 15806256
+    "dl": 15799879
    },
    {
     "org": "MiniMaxAI",
-    "dl": 8104848
+    "dl": 8127387
    },
    {
     "org": "tencent",
-    "dl": 4712534
+    "dl": 4716416
    },
    {
     "org": "moonshotai",
-    "dl": 2241228
+    "dl": 2227220
    },
    {
     "org": "stepfun-ai",
-    "dl": 548732
+    "dl": 553794
    },
    {
     "org": "XiaomiMiMo",
-    "dl": 323887
+    "dl": 323113
    }
   ],
   "usOrgs": [
    {
     "org": "google",
-    "dl": 30997802
+    "dl": 30840083
    },
    {
     "org": "nvidia",
-    "dl": 14318273
+    "dl": 14310949
    },
    {
     "org": "meta-llama",
-    "dl": 11535746
+    "dl": 11357061
    },
    {
     "org": "openai",
-    "dl": 8060926
+    "dl": 8043960
    },
    {
     "org": "microsoft",
-    "dl": 1832540
+    "dl": 1804252
    },
    {
     "org": "allenai",
-    "dl": 1490705
+    "dl": 1473085
    }
   ],
-  "cn": 232180172,
-  "us": 68235992
+  "cn": 231469827,
+  "us": 67829390
  },
  "openrouter_week": {
   "week": "2026-11-16",
-  "cn_share": 0.6968,
-  "us_share": 0.1793,
-  "spi": 3.886,
-  "total_tokens": 94531561011199
+  "cn_share": 0.7188,
+  "us_share": 0.1656,
+  "spi": 4.34,
+  "total_tokens": 118807304835390
  },
  "vercel_gateway": {
   "asof": "2026-11-18",
-  "cn_share": 47.64,
-  "us_share": 25.06,
-  "spi": 1.901,
+  "cn_share": 51.88,
+  "us_share": 24.68,
+  "spi": 2.102,
   "top_cn": [
    {
     "lab": "deepseek",
-    "share": 23.1
+    "share": 23.99
    },
    {
     "lab": "zai",
-    "share": 18.73
+    "share": 19.84
    },
    {
     "lab": "moonshotai",
-    "share": 4.72
+    "share": 6.86
    },
    {
     "lab": "xiaomi",
-    "share": 0.47
+    "share": 0.5
    },
    {
     "lab": "minimax",
-    "share": 0.34
+    "share": 0.36
    },
    {
     "lab": "alibaba",
-    "share": 0.26
+    "share": 0.29
    }
   ],
   "series": [
@@ -1040,15 +1040,15 @@
    },
    {
     "d": "2026-11-18",
-    "cn": 47.64,
-    "us": 25.06
+    "cn": 51.88,
+    "us": 24.68
    }
   ],
   "license": "AI Gateway Leaderboard Data (c) Vercel, CC BY 4.0"
  },
  "ollama": {
-  "cn": 338789896,
-  "us": 506500300,
+  "cn": 338997266,
+  "us": 506710600,
   "cn_top": [
    {
     "name": "deepseek-r1",
@@ -1060,7 +1060,7 @@
    },
    {
     "name": "qwen3",
-    "pulls": 43800000
+    "pulls": 43900000
    },
    {
     "name": "qwen3.5",
@@ -1086,7 +1086,7 @@
    },
    {
     "name": "gemma3",
-    "pulls": 41900000
+    "pulls": 42000000
    }
   ],
   "n_models": 270,
@@ -1121,7 +1121,7 @@
    },
    {
     "label": "Best AI at end of 2026: Gemini",
-    "p": 0.732,
+    "p": 0.74,
     "ticker": "KXLLM1-26DEC31-GOOG",
     "series": "kxllm1"
    }
@@ -1131,7 +1131,7 @@
   "cn": [
    {
     "base": "Qwen/Qwen3-8B",
-    "n": 2342
+    "n": 2343
    },
    {
     "base": "deepseek-ai/DeepSeek-R1",
@@ -1164,7 +1164,7 @@
     "n": 127
    }
   ],
-  "cn_total": 2726,
+  "cn_total": 2727,
   "us_total": 2632,
   "asof": "2026-11-18"
  },
