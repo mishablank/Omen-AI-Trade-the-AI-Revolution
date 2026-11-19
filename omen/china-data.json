@@ -1,5 +1,5 @@
 {
- "updated": "2026-11-19T12:46:36Z",
+ "updated": "2026-11-19T21:15:11Z",
  "snapshot_date": "2026-11-19",
  "artificial_analysis": {
   "cn_best": "GLM-5.2",
@@ -70,7 +70,7 @@
   }
  },
  "search_consumer": {
-  "western_share_pct": 2.0,
+  "western_share_pct": 2.1,
   "asof": "2026-11",
   "source": "google-trends",
   "terms_us": [
@@ -90,7 +90,7 @@
    "Seed 1.6",
    "Seed 2.0"
   ],
-  "note": "Google Trends US, 90-day avg: 8 Chinese AI terms = 2.0% of AI-assistant search interest vs ChatGPT+Gemini+Claude+Llama AI+Meta AI."
+  "note": "Google Trends US, 90-day avg: 8 Chinese AI terms = 2.1% of AI-assistant search interest vs ChatGPT+Gemini+Claude+Llama AI+Meta AI."
  },
  "apps": {
   "score": 0,
@@ -620,21 +620,21 @@
   "source": "search",
   "asof": "2026-11-19",
   "vel": {
-   "MiniMax-AI/MiniMax-H3": 38.7,
-   "MiniMax-AI/skills": 12.2,
-   "MoonshotAI/Kimi-K3": 5.1,
-   "MoonshotAI/kimi-cli": -1.0,
-   "QwenLM/Qwen3.8": 6.1,
-   "QwenLM/qwen-code": 34.6,
-   "XiaomiMiMo/MiMo": 1.0,
-   "XiaomiMiMo/MiMo-Code": 3.1,
-   "deepseek-ai/DeepInfer": 40.7,
-   "deepseek-ai/deepseek-harness": 647.1,
-   "zai-org/GLM-OCR": 0.0,
-   "zai-org/ZCode": 20.4
+   "MiniMax-AI/MiniMax-H3": 33.9,
+   "MiniMax-AI/skills": 5.0,
+   "MoonshotAI/Kimi-K3": 3.0,
+   "MoonshotAI/kimi-cli": -5.0,
+   "QwenLM/Qwen3.8": 4.0,
+   "QwenLM/qwen-code": 26.9,
+   "XiaomiMiMo/MiMo": 0.0,
+   "XiaomiMiMo/MiMo-Code": 3.0,
+   "deepseek-ai/DeepInfer": 30.9,
+   "deepseek-ai/deepseek-harness": 587.8,
+   "zai-org/GLM-OCR": 4.0,
+   "zai-org/ZCode": 19.0
   }
  },
- "github_stars_per_day": 807.9,
+ "github_stars_per_day": 712.6,
  "hf": {
   "cnOrgs": [
    {
@@ -701,40 +701,40 @@
  },
  "openrouter_week": {
   "week": "2026-11-16",
-  "cn_share": 0.7279,
-  "us_share": 0.1597,
-  "spi": 4.558,
-  "total_tokens": 172116547754414
+  "cn_share": 0.7083,
+  "us_share": 0.1621,
+  "spi": 4.37,
+  "total_tokens": 190857419114183
  },
  "vercel_gateway": {
   "asof": "2026-11-19",
-  "cn_share": 41.61,
-  "us_share": 31.65,
-  "spi": 1.315,
+  "cn_share": 41.03,
+  "us_share": 33.58,
+  "spi": 1.222,
   "top_cn": [
    {
     "lab": "zai",
-    "share": 18.73
+    "share": 19.29
    },
    {
     "lab": "deepseek",
-    "share": 18.13
+    "share": 16.79
    },
    {
     "lab": "moonshotai",
-    "share": 3.25
+    "share": 3.53
    },
    {
     "lab": "xiaomi",
-    "share": 0.5
-   },
-   {
-    "lab": "minimax",
     "share": 0.43
    },
    {
+    "lab": "minimax",
+    "share": 0.4
+   },
+   {
     "lab": "alibaba",
-    "share": 0.33
+    "share": 0.37
    }
   ],
   "series": [
@@ -1040,15 +1040,15 @@
    },
    {
     "d": "2026-11-19",
-    "cn": 41.61,
-    "us": 31.65
+    "cn": 41.03,
+    "us": 33.58
    }
   ],
   "license": "AI Gateway Leaderboard Data (c) Vercel, CC BY 4.0"
  },
  "ollama": {
-  "cn": 339742860,
-  "us": 507438500,
+  "cn": 340162974,
+  "us": 507551800,
   "cn_top": [
    {
     "name": "deepseek-r1",
@@ -1056,11 +1056,11 @@
    },
    {
     "name": "qwen2.5",
-    "pulls": 46300000
+    "pulls": 46400000
    },
    {
     "name": "qwen3",
-    "pulls": 44000000
+    "pulls": 44100000
    },
    {
     "name": "qwen3.5",
@@ -1072,7 +1072,7 @@
    },
    {
     "name": "qwen3-coder",
-    "pulls": 11100000
+    "pulls": 11200000
    }
   ],
   "us_top": [
@@ -1090,7 +1090,9 @@
    }
   ],
   "n_models": 270,
-  "asof": "2026-11-19"
+  "asof": "2026-11-19",
+  "cn_per_day": 930390,
+  "us_per_day": 727236
  },
  "kalshi": {
   "asof": "2026-11-19",
@@ -1115,13 +1117,13 @@
    },
    {
     "label": "Best AI at end of 2026: Qwen",
-    "p": 0.005,
+    "p": 0.004,
     "ticker": "KXLLM1-26DEC31-ALI",
     "series": "kxllm1"
    },
    {
     "label": "Best AI at end of 2026: Gemini",
-    "p": 0.824,
+    "p": 0.813,
     "ticker": "KXLLM1-26DEC31-GOOG",
     "series": "kxllm1"
    }
@@ -1131,7 +1133,7 @@
   "cn": [
    {
     "base": "Qwen/Qwen3-8B",
-    "n": 2344
+    "n": 2346
    },
    {
     "base": "deepseek-ai/DeepSeek-R1",
@@ -1149,7 +1151,7 @@
   "us": [
    {
     "base": "meta-llama/Llama-3.1-8B",
-    "n": 1442
+    "n": 1453
    },
    {
     "base": "google/gemma-3-12b-it",
@@ -1164,8 +1166,8 @@
     "n": 127
    }
   ],
-  "cn_total": 2728,
-  "us_total": 2574,
+  "cn_total": 2730,
+  "us_total": 2585,
   "asof": "2026-11-19"
  },
  "sdk": {
