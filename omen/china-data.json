@@ -1,5 +1,5 @@
 {
- "updated": "2026-11-21T02:05:59Z",
+ "updated": "2026-11-21T03:04:32Z",
  "snapshot_date": "2026-11-21",
  "artificial_analysis": {
   "cn_best": "GLM-5.2",
@@ -701,10 +701,10 @@
  },
  "openrouter_week": {
   "week": "2026-11-16",
-  "cn_share": 0.718,
-  "us_share": 0.1588,
-  "spi": 4.521,
-  "total_tokens": 249339696404020
+  "cn_share": 0.7183,
+  "us_share": 0.1586,
+  "spi": 4.529,
+  "total_tokens": 251201439046925
  },
  "vercel_gateway": {
   "asof": "2026-11-21",
@@ -1047,8 +1047,8 @@
   "license": "AI Gateway Leaderboard Data (c) Vercel, CC BY 4.0"
  },
  "ollama": {
-  "cn": 340994821,
-  "us": 507993500,
+  "cn": 340995551,
+  "us": 508095500,
   "cn_top": [
    {
     "name": "deepseek-r1",
@@ -1121,7 +1121,7 @@
    },
    {
     "label": "Best AI at end of 2026: Gemini",
-    "p": 0.846,
+    "p": 0.844,
     "ticker": "KXLLM1-26DEC31-GOOG",
     "series": "kxllm1"
    }
