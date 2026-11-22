@@ -1,5 +1,5 @@
 {
- "updated": "2026-11-22T00:03:06Z",
+ "updated": "2026-11-22T02:03:58Z",
  "tsmc": {
   "asof": "2026-10",
   "rev_ntd_b": 586.9,
@@ -38,7 +38,7 @@
   "us_windows": [
    "2025Q4–2026Q3"
   ],
-  "us_asof": "2026-11-21",
+  "us_asof": "2026-11-22",
   "cn_ttm_usd_b": 42.6,
   "cn_ttm_cny_b": 284.4,
   "cn": [
@@ -237,8 +237,8 @@
    "@google/gemini-cli": 550632
   },
   "pypi": {
-   "claude-agent-sdk": 10025449,
-   "openai-agents": 4704888
+   "claude-agent-sdk": 10028062,
+   "openai-agents": 4770925
   },
   "npm_total_wk": 50172595,
   "series": [
