@@ -1,5 +1,5 @@
 {
- "updated": "2026-11-23T01:16:04Z",
+ "updated": "2026-11-23T02:26:54Z",
  "snapshot_date": "2026-11-23",
  "artificial_analysis": {
   "cn_best": "GLM-5.2",
@@ -70,7 +70,7 @@
   }
  },
  "search_consumer": {
-  "western_share_pct": 2.1,
+  "western_share_pct": 2.0,
   "asof": "2026-11",
   "source": "google-trends",
   "terms_us": [
@@ -90,7 +90,7 @@
    "Seed 1.6",
    "Seed 2.0"
   ],
-  "note": "Google Trends US, 90-day avg: 8 Chinese AI terms = 2.1% of AI-assistant search interest vs ChatGPT+Gemini+Claude+Llama AI+Meta AI."
+  "note": "Google Trends US, 90-day avg: 8 Chinese AI terms = 2.0% of AI-assistant search interest vs ChatGPT+Gemini+Claude+Llama AI+Meta AI."
  },
  "apps": {
   "score": 0,
@@ -99,7 +99,7 @@
   "best": [
    {
     "label": "Qwen",
-    "rank": 164,
+    "rank": 170,
     "store": "android",
     "country": "br"
    }
@@ -116,7 +116,7 @@
    "au",
    "kr"
   ],
-  "detail": "no Chinese AI app in any iOS or Play top-100 (nearest: Qwen #164 (BR Play)); basket-mean Western top-100 presence 0/100 across 10 markets",
+  "detail": "no Chinese AI app in any iOS or Play top-100 (nearest: Qwen #170 (BR Play)); basket-mean Western top-100 presence 0/100 across 10 markets",
   "note": "iOS Apple RSS top-100 + Android Play top-200 across 10 markets; presence = basket-mean of best top-100 chart rank (DeepSeek/Qwen/Doubao/Kimi/MiniMax), #1=100 #100=1; ranks past top-100 score 0."
  },
  "investment": {
@@ -126,380 +126,6 @@
   "asof": "2026-04",
   "source": "Stanford AI Index 2026, Economy chapter",
   "caveat": "Excludes China's government guidance funds: ~$184B invested in AI firms 2000-2023 (Stanford SCCEI), none of it counted as private."
- },
- "lmarena": {
-  "best_model": "Kimi K3 (Max)",
-  "best_org": "moonshot",
-  "best_rank": 22,
-  "best_score": 1488,
-  "us_leader": "Gemini 4 Carbon (High)",
-  "us_leader_score": 1527,
-  "top10": 0,
-  "top20": 0,
-  "models": [
-   {
-    "model": "Gemini 4 Carbon (High)",
-    "org": "google",
-    "elo": 1527,
-    "cn": false
-   },
-   {
-    "model": "Gemini 4 Argon (High)",
-    "org": "google",
-    "elo": 1520,
-    "cn": false
-   },
-   {
-    "model": "Gemini 4 Neon (High)",
-    "org": "google",
-    "elo": 1513,
-    "cn": false
-   },
-   {
-    "model": "Muse Wonder (Max)",
-    "org": "meta",
-    "elo": 1511,
-    "cn": false
-   },
-   {
-    "model": "Claude Opus 5.5 (High)",
-    "org": "anthropic",
-    "elo": 1506,
-    "cn": false
-   },
-   {
-    "model": "Claude Fable 5 (High)",
-    "org": "anthropic",
-    "elo": 1504,
-    "cn": false
-   },
-   {
-    "model": "Claude Fable 5.2 (Max)",
-    "org": "anthropic",
-    "elo": 1503,
-    "cn": false
-   },
-   {
-    "model": "Claude Opus 4.6 (High)",
-    "org": "anthropic",
-    "elo": 1503,
-    "cn": false
-   },
-   {
-    "model": "Claude Fable 5.1 (Max)",
-    "org": "anthropic",
-    "elo": 1503,
-    "cn": false
-   },
-   {
-    "model": "Claude Opus 4.7 (High)",
-    "org": "anthropic",
-    "elo": 1501,
-    "cn": false
-   },
-   {
-    "model": "Muse Spark 1.3 (Max)",
-    "org": "meta",
-    "elo": 1498,
-    "cn": false
-   },
-   {
-    "model": "Gemini 3.8 Flash (High)",
-    "org": "google",
-    "elo": 1497,
-    "cn": false
-   },
-   {
-    "model": "Claude Opus 4.6",
-    "org": "anthropic",
-    "elo": 1496,
-    "cn": false
-   },
-   {
-    "model": "Claude Opus 4.7",
-    "org": "anthropic",
-    "elo": 1494,
-    "cn": false
-   },
-   {
-    "model": "Muse Spark 1.2 (xHigh)",
-    "org": "meta",
-    "elo": 1493,
-    "cn": false
-   },
-   {
-    "model": "Muse Spark 1.1",
-    "org": "meta",
-    "elo": 1491,
-    "cn": false
-   },
-   {
-    "model": "Gemini 3.7 Flash (High)",
-    "org": "google",
-    "elo": 1490,
-    "cn": false
-   },
-   {
-    "model": "Gemini 4 Hydrogen (High)",
-    "org": "google",
-    "elo": 1490,
-    "cn": false
-   },
-   {
-    "model": "Claude Opus 5 (High)",
-    "org": "anthropic",
-    "elo": 1490,
-    "cn": false
-   },
-   {
-    "model": "Muse Spark",
-    "org": "meta",
-    "elo": 1489,
-    "cn": false
-   },
-   {
-    "model": "Claude Opus 5 (Max)",
-    "org": "anthropic",
-    "elo": 1489,
-    "cn": false
-   },
-   {
-    "model": "Kimi K3 (Max)",
-    "org": "moonshot",
-    "elo": 1488,
-    "cn": true
-   },
-   {
-    "model": "Gemini 3.1 Pro Preview",
-    "org": "google",
-    "elo": 1487,
-    "cn": false
-   },
-   {
-    "model": "Gemini 3 Pro",
-    "org": "google",
-    "elo": 1486,
-    "cn": false
-   },
-   {
-    "model": "GPT-5.6 Sol (xHigh)",
-    "org": "openai",
-    "elo": 1485,
-    "cn": false
-   },
-   {
-    "model": "Qwen3.8-Max",
-    "org": "alibaba",
-    "elo": 1484,
-    "cn": true
-   },
-   {
-    "model": "Gemini 3.6 Flash (High)",
-    "org": "google",
-    "elo": 1483,
-    "cn": false
-   },
-   {
-    "model": "GPT-6.1 Sol (Max)",
-    "org": "openai",
-    "elo": 1483,
-    "cn": false
-   },
-   {
-    "model": "Kimi K3.1 Pro (Max)",
-    "org": "moonshot",
-    "elo": 1482,
-    "cn": true
-   },
-   {
-    "model": "GLM-5.3 (Max)",
-    "org": "zai",
-    "elo": 1482,
-    "cn": true
-   },
-   {
-    "model": "Claude Opus 4.8 (High)",
-    "org": "anthropic",
-    "elo": 1482,
-    "cn": false
-   },
-   {
-    "model": "GPT-5.5 (High)",
-    "org": "openai",
-    "elo": 1481,
-    "cn": false
-   },
-   {
-    "model": "MiMo-V2.6-Pro",
-    "org": "xiaomi",
-    "elo": 1481,
-    "cn": true
-   },
-   {
-    "model": "Gemini 3.5 Flash (High)",
-    "org": "google",
-    "elo": 1479,
-    "cn": false
-   },
-   {
-    "model": "GPT-5.5",
-    "org": "openai",
-    "elo": 1476,
-    "cn": false
-   },
-   {
-    "model": "Gemini 3.5 Flash (Medium)",
-    "org": "google",
-    "elo": 1476,
-    "cn": false
-   },
-   {
-    "model": "GPT-6 Astra (Max)",
-    "org": "openai",
-    "elo": 1475,
-    "cn": false
-   },
-   {
-    "model": "GPT-5.2 Chat (20260210)",
-    "org": "openai",
-    "elo": 1475,
-    "cn": false
-   },
-   {
-    "model": "GLM-5.3-Flash",
-    "org": "zai",
-    "elo": 1475,
-    "cn": true
-   },
-   {
-    "model": "GLM-5.2 (Max)",
-    "org": "zai",
-    "elo": 1475,
-    "cn": true
-   },
-   {
-    "model": "GPT-5.4 (High)",
-    "org": "openai",
-    "elo": 1475,
-    "cn": false
-   },
-   {
-    "model": "DeepSeek-V4.1-Flash-20260910 (Max)",
-    "org": "deepseek",
-    "elo": 1475,
-    "cn": true
-   },
-   {
-    "model": "Grok 4.20 Beta 1",
-    "org": "xai",
-    "elo": 1475,
-    "cn": false
-   },
-   {
-    "model": "GPT-6.1 Terra (Max)",
-    "org": "openai",
-    "elo": 1474,
-    "cn": false
-   },
-   {
-    "model": "Claude Opus 4.8",
-    "org": "anthropic",
-    "elo": 1474,
-    "cn": false
-   },
-   {
-    "model": "Qwen3.7-Max-Preview",
-    "org": "alibaba",
-    "elo": 1474,
-    "cn": true
-   },
-   {
-    "model": "GPT-5.5 Instant",
-    "org": "openai",
-    "elo": 1474,
-    "cn": false
-   },
-   {
-    "model": "Claude Opus 4.5 (High, 32K, 20251101)",
-    "org": "anthropic",
-    "elo": 1473,
-    "cn": false
-   },
-   {
-    "model": "Claude Sonnet 5.5 (xHigh)",
-    "org": "anthropic",
-    "elo": 1473,
-    "cn": false
-   },
-   {
-    "model": "Gemini 3 Flash",
-    "org": "google",
-    "elo": 1473,
-    "cn": false
-   },
-   {
-    "model": "Grok 4.20 Beta (Reasoning, 0309)",
-    "org": "xai",
-    "elo": 1472,
-    "cn": false
-   },
-   {
-    "model": "Claude Sonnet 4.6",
-    "org": "anthropic",
-    "elo": 1472,
-    "cn": false
-   },
-   {
-    "model": "Grok 4.20 Multi-Agent Beta (0309)",
-    "org": "xai",
-    "elo": 1471,
-    "cn": false
-   },
-   {
-    "model": "Claude Opus 4.5 (20251101)",
-    "org": "anthropic",
-    "elo": 1470,
-    "cn": false
-   },
-   {
-    "model": "GPT-6.2 Astra (Max)",
-    "org": "openai",
-    "elo": 1468,
-    "cn": false
-   },
-   {
-    "model": "GPT-5.6 Terra (xHigh)",
-    "org": "openai",
-    "elo": 1468,
-    "cn": false
-   },
-   {
-    "model": "ERNIE 5.1",
-    "org": "baidu",
-    "elo": 1467,
-    "cn": true
-   },
-   {
-    "model": "MiMo-V2.5-Pro",
-    "org": "xiaomi",
-    "elo": 1466,
-    "cn": true
-   },
-   {
-    "model": "Grok 4.5",
-    "org": "xai",
-    "elo": 1466,
-    "cn": false
-   },
-   {
-    "model": "Grok 4.1 (Thinking)",
-    "org": "xai",
-    "elo": 1465,
-    "cn": false
-   }
-  ],
-  "asof": "2026-11-19",
-  "source": "lmarena-dataset"
  },
  "arena_boards": {
   "asof": "2026-11-23",
@@ -537,7 +163,8 @@
     "n": 68,
     "pct_of_other": 27,
     "asof": "2026-11-18",
-    "source": "lmarena-dataset"
+    "source": "lmarena-dataset",
+    "carried": true
    },
    "text_to_video": {
     "metric": "elo",
@@ -571,7 +198,8 @@
     "top10": 5,
     "n": 50,
     "asof": "2026-11-09",
-    "source": "lmarena-dataset"
+    "source": "lmarena-dataset",
+    "carried": true
    },
    "text_to_image": {
     "metric": "elo",
@@ -588,7 +216,8 @@
     "top10": 0,
     "n": 87,
     "asof": "2026-11-20",
-    "source": "lmarena-dataset"
+    "source": "lmarena-dataset",
+    "carried": true
    },
    "image_edit": {
     "metric": "elo",
@@ -708,10 +337,10 @@
  },
  "openrouter_week": {
   "week": "2026-11-23",
-  "cn_share": 0.6502,
-  "us_share": 0.1996,
-  "spi": 3.257,
-  "total_tokens": 781534474691
+  "cn_share": 0.6486,
+  "us_share": 0.1982,
+  "spi": 3.272,
+  "total_tokens": 2337483759686
  },
  "vercel_gateway": {
   "asof": "2026-11-23",
@@ -1054,8 +683,8 @@
   "license": "AI Gateway Leaderboard Data (c) Vercel, CC BY 4.0"
  },
  "ollama": {
-  "cn": 342251335,
-  "us": 508767600,
+  "cn": 342352262,
+  "us": 508868500,
   "cn_top": [
    {
     "name": "deepseek-r1",
@@ -1071,7 +700,7 @@
    },
    {
     "name": "qwen3.5",
-    "pulls": 27100000
+    "pulls": 27200000
    },
    {
     "name": "qwen2.5-coder",
@@ -1128,7 +757,7 @@
    },
    {
     "label": "Best AI at end of 2026: Gemini",
-    "p": 0.837,
+    "p": 0.836,
     "ticker": "KXLLM1-26DEC31-GOOG",
     "series": "kxllm1"
    }
@@ -1178,14 +807,30 @@
  "sdk": {
   "cn": [
    {
+    "pkg": "dashscope",
+    "wk": 355651
+   },
+   {
+    "pkg": "zhipuai",
+    "wk": 28449
+   },
+   {
     "pkg": "zai-sdk",
-    "wk": 50779
+    "wk": 47705
    }
   ],
   "us": [
    {
+    "pkg": "openai",
+    "wk": 93708497
+   },
+   {
+    "pkg": "anthropic",
+    "wk": 50961455
+   },
+   {
     "pkg": "google-genai",
-    "wk": 40626299
+    "wk": 40762542
    }
   ],
   "asof": "2026-11-23"
