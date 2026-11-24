@@ -1,5 +1,5 @@
 {
- "updated": "2026-11-24T17:29:53Z",
+ "updated": "2026-11-24T22:58:37Z",
  "tsmc": {
   "asof": "2026-10",
   "rev_ntd_b": 586.9,
@@ -14,7 +14,7 @@
    "from": "2026-08-27",
    "to": "2026-11-24",
    "debt": 30,
-   "s1_ai": 299,
+   "s1_ai": 301,
    "formd_ai": 4
   },
   "prev": {
@@ -210,15 +210,15 @@
    "stale": true,
    "src": "https://www.koreatimes.co.kr/economy/20260921/exports-up-78-in-first-20-days-of-sept-on-robust-chip-shipments"
   },
-  "checked": "2026-11-24T00:42:39Z"
+  "checked": "2026-11-24T22:58:45Z"
  },
  "eia": {
-  "operating_gw": 1390.6,
-  "planned_gw": 192.3,
-  "under_construction_gw": 97.9,
-  "canceled_gw": 185.4,
-  "asof": "2026-09",
-  "src": "https://www.eia.gov/electricity/data/eia860m/xls/september_generator2026.xlsx"
+  "operating_gw": 1395.2,
+  "planned_gw": 189.9,
+  "under_construction_gw": 98.4,
+  "canceled_gw": 186.4,
+  "asof": "2026-10",
+  "src": "https://www.eia.gov/electricity/data/eia860m/xls/october_generator2026.xlsx"
  },
  "capex_gdp": {
   "dc_construction_saar_b": 96.5,
