@@ -1,5 +1,5 @@
 {
- "updated": "2026-11-24T00:39:41Z",
+ "updated": "2026-11-24T05:52:18Z",
  "snapshot_date": "2026-11-24",
  "artificial_analysis": {
   "cn_best": "GLM-5.2",
@@ -99,7 +99,7 @@
   "best": [
    {
     "label": "Qwen",
-    "rank": 150,
+    "rank": 160,
     "store": "android",
     "country": "br"
    }
@@ -116,7 +116,7 @@
    "au",
    "kr"
   ],
-  "detail": "no Chinese AI app in any iOS or Play top-100 (nearest: Qwen #150 (BR Play)); basket-mean Western top-100 presence 0/100 across 10 markets",
+  "detail": "no Chinese AI app in any iOS or Play top-100 (nearest: Qwen #160 (BR Play)); basket-mean Western top-100 presence 0/100 across 10 markets",
   "note": "iOS Apple RSS top-100 + Android Play top-200 across 10 markets; presence = basket-mean of best top-100 chart rank (DeepSeek/Qwen/Doubao/Kimi/MiniMax), #1=100 #100=1; ranks past top-100 score 0."
  },
  "investment": {
@@ -518,7 +518,7 @@
     "cn_leads": false,
     "top10": 1,
     "n": 100,
-    "asof": "2026-11-22",
+    "asof": "2026-11-23",
     "source": "lmarena-dataset"
    },
    "agent": {
@@ -708,40 +708,40 @@
  },
  "openrouter_week": {
   "week": "2026-11-23",
-  "cn_share": 0.6461,
-  "us_share": 0.2069,
-  "spi": 3.122,
-  "total_tokens": 36428492707986
+  "cn_share": 0.6489,
+  "us_share": 0.1999,
+  "spi": 3.247,
+  "total_tokens": 44392543927308
  },
  "vercel_gateway": {
   "asof": "2026-11-24",
-  "cn_share": 53.71,
-  "us_share": 32.75,
-  "spi": 1.64,
+  "cn_share": 52.25,
+  "us_share": 33.06,
+  "spi": 1.58,
   "top_cn": [
    {
     "lab": "deepseek",
-    "share": 34.55
+    "share": 28.17
    },
    {
     "lab": "zai",
-    "share": 14.22
+    "share": 17.07
    },
    {
     "lab": "moonshotai",
-    "share": 3.48
-   },
-   {
-    "lab": "alibaba",
-    "share": 0.57
+    "share": 5.39
    },
    {
     "lab": "minimax",
-    "share": 0.44
+    "share": 0.6
+   },
+   {
+    "lab": "alibaba",
+    "share": 0.49
    },
    {
     "lab": "xiaomi",
-    "share": 0.42
+    "share": 0.47
    }
   ],
   "series": [
@@ -1047,15 +1047,15 @@
    },
    {
     "d": "2026-11-24",
-    "cn": 53.71,
-    "us": 32.75
+    "cn": 52.25,
+    "us": 33.06
    }
   ],
   "license": "AI Gateway Leaderboard Data (c) Vercel, CC BY 4.0"
  },
  "ollama": {
-  "cn": 342873600,
-  "us": 509104000,
+  "cn": 343277600,
+  "us": 509210300,
   "cn_top": [
    {
     "name": "deepseek-r1",
@@ -1067,11 +1067,11 @@
    },
    {
     "name": "qwen3",
-    "pulls": 44500000
+    "pulls": 44600000
    },
    {
     "name": "qwen3.5",
-    "pulls": 27200000
+    "pulls": 27300000
    },
    {
     "name": "qwen2.5-coder",
@@ -1097,16 +1097,14 @@
    }
   ],
   "n_models": 272,
-  "asof": "2026-11-24",
-  "cn_per_day": 657633,
-  "us_per_day": 353952
+  "asof": "2026-11-24"
  },
  "kalshi": {
   "asof": "2026-11-24",
   "markets": [
    {
     "label": "Will a Chinese AI model be #1 this year?",
-    "p": 0.03,
+    "p": 0.04,
     "ticker": "KXBESTLLMCHINA-27",
     "series": "kxbestllmchina"
    },
@@ -1124,13 +1122,13 @@
    },
    {
     "label": "Best AI at end of 2026: Qwen",
-    "p": 0.005,
+    "p": 0.004,
     "ticker": "KXLLM1-26DEC31-ALI",
     "series": "kxllm1"
    },
    {
     "label": "Best AI at end of 2026: Gemini",
-    "p": 0.818,
+    "p": 0.82,
     "ticker": "KXLLM1-26DEC31-GOOG",
     "series": "kxllm1"
    }
@@ -1140,7 +1138,7 @@
   "cn": [
    {
     "base": "Qwen/Qwen3-8B",
-    "n": 2369
+    "n": 2373
    },
    {
     "base": "deepseek-ai/DeepSeek-R1",
@@ -1173,7 +1171,7 @@
     "n": 127
    }
   ],
-  "cn_total": 2753,
+  "cn_total": 2757,
   "us_total": 2588,
   "asof": "2026-11-24"
  },
@@ -1181,29 +1179,29 @@
   "cn": [
    {
     "pkg": "dashscope",
-    "wk": 355651
+    "wk": 339350
    },
    {
     "pkg": "zhipuai",
-    "wk": 28449
+    "wk": 26755
    },
    {
     "pkg": "zai-sdk",
-    "wk": 47705
+    "wk": 46326
    }
   ],
   "us": [
    {
     "pkg": "openai",
-    "wk": 93708497
+    "wk": 94791561
    },
    {
     "pkg": "anthropic",
-    "wk": 50961455
+    "wk": 51535402
    },
    {
     "pkg": "google-genai",
-    "wk": 40762542
+    "wk": 40651277
    }
   ],
   "asof": "2026-11-24"
