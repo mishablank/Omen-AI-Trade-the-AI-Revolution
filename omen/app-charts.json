@@ -1,5 +1,5 @@
 {
- "updated": "2026-11-23T12:08:53Z",
+ "updated": "2026-11-24T00:39:40Z",
  "source": "google-play-scraper",
  "store": "android",
  "depth": 200,
@@ -9,7 +9,7 @@
    "label": "Qwen",
    "store": "android",
    "country": "br",
-   "rank": 165,
+   "rank": 150,
    "appId": "com.tongyi.intl",
    "title": "Qwen - Alibaba AI Assistant"
   }

@@ -1,5 +1,5 @@
 {
- "updated": "2026-11-23T12:10:51Z",
+ "updated": "2026-11-24T00:42:31Z",
  "tsmc": {
   "asof": "2026-10",
   "rev_ntd_b": 586.9,
@@ -11,22 +11,22 @@
  "issuance": {
   "days": 90,
   "cur": {
-   "from": "2026-08-26",
-   "to": "2026-11-23",
+   "from": "2026-08-27",
+   "to": "2026-11-24",
    "debt": 30,
-   "s1_ai": 296,
+   "s1_ai": 297,
    "formd_ai": 4
   },
   "prev": {
-   "from": "2026-05-28",
-   "to": "2026-08-25",
+   "from": "2026-05-29",
+   "to": "2026-08-26",
    "debt": 21,
-   "s1_ai": 323,
+   "s1_ai": 321,
    "formd_ai": 5
   }
  },
  "capex_asymmetry": {
-  "asof": "2026-11-23",
+  "asof": "2026-11-24",
   "us_ttm_usd_b": 691.0,
   "us_names": [
    "AMZN",
@@ -38,7 +38,7 @@
   "us_windows": [
    "2025Q4–2026Q3"
   ],
-  "us_asof": "2026-11-23",
+  "us_asof": "2026-11-24",
   "cn_ttm_usd_b": 42.6,
   "cn_ttm_cny_b": 284.4,
   "cn": [
@@ -64,8 +64,8 @@
     "asof": "2025-12"
    }
   ],
-  "fx_cny_per_usd": 6.671,
-  "fx_asof": "2026-11-13",
+  "fx_cny_per_usd": 6.677,
+  "fx_asof": "2026-11-20",
   "ratio": 16.2
  },
  "ramp": {
@@ -206,11 +206,11 @@
    "usd_b": 34.12,
    "window": "Sep 1-20",
    "asof": "2026-09-21",
-   "age_days": 63,
+   "age_days": 64,
    "stale": true,
    "src": "https://www.koreatimes.co.kr/economy/20260921/exports-up-78-in-first-20-days-of-sept-on-robust-chip-shipments"
   },
-  "checked": "2026-11-22T18:29:20Z"
+  "checked": "2026-11-24T00:42:39Z"
  },
  "eia": {
   "operating_gw": 1390.6,
@@ -230,7 +230,7 @@
   "pct_gdp": 1.82
  },
  "agents": {
-  "asof": "2026-11-23",
+  "asof": "2026-11-24",
   "npm": {
    "@anthropic-ai/claude-code": 22171378,
    "@openai/codex": 27601227,
@@ -242,10 +242,6 @@
   },
   "npm_total_wk": 50337618,
   "series": [
-   [
-    "2026-10-29",
-    40316694
-   ],
    [
     "2026-10-30",
     40267388
@@ -344,6 +340,10 @@
    ],
    [
     "2026-11-23",
+    50337618
+   ],
+   [
+    "2026-11-24",
     50337618
    ]
   ]
