@@ -1,5 +1,5 @@
 {
- "updated": "2026-11-25T04:53:42Z",
+ "updated": "2026-11-25T15:29:30Z",
  "tsmc": {
   "asof": "2026-10",
   "rev_ntd_b": 586.9,
@@ -224,23 +224,23 @@
   "dc_construction_saar_b": 96.5,
   "dc_yoy_pct": 90.3,
   "dc_asof": "2026-09",
-  "computers_saar_b": 504.1,
-  "gdp_saar_b": 33010.0,
+  "computers_saar_b": 513.1,
+  "gdp_saar_b": 33056.2,
   "gdp_asof": "2026-07-01",
-  "pct_gdp": 1.82
+  "pct_gdp": 1.84
  },
  "agents": {
   "asof": "2026-11-25",
   "npm": {
-   "@anthropic-ai/claude-code": 20696859,
-   "@openai/codex": 27746932,
-   "@google/gemini-cli": 573464
+   "@anthropic-ai/claude-code": 18557180,
+   "@openai/codex": 28445603,
+   "@google/gemini-cli": 596525
   },
   "pypi": {
    "claude-agent-sdk": 10347488,
-   "openai-agents": null
+   "openai-agents": 5236711
   },
-  "npm_total_wk": 49017255,
+  "npm_total_wk": 47599308,
   "series": [
    [
     "2026-10-31",
@@ -344,7 +344,7 @@
    ],
    [
     "2026-11-25",
-    49017255
+    47599308
    ]
   ]
  },

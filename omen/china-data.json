@@ -1,5 +1,5 @@
 {
- "updated": "2026-11-25T04:51:25Z",
+ "updated": "2026-11-25T15:25:54Z",
  "snapshot_date": "2026-11-25",
  "artificial_analysis": {
   "cn_best": "GLM-5.2",
@@ -99,7 +99,7 @@
   "best": [
    {
     "label": "Qwen",
-    "rank": 197,
+    "rank": 200,
     "store": "android",
     "country": "br"
    }
@@ -116,7 +116,7 @@
    "au",
    "kr"
   ],
-  "detail": "no Chinese AI app in any iOS or Play top-100 (nearest: Qwen #197 (BR Play)); basket-mean Western top-100 presence 0/100 across 10 markets",
+  "detail": "no Chinese AI app in any iOS or Play top-100 (nearest: Qwen #200 (BR Play)); basket-mean Western top-100 presence 0/100 across 10 markets",
   "note": "iOS Apple RSS top-100 + Android Play top-200 across 10 markets; presence = basket-mean of best top-100 chart rank (DeepSeek/Qwen/Doubao/Kimi/MiniMax), #1=100 #100=1; ranks past top-100 score 0."
  },
  "investment": {
@@ -646,102 +646,102 @@
   "cnOrgs": [
    {
     "org": "Qwen",
-    "dl": 172618375
+    "dl": 170288045
    },
    {
     "org": "deepseek-ai",
-    "dl": 23290691
+    "dl": 23386866
    },
    {
     "org": "zai-org",
-    "dl": 14957701
+    "dl": 14582602
    },
    {
     "org": "MiniMaxAI",
-    "dl": 8423483
+    "dl": 8517390
    },
    {
     "org": "tencent",
-    "dl": 4502652
+    "dl": 4461778
    },
    {
     "org": "moonshotai",
-    "dl": 2059191
+    "dl": 2034690
    },
    {
     "org": "stepfun-ai",
-    "dl": 540525
+    "dl": 534488
    },
    {
     "org": "XiaomiMiMo",
-    "dl": 317186
+    "dl": 313588
    }
   ],
   "usOrgs": [
    {
     "org": "google",
-    "dl": 28633721
+    "dl": 28365086
    },
    {
     "org": "nvidia",
-    "dl": 12179887
+    "dl": 12083638
    },
    {
     "org": "meta-llama",
-    "dl": 10405002
+    "dl": 10214191
    },
    {
     "org": "openai",
-    "dl": 7763763
+    "dl": 7697186
    },
    {
     "org": "microsoft",
-    "dl": 1707006
+    "dl": 1711597
    },
    {
     "org": "allenai",
-    "dl": 1598171
+    "dl": 1623725
    }
   ],
-  "cn": 226709804,
-  "us": 62287550
+  "cn": 224119447,
+  "us": 61695423
  },
  "openrouter_week": {
   "week": "2026-11-23",
-  "cn_share": 0.6534,
-  "us_share": 0.2013,
-  "spi": 3.246,
-  "total_tokens": 81043654820964
+  "cn_share": 0.6526,
+  "us_share": 0.2025,
+  "spi": 3.222,
+  "total_tokens": 97392088721240
  },
  "vercel_gateway": {
   "asof": "2026-11-25",
-  "cn_share": 60.24,
-  "us_share": 25.12,
-  "spi": 2.398,
+  "cn_share": 53.98,
+  "us_share": 31.16,
+  "spi": 1.732,
   "top_cn": [
    {
     "lab": "deepseek",
-    "share": 33.81
+    "share": 31.99
    },
    {
     "lab": "zai",
-    "share": 18.88
+    "share": 15.85
    },
    {
     "lab": "moonshotai",
-    "share": 6.26
-   },
-   {
-    "lab": "alibaba",
-    "share": 0.53
+    "share": 4.62
    },
    {
     "lab": "xiaomi",
-    "share": 0.4
+    "share": 0.52
    },
    {
     "lab": "minimax",
-    "share": 0.34
+    "share": 0.5
+   },
+   {
+    "lab": "alibaba",
+    "share": 0.45
    }
   ],
   "series": [
@@ -1047,23 +1047,23 @@
    },
    {
     "d": "2026-11-25",
-    "cn": 60.24,
-    "us": 25.12
+    "cn": 53.98,
+    "us": 31.16
    }
   ],
   "license": "AI Gateway Leaderboard Data (c) Vercel, CC BY 4.0"
  },
  "ollama": {
-  "cn": 343800100,
-  "us": 509749000,
+  "cn": 344110400,
+  "us": 509964500,
   "cn_top": [
    {
     "name": "deepseek-r1",
-    "pulls": 95400000
+    "pulls": 95500000
    },
    {
     "name": "qwen2.5",
-    "pulls": 47000000
+    "pulls": 47100000
    },
    {
     "name": "qwen3",
@@ -1128,7 +1128,7 @@
    },
    {
     "label": "Best AI at end of 2026: Gemini",
-    "p": 0.72,
+    "p": 0.743,
     "ticker": "KXLLM1-26DEC31-GOOG",
     "series": "kxllm1"
    }
@@ -1138,7 +1138,7 @@
   "cn": [
    {
     "base": "Qwen/Qwen3-8B",
-    "n": 2375
+    "n": 2379
    },
    {
     "base": "deepseek-ai/DeepSeek-R1",
@@ -1164,15 +1164,15 @@
    },
    {
     "base": "openai/gpt-oss-20b",
-    "n": 579
+    "n": 578
    },
    {
     "base": "microsoft/phi-4",
     "n": 127
    }
   ],
-  "cn_total": 2759,
-  "us_total": 2585,
+  "cn_total": 2763,
+  "us_total": 2584,
   "asof": "2026-11-25"
  },
  "sdk": {
